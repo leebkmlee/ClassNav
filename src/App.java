@@ -3,6 +3,6 @@ public class App {
         System.out.println("Hello, World!");
         System.out.println("Hello");
         System.out.println("Hello, Putangina ayaw ko na");
-        int x = 0;
+        int x = 0; int y = 1;
     }
 }
