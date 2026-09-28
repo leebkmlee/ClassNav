@@ -40,6 +40,7 @@ public class User {
             default:
                 System.out.println("Invalid choice!");
         }
+
     }
 
     int selectUser() {

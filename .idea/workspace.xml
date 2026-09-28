@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="revision">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CLASSNAV.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CLASSNAV.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/setUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/RetrieveUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MAIN/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MAIN/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +62,7 @@
     "Application.Mainn.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "Revision",
     "kotlin-language-version-configured": "true",
@@ -131,7 +137,23 @@
       <option name="project" value="LOCAL" />
       <updated>1790516142042</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="revision">
+      <option name="closed" value="true" />
+      <created>1790516372310</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1790516372310</updated>
+    </task>
+    <task id="LOCAL-00009" summary="revision">
+      <option name="closed" value="true" />
+      <created>1790516381132</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1790516381132</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
