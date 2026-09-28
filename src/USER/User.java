@@ -3,15 +3,16 @@ import LOGIN.Login;
 import java.util.Scanner;
 
 public class User {
-    private String userID;
-    private String userName;
+    private String userID; private String userName;
+    private String emailAddress; private String password;
     private String address; private int postalCode;
-    private String birthDate;
-    private char gender;
+    private String birthDate; private char gender;
 
-    public User(String userID, String userName, String address, int postalCode, String birthDate, char gender) {
+    public User(String userID, String userName, String emailAddress, String password, String address, int postalCode, String birthDate, char gender) {
         this.userID = userID;
         this.userName = userName;
+        this.emailAddress = emailAddress;
+        this.password = password;
         this.address = address;
         this.postalCode = postalCode;
         this.birthDate = birthDate;
@@ -22,26 +23,71 @@ public class User {
         return userID;
     }
 
-    Scanner in = new Scanner(System.in);
+    public String getEmail() {
+        return emailAddress;
+    }
 
-    public void start() {
-        int num;
-        num = selectUser();
-        switch (num) {
-            case 1:
-                Login.loginPassword("Student", "S001", "Stud123");
-                break;
-            case 2:
-                Login.loginPassword("Faculty", "F001", "Fac456");
-                break;
-            case 3:
-                Login.loginPassword("Admin", "A001", "Admin789");
-                break;
-            default:
-                System.out.println("Invalid choice!");
+    public String getPassword() {
+        return password;
+    }
+
+    static Scanner in = new Scanner(System.in);
+
+    public static void start() {
+        String select; boolean valid;
+
+        do {
+            System.out.println("╔══════════════════════════════════════════════╗");
+            System.out.println("║                   ClassNav                   ║");
+            System.out.println("╠══════════════════════════════════════════════╣");
+            System.out.println("║ [1] Log in                                   ║");
+            System.out.println("║ [2] Sign up                                  ║");
+            System.out.println("║ [X] Exit                                     ║");
+            System.out.println("╚══════════════════════════════════════════════╝");
+            System.out.print(" Select > ");
+            select = in.nextLine();
+            if (select.equals("X") || select.equals("1") || select.equals("2")) valid = true;
+            else {
+                int innerWidth = 46;
+                System.out.println("┌" + "─".repeat(innerWidth) + "┐");
+                System.out.println("│               ✘ INVALID CHOICE               │");
+                System.out.println("└" + "─".repeat(innerWidth) + "┘");
+                valid = false;
+            }
+        } while (!valid);
+        if (select.equals("X")) {
+            System.out.println(" Exiting...");
+            System.out.println("─────────────────────────────────────────────");
+            System.exit(0);
         }
 
+        switch (select) {
+            case "1":
+                Login.loginPassword();
+                break;
+            case "2":
+
+        }
     }
+
+//    public void start() {
+//        int num;
+//        num = selectUser();
+//        switch (num) {
+//            case 1:
+//                Login.loginPassword("Student", "S001", "Stud123");
+//                break;
+//            case 2:
+//                Login.loginPassword("Faculty", "F001", "Fac456");
+//                break;
+//            case 3:
+//                Login.loginPassword("Admin", "A001", "Admin789");
+//                break;
+//            default:
+//                System.out.println("Invalid choice!");
+//        }
+//
+//    }
 
     int selectUser() {
         System.out.println("╔══════════════════════════════════════════════╗");

@@ -1,12 +1,15 @@
 package LOGIN;
+import DATA.RetrieveUser;
+import USER.User;
+
 import java.util.Scanner;
 public class Login {
 
     static Scanner in = new Scanner(System.in);
 
-    public static void loginPassword(String userType, String correctID, String correctPassword) {
+    public static void loginPassword() {
         boolean authenticated = false;
-        String headerTitle = "PORTAL LOG-IN: " + userType.toUpperCase();
+        String headerTitle = "PORTAL LOG-IN";
 
         int innerWidth = 46;
 
@@ -21,21 +24,30 @@ public class Login {
         System.out.println("╚" + "═".repeat(innerWidth) + "╝");
 
         while (!authenticated) {
-            System.out.printf("  Enter %-8s ID  : ", userType);
-            String userID = in.nextLine().trim();
+            System.out.print("  Enter ID            : ");
+            String userID = in.nextLine();
 
-            System.out.printf("  Enter %-8s Password: ", userType);
-            String password = in.nextLine().trim();
+            RetrieveUser data = new RetrieveUser();
+            User user = data.getUser(userID);
 
-            if (userID.equals(correctID) && password.equals(correctPassword)) {
-                authenticated = true;
-                System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-                System.out.println("│  ✔ LOGIN SUCCESSFUL! Welcome to ClassNav.    │");
-                System.out.println("└" + "─".repeat(innerWidth) + "┘");
-            } else {
-                System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-                System.out.println("│  ✘ Incorrect ID or Password. Try again.      │");
-                System.out.println("└" + "─".repeat(innerWidth) + "┘");
+            if(user != null) {
+                System.out.print("  Enter Email Address : ");
+                String emailAddress = in.nextLine();
+
+                System.out.print("  Enter Password      : ");
+                String password = in.nextLine();
+
+                if (data.verifyEmail(userID, emailAddress) && data.verifyPassword(userID, password)) {
+                    authenticated = true;
+                    System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
+                    System.out.println("│  ✔ LOGIN SUCCESSFUL! Welcome to ClassNav.    │");
+                    System.out.println("└" + "─".repeat(innerWidth) + "┘");
+                }
+                else {
+                    System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
+                    System.out.println("│  ✘ Incorrect ID or Password. Try again.      │");
+                    System.out.println("└" + "─".repeat(innerWidth) + "┘");
+                }
             }
         }
     }
