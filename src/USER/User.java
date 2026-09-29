@@ -1,5 +1,7 @@
 package USER;
 import LOGIN.Login;
+import LOGIN.Signup;
+
 import java.util.Scanner;
 
 public class User {
@@ -66,7 +68,8 @@ public class User {
                 Login.loginPassword();
                 break;
             case "2":
-
+                Signup.signUp();
+                break;
         }
     }
 
