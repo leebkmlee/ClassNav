@@ -1,6 +1,6 @@
 package LOGIN;
 import DATA.RetrieveUser;
-import USER.User;
+import UI.*;
 import java.util.Scanner;
 
 public class Login {
@@ -11,25 +11,21 @@ public class Login {
 
     public static void loginPassword() {
         boolean authenticated = false; int tries = 2;
-        String headerTitle = "PORTAL LOG-IN";
-        int totalPadding = innerWidth - headerTitle.length();
-        int padLeft = totalPadding / 2;
-        int padRight = totalPadding - padLeft;
-        String centeredTitle = " ".repeat(padLeft) + headerTitle + " ".repeat(padRight);
 
-        System.out.println("\n╔" + "═".repeat(innerWidth) + "╗");
-        System.out.println("║" + centeredTitle + "║");
-        System.out.println("╚" + "═".repeat(innerWidth) + "╝");
+        UI.print("PORTAL LOG-IN", innerWidth);
+        String headerTitle = "PORTAL LOG-IN";
+
+//        System.out.println("\n╔" + "═".repeat(innerWidth) + "╗");
+//        System.out.println("║" + centeredTitle + "║");
+//        System.out.println("╚" + "═".repeat(innerWidth) + "╝");
 
         while (!authenticated && tries != -1) {
 
             System.out.print("  Enter ID            : ");
             String userID = in.nextLine();
+            System.out.println(userID);
 
-            RetrieveUser data = new RetrieveUser();
-            User user = data.getUser(userID);
-
-            if (user != null) {
+            if (RetrieveUser.getUser(userID) != null) {
                 while (!authenticated && tries != -1) {
                     System.out.print("  Enter Email Address : ");
                     String emailAddress = in.nextLine();
@@ -37,14 +33,9 @@ public class Login {
                     System.out.print("  Enter Password      : ");
                     String password = in.nextLine();
 
-                    if (data.verifyEmail(userID, emailAddress) && data.verifyPassword(userID, password)) {
+                    if (RetrieveUser.verifyEmail(userID, emailAddress) && RetrieveUser.verifyPassword(userID, password)) {
                         authenticated = true;
-                        String message = "LOGIN SUCCESSFUL! Welcome to ClassNav.";
-                        int left = (innerWidth - message.length()) / 2;
-                        int right = innerWidth - message.length() - left;
-                        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-                        System.out.println("│" + " ".repeat(left) + message + " ".repeat(right) + "│");
-                        System.out.println("└" + "─".repeat(innerWidth) + "┘");
+                        UI.print("LOGIN SUCCESSFUL! Welcome to ClassNav.", innerWidth);
                     }
                     else {
                         if (tries != 0) {
@@ -67,23 +58,12 @@ public class Login {
                     }
                 }
 
-            } else {
-                String message = "ID Does not exist. Try again.";
-                int left = (innerWidth - message.length()) / 2;
-                int right = innerWidth - message.length() - left;
-                System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-                System.out.println("│" + " ".repeat(left) + message + " ".repeat(right) + "│");
-                System.out.println("└" + "─".repeat(innerWidth) + "┘");
             }
+            else UI.print("ID does not exist. Try again.", innerWidth);
         }
 
         if (tries == -1) {
-            String message = "Ran out of Attempts";
-            int left = (innerWidth - message.length()) / 2;
-            int right = innerWidth - message.length() - left;
-            System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-            System.out.println("│" + " ".repeat(left) + message + " ".repeat(right) + "│");
-            System.out.println("└" + "─".repeat(innerWidth) + "┘");
+            UI.print("Ran out of attempts.", innerWidth);
             System.out.println("Exiting system...");
             System.exit(0);
         }
