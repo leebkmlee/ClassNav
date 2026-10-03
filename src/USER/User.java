@@ -34,21 +34,10 @@ public class User {
         this.gender = gender;
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public String getEmail() {
-        return emailAddress;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
+    public String getUserID() {return userID;}
+    public String getEmail() {return emailAddress;}
+    public String getPassword() {return password;}
+    public String getUserName() {return userName;}
 
     static Scanner in = new Scanner(System.in);
 

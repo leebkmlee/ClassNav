@@ -1,9 +1,7 @@
 package LOGIN;
+
 import DATA.RetrieveUser;
-import USER.Admin;
-import USER.Faculty;
-import USER.Student;
-import USER.User;
+import USER.*;
 import UI.*;
 import java.util.Scanner;
 
@@ -256,6 +254,7 @@ public class Signup {
                     complete = 0;
                     User.start();
                     break;
+
                 default:
                     UI.print("Invalid Choice", innerWidth);
                     break;
@@ -263,47 +262,19 @@ public class Signup {
         }
     }
 
-    static void printUser() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", user);
-    }
-    static void printEmail() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", email);
-    }
-    static void printPassword() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", password);
-    }
-    static void printAddress() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", address);
-    }
-    static void printPostal() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", postalCode);
-    }
-    static void printBDate() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", birthDate);
-    }
-    static void printSex() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", sex);
-    }
+    static void printUser() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", user);}
+    static void printEmail() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", email);}
+    static void printPassword() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", password);}
+    static void printAddress() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", address);}
+    static void printPostal() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", postalCode);}
+    static void printBDate() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", birthDate);}
+    static void printSex() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", sex);}
 
-    static void printUser(String userName) {
-        user = "[1] Full Name: " + userName;
-    }
-    static void printEmail(String emailAddress) {
-        email = "[2] Email Address: " + emailAddress;
-    }
-    static void printPassword(String passKey) {
-        password = "[3] Password: " + passKey;
-    }
-    static void printAddress(String location) {
-        address = "[4] Address: " + location;
-    }
-    static void printPostal(int postalDigit) {
-        postalCode = "[5] Postal Code: " + postalDigit;
-    }
-    static void printBDate(String BDate) {
-        birthDate = "[6] Birthdate: " + BDate;
-    }
-    static void printSex(char gen) {
-        sex = "[7] Sex: " + gen;
-    }
+    static void printUser(String userName) {user = "[1] Full Name: " + userName;}
+    static void printEmail(String emailAddress) {email = "[2] Email Address: " + emailAddress;}
+    static void printPassword(String passKey) {password = "[3] Password: " + passKey;}
+    static void printAddress(String location) {address = "[4] Address: " + location;}
+    static void printPostal(int postalDigit) {postalCode = "[5] Postal Code: " + postalDigit;}
+    static void printBDate(String BDate) {birthDate = "[6] Birthdate: " + BDate;}
+    static void printSex(char gen) {sex = "[7] Sex: " + gen;}
 }
