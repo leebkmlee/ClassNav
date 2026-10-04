@@ -16,6 +16,20 @@ USE CLASSNAV_SQLSERVER;
 --11. STUDENT
 --12. ENROLLMENT
 
+-- SEQUENCE OF TABLE RUN --
+--1. USER
+--2. BUILDING
+--3. COLLEGE
+--4. PROGRAM
+--5. COURSE
+--6. FACULTY
+--7. ADMIN
+--8. ROOM
+--9. STUDENT
+--10. SECTION
+--11. SCHEDULE
+--12. ENROLLMENT
+
 -- 1.
 create table [USER] (
                         UserID int PRIMARY KEY,
@@ -32,7 +46,69 @@ create table [USER] (
                         ProgramCode varchar (10),
                         UserType varchar (10) check (UserType in ('Student', 'Admin', 'Faculty')))
 
--- 11.
+--2.
+create table BUILDING (
+                        BuildingCode varchar(10) PRIMARY KEY,
+                        BuildingName varchar (50))
+
+-- 3.
+create table COLLEGE (
+                         CollegeCode varchar (10) PRIMARY KEY,
+                         CollegeDescription varchar (50))
+
+--4.
+create table PROGRAM (
+                         ProgramCode varchar (10) PRIMARY KEY,
+                         ProgramDescription varchar (50),
+                         CollegeCode varchar (10),
+
+                             CONSTRAINT COLLEGECODE_FK
+                                 FOREIGN KEY (CollegeCode)
+                                     REFERENCES COLLEGE(CollegeCode))
+
+--5.
+create table COURSE(
+                       CourseCode varchar(10) PRIMARY KEY,
+                       CourseDescription varchar (50),
+                       CreditUnits int,
+                       ProgramCode varchar (10),
+
+                           CONSTRAINT PROGRAMCODE_FK
+                               FOREIGN KEY(ProgramCode)
+                                   REFERENCES PROGRAM(ProgramCode))
+
+--6.
+create table FACULTY (
+                         ProfessorID int PRIMARY KEY,
+                         ContactNumber varchar (11),
+                         EmailAdress varchar (50),
+                         CollegeCode varchar (10),
+
+                             CONSTRAINT PROFESSORID_USER_FK
+                                 FOREIGN KEY(ProfessorID)
+                                     REFERENCES [USER](UserID))
+
+--7.
+create table [ADMIN] (
+                         AdminID int Primary key,
+                         [Role] varchar (20)
+
+                             CONSTRAINT ADMINID_USER_FK
+                                 FOREIGN KEY(AdminID)
+                                     REFERENCES [USER](UserID))
+
+--8.
+create table ROOM (
+                      RoomCode varchar (10) PRIMARY KEY,
+                      RoomDescription varchar(20),
+                      FloorNumber int check (FloorNumber in (1,2,3,4,5)),
+                      BuildingCode varchar (10),
+
+                      CONSTRAINT BUILDINGCODE_FK
+                          FOREIGN KEY (BuildingCode)
+                              REFERENCES BUILDING(BuildingCode))
+
+--9.
 create table STUDENT (
                          StudentNumber int PRIMARY KEY,
                          ProgramCode varchar(10),
@@ -46,32 +122,12 @@ create table STUDENT (
                              FOREIGN KEY (ProgramCode)
                                  REFERENCES PROGRAM(ProgramCode))
 
--- 2.
-create table [ADMIN] (
-                         AdminID int Primary key,
-                         [Role] varchar (20)
-
-                             CONSTRAINT ADMINID_USER_FK
-                                 FOREIGN KEY(AdminID)
-                                     REFERENCES [USER](UserID))
-
---3.
-create table FACULTY (
-                         ProfessorID int PRIMARY KEY,
-                         ContactNumber varchar (11),
-                         EmailAdress varchar (50),
-                         CollegeCode varchar (10)
-
-                             CONSTRAINT PROFESSORID_USER_FK
-                                 FOREIGN KEY(ProfessorID)
-                                     REFERENCES [USER](UserID))
-
-
---9.
+--10.
 create table SECTION (
                          SectionID varchar(20) PRIMARY KEY,
                          YearLevel int check (YearLevel in (1, 2, 3, 4)),
                          [Group] int check ([Group] in (1, 2)),
+                         RoomCode varchar(10),
                          CourseCode varchar (10),
                          ProfessorID int,
 
@@ -84,23 +140,7 @@ create table SECTION (
                                  REFERENCES FACULTY(ProfessorID))
 
 
---12.
-create table ENROLLMENT(
-                           EnrollmentID varchar (20) ,
-                           Section_ID varchar(20),
-                           StudentNumber int
-
-                               PRIMARY KEY (EnrollmentID, Section_ID, StudentNumber)
-
-                               CONSTRAINT SECTIONID_FK
-                                   FOREIGN KEY (Section_ID)
-                                       REFERENCES SECTION(SectionID),
-
-                           CONSTRAINT STUDNUMBER_FK
-                               FOREIGN KEY (StudentNumber)
-                                   REFERENCES STUDENT(StudentNumber))
-
---10.
+--11.
 CREATE TABLE SCHEDULE (
                           ScheduleID int PRIMARY KEY,
                           Day varchar(10),
@@ -119,50 +159,47 @@ CREATE TABLE SCHEDULE (
                               FOREIGN KEY (RoomCode)
                                   REFERENCES ROOM(RoomCode)
                                   ON UPDATE CASCADE
-                                  ON DELETE NO ACTION
-);
+                                  ON DELETE NO ACTION);
 
---4.
-create table BUILDING (
-                          BuildingCode varchar(10) PRIMARY KEY,
-                          BuildingName varchar (50))
+--12.
+create table ENROLLMENT(
+                           EnrollmentID varchar (20) ,
+                           Section_ID varchar(20),
+                           StudentNumber int
 
---5.
-create table ROOM (
-                      RoomCode varchar (10) PRIMARY KEY,
-                      RoomDescription varchar(20),
-                      FloorNumber int check (FloorNumber in (1,2,3,4,5)),
-                      BuildingCode varchar (10),
+                               PRIMARY KEY (EnrollmentID, Section_ID, StudentNumber),
 
-                      CONSTRAINT BUILDINGCODE_FK
-                          FOREIGN KEY (BuildingCode)
-                              REFERENCES BUILDING(BuildingCode))
+                               CONSTRAINT SECTIONID_FK
+                                   FOREIGN KEY (Section_ID)
+                                       REFERENCES SECTION(SectionID),
 
---7.
-create table PROGRAM (
-                         ProgramCode varchar (10) PRIMARY KEY,
-                         ProgramDescription varchar (50),
-                         CollegeCode varchar (10)
+                           CONSTRAINT STUDNUMBER_FK
+                               FOREIGN KEY (StudentNumber)
+                                   REFERENCES STUDENT(StudentNumber))
 
-                             CONSTRAINT COLLEGECODE_FK
-                                 FOREIGN KEY (CollegeCode)
-                                     REFERENCES COLLEGE(CollegeCode))
 
---8.
-create table COURSE(
-                       CourseCode varchar(10) PRIMARY KEY,
-                       CourseDescription varchar (50),
-                       CreditUnits int,
-                       ProgramCode varchar (10)
+------------------INSERTION --------------------------
 
-                           CONSTRAINT PROGRAMCODE_FK
-                               FOREIGN KEY(ProgramCode)
-                                   REFERENCES PROGRAM(ProgramCode))
 
---6.
-create table COLLEGE (
-                         CollegeCode varchar (10) PRIMARY KEY,
-                         CollegeDescription varchar (50))
+insert into COLLEGE (CollegeCode, CollegeDescription)
+values ('CICT' , 'College of Information Communication Technology'),
+       ('COED' , 'College of Education'),
+       ('CBEA' , 'College of Business Economics Accountancy')
+
+insert into PROGRAM (ProgramCode, ProgramDescription, CollegeCode)
+values ('BSIT', 'Bachelor of Science in Information Technology', 'CICT'),
+       ('BSED', 'Bachelor of Secondary Education', 'COED'),
+       ('BSBA', 'Bachelor of Science in Business Administration', 'CBEA')
+
+insert into BUILDING (BuildingCode, BuildingName)
+values ('PM1', 'Pimentel Hall'),
+       ('R1', 'Roxas Hall'),
+       ('CB2', 'Bea Hall')
+
+insert into ROOM (RoomCode, RoomDescription, FloorNumber, BuildingCode)
+values (101, 'Laboratory', 1, 'PM1'),
+       (203, 'Lecture', 2, 'R1'),
+       (401, 'Lecture', 4, 'CB2')
 
 insert into [USER] (UserID, Lname, Fname, Mname, Street, Barangay, City, Province, PostalCode, Birthday, Gender, ProgramCode, UserType)
 values (101, 'Sabulao','Josh Beckamlee','Perona','1225','Zone 4','San Jose Del Monte','Bulacan', 3000 , '06-03-2007','F','BSIT','Student'),
@@ -175,62 +212,42 @@ values (101, 'Sabulao','Josh Beckamlee','Perona','1225','Zone 4','San Jose Del M
        (108, 'Honda', 'Kawasaki', 'Mitsubishi', '200', 'Plaridel', 'Guiguinto', 'Bulacan', 3000, '09-20-2007', 'M', 'BSBA', 'Admin' ),
        (109, 'Verity', 'Minecraft', 'Masarap', '070', 'Tikay', 'Malolos', 'Bulacan', 3000, '04-30-2006', 'F', 'BSBA', 'Faculty')
 
-insert into STUDENT (StudentNumber, YearLevel)
-values (101, 2),
-       (104, 3),
-       (107, 4)
+insert into FACULTY (ProfessorID, ContactNumber, EmailAdress, CollegeCode)
+values (103, '09676767676' , 'ElijahMasarapUwU@gmail.com', 'CICT'),
+       (106, '09165038628' , 'ZenStaria17@gmail.com', 'COED'),
+       (109, '09564032344', 'TheManWhoCantMove@gmail.com', 'CBEA')
 
 insert into [ADMIN] (AdminID, [Role])
 values (102, 'Main Character'),
        (105, 'Side Character'),
        (108, 'Model')
 
-insert into FACULTY (ProfessorID, ContactNumber, EmailAdress, CollegeCode)
-values (103, '09676767676' , 'ElijahMasarapUwU@gmail.com', 'CICT'),
-       (106, '09165038628' , 'ZenStaria17@gmail.com', 'COED'),
-       (109, '09564032344', 'TheManWhoCantMove@gmail.com', 'CBEA')
-
-insert into SECTION (SectionID, YearLevel, [Group], RoomCode, CourseCode, ProfessorID)
-values ('2B', 2, 2, '101', 'IT104', 103),
-       ('3A', 3, null, '203', 'ED107', 106),
-       ('4C', 4, null, '401', 'BA110', 109)
-
-insert into ENROLLMENT (EnrollmentID, Section_ID, StudentNumber)
-values (201, '2B', 101),
-       (302, '3A', 104),
-       (403, '4C', 107)
-
-insert into SCHEDULE (ScheduleID, [Day], StartTime, EndTime, SectionID, RoomCode)
-values (1, 'Monday', '7:00AM', '10:00AM', '2B', '101'),
-       (2, 'Tuesday', '10:00AM', '1:00PM', '3A', '203'),
-       (3, 'Wednesday', '1:00PM', '3:00PM', '4C', '401')
-
-insert into ROOM (RoomCode, RoomDescription, FloorNumber, BuildingCode)
-values (101, 'Laboratory', 1, 'PM1'),
-       (203, 'Lecture', 2, 'R1'),
-       (401, 'Lecture', 4, 'CB2')
-
-insert into BUILDING (BuildingCode, BuildingName)
-values ('PM1', 'Pimentel Hall'),
-       ('R1', 'Roxas Hall'),
-       ('CB2', 'Bea Hall')
+insert into STUDENT (StudentNumber, YearLevel)
+values (101, 2),
+       (104, 3),
+       (107, 4)
 
 insert into COURSE (CourseCode, CourseDescription, CreditUnits, ProgramCode)
 values ('IT104', 'Information Management', 3, 'BSIT'),
        ('ED107', 'Education Something', 3, 'BSED'),
        ('BA110', 'Business Something', 3, 'BSBA')
 
-insert into PROGRAM (ProgramCode, ProgramDescription, CollegeCode)
-values ('BSIT', 'Bachelor of Science in Information Technology', 'CICT'),
-       ('BSED', 'Bachelor of Secondary Education', 'COED'),
-       ('BSBA', 'Bachelor of Science in Business Administration', 'CBEA')
+insert into SECTION (SectionID, YearLevel, [Group], RoomCode, CourseCode, ProfessorID)
+values ('2B', 2, 2, '101', 'IT104', 103),
+       ('3A', 3, null, '203', 'ED107', 106),
+       ('4C', 4, null, '401', 'BA110', 109)
 
-insert into COLLEGE (CollegeCode, CollegeDescription)
-values ('CICT' , 'College of Information Communication Technology'),
-       ('COED' , 'College of Education'),
-       ('CBEA' , 'College of Business Economics Accountancy')
+insert into SCHEDULE (ScheduleID, [Day], StartTime, EndTime, SectionID, RoomCode)
+values (1, 'Monday', '7:00AM', '10:00AM', '2B', '101'),
+       (2, 'Tuesday', '10:00AM', '1:00PM', '3A', '203'),
+       (3, 'Wednesday', '1:00PM', '3:00PM', '4C', '401')
 
+insert into ENROLLMENT (EnrollmentID, Section_ID, StudentNumber)
+values (201, '2B', 101),
+       (302, '3A', 104),
+       (403, '4C', 107)
 
+---------- SELECT --------------
 select * from [USER]
 select * from STUDENT
 select * from [ADMIN]
@@ -243,16 +260,3 @@ select * from BUILDING
 select * from COURSE
 select * from PROGRAM
 select * from COLLEGE
-
-drop table  [USER]
-drop table STUDENT
-drop table [ADMIN]
-drop table  FACULTY
-drop table  SECTION
-drop table  ENROLLMENT
-drop table  SCHEDULE
-drop table ROOM
-drop table  BUILDING
-drop table COURSE
-drop table PROGRAM
-drop table COLLEGE
