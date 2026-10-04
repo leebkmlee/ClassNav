@@ -1,21 +1,4 @@
-CREATE DATABASE CLASSNAV_SQLSERVER;
-
 USE CLASSNAV_SQLSERVER;
-
--- SEQUENCE OF TABLE RUN --
---1. USER
---2. ADMIN
---3. FACULTY
---4. BUILDING
---5. ROOM
---6. COLLEGE
---7. PROGRAM
---8. COURSE
---9. SECTION
---10. SCHEDULE
---11. STUDENT
---12. ENROLLMENT
-
 -- SEQUENCE OF TABLE RUN --
 --1. USER
 --2. BUILDING
@@ -34,22 +17,21 @@ USE CLASSNAV_SQLSERVER;
 create table [USER] (
                         UserID int PRIMARY KEY,
                         Lname varchar (50),
-                        Fname varchar (50),
-                        Mname varchar (50),
-                        Street varchar (50),
-                        Barangay varchar (50),
-                        City varchar (50),
-                        Province varchar (50),
-                        PostalCode int check (PostalCode between 1000 and 9999),
-                        Birthday varchar (10),
-                        Gender char(1) check (Gender in('M', 'F')),
-                        ProgramCode varchar (10),
-                        UserType varchar (10) check (UserType in ('Student', 'Admin', 'Faculty')))
+    Fname varchar (50),
+    Mname varchar (50),
+    Street varchar (50),
+    Barangay varchar (50),
+    City varchar (50),
+    Province varchar (50),
+    PostalCode int check (PostalCode between 1000 and 9999),
+    Birthday date,
+    Gender char(1) check (Gender in('M', 'F')),
+    UserType varchar (10) check (UserType in ('Student', 'Admin', 'Faculty')))
 
 --2.
 create table BUILDING (
-                        BuildingCode varchar(10) PRIMARY KEY,
-                        BuildingName varchar (50))
+                          BuildingCode varchar(10) PRIMARY KEY,
+                          BuildingName varchar (50))
 
 -- 3.
 create table COLLEGE (
@@ -62,9 +44,9 @@ create table PROGRAM (
                          ProgramDescription varchar (50),
                          CollegeCode varchar (10),
 
-                             CONSTRAINT COLLEGECODE_FK
-                                 FOREIGN KEY (CollegeCode)
-                                     REFERENCES COLLEGE(CollegeCode))
+                         CONSTRAINT COLLEGECODE_FK
+                             FOREIGN KEY (CollegeCode)
+                                 REFERENCES COLLEGE(CollegeCode))
 
 --5.
 create table COURSE(
@@ -73,9 +55,9 @@ create table COURSE(
                        CreditUnits int,
                        ProgramCode varchar (10),
 
-                           CONSTRAINT PROGRAMCODE_FK
-                               FOREIGN KEY(ProgramCode)
-                                   REFERENCES PROGRAM(ProgramCode))
+                       CONSTRAINT PROGRAMCODE_FK
+                           FOREIGN KEY(ProgramCode)
+                               REFERENCES PROGRAM(ProgramCode))
 
 --6.
 create table FACULTY (
@@ -84,22 +66,22 @@ create table FACULTY (
                          EmailAdress varchar (50),
                          CollegeCode varchar (10),
 
-                             CONSTRAINT PROFESSORID_USER_FK
-                                 FOREIGN KEY(ProfessorID)
-                                     REFERENCES [USER](UserID)),
+                         CONSTRAINT PROFESSORID_USER_FK
+                             FOREIGN KEY(ProfessorID)
+                                 REFERENCES [USER](UserID),
 
-                            CONSTRAINT COLLEGECODE_FK
-                                FOREIGN KEY (CollegeCode)
-                                REFERENCES COLLEGE(CollegeCode)
+                         CONSTRAINT FACULTY_COLLEGECODE_FK
+                             FOREIGN KEY (CollegeCode)
+                                 REFERENCES COLLEGE(CollegeCode))
 
 --7.
 create table [ADMIN] (
                          AdminID int Primary key,
-                         [Role] varchar (20)
+    [Role] varchar (20),
 
-                             CONSTRAINT ADMINID_USER_FK
-                                 FOREIGN KEY(AdminID)
-                                     REFERENCES [USER](UserID))
+    CONSTRAINT ADMINID_USER_FK
+    FOREIGN KEY(AdminID)
+    REFERENCES [USER](UserID))
 
 --8.
 create table ROOM (
@@ -130,19 +112,22 @@ create table STUDENT (
 create table SECTION (
                          SectionID varchar(20) PRIMARY KEY,
                          YearLevel int check (YearLevel in (1, 2, 3, 4)),
-                         [Group] int check ([Group] in (1, 2)),
-                         RoomCode varchar(10),
-                         CourseCode varchar (10),
-                         ProfessorID int,
+    [Group] int check ([Group] in (1, 2)),
+    RoomCode varchar(10),
+    CourseCode varchar (10),
+    ProfessorID int,
 
-                         CONSTRAINT COURSECODE_FK
-                             FOREIGN KEY (CourseCode)
-                                 REFERENCES COURSE(CourseCode),
+    CONSTRAINT COURSECODE_FK
+        FOREIGN KEY (CourseCode)
+            REFERENCES COURSE(CourseCode),
 
-                         CONSTRAINT PROFESSORID_FK
-                             FOREIGN KEY (ProfessorID)
-                                 REFERENCES FACULTY(ProfessorID))
+    CONSTRAINT PROFESSORID_FK
+        FOREIGN KEY (ProfessorID)
+            REFERENCES FACULTY(ProfessorID),
 
+    CONSTRAINT SECTION_ROOMCODE_FK
+        FOREIGN KEY (RoomCode)
+            REFERENCES ROOM(RoomCode))
 
 --11.
 CREATE TABLE SCHEDULE (
@@ -167,15 +152,15 @@ CREATE TABLE SCHEDULE (
 
 --12.
 create table ENROLLMENT(
-                           EnrollmentID varchar (20) ,
+                           EnrollmentID int ,
                            Section_ID varchar(20),
-                           StudentNumber int
+                           StudentNumber int,
 
-                               PRIMARY KEY (EnrollmentID, Section_ID, StudentNumber),
+                           PRIMARY KEY (EnrollmentID, Section_ID, StudentNumber),
 
-                               CONSTRAINT SECTIONID_FK
-                                   FOREIGN KEY (Section_ID)
-                                       REFERENCES SECTION(SectionID),
+                           CONSTRAINT SECTIONID_FK
+                               FOREIGN KEY (Section_ID)
+                                   REFERENCES SECTION(SectionID),
 
                            CONSTRAINT STUDNUMBER_FK
                                FOREIGN KEY (StudentNumber)
@@ -185,7 +170,7 @@ create table ENROLLMENT(
 ------------------INSERTION --------------------------
 
 
-insert into COLLEGE (CollegeCode, CollegeDescription)
+    insert into COLLEGE (CollegeCode, CollegeDescription)
 values ('CICT' , 'College of Information Communication Technology'),
        ('COED' , 'College of Education'),
        ('CBEA' , 'College of Business Economics Accountancy')
@@ -201,20 +186,20 @@ values ('PM1', 'Pimentel Hall'),
        ('CB2', 'Bea Hall')
 
 insert into ROOM (RoomCode, RoomDescription, FloorNumber, BuildingCode)
-values (101, 'Laboratory', 1, 'PM1'),
-       (203, 'Lecture', 2, 'R1'),
-       (401, 'Lecture', 4, 'CB2')
+values ('101', 'Laboratory', 1, 'PM1'),
+       ('203', 'Lecture', 2, 'R1'),
+       ('401', 'Lecture', 4, 'CB2')
 
-insert into [USER] (UserID, Lname, Fname, Mname, Street, Barangay, City, Province, PostalCode, Birthday, Gender, ProgramCode, UserType)
-values (101, 'Sabulao','Josh Beckamlee','Perona','1225','Zone 4','San Jose Del Monte','Bulacan', 3000 , '06-03-2007','F','BSIT','Student'),
-       (102, 'Caparas', 'Kyle Andrei', 'Villafuerte', '100', 'Tiaong', 'Guiguinto', 'Bulacan', 3000, '09-17-2007', 'M', 'BSIT', 'Admin' ),
-       (103, 'Rural', 'Elijah', 'Masarap', '050', 'Bulihan', 'Malolos', 'Bulacan', 3000, '04-22-2006', 'F', 'BSIT', 'Faculty'),
-       (104, 'Banot','Josh Roden','Cute','1235','Zone 5','San Jose Del Monte','Bulacan', 3000 , '06-04-2007','F','BSED','Student'),
-       (105, 'Cruz', 'Cris John', 'Cruz', '110', 'Tiaong', 'Guiguinto', 'Bulacan', 3000, '09-18-2007', 'M', 'BSED', 'Admin' ),
-       (106, 'Mercado', 'John Mark', 'Masarap', '050', 'San Pablo', 'Malolos', 'Bulacan', 3000, '04-21-2006', 'F', 'BSED', 'Faculty'),
-       (107, 'Velasco','Leo','Reyes','1325','Zone 6','San Jose Del Monte','Bulacan', 3000 , '06-09-2007','F','BSBA','Student'),
-       (108, 'Honda', 'Kawasaki', 'Mitsubishi', '200', 'Plaridel', 'Guiguinto', 'Bulacan', 3000, '09-20-2007', 'M', 'BSBA', 'Admin' ),
-       (109, 'Verity', 'Minecraft', 'Masarap', '070', 'Tikay', 'Malolos', 'Bulacan', 3000, '04-30-2006', 'F', 'BSBA', 'Faculty')
+insert into [USER] (UserID, Lname, Fname, Mname, Street, Barangay, City, Province, PostalCode, Birthday, Gender, UserType)
+values (101, 'Sabulao','Josh Beckamlee','Perona','1225','Zone 4','San Jose Del Monte','Bulacan', 3000 , '06-03-2007','F','Student'),
+       (102, 'Caparas', 'Kyle Andrei', 'Villafuerte', '100', 'Tiaong', 'Guiguinto', 'Bulacan', 3000, '09-17-2007', 'M', 'Admin' ),
+       (103, 'Rural', 'Elijah', 'Masarap', '050', 'Bulihan', 'Malolos', 'Bulacan', 3000, '04-22-2006', 'F', 'Faculty'),
+       (104, 'Banot','Josh Roden','Cute','1235','Zone 5','San Jose Del Monte','Bulacan', 3000 , '06-04-2007','F','Student'),
+       (105, 'Cruz', 'Cris John', 'Cruz', '110', 'Tiaong', 'Guiguinto', 'Bulacan', 3000, '09-18-2007', 'M', 'Admin' ),
+       (106, 'Mercado', 'John Mark', 'Masarap', '050', 'San Pablo', 'Malolos', 'Bulacan', 3000, '04-21-2006', 'F', 'Faculty'),
+       (107, 'Velasco','Leo','Reyes','1325','Zone 6','San Jose Del Monte','Bulacan', 3000 , '06-09-2007','F','Student'),
+       (108, 'Honda', 'Kawasaki', 'Mitsubishi', '200', 'Plaridel', 'Guiguinto', 'Bulacan', 3000, '09-20-2007', 'M', 'Admin' ),
+       (109, 'Verity', 'Minecraft', 'Masarap', '070', 'Tikay', 'Malolos', 'Bulacan', 3000, '04-30-2006', 'F', 'Faculty')
 
 insert into FACULTY (ProfessorID, ContactNumber, EmailAdress, CollegeCode)
 values (103, '09676767676' , 'ElijahMasarapUwU@gmail.com', 'CICT'),
@@ -226,10 +211,10 @@ values (102, 'Main Character'),
        (105, 'Side Character'),
        (108, 'Model')
 
-insert into STUDENT (StudentNumber, YearLevel)
-values (101, 2),
-       (104, 3),
-       (107, 4)
+insert into STUDENT (StudentNumber, ProgramCode, YearLevel)
+values (101,'BSIT', 2),
+       (104, 'BSED', 3),
+       (107, 'BSBA', 4)
 
 insert into COURSE (CourseCode, CourseDescription, CreditUnits, ProgramCode)
 values ('IT104', 'Information Management', 3, 'BSIT'),
