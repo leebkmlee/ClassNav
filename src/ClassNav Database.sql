@@ -86,7 +86,11 @@ create table FACULTY (
 
                              CONSTRAINT PROFESSORID_USER_FK
                                  FOREIGN KEY(ProfessorID)
-                                     REFERENCES [USER](UserID))
+                                     REFERENCES [USER](UserID)),
+
+                            CONSTRAINT COLLEGECODE_FK
+                                FOREIGN KEY (CollegeCode)
+                                REFERENCES COLLEGE(CollegeCode)
 
 --7.
 create table [ADMIN] (
