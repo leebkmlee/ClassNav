@@ -4,27 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b07bb83-033b-478f-849a-3e98f1c115bc" name="Changes" comment="hi">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.java" afterDir="false" />
+    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="User code added">
+      <change beforePath="$PROJECT_DIR$/src/ClassNav Database.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClassNav Database.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="50" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="Revision" />
+        <entry key="$PROJECT_DIR$" value="josh-branch" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SHOW_RECENT_BRANCHES" value="false" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;history&quot;: [
     {
-      &quot;state&quot;: &quot;OPEN&quot;
+      &quot;assignee&quot;: &quot;joshrodenbermundobanot-oss&quot;
     }
   ],
   &quot;lastFilter&quot;: {}
@@ -32,69 +44,189 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/leebkmlee/ClassNav.git&quot;,
-    &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
-  },
-  &quot;editorReviewEnabled&quot;: false
+    &quot;accountId&quot;: &quot;a97b7164-d198-4cca-8002-63134977d242&quot;
+  }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
+  &quot;associatedIndex&quot;: 8
 }</component>
-  <component name="ProjectId" id="3JocvXTdqUKzRJKBRFzsT6ptbJo" />
+  <component name="ProjectId" id="3JognE5Pz6xpCjvJhVeUfdK4YBj" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.App.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.Mainn.executor": "Run",
+    "Application.User.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "hi",
+    "git-widget-placeholder": "SQL",
     "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "preferences.pluginManager"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1b07bb83-033b-478f-849a-3e98f1c115bc" name="Changes" comment="" />
-      <created>1790331092278</created>
+      <changelist id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="" />
+      <created>1790333001579</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1790331092278</updated>
+      <updated>1790333001579</updated>
     </task>
-    <task id="LOCAL-00001" summary="hi">
+    <task id="LOCAL-00001" summary="m">
       <option name="closed" value="true" />
-      <created>1790331145795</created>
+      <created>1790333469853</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1790331145795</updated>
+      <updated>1790333469853</updated>
     </task>
-    <task id="LOCAL-00002" summary="hi">
+    <task id="LOCAL-00002" summary="ma">
       <option name="closed" value="true" />
-      <created>1790331236516</created>
+      <created>1790333525489</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1790331236516</updated>
+      <updated>1790333525489</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="ma">
+      <option name="closed" value="true" />
+      <created>1790333543514</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1790333543514</updated>
+    </task>
+    <task id="LOCAL-00004" summary="ma">
+      <option name="closed" value="true" />
+      <created>1790334239648</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334239648</updated>
+    </task>
+    <task id="LOCAL-00005" summary="mama">
+      <option name="closed" value="true" />
+      <created>1790334388998</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334388998</updated>
+    </task>
+    <task id="LOCAL-00006" summary="mama">
+      <option name="closed" value="true" />
+      <created>1790334834698</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334834698</updated>
+    </task>
+    <task id="LOCAL-00007" summary="mama">
+      <option name="closed" value="true" />
+      <created>1790334904060</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334904060</updated>
+    </task>
+    <task id="LOCAL-00008" summary="mama">
+      <option name="closed" value="true" />
+      <created>1790334973686</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334973686</updated>
+    </task>
+    <task id="LOCAL-00009" summary="User code added">
+      <option name="closed" value="true" />
+      <created>1790385977762</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1790385977763</updated>
+    </task>
+    <task id="LOCAL-00010" summary="User code added">
+      <option name="closed" value="true" />
+      <created>1790396940197</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1790396940197</updated>
+    </task>
+    <task id="LOCAL-00011" summary="User code added">
+      <option name="closed" value="true" />
+      <created>1790411619009</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1790411619009</updated>
+    </task>
+    <task id="LOCAL-00012" summary="User code added">
+      <option name="closed" value="true" />
+      <created>1790411635047</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1790411635047</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="hi" />
-    <option name="LAST_COMMIT_MESSAGE" value="hi" />
+    <MESSAGE value="m" />
+    <MESSAGE value="ma" />
+    <MESSAGE value="mama" />
+    <MESSAGE value="User code added" />
+    <option name="LAST_COMMIT_MESSAGE" value="User code added" />
+    <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Main.java</url>
+          <line>10</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
