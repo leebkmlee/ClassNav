@@ -35,4 +35,17 @@ public class UI {
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
         System.out.print("  Select > ");
     }
+
+    public static void header (String title) {
+        System.out.println("\n┌" + "─".repeat(INNERWIDTH) + "┐");
+        int left = (INNERWIDTH - title.length()) / 2;
+        int right = INNERWIDTH - title.length() - left;
+        System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
+        System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
+    }
+
+    public static void footer () {
+        System.out.println("│" + " ".repeat(INNERWIDTH) + "│");
+        System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+    }
 }
