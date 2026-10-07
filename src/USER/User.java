@@ -36,6 +36,10 @@ public class User {
     public String getEmail() {return emailAddress;}
     public String getPassword() {return password;}
     public String getUserName() {return userName;}
+    public String getAddress() {return address;}
+    public int getPostalCode() {return postalCode;}
+    public String getBirthDate() {return birthDate;}
+    public char getSex() {return sex;}
 
     static Scanner in = new Scanner(System.in);
 
