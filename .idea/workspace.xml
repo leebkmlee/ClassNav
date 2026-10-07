@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b07bb83-033b-478f-849a-3e98f1c115bc" name="Changes" comment="hi">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +17,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="kakai-branch" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,10 +33,69 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/leebkmlee/ClassNav.git&quot;,
-    &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
+    &quot;accountId&quot;: &quot;0cd8fe6b-7486-4ac7-a96b-8653c325689a&quot;
   },
   &quot;editorReviewEnabled&quot;: false
 }</component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.3844192901192245E-10" />
+      <entry key="MS500" value="0.01067218950589371" />
+      <entry key="S2" value="0.3214134743544428" />
+      <entry key="S5" value="0.6381309400240764" />
+      <entry key="S10" value="0.8521923531679892" />
+      <entry key="S30" value="1.309482273220805" />
+      <entry key="S60" value="1.642135874179057" />
+      <entry key="M2" value="2.194383320153792" />
+      <entry key="M5" value="3.645058151110912" />
+      <entry key="M10" value="7.018397502062307" />
+      <entry key="M15" value="11.565043813308298" />
+      <entry key="M30" value="25.85470241536037" />
+      <entry key="H1" value="44.52125681980777" />
+      <entry key="H2" value="60.5003379413584" />
+      <entry key="H4" value="71.10503206852323" />
+      <entry key="D1" value="81.67051257893718" />
+      <entry key="W1" value="83.6624915452826" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0000000008904166" />
+      <entry key="S5" value="1.0003385999504104" />
+      <entry key="S10" value="1.0256746209840006" />
+      <entry key="S30" value="1.4668604278706134" />
+      <entry key="S60" value="1.965919181560122" />
+      <entry key="M2" value="2.3900282320156965" />
+      <entry key="M5" value="2.800491180613164" />
+      <entry key="M10" value="3.4480605497505126" />
+      <entry key="M15" value="4.3686450016175" />
+      <entry key="M30" value="7.50316151591393" />
+      <entry key="H1" value="11.781520441872447" />
+      <entry key="H2" value="15.498632865378697" />
+      <entry key="H4" value="17.977981977387977" />
+      <entry key="D1" value="20.45365444747258" />
+      <entry key="W1" value="20.920833367307782" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.5834222130339238E-10" />
+      <entry key="MS500" value="0.01429225084248455" />
+      <entry key="S2" value="0.5638518173232016" />
+      <entry key="S5" value="1.2042668096869782" />
+      <entry key="S10" value="1.6143317237985675" />
+      <entry key="S30" value="2.6230638513248037" />
+      <entry key="S60" value="3.5013621458518926" />
+      <entry key="M2" value="4.518144589448461" />
+      <entry key="M5" value="6.4135281126208294" />
+      <entry key="M10" value="10.445999736926108" />
+      <entry key="M15" value="15.915651152478407" />
+      <entry key="M30" value="33.34133539879053" />
+      <entry key="H1" value="56.289452532139" />
+      <entry key="H2" value="75.99013024383042" />
+      <entry key="H4" value="89.0778708533677" />
+      <entry key="D1" value="102.12318988311408" />
+      <entry key="W1" value="104.58318209221389" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -44,17 +104,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.App.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "hi",
-    "kotlin-language-version-configured": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;kai-branch&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="1b07bb83-033b-478f-849a-3e98f1c115bc" name="Changes" comment="" />
@@ -81,6 +163,9 @@
     </task>
     <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
