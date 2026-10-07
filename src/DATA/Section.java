@@ -1,4 +1,4 @@
-package SECTION;
+package DATA;
 
 public class Section {
     private String sectionID;

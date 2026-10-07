@@ -10,5 +10,13 @@ public class Student extends User{
         this.enrollmentStatus = enrollmentStatus;
     }
     // displayInfo()
-
+//    private void displayInfo() {
+//        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
+//        String title = "ACCOUNT PROFILE";
+//        int left = (innerWidth - title.length()) / 2;
+//        int right = innerWidth - title.length() - left;
+//        System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
+//        System.out.println("├" + "─".repeat(innerWidth) + "┤");
+//        System.out.println("└" + "─".repeat(innerWidth) + "┘\n");
+//    }
 }

@@ -1,4 +1,4 @@
-package ROOM;
+package DATA;
 
 public class Room {
     private String roomCode;

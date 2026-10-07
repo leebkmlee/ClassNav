@@ -1,6 +1,6 @@
 package LOGIN;
 
-import DATA.RetrieveUser;
+import DATA.Users;
 import USER.*;
 import UI.*;
 import java.util.Scanner;
@@ -63,13 +63,13 @@ public class Signup {
                         do {
                             System.out.print("    Last Name > ");
                             lastName = in.nextLine();
-                            if (lastName.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
+                            if (lastName.trim().isEmpty()) UI.print("Invalid Input");
                         } while (lastName.trim().isEmpty());
 
                         do {
-                            System.out.print("    First Name > ");
+                            System.out.print("    First Name > "); // non number error handling
                             firstName = in.nextLine();
-                            if (firstName.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
+                            if (firstName.trim().isEmpty()) UI.print("Invalid Input");
                         } while (firstName.trim().isEmpty());
 
                         System.out.print("    Middle Initial > ");
@@ -77,8 +77,8 @@ public class Signup {
 
                         if (middleInitial.endsWith(".")) middleInitial = middleInitial.replace(".", "");
                         userName = lastName + ", " + firstName + " " + middleInitial + ".";
-                        if (RetrieveUser.checkDuplicateName(userName)) UI.print("Name already exists", innerWidth);
-                    } while (RetrieveUser.checkDuplicateName(userName));
+                        if (Users.checkDuplicateName(userName)) UI.print("Name already exists");
+                    } while (Users.checkDuplicateName(userName));
 
                     if (user.equals("[1] Full Name:")) complete++;
 
@@ -91,11 +91,11 @@ public class Signup {
                     do {
                         System.out.print("   Enter Email Address > ");
                         emailAddress = in.nextLine();
-                        if (emailAddress.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
-                        else if (!emailAddress.endsWith("@bulsu.edu.ph")) UI.print("Invalid Email Domain", innerWidth);
+                        if (emailAddress.trim().isEmpty()) UI.print("Invalid Input");
+                        else if (!emailAddress.endsWith("@bulsu.edu.ph")) UI.print("Invalid Email Domain");
                         else if (!emailAddress.matches("[SFA][0-9]{3}@bulsu\\.edu\\.ph"))
-                            UI.print("Invalid User", innerWidth);
-                        else if (RetrieveUser.checkDuplicateEmail(emailAddress)) UI.print("Email already exists", innerWidth);
+                            UI.print("Invalid User");
+                        else if (Users.checkDuplicateEmail(emailAddress)) UI.print("Email already exists");
                         else valid = true;
                     } while (!valid);
 
@@ -108,17 +108,17 @@ public class Signup {
                     do {
                         System.out.print("   Enter Password > ");
                         passKey = in.nextLine();
-                        if (passKey.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
-                        else if (passKey.length() < 8) UI.print("Password must be at least 8 characters", innerWidth);
+                        if (passKey.trim().isEmpty()) UI.print("Invalid Input");
+                        else if (passKey.length() < 8) UI.print("Password must be at least 8 characters");
                         else if (!passKey.matches(".*[A-Z].*"))
-                            UI.print("Password must contain an uppercase letter", innerWidth);
+                            UI.print("Password must contain an uppercase letter");
                         else if (!passKey.matches(".*[a-z].*"))
-                            UI.print("Password must contain an lowercase letter", innerWidth);
+                            UI.print("Password must contain an lowercase letter");
                         else if (!passKey.matches(".*[0-9].*"))
-                            UI.print("Password must contain a number", innerWidth);
+                            UI.print("Password must contain a number");
                         else if (!passKey.matches(".*[^a-zA-Z0-9].*"))
-                            UI.print("Password must contain a special character", innerWidth);
-                        else if (passKey.contains(" ")) UI.print("Password cannot contain spaces", innerWidth);
+                            UI.print("Password must contain a special character");
+                        else if (passKey.contains(" ")) UI.print("Password cannot contain spaces");
                         else valid = true;
                     } while (!valid);
                     if (password.equals("[3] Password:")) complete++;
@@ -131,25 +131,25 @@ public class Signup {
                     do {
                         System.out.print("    Enter Street > ");
                         street = in.nextLine();
-                        if (street.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
+                        if (street.trim().isEmpty()) UI.print("Invalid Input");
                     } while (street.trim().isEmpty());
 
                     do {
                         System.out.print("    Enter Barangay > ");
                         barangay = in.nextLine();
-                        if (barangay.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
+                        if (barangay.trim().isEmpty()) UI.print("Invalid Input");
                     } while (barangay.trim().isEmpty());
 
                     do {
                         System.out.print("    Enter City > ");
                         city = in.nextLine();
-                        if (city.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
+                        if (city.trim().isEmpty()) UI.print("Invalid Input");
                     } while (city.trim().isEmpty());
 
                     do {
                         System.out.print("    Enter Province > ");
                         province = in.nextLine();
-                        if (province.trim().isEmpty()) UI.print("Invalid Input", innerWidth);
+                        if (province.trim().isEmpty()) UI.print("Invalid Input");
                     } while (province.trim().isEmpty());
 
                     location = street + ", " + barangay + ", " + city + ", " + province;
@@ -168,12 +168,12 @@ public class Signup {
                             postalDigit = in.nextInt();
                             in.nextLine();
                             if (postalDigit < 1000 || postalDigit > 9999)
-                                UI.print("Postal code must be 4 digits", innerWidth);
+                                UI.print("Postal code must be 4 digits");
                             else valid = true;
                         }
                         catch (Exception e) {
                             in.nextLine();
-                            UI.print("Invalid Input", innerWidth);
+                            UI.print("Invalid Input");
                         }
 
                     } while (!valid);
@@ -187,7 +187,7 @@ public class Signup {
                         System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
                         birthDay = in.nextLine();
                         if (!birthDay.matches("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}"))
-                            UI.print("Invalid birthdate format", innerWidth);
+                            UI.print("Invalid birthdate format");
                     } while (!birthDay.matches("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}"));
 
                     if (birthDate.equals("[6] Birthdate:")) complete++;
@@ -198,7 +198,7 @@ public class Signup {
                     do {
                         System.out.print("   Enter Sex (M/F) > ");
                         gen = in.nextLine().toUpperCase().charAt(0);
-                        if  (gen != 'M' && gen != 'F') UI.print("Invalid Input", innerWidth);
+                        if  (gen != 'M' && gen != 'F') UI.print("Invalid Input");
                     } while (gen != 'M' && gen != 'F');
 
                     if (sex.equals("[7] Sex:")) complete++;
@@ -213,7 +213,7 @@ public class Signup {
                             case 'A':
                                 System.out.print("   Role > ");
                                 String role = in.nextLine();
-                                RetrieveUser.users.add(new Admin(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                Users.users.add(new Admin(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, role));
                                 break;
                             case 'F':
@@ -222,9 +222,9 @@ public class Signup {
                                     System.out.print("   Contact Number > ");
                                     contactNumber = in.nextLine();
                                     if (contactNumber.matches("[0-9]{11}"))
-                                        UI.print("Invalid Input", innerWidth);
+                                        UI.print("Invalid Input");
                                 } while (contactNumber.length() != 11);
-                                RetrieveUser.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                Users.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber));
                                 break;
                             case 'S':
@@ -232,15 +232,15 @@ public class Signup {
                                 do {
                                     System.out.print("   Enrollment Status (R, IR) > ");
                                     enrollmentStatus = in.nextLine().toUpperCase();
-                                    if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input", innerWidth);
+                                    if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input");
                                 } while (!enrollmentStatus.matches("R|IR"));
-                                RetrieveUser.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                Users.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, enrollmentStatus));
                                 break;
                         }
-                        UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.", innerWidth);
+                        UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
                     }
-                    else UI.print("Incomplete Details!", innerWidth);
+                    else UI.print("Incomplete Details!");
                     break;
 
                 case "X":
@@ -256,7 +256,7 @@ public class Signup {
                     break;
 
                 default:
-                    UI.print("Invalid Choice", innerWidth);
+                    UI.print("Invalid Choice");
                     break;
             }
         }

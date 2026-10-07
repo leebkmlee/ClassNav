@@ -1,4 +1,4 @@
-package COURSE;
+package DATA;
 
 public class Course {
     private String courseCode;

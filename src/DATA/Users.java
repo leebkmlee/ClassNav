@@ -1,7 +1,7 @@
 package DATA;
 import USER.*;
 import java.util.ArrayList;
-public class RetrieveUser {
+public class Users {
     public static ArrayList<User> users = new ArrayList<>();
     static {
         users.add(new Student("S001", "Sabulao", "Josh", "P",
@@ -15,46 +15,32 @@ public class RetrieveUser {
 
         users.add(new Admin("A001", "Maangas", "Andrei", "P",
                 "A001@bulsu.edu.ph", "4ndr31b4tumb4k4l",
-                "Guguinto, Bulacan", 6767, "09/17/07", 'M',
+                "Guiguinto, Bulacan", 6767, "09/17/07", 'M',
                 "Computer Programmer I"));
     }
 
     public static User getUser(String userID) {
-        for (User u : users) {
-            if (userID.equals(u.getUserID())) return u;
-        }
+        for (User u : users) if (userID.equals(u.getUserID())) return u;
         return null;
     }
 
     public static boolean verifyEmail(String userID, String emailAddress) {
-        for (User u : users) {
-            if (userID.equals(u.getUserID())) {
-                if (emailAddress.equals(u.getEmail())) return true;
-            }
-        }
+        for (User u : users) if (userID.equals(u.getUserID()) && emailAddress.equals(u.getEmail())) return true;
         return false;
     }
 
     public static boolean verifyPassword(String userID, String password) {
-        for (User u : users) {
-            if (userID.equals(u.getUserID())) {
-                if (password.equals(u.getPassword())) return true;
-            }
-        }
+        for (User u : users) if (userID.equals(u.getUserID()) && password.equals(u.getPassword())) return true;
         return false;
     }
 
     public static boolean checkDuplicateName(String userName) {
-        for (User u : users) {
-            if (userName.equals(u.getUserName())) return true;
-        }
+        for (User u : users) if (userName.equals(u.getUserName())) return true;
         return false;
     }
 
     public static boolean checkDuplicateEmail(String emailAddress) {
-        for (User u : users) {
-            if (emailAddress.equals(u.getEmail())) return true;
-        }
+        for (User u : users) if (emailAddress.equals(u.getEmail())) return true;
         return false;
     }
 }

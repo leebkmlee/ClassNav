@@ -1,4 +1,4 @@
-package BUILDING;
+package DATA;
 
 public class Building {
     private String buildingCode;

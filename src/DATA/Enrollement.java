@@ -1,4 +1,4 @@
-package ENROLLMENT;
+package DATA;
 
 public class Enrollement {
     private String enrollmentID;

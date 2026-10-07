@@ -1,4 +1,4 @@
-package SCHEDULE;
+package DATA;
 
 public class Schedule {
     private String scheduleID;

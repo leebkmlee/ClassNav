@@ -1,8 +1,6 @@
 package USER;
-
-import LOGIN.Login;
-import LOGIN.Signup;
-
+import LOGIN.*;
+import UI.*;
 import java.util.Scanner;
 
 public class User {
@@ -15,10 +13,10 @@ public class User {
     private String address;
     private int postalCode;
     private String birthDate;
-    private char gender;
+    private char sex;
 
     public User(String userID, String lastName, String firstName, String middleInitial, String emailAddress,
-                String password, String address, int postalCode, String birthDate, char gender) {
+                String password, String address, int postalCode, String birthDate, char sex) {
 
         this.userID = userID;
         this.lastName = lastName;
@@ -31,7 +29,7 @@ public class User {
         this.address = address;
         this.postalCode = postalCode;
         this.birthDate = birthDate;
-        this.gender = gender;
+        this.sex = sex;
     }
 
     public String getUserID() {return userID;}
@@ -49,32 +47,17 @@ public class User {
         boolean valid;
 
         do {
-            System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-            String title = "ClassNav";
-            int left = (innerWidth - title.length()) / 2;
-            int right = innerWidth - title.length() - left;
-            System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
-            System.out.println("├" + "─".repeat(innerWidth) + "┤");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [1] Log in");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [2] Sign up");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [X] Exit");
-            System.out.println("└" + "─".repeat(innerWidth) + "┘");
-            System.out.print("  Select > ");
+            UI.startPrint("ClassNav");
             select = in.nextLine();
             if (select.equals("X") || select.equals("1") || select.equals("2")) valid = true;
             else {
-                String message = "INVALID CHOICE";
-                left = (innerWidth - message.length()) / 2;
-                right = innerWidth - message.length() - left;
-                System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-                System.out.println("│" + " ".repeat(left) + message + " ".repeat(right) + "│");
-                System.out.println("└" + "─".repeat(innerWidth) + "┘");
+                UI.print("Invalid Choice");
                 valid = false;
             }
         } while (!valid);
+
         if (select.equals("X")) {
-            System.out.println("  Exiting...");
-            System.out.println("─".repeat(innerWidth));
+            System.out.println("   Exiting...");
             System.exit(0);
         }
 
@@ -88,19 +71,19 @@ public class User {
         }
     }
 
-    public void displayInfo() {
-        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-        String title = "ACCOUNT PROFILE";
-        int left = (innerWidth - title.length()) / 2;
-        int right = innerWidth - title.length() - left;
-        System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
-        System.out.println("├" + "─".repeat(innerWidth) + "┤");
-        System.out.printf("│  ID NUMBER   : %-" + (innerWidth - 16) + "s│\n", userID);
-        System.out.printf("│  FULL NAME   : %-" + (innerWidth - 16) + "s│\n", userName);
-        System.out.println("├" + "─".repeat(innerWidth) + "┤");
-        System.out.printf("│  Gender      : %-" + (innerWidth - 16) + "s│\n", gender);
-        System.out.printf("│  Birthdate   : %-" + (innerWidth - 16) + "s│\n", birthDate);
-        System.out.printf("│  Address     : %-" + (innerWidth - 16) + "s│\n", address);
-        System.out.println("└" + "─".repeat(innerWidth) + "┘\n");
-    }
+//    public void displayInfo() {
+//        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
+//        String title = "ACCOUNT PROFILE";
+//        int left = (innerWidth - title.length()) / 2;
+//        int right = innerWidth - title.length() - left;
+//        System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
+//        System.out.println("├" + "─".repeat(innerWidth) + "┤");
+//        System.out.printf("│  ID NUMBER   : %-" + (innerWidth - 16) + "s│\n", userID);
+//        System.out.printf("│  FULL NAME   : %-" + (innerWidth - 16) + "s│\n", userName);
+//        System.out.println("├" + "─".repeat(innerWidth) + "┤");
+//        System.out.printf("│  Gender      : %-" + (innerWidth - 16) + "s│\n", sex);
+//        System.out.printf("│  Birthdate   : %-" + (innerWidth - 16) + "s│\n", birthDate);
+//        System.out.printf("│  Address     : %-" + (innerWidth - 16) + "s│\n", address);
+//        System.out.println("└" + "─".repeat(innerWidth) + "┘\n");
+//    }
 }
