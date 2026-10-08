@@ -18,6 +18,7 @@ public class Course {
         this.programCode = programCode;
     }
 
+
     public void displayCourse(){
         UI.header("COURSE DETAILS");
         System.out.printf("│%-" + innerWidth + "s│%n", " Course Code: " + courseCode);
@@ -26,15 +27,30 @@ public class Course {
         UI.footer();
     }
 
-    public String getCourse() {
+    public  String getCourse() {
         return courseCode;
     }
 
-    public String getCourseDescription() {
-        return courseDescription;
+
+    public static String getCourseCode(Course course) {
+        for (Course c: courses){
+            if (course.equals(c.getCourse())){
+                return c.courseCode;}
+        }
+        return null;
     }
-    public int getCreditUnits() {
-        return creditUnits;
+
+    public static String getCourseDescription(Course course) {
+        for (Course c: courses){
+            if (course.equals(c.courseDescription)) return c.courseDescription;}
+        return null;
+    }
+
+    public static int getCreditUnits(Course course) {
+        for (Course c : courses){
+            if(course.equals(c.creditUnits)){ return  c.creditUnits;}
+        }
+        return 0;
     }
 
     public static ArrayList<Course> courses = new ArrayList<>();

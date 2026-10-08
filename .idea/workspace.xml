@@ -4,14 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="wag muna pakialaman, thx">
-      <change beforePath="$PROJECT_DIR$/CLASSNAV.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CLASSNAV.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
+    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="course and section added">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClassNav.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ClassNav.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Course.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="76" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -23,51 +27,102 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="User-josh" />
+        <entry key="$PROJECT_DIR$" value="Revision" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SHOW_RECENT_BRANCHES" value="false" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;joshrodenbermundobanot-oss&quot;
-  }
+  &quot;history&quot;: [
+    {
+      &quot;assignee&quot;: &quot;joshrodenbermundobanot-oss&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {}
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/leebkmlee/ClassNav.git&quot;,
-    &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
+    &quot;accountId&quot;: &quot;a97b7164-d198-4cca-8002-63134977d242&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="3JognE5Pz6xpCjvJhVeUfdK4YBj" />
   <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Mainn.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Revision&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;discord-project&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Mainn.executor": "Run",
+    "Application.TestCollege.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "Application.User.executor": "Run",
+    "Application.tester.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Josh-Branch",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
   }
-}</component>
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-27" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="ClassNav" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=&quot;C:\Users\josh\Documents\sqljdbc_13.6.0.0_enu\sqljdbc_13.6\enu\auth\x64&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="" />
@@ -124,91 +179,154 @@
       <option name="project" value="LOCAL" />
       <updated>1790334834698</updated>
     </task>
-    <task id="LOCAL-00007" summary="revision">
+    <task id="LOCAL-00007" summary="mama">
       <option name="closed" value="true" />
-      <created>1790516142042</created>
+      <created>1790334904060</created>
       <option name="number" value="00007" />
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
-      <updated>1790516142042</updated>
+      <updated>1790334904060</updated>
     </task>
-    <task id="LOCAL-00008" summary="revision">
+    <task id="LOCAL-00008" summary="mama">
       <option name="closed" value="true" />
-      <created>1790516372310</created>
+      <created>1790334973686</created>
       <option name="number" value="00008" />
       <option name="presentableId" value="LOCAL-00008" />
       <option name="project" value="LOCAL" />
-      <updated>1790516372310</updated>
+      <updated>1790334973686</updated>
     </task>
-    <task id="LOCAL-00009" summary="revision">
+    <task id="LOCAL-00009" summary="User code added">
       <option name="closed" value="true" />
-      <created>1790516381132</created>
+      <created>1790385977762</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1790516381132</updated>
+      <updated>1790385977763</updated>
     </task>
-    <task id="LOCAL-00010" summary="revision">
+    <task id="LOCAL-00010" summary="User code added">
       <option name="closed" value="true" />
-      <created>1790558916110</created>
+      <created>1790396940197</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1790558916110</updated>
+      <updated>1790396940197</updated>
     </task>
-    <task id="LOCAL-00011" summary="wag muna pakialaman, thx">
+    <task id="LOCAL-00011" summary="User code added">
       <option name="closed" value="true" />
-      <created>1790594595898</created>
+      <created>1790411619009</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1790594595898</updated>
+      <updated>1790411619009</updated>
     </task>
-    <task id="LOCAL-00012" summary="wag muna pakialaman, thx">
+    <task id="LOCAL-00012" summary="User code added">
       <option name="closed" value="true" />
-      <created>1790670935750</created>
+      <created>1790411635047</created>
       <option name="number" value="00012" />
       <option name="presentableId" value="LOCAL-00012" />
       <option name="project" value="LOCAL" />
-      <updated>1790670935750</updated>
+      <updated>1790411635047</updated>
     </task>
-    <task id="LOCAL-00013" summary="wag muna pakialaman, thx">
+    <task id="LOCAL-00013" summary="SQL DATABASE UPDATED">
       <option name="closed" value="true" />
-      <created>1790691883190</created>
+      <created>1791083603596</created>
       <option name="number" value="00013" />
       <option name="presentableId" value="LOCAL-00013" />
       <option name="project" value="LOCAL" />
-      <updated>1790691883190</updated>
+      <updated>1791083603598</updated>
     </task>
-    <task id="LOCAL-00014" summary="wag muna pakialaman, thx">
+    <task id="LOCAL-00014" summary="SQL DATABASE UPDATED">
       <option name="closed" value="true" />
-      <created>1791359838540</created>
+      <created>1791084630955</created>
       <option name="number" value="00014" />
       <option name="presentableId" value="LOCAL-00014" />
       <option name="project" value="LOCAL" />
-      <updated>1791359838540</updated>
+      <updated>1791084630955</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="SQL DATABASE UPDATED">
+      <option name="closed" value="true" />
+      <created>1791084793418</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1791084793418</updated>
+    </task>
+    <task id="LOCAL-00016" summary="SQL DATABASE UPDATED">
+      <option name="closed" value="true" />
+      <created>1791085043016</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1791085043016</updated>
+    </task>
+    <task id="LOCAL-00017" summary="SQL DATABASE UPDATED">
+      <option name="closed" value="true" />
+      <created>1791095316582</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1791095316582</updated>
+    </task>
+    <task id="LOCAL-00018" summary="SQL DATABASE UPDATED">
+      <option name="closed" value="true" />
+      <created>1791095395650</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1791095395650</updated>
+    </task>
+    <task id="LOCAL-00019" summary="SQL DATABASE UPDATED">
+      <option name="closed" value="true" />
+      <created>1791360334017</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1791360334017</updated>
+    </task>
+    <task id="LOCAL-00020" summary="SQL DATABASE UPDATED">
+      <option name="closed" value="true" />
+      <created>1791360512931</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1791360512931</updated>
+    </task>
+    <task id="LOCAL-00021" summary="UI header footer added">
+      <option name="closed" value="true" />
+      <created>1791379646927</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1791379646927</updated>
+    </task>
+    <task id="LOCAL-00022" summary="UI header footer added">
+      <option name="closed" value="true" />
+      <created>1791381129211</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1791381129211</updated>
+    </task>
+    <task id="LOCAL-00023" summary="course and section added">
+      <option name="closed" value="true" />
+      <created>1791383810434</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1791383810434</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="m" />
     <MESSAGE value="ma" />
     <MESSAGE value="mama" />
-    <MESSAGE value="revision" />
-    <MESSAGE value="wag muna pakialaman, thx" />
-    <option name="LAST_COMMIT_MESSAGE" value="wag muna pakialaman, thx" />
+    <MESSAGE value="User code added" />
+    <MESSAGE value="SQL DATABASE UPDATED" />
+    <MESSAGE value="UI header footer added" />
+    <MESSAGE value="course and section added" />
+    <option name="LAST_COMMIT_MESSAGE" value="course and section added" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>10</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
