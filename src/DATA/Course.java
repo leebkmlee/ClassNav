@@ -11,7 +11,7 @@ public class Course {
     private int creditUnits;
     private String programCode; // foreign key
 
-    Course(String courseCode, String courseDescription, int creditUnits, String programCode) {
+    public Course(String courseCode, String courseDescription, int creditUnits, String programCode) {
         this.courseCode = courseCode;
         this.courseDescription = courseDescription;
         this.creditUnits = creditUnits;
