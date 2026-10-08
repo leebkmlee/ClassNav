@@ -42,10 +42,12 @@ public class UI {
         int right = INNERWIDTH - title.length() - left;
         System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
         System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
+
     }
 
     public static void footer () {
         System.out.println("│" + " ".repeat(INNERWIDTH) + "│");
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+
     }
 }
