@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public class Program {
 
-    private String programCode;
-    private String programDescription;
-    private String collegeCode; // foreign key
+    private final String programCode;
+    private final String programDescription;
+    private final String collegeCode; // foreign key
 
     public Program(String programCode, String programDescription, String collegeCode) {
         this.programCode = programCode;
@@ -23,9 +23,9 @@ public class Program {
         return programCode;
     }
 
-    ArrayList<Program> programs = new ArrayList<>();
+    static ArrayList<Program> programs = new ArrayList<>();
 
-    public Program() {
+    static {
         programs.add(new Program("BSIT", "Bachelor of Science in Information Technology", "CICT"));
         programs.add(new Program("BSED", "Bachelor of Secondary Education", "COED"));
         programs.add(new Program("BSIE", "Bachelor of Science in Industrial Engineering", "COE"));
