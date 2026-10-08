@@ -24,15 +24,25 @@ public class Schedule {
         return scheduleID;
     }
 
-    public String getDayTime(){
-        return  day + " " +startTime + " - " + endTime;
+    public String getDay(){
+        return  day;
     }
 
+    public String getStartTime(){
+        return startTime;
+    }
+
+    public String getEndTime(){
+        return endTime;
+    }
+
+    public String getRoomCode(){ return roomCode;}
+
     public static ArrayList<Schedule> schedules = new ArrayList<>();
-    public Schedule() {
-        schedules.add(new Schedule("101", "Monday", "7:00am", "10:00am", "2B", "Lab101"));
-        schedules.add(new Schedule("102", "Tuesday", "1:00pm", "2:30pm", "2B", "CICT201"));
-        schedules.add(new Schedule("103", "Wednesday", "5:00pm", "8:00pm", "2B", "NSTP103"));
+    static {
+        schedules.add(new Schedule("101", "monday", "7:00am", "10:00am", "2B", "Lab101"));
+        schedules.add(new Schedule("102", "tuesday", "1:00pm", "2:30pm", "2B", "CICT201"));
+        schedules.add(new Schedule("103", "wednesday", "5:00pm", "8:00pm", "2B", "NSTP103"));
     }
 
     public void displaySchedule(){
