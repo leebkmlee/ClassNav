@@ -5,11 +5,11 @@ import UI.*;
 public class Schedule {
     private static final int innerWidth = 70;
     private String scheduleID;
-    private  String day;
-    private  String startTime;
-    private  String endTime;
-    private  String sectionID; // foreign key
-    private  String roomCode; // foreign key
+    private String day;
+    private String startTime;
+    private String endTime;
+    private String sectionID; // foreign key
+    private String roomCode; // foreign key
 
     public Schedule(String scheduleID, String day, String startTime, String endTime, String sectionID, String roomCode) {
         this.scheduleID = scheduleID;
@@ -20,38 +20,56 @@ public class Schedule {
         this.roomCode = roomCode;
     }
 
+    public static ArrayList<Schedule> schedules = new ArrayList<>();
+    static {
+        schedules.add(new Schedule("101", "M", "7:00AM", "10:00AM", "2B", "PL101"));
+        schedules.add(new Schedule("102", "T", "1:00PM", "2:30PM", "2B", "SDL 1"));
+        schedules.add(new Schedule("103", "W", "5:00PM", "8:00PM", "2B", "ACAD 3"));
+    }
+
     public String getScheduleID(){
         return scheduleID;
     }
 
-    public String getDay(){
-        return  day;
+    public static Schedule findSchedule(String scheduleID) {
+        for (Schedule s : schedules) if (scheduleID.equals(s.getScheduleID())) return s;
+        return null;
     }
 
-    public String getStartTime(){
-        return startTime;
+    public static String getSchedule(Schedule s) {
+        return s.scheduleID;
     }
 
-    public String getEndTime(){
-        return endTime;
+    public static String getDay(Schedule s){
+        return s.day;
     }
 
-    public String getRoomCode(){ return roomCode;}
-
-    public static ArrayList<Schedule> schedules = new ArrayList<>();
-    static {
-        schedules.add(new Schedule("101", "monday", "7:00am", "10:00am", "2B", "Lab101"));
-        schedules.add(new Schedule("102", "tuesday", "1:00pm", "2:30pm", "2B", "CICT201"));
-        schedules.add(new Schedule("103", "wednesday", "5:00pm", "8:00pm", "2B", "NSTP103"));
+    public static String getStartTime(Schedule s){
+        return s.startTime;
     }
 
-    public void displaySchedule(){
-        UI.header("Schedules");
-        System.out.printf("│  ROOM        : %-" + (innerWidth - 16) + "s│\n", roomCode);
-        System.out.printf("│  SECTION     : %-" + (innerWidth - 16) + "s│\n", sectionID);
-        System.out.printf("│  DAY         : %-" + (innerWidth - 16) + "s│\n", day);
-        System.out.printf("│  TIME START  : %-" + (innerWidth - 16) + "s│\n", startTime);
-        System.out.printf("│  END TIME    : %-" + (innerWidth - 16) + "s│\n", endTime);
+    public static String getEndTime(Schedule s){
+        return s.endTime;
+    }
+
+    public static String getSectionID(Schedule s) {
+        return s.sectionID;
+    }
+
+    public static String getRoomCode(Schedule s){
+        return s.roomCode;
+    }
+
+    public static void displaySchedule(String scheduleID){
+        Schedule s = findSchedule(scheduleID);
+        if (s == null) {
+            UI.print("Schedule not found");
+            return;
+        }
+        UI.header("SCHEDULE INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SCHEDULE ID    : %s", Schedule.getSchedule(s)));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DATE AND TIME  : %s",
+                Schedule.getDay(s) + " " + Schedule.getStartTime(s) + "-" + Schedule.getEndTime(s)));
         UI.footer();
     }
 }
