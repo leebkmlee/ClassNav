@@ -1,5 +1,5 @@
 package MAIN;
-import DATA.Enrollment;
+import DATA.*;
 import USER.User;
 class Main {
     public static void main(String[] args) {

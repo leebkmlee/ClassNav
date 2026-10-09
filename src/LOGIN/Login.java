@@ -1,7 +1,8 @@
 package LOGIN;
 
-import DATA.Users;
 import UI.*;
+import USER.User;
+
 import java.util.Scanner;
 
 public class Login {
@@ -20,7 +21,7 @@ public class Login {
             System.out.print("  Enter ID            : ");
             String userID = in.nextLine();
 
-            if (Users.getUser(userID) != null) {
+            if (User.getUser(userID) != null) {
                 while (!authenticated && tries != -1) {
                     System.out.print("  Enter Email Address : ");
                     String emailAddress = in.nextLine();
@@ -28,7 +29,7 @@ public class Login {
                     System.out.print("  Enter Password      : ");
                     String password = in.nextLine();
 
-                    if (Users.verifyEmail(userID, emailAddress) && Users.verifyPassword(userID, password)) {
+                    if (User.verifyEmail(userID, emailAddress) && User.verifyPassword(userID, password)) {
                         authenticated = true;
                         UI.print("LOGIN SUCCESSFUL! Welcome to ClassNav.");
                     }

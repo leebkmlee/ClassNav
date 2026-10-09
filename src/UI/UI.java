@@ -2,7 +2,7 @@ package UI;
 
 public class UI {
 
-    private static final int INNERWIDTH = 70;
+    public static final int INNERWIDTH = 70;
 
     public static void print(String input) {
         System.out.println("\n┌" + "─".repeat(INNERWIDTH) + "┐");
@@ -42,12 +42,13 @@ public class UI {
         int right = INNERWIDTH - title.length() - left;
         System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
         System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
-
     }
 
     public static void footer () {
-        System.out.println("│" + " ".repeat(INNERWIDTH) + "│");
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+    }
 
+    public static void separator() {
+        System.out.println("│" + "─".repeat(INNERWIDTH) + "│");
     }
 }

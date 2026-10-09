@@ -1,6 +1,8 @@
 package USER;
 import LOGIN.*;
 import UI.*;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class User {
@@ -30,6 +32,48 @@ public class User {
         this.postalCode = postalCode;
         this.birthDate = birthDate;
         this.sex = sex;
+    }
+
+    public static ArrayList<User> users = new ArrayList<>();
+    static {
+        users.add(new Student("S001", "Sabulao", "Josh", "P",
+                "S001@bulsu.edu.ph", "2025004151",
+                "CSJDM, Bulacan", 3023, "06/03/07", 'M', "Enrolled"));
+
+        users.add(new Faculty("F001", "Kim", "Elijah", "",
+                "S002@bulsu.edu.ph", "elijahmasikip",
+                "Malolos, Bulacan", 3000, "04/20/07", 'M',
+                "09293268930"));
+
+        users.add(new Admin("A001", "Maangas", "Andrei", "P",
+                "A001@bulsu.edu.ph", "4ndr31b4tumb4k4l",
+                "Guiguinto, Bulacan", 6767, "09/17/07", 'M',
+                "Computer Programmer I"));
+    }
+
+    public static User getUser(String userID) {
+        for (User u : users) if (userID.equals(u.getUserID())) return u;
+        return null;
+    }
+
+    public static boolean verifyEmail(String userID, String emailAddress) {
+        for (User u : users) if (userID.equals(u.getUserID()) && emailAddress.equals(u.getEmail())) return true;
+        return false;
+    }
+
+    public static boolean verifyPassword(String userID, String password) {
+        for (User u : users) if (userID.equals(u.getUserID()) && password.equals(u.getPassword())) return true;
+        return false;
+    }
+
+    public static boolean checkDuplicateName(String userName) {
+        for (User u : users) if (userName.equals(u.getUserName())) return true;
+        return false;
+    }
+
+    public static boolean checkDuplicateEmail(String emailAddress) {
+        for (User u : users) if (emailAddress.equals(u.getEmail())) return true;
+        return false;
     }
 
     public String getUserID() {return userID;}
@@ -74,20 +118,4 @@ public class User {
                 break;
         }
     }
-
-//    public void displayInfo() {
-//        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-//        String title = "ACCOUNT PROFILE";
-//        int left = (innerWidth - title.length()) / 2;
-//        int right = innerWidth - title.length() - left;
-//        System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
-//        System.out.println("├" + "─".repeat(innerWidth) + "┤");
-//        System.out.printf("│  ID NUMBER   : %-" + (innerWidth - 16) + "s│\n", userID);
-//        System.out.printf("│  FULL NAME   : %-" + (innerWidth - 16) + "s│\n", userName);
-//        System.out.println("├" + "─".repeat(innerWidth) + "┤");
-//        System.out.printf("│  Gender      : %-" + (innerWidth - 16) + "s│\n", sex);
-//        System.out.printf("│  Birthdate   : %-" + (innerWidth - 16) + "s│\n", birthDate);
-//        System.out.printf("│  Address     : %-" + (innerWidth - 16) + "s│\n", address);
-//        System.out.println("└" + "─".repeat(innerWidth) + "┘\n");
-//    }
 }

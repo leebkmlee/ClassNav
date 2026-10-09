@@ -1,6 +1,5 @@
 package LOGIN;
 
-import DATA.Users;
 import USER.*;
 import UI.*;
 import java.util.Scanner;
@@ -77,8 +76,8 @@ public class Signup {
 
                         if (middleInitial.endsWith(".")) middleInitial = middleInitial.replace(".", "");
                         userName = lastName + ", " + firstName + " " + middleInitial + ".";
-                        if (Users.checkDuplicateName(userName)) UI.print("Name already exists");
-                    } while (Users.checkDuplicateName(userName));
+                        if (User.checkDuplicateName(userName)) UI.print("Name already exists");
+                    } while (User.checkDuplicateName(userName));
 
                     if (user.equals("[1] Full Name:")) complete++;
 
@@ -95,7 +94,7 @@ public class Signup {
                         else if (!emailAddress.endsWith("@bulsu.edu.ph")) UI.print("Invalid Email Domain");
                         else if (!emailAddress.matches("[SFA][0-9]{3}@bulsu\\.edu\\.ph"))
                             UI.print("Invalid User");
-                        else if (Users.checkDuplicateEmail(emailAddress)) UI.print("Email already exists");
+                        else if (User.checkDuplicateEmail(emailAddress)) UI.print("Email already exists");
                         else valid = true;
                     } while (!valid);
 
@@ -213,7 +212,7 @@ public class Signup {
                             case 'A':
                                 System.out.print("   Role > ");
                                 String role = in.nextLine();
-                                Users.users.add(new Admin(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                User.users.add(new Admin(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, role));
                                 break;
                             case 'F':
@@ -224,7 +223,7 @@ public class Signup {
                                     if (contactNumber.matches("[0-9]{11}"))
                                         UI.print("Invalid Input");
                                 } while (contactNumber.length() != 11);
-                                Users.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                User.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber));
                                 break;
                             case 'S':
@@ -234,7 +233,7 @@ public class Signup {
                                     enrollmentStatus = in.nextLine().toUpperCase();
                                     if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input");
                                 } while (!enrollmentStatus.matches("R|IR"));
-                                Users.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                User.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, enrollmentStatus));
                                 break;
                         }
