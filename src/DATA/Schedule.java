@@ -49,6 +49,10 @@ public class Schedule {
         return null;
     }
 
+    public static void addSchedule(Schedule schedule) {
+        schedules.add(schedule);
+    }
+
     public static String getSchedule(Schedule s) {
         return s.scheduleID;
     }
