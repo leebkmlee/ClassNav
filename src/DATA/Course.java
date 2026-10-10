@@ -23,22 +23,22 @@ public class Course {
 
     public static ArrayList<Course> courses = new ArrayList<>();
     static {
-        Course.courses.add(new Course("PE 12", "PathFit 3", 2, "BSIT"));
-        Course.courses.add(new Course("RLW 101", "Rizal Life and Works", 3, "BSIT"));
-        Course.courses.add(new Course("ETH 101", "Ethics", 3, "BSIT"));
-        Course.courses.add(new Course("STS 101", "Science, Technology, and Society", 3, "BSIT"));
-        Course.courses.add(new Course("IT 204", "Networking", 3, "BSIT"));
-        Course.courses.add(new Course("CC 106", "Information Management", 3, "BSIT"));
-        Course.courses.add(new Course("IT 203", "Object-Oriented Programming", 3, "BSIT"));
-        Course.courses.add(new Course("IT 205", "Quantitative Methods", 3, "BSIT"));
-        Course.courses.add(new Course("CC 105", "Data Structure Algorithm", 3, "BSIT"));
-        Course.courses.add(new Course("CC 104", "Computer Programming 2", 3, "BSIT"));
-        Course.courses.add(new Course("IT 206", "Web Systems and Technologies", 3, "BSIT"));
-        Course.courses.add(new Course("IT 207", "Platform Technologies", 3, "BSIT"));
-        Course.courses.add(new Course("GE 101", "General Education Elective", 3, "BSIT"));
-        Course.courses.add(new Course("IT 301", "Systems Analysis and Design", 3, "BSIT"));
-        Course.courses.add(new Course("IT 302", "Information Assurance and Security", 3, "BSIT"));
-        Course.courses.add(new Course("IT 303", "Application Development", 3, "BSIT"));
+        courses.add(new Course("PE 12", "PathFit 3", 2, "BSIT"));
+        courses.add(new Course("RLW 101", "Rizal Life and Works", 3, "BSIT"));
+        courses.add(new Course("ETH 101", "Ethics", 3, "BSIT"));
+        courses.add(new Course("STS 101", "Science, Technology, and Society", 3, "BSIT"));
+        courses.add(new Course("IT 204", "Networking", 3, "BSIT"));
+        courses.add(new Course("CC 106", "Information Management", 3, "BSIT"));
+        courses.add(new Course("IT 203", "Object-Oriented Programming", 3, "BSIT"));
+        courses.add(new Course("IT 205", "Quantitative Methods", 3, "BSIT"));
+        courses.add(new Course("CC 105", "Data Structure Algorithm", 3, "BSIT"));
+        courses.add(new Course("CC 104", "Computer Programming 2", 3, "BSIT"));
+        courses.add(new Course("IT 206", "Web Systems and Technologies", 3, "BSIT"));
+        courses.add(new Course("IT 207", "Platform Technologies", 3, "BSIT"));
+        courses.add(new Course("GE 101", "General Education Elective", 3, "BSIT"));
+        courses.add(new Course("IT 301", "Systems Analysis and Design", 3, "BSIT"));
+        courses.add(new Course("IT 302", "Information Assurance and Security", 3, "BSIT"));
+        courses.add(new Course("IT 303", "Application Development", 3, "BSIT"));
     }
 
     public String getCourseCode() {
