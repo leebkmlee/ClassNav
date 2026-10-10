@@ -125,4 +125,16 @@ public class Faculty extends User{
             requestRoom();
         }
     }
+
+    public String getContactNumber() { return contactNumber;
+    }
+
+    public String getCollegeCode() { return collegeCode;
+    }
+
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber;
+    }
+
+    public void setCollegeCode(String collegeCode) { this.collegeCode = collegeCode;
+    }
 }

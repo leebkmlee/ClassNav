@@ -56,6 +56,10 @@ public class Student extends User{
         return s.programCode;
     }
 
+    public String getEnrollmentStatus(){ return enrollmentStatus; }
+
+    public String getProgramCode(){ return programCode; }
+
     public static void displaySchedule(String userID) {
         Student st = Student.findStudent(userID);
         if (st == null) {
@@ -179,5 +183,11 @@ public class Student extends User{
                 // balik menu
                 break;
         }
+    }
+
+    public void setEnrollmentStatus(String enrollmentStatus) { this.enrollmentStatus = enrollmentStatus;
+    }
+
+    public void setProgramCode(String programCode) { this.programCode = programCode;
     }
 }

@@ -3,7 +3,6 @@ import DATA.Schedule;
 import LOGIN.*;
 import UI.*;
 import java.util.*;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -512,5 +511,70 @@ public class User {
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BIRTHDATE      : %s", u.getBirthDate()));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SEX            : %s", u.getSex()));
         UI.footer();
+    }
+
+    public static void displayUsers() {
+        UI.header("USER LIST");
+        for (User u : users) {
+            String userType = "";
+            String additionalInfo = "";
+            if (u.getUserID().charAt(0) == 'S') {
+                Student s = (Student) u;
+                userType = "Student";
+                additionalInfo = s.getEnrollmentStatus();
+            } else if (u.getUserID().charAt(0) == 'F') {
+                Faculty f = (Faculty) u;
+                userType = "Faculty";
+                additionalInfo = f.getCollegeCode();
+            } else if (u.getUserID().charAt(0) == 'A') {
+                Admin a = (Admin) u;
+                userType = "Admin";
+                additionalInfo = a.getRole();
+            }
+            String user = String.format(
+                    "  %-10s %-20s %-25s %-12s %-15s",
+                    u.getUserID(),
+                    u.getLastName() + ", " + u.getFirstName(),
+                    u.getEmailAddress(),
+                    userType,
+                    additionalInfo
+            );
+            System.out.printf("│%-" + innerWidth + "s│\n", user);
+        }
+        UI.footer();
+    }
+
+    public void setLastName(String lastName) { this.lastName = lastName;
+    }
+    public void setFirstName(String firstName) { this.firstName = firstName;
+    }
+    public void setMiddleInitial(String middleInitial) { this.middleInitial = middleInitial;
+    }
+    public void setEmailAddress(String emailAddress) { this.emailAddress = emailAddress;
+    }
+    public void setPassword(String password) { this.password = password;
+    }
+    public void setAddress(String address) { this.address = address;
+    }
+    public void setPostalCode(int postalCode) { this.postalCode = postalCode;
+    }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate;
+    }
+    public void setSex(char sex) { this.sex = sex;
+    }
+
+    public String getLastName() { return lastName;
+    }
+
+    public String getFirstName() { return firstName;
+    }
+
+    public String getMiddleInitial() { return middleInitial;
+    }
+
+    public String getEmailAddress() { return emailAddress;
+    }
+
+    public void setUserID(String userID) { this.userID = userID;
     }
 }

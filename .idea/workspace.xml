@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="wag muna pakialaman, thx">
+    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="uwu">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Building.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/College.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/College.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Course.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Enrollment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Enrollment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Program.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Section.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Section.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Users.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/LOGIN/Login.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/LOGIN/Login.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/LOGIN/Signup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/LOGIN/Signup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MAIN/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MAIN/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/UI/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UI/UI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Student.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Elie-branch" />
+        <entry key="$PROJECT_DIR$" value="Josh-Branch" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -50,9 +40,68 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/leebkmlee/ClassNav.git&quot;,
-    &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
+    &quot;accountId&quot;: &quot;0cd8fe6b-7486-4ac7-a96b-8653c325689a&quot;
   }
 }</component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.000000013373942" />
+      <entry key="S2" value="1.0107544171684384" />
+      <entry key="S5" value="1.167503694112379" />
+      <entry key="S10" value="1.4957496992625674" />
+      <entry key="S30" value="2.5408843299761035" />
+      <entry key="S60" value="3.6497994203406097" />
+      <entry key="M2" value="5.616799673368371" />
+      <entry key="M5" value="11.521682529904417" />
+      <entry key="M10" value="20.716512246446936" />
+      <entry key="M15" value="29.506793913858314" />
+      <entry key="M30" value="55.783140257297745" />
+      <entry key="H1" value="103.11175154718636" />
+      <entry key="H2" value="166.13130837654268" />
+      <entry key="H4" value="224.95212489049834" />
+      <entry key="D1" value="301.35017167883933" />
+      <entry key="W1" value="318.08489163125734" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="1.1446659319853973E-154" />
+      <entry key="S2" value="3.270918245435236E-39" />
+      <entry key="S5" value="4.0352261167288523E-16" />
+      <entry key="S10" value="2.0087872493992798E-8" />
+      <entry key="S30" value="0.002742623858655287" />
+      <entry key="S60" value="0.06769243389969663" />
+      <entry key="M2" value="0.660298491768496" />
+      <entry key="M5" value="4.911907746327411" />
+      <entry key="M10" value="13.26266626291654" />
+      <entry key="M15" value="20.83639043548518" />
+      <entry key="M30" value="40.5581680904091" />
+      <entry key="H1" value="73.24040377069919" />
+      <entry key="H2" value="114.47189138568974" />
+      <entry key="H4" value="151.08906972049613" />
+      <entry key="D1" value="196.59930051037136" />
+      <entry key="W1" value="206.31568432361712" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.3523089219885472E-8" />
+      <entry key="MS500" value="0.026681807523358223" />
+      <entry key="S2" value="0.4120878798642946" />
+      <entry key="S5" value="0.8442474153200753" />
+      <entry key="S10" value="1.3002049187780793" />
+      <entry key="S30" value="2.4526783170301987" />
+      <entry key="S60" value="3.660556338219934" />
+      <entry key="M2" value="6.237157097054384" />
+      <entry key="M5" value="16.398227047856004" />
+      <entry key="M10" value="33.94497053579185" />
+      <entry key="M15" value="50.30973382056212" />
+      <entry key="M30" value="96.30764409428704" />
+      <entry key="H1" value="176.31815383798866" />
+      <entry key="H2" value="280.57427542807613" />
+      <entry key="H4" value="376.02118073661677" />
+      <entry key="D1" value="497.9449488933241" />
+      <entry key="W1" value="524.3998929151676" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -64,28 +113,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.Mainn.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "false",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Revision",
-    "java.suggest.annotation.dependency": "false",
-    "kotlin-language-version-configured": "true",
-    "onboarding.tips.debug.path": "C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "discord-project"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Mainn.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;kai-branch&quot;,
+    &quot;java.suggest.annotation.dependency&quot;: &quot;false&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;discord-project&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="CLASSNAV" />
@@ -98,6 +156,14 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -219,8 +285,35 @@
       <option name="project" value="LOCAL" />
       <updated>1791359838540</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="yan na">
+      <option name="closed" value="true" />
+      <created>1791522824366</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1791522824366</updated>
+    </task>
+    <task id="LOCAL-00016" summary="yan na">
+      <option name="closed" value="true" />
+      <created>1791612789443</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1791612789443</updated>
+    </task>
+    <task id="LOCAL-00017" summary="yan na">
+      <option name="closed" value="true" />
+      <created>1791613163805</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1791613163805</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -239,7 +332,8 @@
     <MESSAGE value="mama" />
     <MESSAGE value="revision" />
     <MESSAGE value="wag muna pakialaman, thx" />
-    <option name="LAST_COMMIT_MESSAGE" value="wag muna pakialaman, thx" />
+    <MESSAGE value="yan na" />
+    <option name="LAST_COMMIT_MESSAGE" value="yan na" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="XDebuggerManager">
