@@ -1,9 +1,10 @@
 package MAIN;
 import DATA.*;
-import USER.User;
+import UI.*;
+import USER.*;
 class Main {
     public static void main(String[] args) {
-        Enrollment.displayEnrollment("0003");
+
         User.start();
     }
 }

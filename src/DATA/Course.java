@@ -4,6 +4,7 @@ import UI.*;
 
 import java.util.ArrayList;
 
+import static DATA.Class.classes;
 import static DATA.Section.sections;
 
 public class Course {
@@ -22,15 +23,22 @@ public class Course {
 
     public static ArrayList<Course> courses = new ArrayList<>();
     static {
-        courses.add(new Course("PE 12", "PathFit 3", 2, "BSIT"));
-        courses.add(new Course("RLW 101", "Rizal Life and Works", 3, "BSIT"));
-        courses.add(new Course("ETH 101", "Ethics", 3, "BSIT"));
-        courses.add(new Course("STS 101", "Science, Technology, and Society", 3, "BSIT"));
-        courses.add(new Course("IT 204", "Networking", 3, "BSIT"));
-        courses.add(new Course("CC 106", "Information Management", 3, "BSIT"));
-        courses.add(new Course("IT 203", "Object-Oriented Programming", 3, "BSIT"));
-        courses.add(new Course("IT 205", "Quantitative Methods", 3, "BSIT"));
-        courses.add(new Course("CC 105", "Data Structure Algorithm", 3, "BSIT"));
+        Course.courses.add(new Course("PE 12", "PathFit 3", 2, "BSIT"));
+        Course.courses.add(new Course("RLW 101", "Rizal Life and Works", 3, "BSIT"));
+        Course.courses.add(new Course("ETH 101", "Ethics", 3, "BSIT"));
+        Course.courses.add(new Course("STS 101", "Science, Technology, and Society", 3, "BSIT"));
+        Course.courses.add(new Course("IT 204", "Networking", 3, "BSIT"));
+        Course.courses.add(new Course("CC 106", "Information Management", 3, "BSIT"));
+        Course.courses.add(new Course("IT 203", "Object-Oriented Programming", 3, "BSIT"));
+        Course.courses.add(new Course("IT 205", "Quantitative Methods", 3, "BSIT"));
+        Course.courses.add(new Course("CC 105", "Data Structure Algorithm", 3, "BSIT"));
+        Course.courses.add(new Course("CC 104", "Computer Programming 2", 3, "BSIT"));
+        Course.courses.add(new Course("IT 206", "Web Systems and Technologies", 3, "BSIT"));
+        Course.courses.add(new Course("IT 207", "Platform Technologies", 3, "BSIT"));
+        Course.courses.add(new Course("GE 101", "General Education Elective", 3, "BSIT"));
+        Course.courses.add(new Course("IT 301", "Systems Analysis and Design", 3, "BSIT"));
+        Course.courses.add(new Course("IT 302", "Information Assurance and Security", 3, "BSIT"));
+        Course.courses.add(new Course("IT 303", "Application Development", 3, "BSIT"));
     }
 
     public String getCourseCode() {
@@ -80,11 +88,15 @@ public class Course {
         UI.header("SECTION LIST");
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE CODE     : %s", Course.getCourseCode(c)));
         System.out.printf("│%-" + innerWidth + "s│\n", "  Sections under " + Course.getCourseDescription(c) + ":");
-        for (Section s : sections) {
-            if (Section.getCourseCode(s).equals(c.getCourseCode())) {
-                String section = String.format("    %-15s %-35s %-12s",
-                        Section.getSection(s), Section.getYearSection(s), "AY " + Section.getAcademicYear(s));
-                System.out.printf("│%-" + innerWidth + "s│\n", section);
+        for (Class cl : classes) {
+            if (Class.getCourseCode(cl).equals(c.getCourseCode())) {
+                for (Section s : sections) {
+                    if (Class.getSectionID(cl).equals(s.getSectionID())) {
+                        String section = String.format("    %-15s %-35s %-12s",
+                                Section.getSection(s), Section.getYearSection(s), "AY " + Section.getAcademicYear(s));
+                        System.out.printf("│%-" + innerWidth + "s│\n", section);
+                    }
+                }
             }
         }
         UI.footer();
