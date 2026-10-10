@@ -8,6 +8,8 @@ import java.util.Scanner;
 import DATA.*;
 import UI.*;
 
+import static DATA.Room.convertToMinutes;
+
 public class Faculty extends User{
     private String contactNumber;
     private String collegeCode;
@@ -53,6 +55,41 @@ public class Faculty extends User{
 
     public static ArrayList<String[]> requests = new ArrayList<>();
     static {
+    }
+
+    public static void viewAvailableRooms( String day, String startTime, String endTime){
+        int scheduledStart = convertToMinutes(startTime);
+        int scheduledEnd = convertToMinutes(endTime);
+        UI.header("AVAILABLE ROOMS");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DAY          : %s", day));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  START TIME   : %s", startTime));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  END TIME     : %s", endTime));
+        UI.separator();
+        boolean found = false;
+
+        for (Room r : Room.rooms) {
+            String roomCode = Room.getRoom(r);
+            boolean available = true;
+
+            for (Schedule s : Schedule.schedules) {
+                if (roomCode.equals(Schedule.getRoomCode(s)) && day.equalsIgnoreCase(Schedule.getDay(s))) {
+                    int existingStart = convertToMinutes(Schedule.getStartTime(s));
+                    int existingEnd = convertToMinutes(Schedule.getEndTime(s));
+                    if (scheduledStart < existingEnd && scheduledEnd > existingStart) {
+                        available = false;
+                        break;
+                    }
+                }
+            }
+            if (available) {
+                found = true;
+                System.out.printf("│%-" + innerWidth + "s│%n", String.format("  ROOM CODE    : %s", roomCode));
+            }
+        }
+        if (!found) {
+            System.out.printf("│%-" + innerWidth + "s│%n", "  NO AVAILABLE ROOMS FOUND");
+        }
+        UI.footer();
     }
 
     public void requestRoom(){
