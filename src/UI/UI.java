@@ -49,7 +49,7 @@ public class UI {
     }
 
     public static void separator() {
-        System.out.println("│" + "─".repeat(INNERWIDTH) + "│");
+        System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
     }
 
     public static void boxLine(String message) {

@@ -20,6 +20,7 @@ public class Building {
         buildings.add(new Building("BLD02", "NSTP Building"));
         buildings.add(new Building("BLD03", "Federizo Hall"));
         buildings.add(new Building("BLD04", "Natividad Hall"));
+        buildings.add(new Building("BLD05", "Roxas Hall"));
     }
 
     public String getBuildingCode() {

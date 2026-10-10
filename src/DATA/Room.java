@@ -9,7 +9,7 @@ public class Room {
     private String roomCode;
     private String roomDescription;
     private int floorNumber;
-    private String buildingCode;
+    private String buildingCode; // foreign key
 
 
     public Room(String roomCode, String roomDescription, int floorNumber, String buildingCode) {
@@ -22,9 +22,18 @@ public class Room {
     public static ArrayList<Room> rooms = new ArrayList<>();
 
     static {
-        rooms.add(new Room("PL101", "Programming Laboratory 1", 1, "BLD01"));
-        rooms.add(new Room("SDL 1", "Smart Development Lab 1", 2, "BLD02"));
-        rooms.add(new Room("ACAD 3", "Academic Room 3", 1, "BLD03"));
+        Room.rooms.add(new Room("PL101", "Programming Laboratory 1", 1, "BLD01"));
+        Room.rooms.add(new Room("PL102", "Programming Laboratory 2", 1, "BLD01"));
+        Room.rooms.add(new Room("PL201", "Computer Laboratory 3", 2, "BLD01"));
+        Room.rooms.add(new Room("SDL 1", "Smart Development Lab 1", 2, "BLD02"));
+        Room.rooms.add(new Room("SDL 2", "Smart Development Lab 2", 2, "BLD02"));
+        Room.rooms.add(new Room("ACAD 1", "Academic Room 1", 1, "BLD03"));
+        Room.rooms.add(new Room("ACAD 2", "Academic Room 2", 1, "BLD03"));
+        Room.rooms.add(new Room("ACAD 3", "Academic Room 3", 1, "BLD03"));
+        Room.rooms.add(new Room("NH201", "Lecture Room 201", 2, "BLD04"));
+        Room.rooms.add(new Room("NH202", "Lecture Room 202", 2, "BLD04"));
+        Room.rooms.add(new Room("ICT301", "ICT Lecture Room 301", 3, "BLD05"));
+        Room.rooms.add(new Room("ICT302", "ICT Lecture Room 302", 3, "BLD05"));
     }
 
     public String getRoomCode() {
@@ -113,6 +122,23 @@ public class Room {
         }
         System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM IS AVAILABLE ");
         UI.footer();
+    }
+
+    public static boolean verifyAvailability(String roomCode, String day, String startTime, String endTime) {
+        int scheduledStart = convertToMinutes(startTime);
+        int scheduledEnd = convertToMinutes(endTime);
+        for (Schedule s : schedules) {
+            if (Schedule.getRoomCode(s).equals(roomCode) && Schedule.getDay(s).equalsIgnoreCase(day)) {
+
+                int existingStart = convertToMinutes(Schedule.getStartTime(s));
+                int existingEnd = convertToMinutes(Schedule.getEndTime(s));
+
+                if (scheduledStart < existingEnd && scheduledEnd > existingStart) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
