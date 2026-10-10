@@ -13,7 +13,7 @@ public class College {
         this.collegeDescription = collegeDescription;
     }
 
-    static ArrayList<College> colleges = new ArrayList<>();
+    public static ArrayList<College> colleges = new ArrayList<>();
     static {
         colleges.add(new College("CICT", "College of Information Communication Technology"));
         colleges.add(new College("COED", "College of Education"));
@@ -31,6 +31,13 @@ public class College {
 
     public static String getCollege(College c) {
         return c.collegeCode;
+    }
+
+    public void setCollegeDescription(String collegeDescription) {
+        this.collegeDescription = collegeDescription;
+    }
+    public void setCollegeCode(String collegeCode) {
+       this.collegeCode = collegeCode;
     }
 
     public static String getCollegeDescription(College c) {

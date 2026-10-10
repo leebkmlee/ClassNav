@@ -9,8 +9,8 @@ public class Student extends User{
         super(userID, lastName, firstName, middleInitial, emailAddress, password, address, postalCode, birthDate, gender);
         this.enrollmentStatus = enrollmentStatus;
     }
-    // displayInfo()
-//    private void displayInfo() {
+    // displayCollege()
+//    private void displayCollege() {
 //        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
 //        String title = "ACCOUNT PROFILE";
 //        int left = (innerWidth - title.length()) / 2;

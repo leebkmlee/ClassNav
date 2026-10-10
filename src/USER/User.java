@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class User {
-
     private String userID;
     private String userName;
     private String lastName, firstName, middleInitial;
@@ -21,7 +20,6 @@ public class User {
 
     public User(String userID, String lastName, String firstName, String middleInitial, String emailAddress,
                 String password, String address, int postalCode, String birthDate, char sex) {
-
         this.userID = userID;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -78,7 +76,7 @@ public class User {
         return false;
     }
 
-    public String getUserID() {return userID;}
+    String getUserID() {return userID;}
     public String getEmail() {return emailAddress;}
     public String getPassword() {return password;}
     public String getUserName() {return userName;}

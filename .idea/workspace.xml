@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b07bb83-033b-478f-849a-3e98f1c115bc" name="Changes" comment="UwU master :&gt;&gt;&gt;&gt;&gt;">
+    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="wag muna pakialaman, thx">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/College.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/College.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LOGIN/Signup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/LOGIN/Signup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MAIN/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MAIN/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/UI/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UI/UI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Student.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,158 +20,234 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="82" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="kakai-branch" />
+        <entry key="$PROJECT_DIR$" value="Elie-branch" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-  &quot;history&quot;: [
-    {
-      &quot;state&quot;: &quot;OPEN&quot;
-    }
-  ],
-  &quot;lastFilter&quot;: {}
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;joshrodenbermundobanot-oss&quot;
+  }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/leebkmlee/ClassNav.git&quot;,
-    &quot;accountId&quot;: &quot;0cd8fe6b-7486-4ac7-a96b-8653c325689a&quot;
-  },
-  &quot;editorReviewEnabled&quot;: false
-}</component>
-  <component name="NextEditCompletionFeaturesState">
-    <decayedCancelled>
-      <entry key="MS100" value="9.445795816785991E-88" />
-      <entry key="MS500" value="3.935933124338092E-18" />
-      <entry key="S2" value="4.454120147075418E-5" />
-      <entry key="S5" value="0.018176469037054395" />
-      <entry key="S10" value="0.1353830463644056" />
-      <entry key="S30" value="0.7839775070367518" />
-      <entry key="S60" value="2.4800154097943103" />
-      <entry key="M2" value="5.999195900263369" />
-      <entry key="M5" value="15.173628475398742" />
-      <entry key="M10" value="30.069654456032854" />
-      <entry key="M15" value="42.49917272996784" />
-      <entry key="M30" value="71.71904902063945" />
-      <entry key="H1" value="123.46142873001337" />
-      <entry key="H2" value="215.02264028668506" />
-      <entry key="H4" value="329.3557443247139" />
-      <entry key="D1" value="519.6464411212528" />
-      <entry key="W1" value="567.4524942195466" />
-    </decayedCancelled>
-    <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0000000455407392" />
-      <entry key="S5" value="1.001699554551384" />
-      <entry key="S10" value="1.0580405849483436" />
-      <entry key="S30" value="1.6755528969015725" />
-      <entry key="S60" value="2.5201425838594553" />
-      <entry key="M2" value="3.6547062097450165" />
-      <entry key="M5" value="6.72836468524997" />
-      <entry key="M10" value="12.540158477358931" />
-      <entry key="M15" value="17.710849736091433" />
-      <entry key="M30" value="30.69910478264198" />
-      <entry key="H1" value="52.8929758336012" />
-      <entry key="H2" value="85.9730597379143" />
-      <entry key="H4" value="121.94415684189141" />
-      <entry key="D1" value="176.52281349786796" />
-      <entry key="W1" value="189.66697687218573" />
-    </decayedSelected>
-    <decayedShown>
-      <entry key="MS100" value="9.121562331793158E-10" />
-      <entry key="MS500" value="0.0155601523921009" />
-      <entry key="S2" value="0.35321864652237706" />
-      <entry key="S5" value="0.6767797872911431" />
-      <entry key="S10" value="0.9889478178732383" />
-      <entry key="S30" value="2.3365381153304448" />
-      <entry key="S60" value="4.886173626685118" />
-      <entry key="M2" value="9.554599925190972" />
-      <entry key="M5" value="21.824314079413234" />
-      <entry key="M10" value="42.539748846218274" />
-      <entry key="M15" value="60.14519501435829" />
-      <entry key="M30" value="102.36207882118319" />
-      <entry key="H1" value="176.30417845041893" />
-      <entry key="H2" value="300.9526795123927" />
-      <entry key="H4" value="451.26818994905904" />
-      <entry key="D1" value="696.1613188179248" />
-      <entry key="W1" value="757.1182451730695" />
-    </decayedShown>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/leebkmlee/ClassNav.git",
+    "accountId": "a97b7164-d198-4cca-8002-63134977d242"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
+  &quot;associatedIndex&quot;: 8
 }</component>
-  <component name="ProjectId" id="3JocvXTdqUKzRJKBRFzsT6ptbJo" />
+  <component name="ProjectId" id="3JognE5Pz6xpCjvJhVeUfdK4YBj" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.App.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;kai-branch&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Mainn.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Josh-Branch",
+    "java.suggest.annotation.dependency": "false",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.editor"
   }
-}</component>
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="MAIN.Main" />
+      <module name="ClassNav" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="MAIN.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="CLASSNAV" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="CLASSNAV" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
-        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
       </set>
     </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1b07bb83-033b-478f-849a-3e98f1c115bc" name="Changes" comment="" />
-      <created>1790331092278</created>
+      <changelist id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="" />
+      <created>1790333001579</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1790331092278</updated>
+      <updated>1790333001579</updated>
     </task>
-    <task id="LOCAL-00001" summary="hi">
+    <task id="LOCAL-00001" summary="m">
       <option name="closed" value="true" />
-      <created>1790331145795</created>
+      <created>1790333469853</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1790331145795</updated>
+      <updated>1790333469853</updated>
     </task>
-    <task id="LOCAL-00002" summary="hi">
+    <task id="LOCAL-00002" summary="ma">
       <option name="closed" value="true" />
-      <created>1790331236516</created>
+      <created>1790333525489</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1790331236516</updated>
+      <updated>1790333525489</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="ma">
+      <option name="closed" value="true" />
+      <created>1790333543514</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1790333543514</updated>
+    </task>
+    <task id="LOCAL-00004" summary="ma">
+      <option name="closed" value="true" />
+      <created>1790334239648</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334239648</updated>
+    </task>
+    <task id="LOCAL-00005" summary="mama">
+      <option name="closed" value="true" />
+      <created>1790334388998</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334388998</updated>
+    </task>
+    <task id="LOCAL-00006" summary="mama">
+      <option name="closed" value="true" />
+      <created>1790334834698</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1790334834698</updated>
+    </task>
+    <task id="LOCAL-00007" summary="revision">
+      <option name="closed" value="true" />
+      <created>1790516142042</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1790516142042</updated>
+    </task>
+    <task id="LOCAL-00008" summary="revision">
+      <option name="closed" value="true" />
+      <created>1790516372310</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1790516372310</updated>
+    </task>
+    <task id="LOCAL-00009" summary="revision">
+      <option name="closed" value="true" />
+      <created>1790516381132</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1790516381132</updated>
+    </task>
+    <task id="LOCAL-00010" summary="revision">
+      <option name="closed" value="true" />
+      <created>1790558916110</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1790558916110</updated>
+    </task>
+    <task id="LOCAL-00011" summary="wag muna pakialaman, thx">
+      <option name="closed" value="true" />
+      <created>1790594595898</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1790594595898</updated>
+    </task>
+    <task id="LOCAL-00012" summary="wag muna pakialaman, thx">
+      <option name="closed" value="true" />
+      <created>1790670935750</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1790670935750</updated>
+    </task>
+    <task id="LOCAL-00013" summary="wag muna pakialaman, thx">
+      <option name="closed" value="true" />
+      <created>1790691883190</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1790691883190</updated>
+    </task>
+    <task id="LOCAL-00014" summary="wag muna pakialaman, thx">
+      <option name="closed" value="true" />
+      <created>1791359838540</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1791359838540</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -180,8 +261,23 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="hi" />
-    <MESSAGE value="UwU master :&gt;&gt;&gt;&gt;&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="UwU master :&gt;&gt;&gt;&gt;&gt;" />
+    <MESSAGE value="m" />
+    <MESSAGE value="ma" />
+    <MESSAGE value="mama" />
+    <MESSAGE value="revision" />
+    <MESSAGE value="wag muna pakialaman, thx" />
+    <option name="LAST_COMMIT_MESSAGE" value="wag muna pakialaman, thx" />
+    <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Main.java</url>
+          <line>10</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
