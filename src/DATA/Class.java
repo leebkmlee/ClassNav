@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Class {
     private String classID;
-    private String sectionID;
-    private String courseCode;
+    private String sectionID; // foreign key
+    private String courseCode; // foreign key
 
     Class (String classID, String sectionID, String courseCode) {
         this.classID = classID;
@@ -108,5 +108,15 @@ public class Class {
         return c.courseCode;
     }
 
-
+    public static boolean isCourseInFacultyLoad(String facultyID, String courseCode) {
+        for (Class cl : Class.classes) {
+            if (Class.getCourseCode(cl).equalsIgnoreCase(courseCode)) {
+                Section s = Section.findSection(Class.getSectionID(cl));
+                if (s != null && Section.getFacultyID(s).equals(facultyID)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -4,8 +4,8 @@ import UI.*;
 import USER.*;
 class Main {
     public static void main(String[] args) {
-        Admin.manageCourses();
-        Admin.manageCourses();
+        Building.displayRooms("BLD01");
+        Faculty.requestRoom("F001");
         User.start();
     }
 }

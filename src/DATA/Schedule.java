@@ -76,17 +76,4 @@ public class Schedule {
     public static String getRoomCode(Schedule s){
         return s.roomCode;
     }
-
-    public static void displaySchedule(String scheduleID){
-        Schedule s = findSchedule(scheduleID);
-        if (s == null) {
-            UI.print("Schedule not found");
-            return;
-        }
-        UI.header("SCHEDULE INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SCHEDULE ID    : %s", Schedule.getSchedule(s)));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DATE AND TIME  : %s",
-                Schedule.getDay(s) + " " + Schedule.getStartTime(s) + "-" + Schedule.getEndTime(s)));
-        UI.footer();
-    }
 }

@@ -60,17 +60,18 @@ public class Student extends User{
 
     public String getProgramCode(){ return programCode; }
 
-    public static void displaySchedules(String userID) {
-        Student st = Student.findStudent(userID);
+    public static void displaySchedules(String studentID) {
+        Student st = Student.findStudent(studentID);
         if (st == null) {
             UI.print("Student not found");
             return;
         }
         UI.header("STUDENT SCHEDULE");
-        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  STUDENT ID : %s", userID));UI.separator();
+        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  STUDENT ID : %s", studentID));
+        UI.separator();
         boolean found = false;
         for (Enrollment e : Enrollment.enrollments) {
-            if (userID.equals(Enrollment.getStudentNumber(e))) {
+            if (studentID.equals(Enrollment.getStudentNumber(e))) {
                 String sectionID = Enrollment.getSectionID(e);
                 for (Schedule s : Schedule.schedules) {
                     if (sectionID.equals(Schedule.getSectionID(s))) {
@@ -98,14 +99,11 @@ public class Student extends User{
                 }
             }
         }
-        if (!found) {
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    "  No schedules found.");
-        }
-        UI.footer();
+        if (!found) System.out.printf("│%-" + innerWidth + "s│%n", "  No schedules found.");
+        UI.footer(); // prints extra row
     }
 
-    public static void viewAvailableRooms( String day, String startTime, String endTime){
+     public static void viewAvailableRooms(String day, String startTime, String endTime){
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
 
@@ -132,7 +130,15 @@ public class Student extends User{
             }
             if (available) {
                 found = true;
-                System.out.printf("│%-" + innerWidth + "s│%n", String.format("  ROOM CODE    : %s", roomCode));
+                int floor = Room.getFloorNumber(r);
+                String floorText;
+                if (floor == 1) floorText = "1st Floor";
+                else if (floor == 2) floorText = "2nd Floor";
+                else if (floor == 3) floorText = "3rd Floor";
+                else floorText = floor + "th Floor";
+                String room = String.format( "  %-10s %-32s %-15s %-4s", Room.getRoom(r), Room.getRoomDescription(r),
+                        floorText, Room.getBuildingCode(r));
+                System.out.printf("│%-" + innerWidth + "s│\n", room);
             }
         }
         if (!found) {
@@ -186,9 +192,11 @@ public class Student extends User{
         }
     }
 
-    public void setEnrollmentStatus(String enrollmentStatus) { this.enrollmentStatus = enrollmentStatus;
+    public void setEnrollmentStatus(String enrollmentStatus) {
+        this.enrollmentStatus = enrollmentStatus;
     }
 
-    public void setProgramCode(String programCode) { this.programCode = programCode;
+    public void setProgramCode(String programCode) {
+        this.programCode = programCode;
     }
 }

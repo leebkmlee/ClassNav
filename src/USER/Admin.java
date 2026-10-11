@@ -1,6 +1,9 @@
 package USER;
 import DATA.Building;
+import DATA.Course;
+import DATA.Program;
 import DATA.Room;
+import LOGIN.Signup;
 import UI.*;
 import java.util.Scanner;
 
@@ -505,6 +508,7 @@ public class Admin extends User{
         int choice = -1; String input = "";
 
         UI.manageUI("Users");
+
         do {
             System.out.print("  Select > ");
             try {
@@ -514,7 +518,7 @@ public class Admin extends User{
                     continue;
                 }
                 choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 3) && choice != 0) UI.print("Invalid Input");
+                if (!(choice >= 1 && choice <= 4) && choice != 0) UI.print("Invalid Input");
             } catch (NumberFormatException e) {
                 UI.print("Invalid Input");
                 choice = -1;
@@ -523,10 +527,10 @@ public class Admin extends User{
 
         switch (choice) {
             case 1:
-                createUser();
+                Signup.signUp("CREATE NEW USER");
                 break;
             case 2:
-                editUser();
+                editUser(true);
                 break;
             case 3:
                 deleteUser();
@@ -539,247 +543,25 @@ public class Admin extends User{
         }
     }
 
-    private static void createUser() {
-        String userID = ""; String lastName = ""; String firstName = ""; String middleInitial = ""; String emailAddress = "";
-                String password = ""; String address = ""; int postalCode = -1; String birthDate= ""; char sex= '\0'; String userType = "";
-                String choice = ""; boolean submit = false; String enrollmentStatus = ""; String programCode = ""; String contactNumber = "";
-                String collegeCode = ""; String role = ""; String userName = "";
-
-        do {
-            UI.header("CREATE NEW USER");
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Student");
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Faculty");
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Admin");
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [X] Cancel");
-            UI.footer();
-
-            System.out.print("  Select > ");
-            userType = in.nextLine().trim().toUpperCase();
-
-            if (!userType.matches("[123X]")) {
-                UI.print("Invalid Choice");
-            }
-
-        } while (!userType.matches("[123X]"));
-
-        if (userType.equals("X")) {
-            manageUsers();
-            return;
-        }
-        boolean check = false;
-        switch (userType) {
-            case "1":
-                do {
-                    System.out.print("   Enter UserID > ");
-                    userID = in.nextLine();
-                    for (User u : users) {
-                        if (userID.equals(u.getUserID())) {
-                            UI.print("User ID already exists.");
-                        }
-                        else{
-                            check = true;
-                        }
-                    }
-                }while (userID.isBlank() || !check);
-                do {
-                    System.out.print("   Enter Last Name > ");
-                    lastName = in.nextLine();
-                    System.out.print("   Enter First Name > ");
-                    firstName = in.nextLine();
-                System.out.print("   No Middle Initial = Enter ");
-                System.out.print("   Enter Middle Initial > ");
-                middleInitial = in.nextLine();
-                userName = lastName + ", " + firstName + " " + middleInitial;
-                }while (firstName.isBlank() || lastName.isBlank() || checkDuplicateName(userName));
-                do {
-                    System.out.print("   Enter Email Address > ");
-                    emailAddress = in.nextLine();
-                }while (emailAddress.isBlank());
-                do {
-                    System.out.print("   Enter Password > ");
-                    password = in.nextLine();
-                }while (password.isBlank());
-                do {
-                    System.out.print("   Enter Address > ");
-                    address = in.nextLine();
-                }while (address.isBlank());
-                do {
-                    System.out.print("   Enter Postal Code > ");
-                    postalCode = in.nextInt();
-                }while (postalCode == -1);
-                do {
-                    System.out.print("   Enter BirthDate (MM/DD/YY) > ");
-                    birthDate = in.nextLine();
-                }while (birthDate.isBlank());
-                do {
-                    System.out.print("   Enter Sex > ");
-                    sex = in.nextLine().charAt(0);
-                }while (sex == '\0');
-                do {
-                    System.out.print("   Enter Enrollment Status (R/IR) > ");
-                    enrollmentStatus = in.nextLine();
-                }while (enrollmentStatus.isBlank());
-                do {
-                    System.out.print("   Enter Program Code > ");
-                    programCode = in.nextLine();
-                }while (programCode.isBlank());
-                User.users.add(new Student(
-                        userID, lastName, firstName, middleInitial,
-                        emailAddress, password, address, postalCode,
-                        birthDate, sex, enrollmentStatus, programCode
-                ));
-                UI.print("Student User created successfully.");
-                break;
-
-            case "2":
-                do {
-                    System.out.print("   Enter UserID > ");
-                    userID = in.nextLine();
-                    for (User u : users) {
-                        if (userID.equals(u.getUserID())) {
-                            UI.print("User ID already exists.");
-                        }
-                        else{
-                            check = true;
-                        }
-                    }
-                }while (userID.isBlank() || !check);
-                do {
-                    System.out.print("   Enter Last Name > ");
-                    lastName = in.nextLine();
-                    System.out.print("   Enter First Name > ");
-                    firstName = in.nextLine();
-                    System.out.print("   No Middle Initial = Enter ");
-                    System.out.print("   Enter Middle Initial > ");
-                    middleInitial = in.nextLine();
-                    userName = lastName + ", " + firstName + " " + middleInitial;
-                }while (firstName.isBlank() || lastName.isBlank() || checkDuplicateName(userName));
-                do {
-                    System.out.print("   Enter Email Address > ");
-                    emailAddress = in.nextLine();
-                }while (emailAddress.isBlank());
-                do {
-                    System.out.print("   Enter Password > ");
-                    password = in.nextLine();
-                }while (password.isBlank());
-                do {
-                    System.out.print("   Enter Address > ");
-                    address = in.nextLine();
-                }while (address.isBlank());
-                do {
-                    System.out.print("   Enter Postal Code > ");
-                    postalCode = in.nextInt();
-                }while (postalCode == -1);
-                do {
-                    System.out.print("   Enter BirthDate (MM/DD/YY) > ");
-                    birthDate = in.nextLine();
-                }while (birthDate.isBlank());
-                do {
-                    System.out.print("   Enter Sex > ");
-                    sex = in.nextLine().charAt(0);
-                }while (sex == '\0');
-                do {
-                    System.out.print("   Enter Contact Number > ");
-                    contactNumber = in.nextLine();
-                }while (contactNumber.isBlank());
-                do {
-                    System.out.print("   Enter College Code > ");
-                    collegeCode = in.nextLine();
-                }while (collegeCode.isBlank());
-                User.users.add(new Faculty(
-                        userID, lastName, firstName, middleInitial,
-                        emailAddress, password, address, postalCode,
-                        birthDate, sex, contactNumber, collegeCode
-                ));
-                UI.print("Faculty User created successfully.");
-                break;
-            case "3":
-                do {
-                    System.out.print("   Enter UserID > ");
-                    userID = in.nextLine();
-                    for (User u : users) {
-                        if (userID.equals(u.getUserID())) {
-                            UI.print("User ID already exists.");
-                        }
-                        else{
-                            check = true;
-                        }
-                    }
-                }while (userID.isBlank() || !check);
-                do {
-                    System.out.print("   Enter Last Name > ");
-                    lastName = in.nextLine();
-                    System.out.print("   Enter First Name > ");
-                    firstName = in.nextLine();
-                    System.out.print("   No Middle Initial = Enter ");
-                    System.out.print("   Enter Middle Initial > ");
-                    middleInitial = in.nextLine();
-                    userName = lastName + ", " + firstName + " " + middleInitial;
-                }while (firstName.isBlank() || lastName.isBlank() || checkDuplicateName(userName));
-                do {
-                    System.out.print("   Enter Email Address > ");
-                    emailAddress = in.nextLine();
-                }while (emailAddress.isBlank());
-                do {
-                    System.out.print("   Enter Password > ");
-                    password = in.nextLine();
-                }while (password.isBlank());
-                do {
-                    System.out.print("   Enter Address > ");
-                    address = in.nextLine();
-                }while (address.isBlank());
-                do {
-                    System.out.print("   Enter Postal Code > ");
-                    postalCode = in.nextInt();
-                }while (postalCode == -1);
-                do {
-                    System.out.print("   Enter BirthDate (MM/DD/YY) > ");
-                    birthDate = in.nextLine();
-                }while (birthDate.isBlank());
-                do {
-                    System.out.print("   Enter Sex > ");
-                    sex = in.nextLine().charAt(0);
-                }while (sex == '\0');
-                do {
-                    System.out.print("   Enter Role > ");
-                    role = in.nextLine();
-                }while (role.isEmpty());
-                User.users.add(new Admin(
-                        userID, lastName, firstName, middleInitial,
-                        emailAddress, password, address, postalCode,
-                        birthDate, sex, role
-                ));
-                UI.print("Admin User created successfully.");
-                break;
-            case "X":
-                manageUsers();
-                submit = true;
-                break;
-
-        }
-
-    }
-    private static void editUser() {
-        String userID = ""; String lastName = ""; String firstName = ""; String middleInitial = ""; String emailAddress = "";
-        String password = ""; String address = ""; int postalCode = -1; String birthDate= ""; char sex= '\0';
-        String choice = ""; boolean submit = false; String enrollmentStatus = ""; String programCode = ""; String contactNumber = "";
-        String collegeCode = ""; String role = "";
+    private static void editUser(boolean permit) {
+        String userID; String lastName; String firstName; String middleInitial; String emailAddress;
+        String password; String address; int postalCode; String birthDate; char sex; boolean valid;
+        String choice; boolean submit = false; String enrollmentStatus = ""; String programCode = "";
+        String contactNumber = ""; String collegeCode = ""; String role = ""; String userName;
 
         UI.print("EDIT EXISTING USER");
-        boolean found = true;
         do {
             System.out.print("  Enter User ID > ");
             userID = in.nextLine();
-            for (User u : users) if (!userID.equals(u.getUserID())) {
-                UI.print("User does not exist");
-                found = false;
-            }
-        } while (!found);
+            if (!User.existUserID(userID)) UI.print("User does not exist");
+        } while (!User.existUserID(userID));
+
         User u = User.getUser(userID);
         if (u == null) {
             UI.print("User not found");
             return;
         }
+
         userID = u.getUserID();
         lastName = u.getLastName();
         firstName = u.getFirstName();
@@ -791,8 +573,28 @@ public class Admin extends User{
         birthDate = u.getBirthDate();
         sex = u.getSex();
 
+        if (userID.charAt(0) == 'S') {
+            Student s = (Student) u;
+            enrollmentStatus = s.getEnrollmentStatus();
+            programCode = s.getProgramCode();
+        }
+        else if (userID.charAt(0) == 'F') {
+            Faculty f = (Faculty) u;
+            contactNumber = f.getContactNumber();
+            collegeCode = f.getCollegeCode();
+        }
+        else if (userID.charAt(0) == 'A') {
+            Admin a = (Admin) u;
+            role = a.getRole();
+        }
+
         while (!submit) {
-            userManage("EDIT", userID, lastName, firstName, middleInitial, emailAddress, password, address, postalCode, birthDate, sex);
+            if (userID.charAt(0) == 'S') userManage("EDIT", userID, lastName, firstName, middleInitial,
+                    emailAddress, password, address, postalCode, birthDate, sex, enrollmentStatus, programCode);
+            else if (userID.charAt(0) == 'A') userManage("EDIT", userID, lastName, firstName, middleInitial,
+                    emailAddress, password, address, postalCode, birthDate, sex, contactNumber, collegeCode);
+            else userManage("EDIT", userID, lastName, firstName, middleInitial, emailAddress, password,
+                        address, postalCode, birthDate, sex, role);
 
             do {
                 System.out.print("  Select > ");
@@ -802,96 +604,153 @@ public class Admin extends User{
 
             switch(choice) {
                 case "1":
-                    boolean exists = false;
-                    do {
-                        System.out.print("   Enter User ID > ");
-                        userID = in.nextLine();
-                        for (User x : users) {
-                            if (userID.equals(x.getUserID())) {
-                                exists = true;
-                                UI.print("User ID already exists");
-                                break;
-                            }
-                        }
-                    } while(exists);
+                    if (permit) {
+                        do {
+                            System.out.print("   Enter User ID > ");
+                            userID = in.nextLine();
+                            if (!User.existUserID(userID)) User.existUserID("User does not exist");
+                        } while(!User.existUserID(userID));
+                    }
+                    else UI.print("Edit access denied");
                     break;
                 case "2":
                     do {
                         System.out.print("   Enter Last Name > ");
                         lastName = in.nextLine();
-                    } while(lastName.isBlank());
+                        if (lastName.trim().isEmpty()) UI.print("Invalid Input");
+                    } while(lastName.trim().isEmpty());
                     break;
                 case "3":
                     do {
                         System.out.print("   Enter First Name > ");
                         firstName = in.nextLine();
-                    }while(firstName.isBlank());
+                        if (firstName.trim().isEmpty()) UI.print("Invalid Input");
+                    } while(firstName.trim().isEmpty());
+                    break;
                 case "4":
-                        System.out.print("   Enter Middle Initial (Press Enter if None) > ");
+                        System.out.print("   Enter Middle Initial > ");
                         middleInitial = in.nextLine();
+                        if (middleInitial.endsWith(".")) middleInitial = middleInitial.replace(".", "");
                     break;
                 case "5":
+                    valid = false;
                     do {
                         System.out.print("   Enter Email Address > ");
                         emailAddress = in.nextLine();
-                    }while(emailAddress.isBlank());
+                        if (emailAddress.trim().isEmpty()) UI.print("Invalid Input");
+                        else if (!emailAddress.endsWith("@bulsu.edu.ph")) UI.print("Invalid Email Domain");
+                        else if (!emailAddress.matches("[SFA][0-9]{3}@bulsu\\.edu\\.ph"))
+                            UI.print("Invalid User");
+                        else if (User.checkDuplicateEmail(emailAddress)) UI.print("Email already exists");
+                        else valid = true;
+                    } while (!valid);
+                    break;
                 case "6":
+                    valid = false;
                     do {
                         System.out.print("   Enter Password > ");
                         password = in.nextLine();
-                    }while(password.isBlank());
+                        if (password.trim().isEmpty()) UI.print("Invalid Input");
+                        else if (password.length() < 8) UI.print("Password must be at least 8 characters");
+                        else if (!password.matches(".*[A-Z].*"))
+                            UI.print("Password must contain an uppercase letter");
+                        else if (!password.matches(".*[a-z].*"))
+                            UI.print("Password must contain an lowercase letter");
+                        else if (!password.matches(".*[0-9].*"))
+                            UI.print("Password must contain a number");
+                        else if (!password.matches(".*[^a-zA-Z0-9].*"))
+                            UI.print("Password must contain a special character");
+                        else if (password.contains(" ")) UI.print("Password cannot contain spaces");
+                        else valid = true;
+                    } while (!valid);
+                    break;
                 case "7":
+                    String street; String barangay; String city; String province;
                     do {
-                        System.out.print("   Enter Address > ");
-                        address = in.nextLine();
-                    }while(address.isBlank());
+                        System.out.print("    Enter Street > ");
+                        street = in.nextLine();
+                        if (street.trim().isEmpty()) UI.print("Invalid Input");
+                    } while (street.trim().isEmpty());
+
+                    do {
+                        System.out.print("    Enter Barangay > ");
+                        barangay = in.nextLine();
+                        if (barangay.trim().isEmpty()) UI.print("Invalid Input");
+                    } while (barangay.trim().isEmpty());
+
+                    do {
+                        System.out.print("    Enter City > ");
+                        city = in.nextLine();
+                        if (city.trim().isEmpty()) UI.print("Invalid Input");
+                    } while (city.trim().isEmpty());
+
+                    do {
+                        System.out.print("    Enter Province > ");
+                        province = in.nextLine();
+                        if (province.trim().isEmpty()) UI.print("Invalid Input");
+                    } while (province.trim().isEmpty());
+
+                    address = street + ", " + barangay + ", " + city + ", " + province;
+                    break;
                 case "8":
+                    valid = false;
                     do {
                         System.out.print("   Enter Postal Code > ");
-                        postalCode = in.nextInt();
-                    }while(postalCode == -1);
+                        try {
+                            postalCode = in.nextInt();
+                            in.nextLine();
+                            if (postalCode < 1000 || postalCode > 9999) UI.print("Postal code must be 4 digits");
+                            else valid = true;
+                        }
+                        catch (Exception e) {
+                            in.nextLine();
+                            UI.print("Invalid Input");
+                        }
+                    } while (!valid);
                 case "9":
                     do {
-                        System.out.print("   Enter Birthdate (MM/DD/YY) > ");
+                        System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
                         birthDate = in.nextLine();
-                    }while(birthDate.isBlank());
+                        if (!birthDate.matches("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}"))
+                            UI.print("Invalid birthdate format");
+                    } while (!birthDate.matches("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}"));
                 case "10":
                     do {
                         System.out.print("   Enter Sex (M/F) > ");
-                        sex = in.nextLine().charAt(0);
-                    }while(sex == '\0');
+                        sex = in.nextLine().toUpperCase().charAt(0);
+                        if  (sex != 'M' && sex != 'F') UI.print("Invalid Input");
+                    } while (sex != 'M' && sex != 'F');
                 case "11":
                     if (userID.charAt(0) == 'S') {
-                        Student s = (Student) u;
-                        enrollmentStatus = s.getEnrollmentStatus();
-                        programCode = s.getProgramCode();
-
-                    } else if (userID.charAt(0) == 'F') {
-                        Faculty f = (Faculty) u;
-                        contactNumber = f.getContactNumber();
-                        collegeCode = f.getCollegeCode();
-
-                    } else if (userID.charAt(0) == 'A') {
-                        Admin a = (Admin) u;
-                        role = a.getRole();
+                        do {
+                            System.out.print("   Enrollment Status (R, IR) > ");
+                            enrollmentStatus = in.nextLine().toUpperCase();
+                            if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input");
+                        } while (!enrollmentStatus.matches("R|IR"));
+                        do {
+                            System.out.println("   Program Code > ");
+                            programCode = in.nextLine();
+                            if (!(programCode.length() >= 4 && programCode.length() <= 6)) UI.print("Invalid Input");
+                        } while (!(programCode.length() >= 4 && programCode.length() <= 6));
                     }
-                    if (userID.charAt(0) == 'S') {
+                    else if (userID.charAt(0) == 'F') {
                         do {
-                            System.out.print("   Enter Enrollment Status > ");
-                            enrollmentStatus = in.nextLine();
-                        } while (enrollmentStatus.isBlank());
-
-                    } else if (userID.charAt(0) == 'F') {
-                        do {
-                            System.out.print("   Enter Contact Number > ");
+                            System.out.print("   Contact Number > ");
                             contactNumber = in.nextLine();
-                        } while (contactNumber.isBlank());
-
-                    } else if (userID.charAt(0) == 'A') {
+                            if (contactNumber.matches("[0-9]{11}")) UI.print("Invalid Input");
+                        } while (contactNumber.length() != 11);
                         do {
-                            System.out.print("   Enter Role > ");
+                            System.out.println("   College Code > ");
+                            collegeCode = in.nextLine();
+                            if (!(collegeCode.length() >= 4 && collegeCode.length() <= 6)) UI.print("Invalid Input");
+                        } while (!(collegeCode.length() >= 4 && collegeCode.length() <= 6));
+                    }
+                    else if (userID.charAt(0) == 'A') {
+                        do {
+                            System.out.print("   Role > ");
                             role = in.nextLine();
-                        } while (role.isBlank());
+                            if (role.trim().isEmpty()) UI.print("Invalid Input");
+                        } while (role.trim().isEmpty());
                     }
                     break;
 
@@ -945,11 +804,16 @@ public class Admin extends User{
                     submit = true;
                     break;
             }
+
+            userName = lastName + ", " + firstName + " " + middleInitial + ".";
+            if (checkDuplicateName(userName) && !userName.equals(u.getUserName())) {
+                UI.print("Name already exist");
+                lastName = u.getLastName();
+                firstName = u.getFirstName();
+                middleInitial = u.getMiddleInitial();
+            }
         }
 
-    }
-
-    private void setRole(String role) { this.role = role;
     }
 
     public static void deleteUser(){
@@ -985,7 +849,28 @@ public class Admin extends User{
         birthDate = u.getBirthDate();
         sex = u.getSex();
 
-        userManage("DELETE",userID, lastName, firstName, middleInitial, emailAddress, password, address, postalCode, birthDate, sex);
+        if (userID.charAt(0) == 'S') {
+            Student s = (Student) u;
+            enrollmentStatus = s.getEnrollmentStatus();
+            programCode = s.getProgramCode();
+        }
+        else if (userID.charAt(0) == 'F') {
+            Faculty f = (Faculty) u;
+            contactNumber = f.getContactNumber();
+            collegeCode = f.getCollegeCode();
+        }
+        else if (userID.charAt(0) == 'A') {
+            Admin a = (Admin) u;
+            role = a.getRole();
+        }
+
+        if (userID.charAt(0) == 'S') userManage("EDIT", userID, lastName, firstName, middleInitial,
+                emailAddress, password, address, postalCode, birthDate, sex, enrollmentStatus, programCode);
+        else if (userID.charAt(0) == 'A') userManage("EDIT", userID, lastName, firstName, middleInitial,
+                emailAddress, password, address, postalCode, birthDate, sex, contactNumber, collegeCode);
+        else userManage("EDIT", userID, lastName, firstName, middleInitial, emailAddress, password,
+                    address, postalCode, birthDate, sex, role);
+
         do {
             System.out.print("  Confirm Room Deletion? (Y/N) > ");
             choice = in.nextLine().toUpperCase();
@@ -999,49 +884,65 @@ public class Admin extends User{
         else manageUsers();
     }
 
-    public static void userManage(String text, String userID, String lastName, String firstName, String middleInitial, String emailAddress,
-                                  String password, String address, int postalCode, String birthDate, char sex){
+    public static void userManage(String text, String userID, String lastName, String firstName, String middleInitial,
+                                  String emailAddress, String password, String address, int postalCode, String birthDate,
+                                  char sex, String role){
         User u = User.getUser(userID);
         if (u == null) {
             System.out.println("User not found");
             return;
         }
-        String enrollmentStatus;
-        String programCode; String contactNumber; String collegeCode; String role;
         UI.header(text.toUpperCase() + ": USER INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] USER ID           : %s", userID));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] LAST NAME         : %s", lastName));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] FIRSTNAME         : %s", firstName));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4] MIDDLE INITIAL    : %s", middleInitial));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [5] EMAIL ADDRESS     : %s", emailAddress));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [6] PASSWORD          : %s", password));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [7] ADDRESS           : %s", address));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [8] POSTAL CODE       : %s", postalCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [9] BIRTHDATE         : %s", birthDate));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1]  USER ID          : %s", userID));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2]  LAST NAME        : %s", lastName));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3]  FIRSTNAME        : %s", firstName));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4]  MIDDLE INITIAL   : %s", middleInitial));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [5]  EMAIL ADDRESS    : %s", emailAddress));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [6]  PASSWORD         : %s", password));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [7]  ADDRESS          : %s", address));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [8]  POSTAL CODE      : %s", postalCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [9]  BIRTHDATE        : %s", birthDate));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [10] SEX              : %s", sex));
-        if (userID.charAt(0) == 'S'){
-            Student s = (Student) u;
-            enrollmentStatus = s.getEnrollmentStatus();
-            programCode = s.getProgramCode();
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] ENROLLMENT STATUS: %s", enrollmentStatus));
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [12] PROGRAM CODE     : %s", programCode));
-        } else if (userID.charAt(0) == 'F') {
-            Faculty f = (Faculty) u;
-            contactNumber = f.getContactNumber();
-            collegeCode = f.getCollegeCode();
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] CONTACT NUMBER   : %s", contactNumber));
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [12] COLLEGE CODE     : %s", collegeCode));
-        } else if (userID.charAt(0) == 'A') {
-            Admin a = (Admin) u;
-            role = a.getRole();
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] ROLE             : %s", role));
-    }
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] ROLE             : %s", role));
         System.out.printf("│%-" + innerWidth + "s│\n", "");
         UI.option();
         UI.footer();
     }
 
-    public String getRole() { return role;
+    public static void userManage(String text, String userID, String lastName, String firstName, String middleInitial,
+                                  String emailAddress, String password, String address, int postalCode, String birthDate,
+                                  char sex, String input1, String input2){
+        User u = User.getUser(userID);
+        if (u == null) {
+            System.out.println("User not found");
+            return;
+        }
+        UI.header(text.toUpperCase() + ": USER INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1]  USER ID          : %s", userID));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2]  LAST NAME        : %s", lastName));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3]  FIRSTNAME        : %s", firstName));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4]  MIDDLE INITIAL   : %s", middleInitial));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [5]  EMAIL ADDRESS    : %s", emailAddress));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [6]  PASSWORD         : %s", password));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [7]  ADDRESS          : %s", address));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [8]  POSTAL CODE      : %s", postalCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [9]  BIRTHDATE        : %s", birthDate));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [10] SEX              : %s", sex));
+        if (userID.charAt(0) == 'S'){
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] ENROLLMENT STATUS: %s", input1));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [12] PROGRAM CODE     : %s", input2));
+        }
+        else {
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] CONTACT NUMBER   : %s", input1));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [12] COLLEGE CODE     : %s", input2));
+        }
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    private void setRole(String role) {
+        this.role = role;
+    }
 }

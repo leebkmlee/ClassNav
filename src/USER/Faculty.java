@@ -1,14 +1,15 @@
 package USER;
 import DATA.*;
+import DATA.Class;
 import UI.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import DATA.*;
-import UI.*;
-
-import static DATA.Room.convertToMinutes;
+import static DATA.Class.classes;
+import static DATA.Room.*;
+import static DATA.Schedule.schedules;
+import static DATA.Section.sections;
 
 public class Faculty extends User{
     private String contactNumber;
@@ -22,12 +23,12 @@ public class Faculty extends User{
     }
 
     public static void locateRoom(String roomCode) {
-        Room r = Room.findRoom(roomCode);
+        Room r = findRoom(roomCode);
         if (r == null) {
             UI.print("Room not found");
             return;
         }
-        Building b = Building.findBuilding(Room.getBuildingCode(r));
+        Building b = Building.findBuilding(getBuildingCode(r));
         if (b == null) {
             UI.print("Building not found");
             return;
@@ -35,13 +36,13 @@ public class Faculty extends User{
         UI.header("ROOM INFORMATION");
         System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM DETAILS");
         UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM CODE         : %s", Room.getRoom(r)));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM DESCRIPTION  : %s", Room.getRoomDescription(r)));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM CODE         : %s", getRoom(r)));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM DESCRIPTION  : %s", getRoomDescription(r)));
         UI.separator();
         System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM LOCATION");
         UI.separator();
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING NAME     : %s", Building.getBuildingName(b)));
-        int floor = Room.getFloorNumber(r);
+        int floor = getFloorNumber(r);
         String floorText;
         if (floor == 1) floorText = "1st Floor";
         else if (floor == 2) floorText = "2nd Floor";
@@ -51,13 +52,11 @@ public class Faculty extends User{
         UI.footer();
     }
 
-    Scanner in = new Scanner(System.in);
+    static Scanner in = new Scanner(System.in);
 
     public static ArrayList<String[]> requests = new ArrayList<>();
-    static {
-    }
 
-    public static void viewAvailableRooms( String day, String startTime, String endTime){
+    public static void viewAvailableRooms(String day, String startTime, String endTime){
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
 
@@ -68,11 +67,11 @@ public class Faculty extends User{
         UI.separator();
         boolean found = false;
 
-        for (Room r : Room.rooms) {
-            String roomCode = Room.getRoom(r);
+        for (Room r : rooms) {
+            String roomCode = getRoom(r);
             boolean available = true;
 
-            for (Schedule s : Schedule.schedules) {
+            for (Schedule s : schedules) {
                 if (roomCode.equals(Schedule.getRoomCode(s)) && day.equalsIgnoreCase(Schedule.getDay(s))) {
                     int existingStart = convertToMinutes(Schedule.getStartTime(s));
                     int existingEnd = convertToMinutes(Schedule.getEndTime(s));
@@ -84,7 +83,15 @@ public class Faculty extends User{
             }
             if (available) {
                 found = true;
-                System.out.printf("│%-" + innerWidth + "s│%n", String.format("  ROOM CODE    : %s", roomCode));
+                int floor = getFloorNumber(r);
+                String floorText;
+                if (floor == 1) floorText = "1st Floor";
+                else if (floor == 2) floorText = "2nd Floor";
+                else if (floor == 3) floorText = "3rd Floor";
+                else floorText = floor + "th Floor";
+                String room = String.format( "  %-10s %-32s %-15s %-4s", getRoom(r), getRoomDescription(r),
+                        floorText, getBuildingCode(r));
+                System.out.printf("│%-" + innerWidth + "s│\n", room);
             }
         }
         if (!found) {
@@ -93,50 +100,166 @@ public class Faculty extends User{
         UI.footer();
     }
 
-    public void requestRoom(){
-        String buildingCode, roomCode, day, startTime, endTime;
-        UI.header("REQUEST ROOM");
-        UI.footer();
-
-        System.out.print("Building Code: ");
-        buildingCode = in.nextLine();
-        System.out.print("Room Code: ");
-        roomCode = in.nextLine();
-        System.out.print("Day: ");
-        day = in.nextLine();
-        System.out.print("Start Time: ");
-        startTime = in.nextLine();
-        System.out.print("End Time: ");
-        endTime = in.nextLine();
-
-        UI.header("REQUEST ROOM");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Building Code : %s", buildingCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Room Code     : %s", roomCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Day           : %s", day));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Start Time    : %s", startTime));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  End Time      : %s", endTime));
-        UI.footer();
-        System.out.print("  Request (Y/N) > ");
-        char choice = in.next().toUpperCase().charAt(0);
-        if (choice == 'Y'){
-            requests.add(new String[]{
-                    buildingCode, roomCode, day, startTime, endTime
-            });
+    public static void requestRoom(String facultyID){
+        String buildingCode, roomCode, day, startTime, endTime = "", courseCode;
+        Faculty f = Faculty.findFaculty(facultyID); Room r = null;
+        if (f == null) {
+            UI.print("Faculty not found");
+            return;
         }
-        else{
-            requestRoom();
+
+        UI.print("REQUEST ROOM");
+
+        do {
+            System.out.print("  Building Code > ");
+            buildingCode = in.nextLine();
+            if (!Building.verifyBuilding(buildingCode)) UI.print("Building does not exist");
+        } while(!Building.verifyBuilding(buildingCode));
+
+        do {
+            System.out.print("  Room Code > ");
+            roomCode = in.nextLine();
+            if (!existRoomCode(roomCode)) UI.print("Room does not exist");
+            else {
+                r = findRoom(roomCode);
+                if (r == null) return;
+                if (!getBuildingCode(r).equals(buildingCode)) UI.print("Room does not exist in " + buildingCode);
+            }
+            if (r == null) return;
+        } while(!getBuildingCode(r).equals(buildingCode));
+
+        do {
+            System.out.print("  Course Code > ");
+            courseCode = in.nextLine().trim();
+            if (courseCode.trim().isEmpty()) UI.print("Invalid Input");
+            if (!Class.isCourseInFacultyLoad(facultyID, courseCode))
+                UI.print("Course is not in your teaching load.");
+        } while (!Class.isCourseInFacultyLoad(facultyID, courseCode));
+
+        do {
+            System.out.print("  Day > ");
+            day = in.nextLine();
+            if (!day.matches("M|T|W|Th|F|S|Su")) UI.print("Invalid Input");
+        } while(!day.matches("M|T|W|Th|F|S|Su"));
+
+        do {
+            System.out.print("  Start Time > ");
+            startTime = in.nextLine();
+            if(!startTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)")) UI.print("Invalid Input");
+        } while(!startTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)"));
+
+        do {
+            do {
+                System.out.print("  End Time > ");
+                endTime = in.nextLine();
+                if(!endTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)")) UI.print("Invalid Input");
+            } while(!endTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)"));
+            if (convertToMinutes(endTime) <= convertToMinutes(startTime))
+                UI.print("End time must be later than start time.");
+        } while (convertToMinutes(endTime) <= convertToMinutes(startTime));
+
+        for (Section s : sections) if (Section.getFacultyID(s).equals(facultyID)) { // can be inaccurate
+                for (Schedule sc : schedules) if (Schedule.getSectionID(sc).equals(s.getSectionID())) {
+                    boolean sameCourse = false;
+                    for (Class cl : classes) if (Class.getSectionID(cl).equals(s.getSectionID())
+                                    && Class.getCourseCode(cl).equalsIgnoreCase(courseCode)) {
+                        sameCourse = true;
+                        break;
+                    }
+
+                    if (!sameCourse && day.equalsIgnoreCase(Schedule.getDay(sc))) {
+                        int existingStart = convertToMinutes(Schedule.getStartTime(sc));
+                        int existingEnd = convertToMinutes(Schedule.getEndTime(sc));
+
+                        int requestedStart = convertToMinutes(startTime);
+                        int requestedEnd = convertToMinutes(endTime);
+                        if (requestedStart < existingEnd && requestedEnd > existingStart) {
+                            UI.print("Faculty has an existing schedule during this time.");
+                            return;
+                        }
+                    }
+                }
         }
+
+        if(checkAvailability(roomCode, day, startTime, endTime)) {
+            UI.header("REQUEST ROOM");
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  FACULTY ID    : %s", f.getUserID()));
+            UI.separator();
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING CODE : %s", buildingCode));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM CODE     : %s", roomCode));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DAY           : %s", day));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  START TIME    : %s", startTime));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  END TIME      : %s", endTime));
+            UI.footer();
+            System.out.print("  Request (Y/N) > ");
+            char choice = in.next().toUpperCase().charAt(0);
+            if (choice == 'Y') requests.add(new String[]{buildingCode, roomCode, day, startTime, endTime});
+            else requestRoom(facultyID);
+        }
+        else UI.print("Room is occupied");
     }
 
-    public String getContactNumber() { return contactNumber;
+    public static void displaySchedules(String facultyID) {
+        Faculty f = Faculty.findFaculty(facultyID);
+        if (f == null) {
+            UI.print("Student not found");
+            return;
+        }
+        UI.header("FACULTY SCHEDULE");
+        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  FACULTY ID    : %s", facultyID));
+        UI.separator();
+        boolean found = false;
+        for (Section s : sections) {
+            if (facultyID.equals(Section.getFacultyID(s))) {
+                String sectionID = Section.getSection(s);
+                for (Schedule sc : schedules) {
+                    if (sectionID.equals(Schedule.getSectionID(sc))) {
+                        found = true;
+                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  SCHEDULE ID   : %s", Schedule.getSchedule(sc)));
+                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  DAY           : %s", Schedule.getDay(sc)));
+                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  TIME          : %s - %s", Schedule.getStartTime(sc), Schedule.getEndTime(sc)));
+                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  SECTION ID    : %s", sectionID));
+                        String roomCode = Schedule.getRoomCode(sc);
+                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  ROOM CODE     : %s", roomCode));
+                        Room r = findRoom(roomCode);
+                        if (r != null) {
+                            String buildingCode = getBuildingCode(r);
+                            Building b = Building.findBuilding(buildingCode);
+                            if (b != null) {
+                                System.out.printf("│%-" + innerWidth + "s│%n", String.format("  BUILDING NAME : %s", Building.getBuildingName(b)));
+                            } else {
+                                System.out.printf("│%-" + innerWidth + "s│%n", "  BUILDING NAME : Building not found");
+                            }
+                        } else {
+                            System.out.printf("│%-" + innerWidth + "s│%n", "  BUILDING NAME : Room not found");
+                        }
+                        UI.separator();
+                    }
+                }
+            }
+        }
+        if (!found) System.out.printf("│%-" + innerWidth + "s│%n", "  No schedules found.");
+        UI.footer();
     }
 
-    public String getCollegeCode() { return collegeCode;
+    public static Faculty findFaculty(String userID) {
+        for (User u : users) if (userID.equals(u.getUserID()) && u.getClass() == Faculty.class) return (Faculty) u;
+        return null;
     }
 
-    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber;
+    public String getContactNumber() {
+        return contactNumber;
     }
 
-    public void setCollegeCode(String collegeCode) { this.collegeCode = collegeCode;
+    public String getCollegeCode() {
+        return collegeCode;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public void setCollegeCode(String collegeCode) {
+        this.collegeCode = collegeCode;
     }
 }

@@ -18,24 +18,19 @@ public class Signup {
     static String birthDate = "[6] Birthdate:";
     static String sex = "[7] Sex:";
 
-    static String userName, lastName, firstName, middleInitial;
-    static String emailAddress;
-    static String passKey;
-    static String street, barangay, city, province, location;
-    static int postalDigit;
-    static String birthDay;
-    static char gen;
 
-    public static void signUp() {
+    public static void signUp(String text) {
         int complete = 0; boolean submit = false; boolean valid = false;
+        String userName, lastName = "", firstName = "", middleInitial = "";
+        String emailAddress = "";
+        String passKey = "";
+        String street, barangay, city, province, location = "";
+        int postalDigit = 0;
+        String birthDay = "";
+        char gen = '\0';
 
         while (!submit) {
-            System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
-            String title = "PORTAL SIGN UP";
-            int left = (innerWidth - title.length()) / 2;
-            int right = innerWidth - title.length() - left;
-            System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
-            System.out.println("├" + "─".repeat(innerWidth) + "┤");
+            UI.header(text);
 
             printUser();
             printEmail();
@@ -45,10 +40,8 @@ public class Signup {
             printBDate();
             printSex();
 
-            System.out.println("│" + " ".repeat(innerWidth) + "│");
             UI.option();
-            System.out.println("└" + "─".repeat(innerWidth) + "┘");
-            System.out.print("  Select > ");
+            UI.footer();
             String choice = in.nextLine();
 
             switch (choice) {
@@ -149,7 +142,6 @@ public class Signup {
                     } while (province.trim().isEmpty());
 
                     location = street + ", " + barangay + ", " + city + ", " + province;
-                    System.out.println(location);
 
                     if (address.equals("[4] Address:")) complete++;
                     printAddress(location);
@@ -207,8 +199,12 @@ public class Signup {
 
                         switch (emailAddress.charAt(0)) {
                             case 'A':
-                                System.out.print("   Role > ");
-                                String role = in.nextLine();
+                                String role;
+                                do {
+                                    System.out.print("   Role > ");
+                                    role = in.nextLine();
+                                    if (role.trim().isEmpty()) UI.print("Invalid Input");
+                                } while (role.trim().isEmpty());
                                 User.users.add(new Admin(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, role));
                                 break;
@@ -217,11 +213,13 @@ public class Signup {
                                 do {
                                     System.out.print("   Contact Number > ");
                                     contactNumber = in.nextLine();
-                                    if (contactNumber.matches("[0-9]{11}"))
-                                        UI.print("Invalid Input");
+                                    if (contactNumber.matches("[0-9]{11}")) UI.print("Invalid Input");
                                 } while (contactNumber.length() != 11);
-                                System.out.println("   Program Code > ");
-                                collegeCode = in.nextLine();
+                                do {
+                                    System.out.println("   College Code > ");
+                                    collegeCode = in.nextLine();
+                                    if (!(collegeCode.length() >= 4 && collegeCode.length() <= 6)) UI.print("Invalid Input");
+                                } while (!(collegeCode.length() >= 4 && collegeCode.length() <= 6));
                                 User.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber, collegeCode));
                                 break;
@@ -232,13 +230,23 @@ public class Signup {
                                     enrollmentStatus = in.nextLine().toUpperCase();
                                     if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input");
                                 } while (!enrollmentStatus.matches("R|IR"));
-                                System.out.println("   Program Code > ");
-                                programCode = in.nextLine();
+                                do {
+                                    System.out.println("   Program Code > ");
+                                    programCode = in.nextLine();
+                                    if (!(programCode.length() >= 4 && programCode.length() <= 6)) UI.print("Invalid Input");
+                                } while (!(programCode.length() >= 4 && programCode.length() <= 6));
                                 User.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, enrollmentStatus, programCode));
                                 break;
                         }
                         UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
+                        user = "[1] Full Name:";
+                        email = "[2] Email Address:";
+                        password = "[3] Password:";
+                        address = "[4] Address:";
+                        postalCode = "[5] Postal Code:";
+                        birthDate = "[6] Birthdate:";
+                        sex = "[7] Sex:";
                     }
                     else UI.print("Incomplete Details!");
                     break;

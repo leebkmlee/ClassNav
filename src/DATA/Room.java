@@ -145,12 +145,12 @@ public class Room {
         UI.footer();
     }
 
-    public static void checkAvailability(String roomCode, String day, String startTime, String endTime) {
+    public static boolean checkAvailability(String roomCode, String day, String startTime, String endTime) {
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
-        UI.header("ROOM AVAILABILITY");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM CODE     : %s", roomCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM REQUEST  : %s", day + " " + startTime + "-" + endTime));
+//        UI.header("ROOM AVAILABILITY");
+//        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM CODE     : %s", roomCode));
+//        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM REQUEST  : %s", day + " " + startTime + "-" + endTime));
         for (Schedule s : schedules) {
             if (Schedule.getRoomCode(s).equals(roomCode) && Schedule.getDay(s).equalsIgnoreCase(day)) {
 
@@ -158,14 +158,15 @@ public class Room {
                 int existingEnd = convertToMinutes(Schedule.getEndTime(s));
 
                 if (scheduledStart < existingEnd && scheduledEnd > existingStart) {
-                    System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM IS OCCUPIED");
-                    UI.footer();
-                    return;
+//                    System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM IS OCCUPIED");
+//                    UI.footer();
+                    return false;
                 }
             }
         }
-        System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM IS AVAILABLE ");
-        UI.footer();
+//        System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM IS AVAILABLE ");
+//        UI.footer();
+        return true;
     }
 
     public static boolean verifyAvailability(String roomCode, String day, String startTime, String endTime) {

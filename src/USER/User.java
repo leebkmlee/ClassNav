@@ -459,7 +459,7 @@ public class User {
                     break;
             }
         }while (select != 0);
-    }
+    } //use editProfile(false) instead;
 
     public static void start() {
 
@@ -486,7 +486,7 @@ public class User {
                 Login.loginPassword();
                 break;
             case "2":
-                Signup.signUp();
+                Signup.signUp("PORTAL SIGN UP");
                 break;
         }
     }
@@ -544,37 +544,64 @@ public class User {
         UI.footer();
     }
 
-    public void setLastName(String lastName) { this.lastName = lastName;
-    }
-    public void setFirstName(String firstName) { this.firstName = firstName;
-    }
-    public void setMiddleInitial(String middleInitial) { this.middleInitial = middleInitial;
-    }
-    public void setEmailAddress(String emailAddress) { this.emailAddress = emailAddress;
-    }
-    public void setPassword(String password) { this.password = password;
-    }
-    public void setAddress(String address) { this.address = address;
-    }
-    public void setPostalCode(int postalCode) { this.postalCode = postalCode;
-    }
-    public void setBirthDate(String birthDate) { this.birthDate = birthDate;
-    }
-    public void setSex(char sex) { this.sex = sex;
+    public static boolean existUserID(String userID) {
+        for (User u : users) if (userID.equals(u.getUserID())) return true;
+        return false;
     }
 
-    public String getLastName() { return lastName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getFirstName() { return firstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getMiddleInitial() { return middleInitial;
+    public void setMiddleInitial(String middleInitial) {
+        this.middleInitial = middleInitial;
     }
 
-    public String getEmailAddress() { return emailAddress;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
-    public void setUserID(String userID) { this.userID = userID;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPostalCode(int postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setSex(char sex) {
+        this.sex = sex;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getMiddleInitial() {
+        return middleInitial;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }
