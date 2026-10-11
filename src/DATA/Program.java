@@ -49,6 +49,11 @@ public class Program {
         return p.collegeCode;
     }
 
+    public static boolean verifyProgramCode(String programCode) {
+        for (Program p : programs) if (programCode.equals(p.programCode)) return true;
+        return false;
+    }
+
     public static void displayProgram(String programCode) {
         Program p = findProgram(programCode);
         if (p == null) {
