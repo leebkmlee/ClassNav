@@ -7,7 +7,7 @@ import DATA.Course;
 import DATA.Enrollment;
 import UI.UI;
 
-import static DATA.Enrollment.enrollements;
+import static DATA.Enrollment.enrollments;
 import static DATA.Enrollment.getStudentNumber;
 
 public class Student extends User{
@@ -72,7 +72,7 @@ public class Student extends User{
             }
         }
 
-        for (Enrollment e : enrollements) {
+        for (Enrollment e : enrollments) {
             if (getStudentNumber(e).equals(currentUserID)) {
                 System.out.println("├" + "─".repeat(innerWidth) + "┤");
                 System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SECTION          : %s", Enrollment.getSectionID(e)));
@@ -88,6 +88,17 @@ public class Student extends User{
         }
         System.out.println("└" + "─".repeat(innerWidth) + "┘");
     }
+    // displayInfo()
+//    private void displayInfo() {
+//        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
+//        String title = "ACCOUNT PROFILE";
+//        int left = (innerWidth - title.length()) / 2;
+//        int right = innerWidth - title.length() - left;
+//        System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
+//        System.out.println("├" + "─".repeat(innerWidth) + "┤");
+//        System.out.println("└" + "─".repeat(innerWidth) + "┘\n");
+//    }
+
     // displayInfo()
 //    private void displayInfo() {
 //        System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
