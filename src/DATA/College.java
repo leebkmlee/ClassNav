@@ -2,6 +2,7 @@ package DATA;
 import java.util.ArrayList;
 import UI.*;
 
+import static DATA.Course.innerWidth;
 import static DATA.Program.programs;
 
 public class College {
@@ -13,7 +14,7 @@ public class College {
         this.collegeDescription = collegeDescription;
     }
 
-    static ArrayList<College> colleges = new ArrayList<>();
+    public static ArrayList<College> colleges = new ArrayList<>();
     static {
         colleges.add(new College("CICT", "College of Information and Communication Technology"));
         colleges.add(new College("COED", "College of Education"));
@@ -35,10 +36,27 @@ public class College {
         return c.collegeCode;
     }
 
+    public void setCollegeDescription(String collegeDescription) {
+        this.collegeDescription = collegeDescription;
+    }
+    public void setCollegeCode(String collegeCode) {
+       this.collegeCode = collegeCode;
+    }
+
     public static String getCollegeDescription(College c) {
         return c.collegeDescription;
     }
 
+    public static void displayCollege(){
+        UI.header("COLLEGES");
+        for  (College c : colleges) {
+            System.out.printf("│%-" + innerWidth + "s│%n", "College Code: " + c.collegeCode);
+            System.out.printf("│%-" + innerWidth + "s│%n", "College Description: " + c.collegeDescription);
+            System.out.printf("│%-" + innerWidth + "s│%n", " ");
+        }
+        UI.footer();
+
+    }
     public static void displayCollege(String collegeCode) {
         int innerWidth = 70;
         College c = findCollege(collegeCode);

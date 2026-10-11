@@ -44,7 +44,7 @@ public class UI {
         System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
     }
 
-    public static void footer() {
+    public static void footer () {
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
     }
 
@@ -68,5 +68,43 @@ public class UI {
         int left = (INNERWIDTH - options.length()) / 2;
         int right = INNERWIDTH - options.length() - left;
         System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+    }
+
+    public static void submitExit(){
+        String options = "[/] Submit     [X] Return";
+        int left = (INNERWIDTH - options.length()) / 2;
+        int right = INNERWIDTH - options.length() - left;
+        System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+        System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+    }
+
+    public static void deleteExit(){
+        String options = "[/] Delete     [X] Return";
+        int left = (INNERWIDTH - options.length()) / 2;
+        int right = INNERWIDTH - options.length() - left;
+        System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+        System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+    }
+
+    public static void manageUI(String manageText) {
+        UI.header("MANAGE " + manageText.toUpperCase() + " INFORMATION");
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Add New " + manageText);
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Update Existing " + manageText);
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Delete Existing " + manageText);
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [4] View All " + manageText);
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " ");
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [0] Back");
+        UI.footer();
+    }
+    public static void liner (String text){
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", text);
+    }
+
+    public static void approveDecline(){
+        String options = "[/] Approve     [X] Decline";
+        int left = (INNERWIDTH - options.length()) / 2;
+        int right = INNERWIDTH - options.length() - left;
+        System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+        System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
     }
 }
