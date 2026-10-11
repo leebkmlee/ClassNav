@@ -1,11 +1,14 @@
 package USER;
+import DATA.Notification;
+import DATA.Room;
 import DATA.Section;
 import LOGIN.Signup;
 import UI.*;
 import DATA.College;
-import LOGIN.Signup.*;
 
 import java.util.ArrayList;
+
+import static DATA.Notification.*;
 
 
 public class Admin extends User {
@@ -43,16 +46,17 @@ public class Admin extends User {
         System.out.printf("│%-" + innerWidth + "s│%n", " [4] Manage Students");
         System.out.printf("│%-" + innerWidth + "s│%n", " [5] Manage Faculties");
         System.out.printf("│%-" + innerWidth + "s│%n", " [6] Backup Data");
+        System.out.printf("│%-" + innerWidth + "s│%n", " [7] View Notifications");
         System.out.printf("│%-" + innerWidth + "s│%n", " ");
         System.out.printf("│%-" + innerWidth + "s│%n", " [0] Back");
         UI.footer();
 
         System.out.print("Select > ");
         int choice = in.nextInt();
-
         switch (choice) {
             case 0: // go back to login/signup choices break;
             case 1: viewRequest();break;
+            case 7: viewNotifications(); break;
             case 2: manageColleges();break;
             case 3: manageSection();break;
             case 4: manageStudents();break;
@@ -61,31 +65,40 @@ public class Admin extends User {
             default: System.out.println("Invalid choice"); adminStart("A001"); break;
         }
     }
-
     // ------------------------------------------------------------//
     static ArrayList<String[]> requests = Faculty.requests;
 
     static void viewRequest() {
-        UI.header("FACULTY REQUEST LIST");
-
-        for (String [] r: requests){
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Building Code : %s", r[0]));
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Room Code     : %s", r[1]));
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Day           : %s", r[2]));
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Start Time    : %s", r[3]));
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  End Time      : %s", r[4]));
-            System.out.printf("│%-" + innerWidth + "s│\n"," ");
+        ArrayList<Integer> ctr = new ArrayList<>();
+        UI.header("ADMIN NOTIFICATION LIST");
+        int notificationID = 1;
+        for (String[] r : requests) {
+            String print = String.format("   %-5d %-10s %s", notificationID, r[2], r[7]);
+            System.out.printf("│%-" + innerWidth + "s│%n", print);
+            ctr.add(notificationID);
+            notificationID++;
         }
         UI.footer();
-        int choice;
+        System.out.print(" Select Notification ID to view: > ");
+        int choice = in.nextInt();
+        in.nextLine();
 
-        do {
-            System.out.print(" [0] Return to Main Menu > ");
-            choice = in.nextInt();
-            if  (choice == 0) { adminStart("A001");}
-            else System.out.println("Invalid input");
-        } while (choice != 0);
-
+        if (choice >= 1 && choice <= requests.size()) {
+            String[] selectedRequest = requests.get(choice - 1);
+            UI.header(" Notification ID: " + choice);
+            UI.liner(" Sender ID: " + selectedRequest[0]);
+            UI.liner(" Recipient ID: " + selectedRequest[1]);
+            UI.liner(" Room Code: " + selectedRequest[2]);
+            UI.liner(" Building Name: " + selectedRequest[3]);
+            UI.liner(" Day: " + selectedRequest[4]);
+            UI.liner(" Start Time: " + selectedRequest[5]);
+            UI.liner(" End Time: " + selectedRequest[6]);
+            UI.liner(" Message: " + selectedRequest[7]);
+            UI.liner(" ");
+            UI.approveDecline();
+        } else {
+            System.out.println("Invalid Notification ID.");
+        }
     }
     // ------------------------------------------------------------//
     static void manageColleges() {
@@ -327,7 +340,6 @@ public class Admin extends User {
     }
 
     static ArrayList<Section> sections = Section.sections;
-
     static void createSection(){
         UI.print("ADD NEW SECTION");
 
@@ -453,7 +465,6 @@ public class Admin extends User {
         sections.add(new Section(sectionID,yearLevel,block,group,academicYear,profID));
         System.out.println("New Section Successfully Added");
     }
-
     static void updateSection() {
         Section selectedSection = null;
         Section copy =null;
@@ -608,7 +619,6 @@ public class Admin extends User {
             }
         } while (true);
     }
-
     static void deleteSection(){
         UI.print("DELETE EXISTING SECTION");
         String sectionID;
@@ -652,7 +662,6 @@ public class Admin extends User {
             }
         } while (sectionID.isBlank());
     }
-
     static void viewAllSection(){
         DATA.Section.displaySection();
 
@@ -684,9 +693,8 @@ public class Admin extends User {
             default: System.out.println("invalid choice");break;
         }
     }
-    static void createStudent() {
-        Signup.signUp("Add New Student");
-    }
+
+    static void createStudent() {Signup.signUp("Add New Student");}
     static void deleteStudent() {
         UI.header("DELETE EXISTING STUDENT PROFILE");
         String userID;
@@ -774,7 +782,6 @@ public class Admin extends User {
         }
     }
     // ------------------------------------------------------------//
-
     static void manageFaculties(){
         UI.manageUI("Faculties");
         System.out.print("Select > ");
@@ -879,8 +886,28 @@ public class Admin extends User {
         }
         UI.footer();
     }
+
+    // ------------------------------------------------------------//
+    static void viewNotifications(){
+        ArrayList<Notification> notifications = Notification.notifications;
+        UI.print("VIEW NOTIFICATIONS");
+
+        for (Notification n : notifications) {
+            UI.header("NOTIFICATION #" + getNotificationID());
+            UI.liner("Sender ID: " + n.getSenderID());
+            UI.liner("Recipient ID: " + n.getRecipientID());
+            UI.liner("Room Code: " + n.getRoomCode());
+            UI.liner("Building Name: " + n.getBuildingName());
+            UI.liner("Day: " + n.getDay());
+            UI.liner("Time: " + n.getStartTime() + " -  " + n.getEndTime());
+            UI.liner("Day: " + n.getMessage());
+            UI.footer();
+        }
+
+    }
+
     // ------------------------------------------------------------//
     static void backUpData(){
-
+        //BackUp.backup;
     }
 }

@@ -81,4 +81,12 @@ public class UI {
     public static void liner (String text){
         System.out.printf("│%-" + INNERWIDTH + "s│%n", text);
     }
+
+    public static void approveDecline(){
+        String options = "[/] Approve     [X] Decline";
+        int left = (INNERWIDTH - options.length()) / 2;
+        int right = INNERWIDTH - options.length() - left;
+        System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+        System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+    }
 }
