@@ -46,10 +46,7 @@ public class Signup {
             printSex();
 
             System.out.println("│" + " ".repeat(innerWidth) + "│");
-            String options = "[/] Submit     [X] Return";
-            left = (innerWidth - options.length()) / 2;
-            right = innerWidth - options.length() - left;
-            System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+            UI.option();
             System.out.println("└" + "─".repeat(innerWidth) + "┘");
             System.out.print("  Select > ");
             String choice = in.nextLine();

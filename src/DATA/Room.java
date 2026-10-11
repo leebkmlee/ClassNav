@@ -2,6 +2,7 @@ package DATA;
 import UI.UI;
 
 import java.util.ArrayList;
+
 import static DATA.Schedule.schedules;
 
 public class Room {
@@ -40,6 +41,22 @@ public class Room {
         return roomCode;
     }
 
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
+    }
+
+    public void setRoomDescription(String roomDescription) {
+        this.roomDescription = roomDescription;
+    }
+
+    public void setFloorNumber(int floorNumber) {
+        this.floorNumber = floorNumber;
+    }
+
+    public void setBuildingCode(String buildingCode) {
+        this.buildingCode = buildingCode;
+    }
+
     public static Room findRoom(String roomCode) {
         for (Room r : rooms) if (roomCode.equals(r.getRoomCode())) return r;
         return null;
@@ -57,8 +74,18 @@ public class Room {
         return r.floorNumber;
     }
 
-    public static String getBuilding(Room r) {
+    public static String getBuildingCode(Room r) {
         return r.buildingCode;
+    }
+
+    public static boolean existRoomCode(String roomCode) {
+        for (Room r : rooms) if (roomCode.equals(r.roomCode)) return true;
+        return false;
+    }
+
+    public static boolean existRoomDesc(String roomDescription) {
+        for (Room r : rooms) if (roomDescription.equals(r.roomDescription)) return true;
+        return false;
     }
 
     public static int convertToMinutes(String time) {
@@ -98,6 +125,23 @@ public class Room {
         else if (floor == 3) floorText = "3rd Floor";
         else floorText = floor + "th Floor";
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  FLOOR NUMBER      : %s", floorText));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING CODE     : %s", Room.getBuildingCode(r)));
+        UI.footer();
+    }
+
+    public static void displayRooms() {
+        UI.header("ROOM LIST");
+        for (Room r : rooms) {
+            int floor = Room.getFloorNumber(r);
+            String floorText;
+            if (floor == 1) floorText = "1st Floor";
+            else if (floor == 2) floorText = "2nd Floor";
+            else if (floor == 3) floorText = "3rd Floor";
+            else floorText = floor + "th Floor";
+            String room = String.format( "  %-10s %-32s %-15s %-4s", Room.getRoom(r), Room.getRoomDescription(r),
+                    floorText, Room.getBuildingCode(r));
+            System.out.printf("│%-" + innerWidth + "s│\n", room);
+        }
         UI.footer();
     }
 

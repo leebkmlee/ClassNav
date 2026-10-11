@@ -21,7 +21,7 @@ public class Student extends User{
             UI.print("Room not found");
             return;
         }
-        Building b = Building.findBuilding(Room.getBuilding(r));
+        Building b = Building.findBuilding(Room.getBuildingCode(r));
         if (b == null) {
             UI.print("Building not found");
             return;
