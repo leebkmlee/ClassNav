@@ -12,8 +12,8 @@ public class Section {
     static int innerWidth = 70;
 
     private String sectionID;
-    private int yearLevel;
-    private char block;
+    private  int yearLevel;
+    private  char block;
     private int group;
     private String academicYear;
     private String professorID; // foreign key
@@ -43,23 +43,21 @@ public class Section {
         sections.add(new Section("0012", 1, 'B', 0, "2025-2026", "F006"));
     }
 
+    //setters
+    public void setSectionID(String newSectionID) {this.sectionID = newSectionID;}
+    public void setyearLevel(int newyearLevel) {this.yearLevel = newyearLevel;}
+    public void setBlock(char newblock) {this.block = newblock;}
+    public void setGroup(int newgroup) {this.group = newgroup;}
+    public void setAcademicYear(String newAcadyear){this.academicYear = newAcadyear;}
+    public void setProfessorID(String newprofessorID){ this.professorID = newprofessorID;}
+
+    //getters
     public String getSectionID() {
         return sectionID;
     }
-
-    public static Section findSection(String sectionID) {
-        for (Section s : sections) if (sectionID.equals(s.getSectionID())) return s;
-        return null;
-    }
-
     public static String getSection(Section s){
         return s.sectionID;
     }
-
-    public static String getFacultyID(Section s) {
-        return s.professorID;
-    }
-
     public static String getYearSection(Section s) {
         Enrollment e = findEnrollmentByID(s.sectionID);
         if (e == null) {
@@ -76,15 +74,44 @@ public class Section {
         else sectionText = s.yearLevel + "" + s.block;
         return Student.getProgramCode(st) + " " + sectionText;
     }
-
+    public int getyearLevel(){
+        return yearLevel;
+    }
+    public int getgroup(){
+        return group;
+    }
+    public char getBlock(){
+        return block;
+    }
     public static String getAcademicYear(Section s) {
         return s.academicYear;
     }
-
     public static String getProfessorID(Section s) {
         return s.professorID;
     }
+    public String getProfessorID() {return professorID;}
 
+
+    //methods
+    public static Section findSection(String sectionID) {
+        for (Section s : sections) if (sectionID.equals(s.getSectionID())) return s;
+        return null;
+    }
+    public static void displaySection() {
+        // add summary report for all sections....
+        UI.header("LIST OF ALL SECTIONS");
+        for (Section s : sections) {
+            UI.liner(" Section ID: " + s.sectionID);
+            UI.liner(" Year Level: " + s.yearLevel);
+            UI.liner(" Block: " + s.block);
+            UI.liner(" Group: " + s.group);
+            UI.liner(" Academic Year: " + s.academicYear);
+            UI.liner(" Registered Professor ID: " + s.professorID);
+            UI.liner(" ");
+        }
+        UI.liner(" [0] Back");
+        UI.footer();
+    }
     public static void displaySection(String sectionID) {
         Section s = findSection(sectionID);
         if (s == null) {
@@ -97,7 +124,6 @@ public class Section {
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ACADEMIC YEAR     : %s", Section.getAcademicYear(s)));
         UI.footer();
     }
-
     public static void displayStudents(String sectionID){
         Section s = findSection(sectionID);
         if (s == null) {

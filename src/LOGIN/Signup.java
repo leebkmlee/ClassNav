@@ -268,7 +268,11 @@ public class Signup {
         int complete = 0; boolean submit = false; boolean valid = false;
 
         while (!submit) {
-           UI.header(title);
+            System.out.println("\n┌" + "─".repeat(innerWidth) + "┐");
+            int left = (innerWidth - title.length()) / 2;
+            int right = innerWidth - title.length() - left;
+            System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
+            System.out.println("├" + "─".repeat(innerWidth) + "┤");
 
             printUser();
             printEmail();
@@ -279,8 +283,11 @@ public class Signup {
             printSex();
 
             System.out.println("│" + " ".repeat(innerWidth) + "│");
-            UI.submitExit();
-
+            String options = "[/] Submit     [X] Return";
+            left = (innerWidth - options.length()) / 2;
+            right = innerWidth - options.length() - left;
+            System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+            System.out.println("└" + "─".repeat(innerWidth) + "┘");
             System.out.print("  Select > ");
             String choice = in.nextLine();
 
@@ -446,25 +453,29 @@ public class Signup {
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, role));
                                 break;
                             case 'F':
-                                String contactNumber;
+                                String contactNumber; String collegeCode;
                                 do {
                                     System.out.print("   Contact Number > ");
                                     contactNumber = in.nextLine();
                                     if (contactNumber.matches("[0-9]{11}"))
                                         UI.print("Invalid Input");
                                 } while (contactNumber.length() != 11);
+                                System.out.println("   Program Code > ");
+                                collegeCode = in.nextLine();
                                 User.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
-                                        emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber));
+                                        emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber, collegeCode));
                                 break;
                             case 'S':
-                                String enrollmentStatus;
+                                String enrollmentStatus; String programCode;
                                 do {
                                     System.out.print("   Enrollment Status (R, IR) > ");
                                     enrollmentStatus = in.nextLine().toUpperCase();
                                     if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input");
                                 } while (!enrollmentStatus.matches("R|IR"));
+                                System.out.println("   Program Code > ");
+                                programCode = in.nextLine();
                                 User.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
-                                        emailAddress, passKey, location, postalDigit, birthDay, gen, enrollmentStatus));
+                                        emailAddress, passKey, location, postalDigit, birthDay, gen, enrollmentStatus, programCode));
                                 break;
                         }
                         UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");

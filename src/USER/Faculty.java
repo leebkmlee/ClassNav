@@ -51,41 +51,45 @@ public class Faculty extends User{
 
     Scanner in = new Scanner(System.in);
 
-    public static ArrayList<String[]> requests = new ArrayList<>();
+        public static ArrayList<String[]> requests = new ArrayList<>();
     static {
+        requests.add(new String[]{"PM1", "R101", "Monday", "08:00 AM", "10:00 AM"});
+        requests.add(new String[]{"R1", "R202", "Tuesday", "10:00 AM", "12:00 PM"});
+        requests.add(new String[]{"CB2", "R303", "Wednesday", "01:00 PM", "03:00 PM"});
+        requests.add(new String[]{"PM1", "R102", "Thursday", "08:00 AM", "11:00 AM"});
+        requests.add(new String[]{"R1", "R201", "Friday", "02:00 PM", "04:00 PM"});
     }
+        public void requestRoom(){
+            String buildingCode, roomCode, day, startTime, endTime;
+            UI.header("REQUEST ROOM");
+            UI.footer();
+            System.out.print("Building Code: ");
+            buildingCode = in.nextLine();
+            System.out.print("Room Code: ");
+            roomCode = in.nextLine();
+            System.out.print("Day: ");
+            day = in.nextLine();
+            System.out.print("Start Time: ");
+            startTime = in.nextLine();
+            System.out.print("End Time: ");
+            endTime = in.nextLine();
 
-    public void requestRoom(){
-        String buildingCode, roomCode, day, startTime, endTime;
-        UI.header("REQUEST ROOM");
-        UI.footer();
-        System.out.print("Building Code: ");
-        buildingCode = in.nextLine();
-        System.out.print("Room Code: ");
-        roomCode = in.nextLine();
-        System.out.print("Day: ");
-        day = in.nextLine();
-        System.out.print("Start Time: ");
-        startTime = in.nextLine();
-        System.out.print("End Time: ");
-        endTime = in.nextLine();
-
-        UI.header("REQUEST ROOM");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Building Code : %s", buildingCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Room Code     : %s", roomCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Day           : %s", day));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Start Time    : %s", startTime));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  End Time      : %s", endTime));
-        UI.footer();
-        System.out.print("  Request (Y/N) > ");
-        char choice = in.next().toUpperCase().charAt(0);
-        if (choice == 'Y'){
-            requests.add(new String[]{
-                    buildingCode, roomCode, day, startTime, endTime
-            });
-        }
-        else{
-            requestRoom();
-        }
+            UI.header("REQUEST ROOM");
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Building Code : %s", buildingCode));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Room Code     : %s", roomCode));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Day           : %s", day));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  Start Time    : %s", startTime));
+            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  End Time      : %s", endTime));
+            UI.footer();
+            System.out.print("  Request (Y/N) > ");
+            char choice = in.next().toUpperCase().charAt(0);
+            if (choice == 'Y'){
+                requests.add(new String[]{
+                        buildingCode, roomCode, day, startTime, endTime
+                });
+            }
+            else{
+                requestRoom();
+            }
     }
 }

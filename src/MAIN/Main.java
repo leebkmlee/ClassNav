@@ -5,6 +5,8 @@ import USER.*;
 class Main {
     public static void main(String[] args) {
 
-        User.start();
+
+        Admin.adminStart("A001");
+        // User.start();
     }
 }
