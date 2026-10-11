@@ -98,4 +98,14 @@ public class UI {
         System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
     }
+
+    public static String inserted(Scanner sc, String label) {
+        int maxLabelWidth = INNERWIDTH - 4;
+        System.out.print("│  " + label);
+        String input = sc.nextLine().trim();
+        String combined = "  " + label + input;
+        System.out.printf("\r│%-" + INNERWIDTH + "s│\n", combined);
+
+        return input;
+    }
 }
