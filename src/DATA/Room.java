@@ -2,6 +2,7 @@ package DATA;
 import UI.UI;
 
 import java.util.ArrayList;
+
 import static DATA.Schedule.schedules;
 
 public class Room {
@@ -9,7 +10,7 @@ public class Room {
     private String roomCode;
     private String roomDescription;
     private int floorNumber;
-    private String buildingCode;
+    private String buildingCode; // foreign key
 
 
     public Room(String roomCode, String roomDescription, int floorNumber, String buildingCode) {
@@ -23,12 +24,37 @@ public class Room {
 
     static {
         rooms.add(new Room("PL101", "Programming Laboratory 1", 1, "BLD01"));
+        rooms.add(new Room("PL102", "Programming Laboratory 2", 1, "BLD01"));
+        rooms.add(new Room("PL201", "Computer Laboratory 3", 2, "BLD01"));
         rooms.add(new Room("SDL 1", "Smart Development Lab 1", 2, "BLD02"));
+        rooms.add(new Room("SDL 2", "Smart Development Lab 2", 2, "BLD02"));
+        rooms.add(new Room("ACAD 1", "Academic Room 1", 1, "BLD03"));
+        rooms.add(new Room("ACAD 2", "Academic Room 2", 1, "BLD03"));
         rooms.add(new Room("ACAD 3", "Academic Room 3", 1, "BLD03"));
+        rooms.add(new Room("NH201", "Lecture Room 201", 2, "BLD04"));
+        rooms.add(new Room("NH202", "Lecture Room 202", 2, "BLD04"));
+        rooms.add(new Room("ICT301", "ICT Lecture Room 301", 3, "BLD05"));
+        rooms.add(new Room("ICT302", "ICT Lecture Room 302", 3, "BLD05"));
     }
 
     public String getRoomCode() {
         return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
+    }
+
+    public void setRoomDescription(String roomDescription) {
+        this.roomDescription = roomDescription;
+    }
+
+    public void setFloorNumber(int floorNumber) {
+        this.floorNumber = floorNumber;
+    }
+
+    public void setBuildingCode(String buildingCode) {
+        this.buildingCode = buildingCode;
     }
 
     public static Room findRoom(String roomCode) {
@@ -48,8 +74,18 @@ public class Room {
         return r.floorNumber;
     }
 
-    public static String getBuilding(Room r) {
+    public static String getBuildingCode(Room r) {
         return r.buildingCode;
+    }
+
+    public static boolean existRoomCode(String roomCode) {
+        for (Room r : rooms) if (roomCode.equals(r.roomCode)) return true;
+        return false;
+    }
+
+    public static boolean existRoomDesc(String roomDescription) {
+        for (Room r : rooms) if (roomDescription.equals(r.roomDescription)) return true;
+        return false;
     }
 
     public static int convertToMinutes(String time) {
@@ -89,6 +125,23 @@ public class Room {
         else if (floor == 3) floorText = "3rd Floor";
         else floorText = floor + "th Floor";
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  FLOOR NUMBER      : %s", floorText));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING CODE     : %s", Room.getBuildingCode(r)));
+        UI.footer();
+    }
+
+    public static void displayRooms() {
+        UI.header("ROOM LIST");
+        for (Room r : rooms) {
+            int floor = Room.getFloorNumber(r);
+            String floorText;
+            if (floor == 1) floorText = "1st Floor";
+            else if (floor == 2) floorText = "2nd Floor";
+            else if (floor == 3) floorText = "3rd Floor";
+            else floorText = floor + "th Floor";
+            String room = String.format( "  %-10s %-32s %-15s %-4s", Room.getRoom(r), Room.getRoomDescription(r),
+                    floorText, Room.getBuildingCode(r));
+            System.out.printf("│%-" + innerWidth + "s│\n", room);
+        }
         UI.footer();
     }
 
@@ -113,6 +166,23 @@ public class Room {
         }
         System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM IS AVAILABLE ");
         UI.footer();
+    }
+
+    public static boolean verifyAvailability(String roomCode, String day, String startTime, String endTime) {
+        int scheduledStart = convertToMinutes(startTime);
+        int scheduledEnd = convertToMinutes(endTime);
+        for (Schedule s : schedules) {
+            if (Schedule.getRoomCode(s).equals(roomCode) && Schedule.getDay(s).equalsIgnoreCase(day)) {
+
+                int existingStart = convertToMinutes(Schedule.getStartTime(s));
+                int existingEnd = convertToMinutes(Schedule.getEndTime(s));
+
+                if (scheduledStart < existingEnd && scheduledEnd > existingStart) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 

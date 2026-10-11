@@ -21,8 +21,11 @@ public class Program {
     static {
         programs.add(new Program("BSIT", "Bachelor of Science in Information Technology", "CICT"));
         programs.add(new Program("BSIS", "Bachelor of Science in Information Systems", "CICT"));
-        programs.add(new Program("BSED", "Bachelor of Secondary Education", "COED"));
+        programs.add(new Program("BSCpE", "Bachelor of Science in Computer Engineering", "COE"));
         programs.add(new Program("BSIE", "Bachelor of Science in Industrial Engineering", "COE"));
+        programs.add(new Program("BSED", "Bachelor of Secondary Education", "COED"));
+        programs.add(new Program("BSPSY", "Bachelor of Science in Psychology", "CAS"));
+        programs.add(new Program("BSBA", "Bachelor of Science in Business Administration", "CBA"));
     }
 
     public String getProgramID() {
@@ -44,6 +47,11 @@ public class Program {
 
     public static String getCollegeCode(Program p) {
         return p.collegeCode;
+    }
+
+    public static boolean verifyProgramCode(String programCode) {
+        for (Program p : programs) if (programCode.equals(p.programCode)) return true;
+        return false;
     }
 
     public static void displayProgram(String programCode) {

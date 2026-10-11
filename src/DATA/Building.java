@@ -20,6 +20,7 @@ public class Building {
         buildings.add(new Building("BLD02", "NSTP Building"));
         buildings.add(new Building("BLD03", "Federizo Hall"));
         buildings.add(new Building("BLD04", "Natividad Hall"));
+        buildings.add(new Building("BLD05", "Roxas Hall"));
     }
 
     public String getBuildingCode() {
@@ -37,6 +38,11 @@ public class Building {
 
     public static String getBuildingName(Building b) {
         return b.buildingName;
+    }
+
+    public static boolean verifyBuilding(String buildingCode) {
+        for (Building b : buildings) if (buildingCode.equals(b.getBuildingCode())) return true;
+        return false;
     }
 
     public static void displayBuilding(String buildingCode) {
@@ -63,7 +69,7 @@ public class Building {
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING CODE     : %s", Building.getBuilding(b)));
         System.out.printf("│%-" + innerWidth + "s│\n", "  Rooms under " + Building.getBuildingName(b) + ":");
         for (Room r : rooms) {
-            if (Room.getBuilding(r).equals(b.getBuildingCode())) {
+            if (Room.getBuildingCode(r).equals(b.getBuildingCode())) {
                 int floor = Room.getFloorNumber(r);
                 String floorText;
                 if (floor == 1) floorText = "1st Floor";

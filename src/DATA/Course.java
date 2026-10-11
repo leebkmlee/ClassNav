@@ -4,6 +4,7 @@ import UI.*;
 
 import java.util.ArrayList;
 
+import static DATA.Class.classes;
 import static DATA.Section.sections;
 
 public class Course {
@@ -31,6 +32,13 @@ public class Course {
         courses.add(new Course("IT 203", "Object-Oriented Programming", 3, "BSIT"));
         courses.add(new Course("IT 205", "Quantitative Methods", 3, "BSIT"));
         courses.add(new Course("CC 105", "Data Structure Algorithm", 3, "BSIT"));
+        courses.add(new Course("CC 104", "Computer Programming 2", 3, "BSIT"));
+        courses.add(new Course("IT 206", "Web Systems and Technologies", 3, "BSIT"));
+        courses.add(new Course("IT 207", "Platform Technologies", 3, "BSIT"));
+        courses.add(new Course("GE 101", "General Education Elective", 3, "BSIT"));
+        courses.add(new Course("IT 301", "Systems Analysis and Design", 3, "BSIT"));
+        courses.add(new Course("IT 302", "Information Assurance and Security", 3, "BSIT"));
+        courses.add(new Course("IT 303", "Application Development", 3, "BSIT"));
     }
 
     public String getCourseCode() {
@@ -58,6 +66,32 @@ public class Course {
         return c.programCode;
     }
 
+    public static boolean existCourseCode(String courseCode) {
+        for (Course c : courses) if (courseCode.equals(c.courseCode)) return true;
+        return false;
+    }
+
+    public static boolean existCourseDesc(String courseDescription) {
+        for (Course c : courses) if (courseDescription.equals(c.courseDescription)) return true;
+        return false;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public void setCourseDescription(String courseDescription) {
+        this.courseDescription = courseDescription;
+    }
+
+    public void setCreditUnits(int creditUnits) {
+        this.creditUnits = creditUnits;
+    }
+
+    public void setProgramCode(String programCode) {
+        this.programCode = programCode;
+    }
+
     public static void displayCourse(String courseCode){
         Course c = findCourse(courseCode);
         if (c == null) {
@@ -68,6 +102,17 @@ public class Course {
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE CODE         : %s", Course.getCourseCode(c)));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE DESCRIPTION  : %s", Course.getCourseDescription(c)));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  CREDIT UNITS        : %s", Course.getCreditUnits(c)));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  PROGRAM CODE        : %s", Course.getProgramCode(c)));
+        UI.footer();
+    }
+
+    public static void displayCourses() {
+        UI.header("COURSE LIST");
+        for (Course c : courses) {
+            String room = String.format( "  %-10s %-37s %-12s %-5s", Course.getCourseCode(c),
+                    Course.getCourseDescription(c), Course.getCreditUnits(c) + " units", Course.getProgramCode(c));
+            System.out.printf("│%-" + innerWidth + "s│\n", room);
+        }
         UI.footer();
     }
 
@@ -80,11 +125,15 @@ public class Course {
         UI.header("SECTION LIST");
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE CODE     : %s", Course.getCourseCode(c)));
         System.out.printf("│%-" + innerWidth + "s│\n", "  Sections under " + Course.getCourseDescription(c) + ":");
-        for (Section s : sections) {
-            if (Section.getCourseCode(s).equals(c.getCourseCode())) {
-                String section = String.format("    %-15s %-35s %-12s",
-                        Section.getSection(s), Section.getYearSection(s), "AY " + Section.getAcademicYear(s));
-                System.out.printf("│%-" + innerWidth + "s│\n", section);
+        for (Class cl : classes) {
+            if (Class.getCourseCode(cl).equals(c.getCourseCode())) {
+                for (Section s : sections) {
+                    if (Class.getSectionID(cl).equals(s.getSectionID())) {
+                        String section = String.format("    %-15s %-35s %-12s",
+                                Section.getSection(s), Section.getYearSection(s), "AY " + Section.getAcademicYear(s));
+                        System.out.printf("│%-" + innerWidth + "s│\n", section);
+                    }
+                }
             }
         }
         UI.footer();

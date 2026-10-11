@@ -15,9 +15,11 @@ public class College {
 
     static ArrayList<College> colleges = new ArrayList<>();
     static {
-        colleges.add(new College("CICT", "College of Information Communication Technology"));
+        colleges.add(new College("CICT", "College of Information and Communication Technology"));
         colleges.add(new College("COED", "College of Education"));
         colleges.add(new College("COE", "College of Engineering"));
+        colleges.add(new College("CAS", "College of Arts and Sciences"));
+        colleges.add(new College("CBA", "College of Business Administration"));
     }
 
     public String getCollegeCode() {
