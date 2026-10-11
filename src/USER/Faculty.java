@@ -60,6 +60,7 @@ public class Faculty extends User{
     public static void viewAvailableRooms( String day, String startTime, String endTime){
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
+
         UI.header("AVAILABLE ROOMS");
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DAY          : %s", day));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  START TIME   : %s", startTime));
@@ -96,6 +97,7 @@ public class Faculty extends User{
         String buildingCode, roomCode, day, startTime, endTime;
         UI.header("REQUEST ROOM");
         UI.footer();
+
         System.out.print("Building Code: ");
         buildingCode = in.nextLine();
         System.out.print("Room Code: ");

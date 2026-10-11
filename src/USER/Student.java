@@ -60,7 +60,7 @@ public class Student extends User{
 
     public String getProgramCode(){ return programCode; }
 
-    public static void displaySchedule(String userID) {
+    public static void displaySchedules(String userID) {
         Student st = Student.findStudent(userID);
         if (st == null) {
             UI.print("Student not found");
@@ -108,6 +108,7 @@ public class Student extends User{
     public static void viewAvailableRooms( String day, String startTime, String endTime){
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
+
         UI.header("AVAILABLE ROOMS");
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DAY          : %s", day));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  START TIME   : %s", startTime));

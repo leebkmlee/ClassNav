@@ -271,6 +271,7 @@ public class Admin extends User{
 
     public static void manageUsers() {
         int choice = -1; String input = "";
+
         UI.manageUI("Users");
         do {
             System.out.print("  Select > ");
