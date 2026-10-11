@@ -1,5 +1,7 @@
 package UI;
 
+import java.util.Scanner;
+
 public class UI {
 
     public static final int INNERWIDTH = 70;
@@ -50,5 +52,15 @@ public class UI {
 
     public static void separator() {
         System.out.println("│" + "─".repeat(INNERWIDTH) + "│");
+    }
+
+    public static String inserted(Scanner sc, String label) {
+        int maxLabelWidth = INNERWIDTH - 4;
+        System.out.print("│  " + label);
+        String input = sc.nextLine().trim();
+        String combined = "  " + label + input;
+        System.out.printf("\r│%-" + INNERWIDTH + "s│\n", combined);
+
+        return input;
     }
 }

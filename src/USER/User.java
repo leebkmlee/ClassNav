@@ -118,4 +118,9 @@ public class User {
                 break;
         }
     }
+    public static void logout() {
+        System.out.println("Logging out...");
+        System.out.println("Successfully Logged out...");
+        start();
+    }
 }
