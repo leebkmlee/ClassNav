@@ -13,7 +13,7 @@ public class College {
         this.collegeDescription = collegeDescription;
     }
 
-    static ArrayList<College> colleges = new ArrayList<>();
+    public static ArrayList<College> colleges = new ArrayList<>();
     static {
         colleges.add(new College("CICT", "College of Information and Communication Technology"));
         colleges.add(new College("COED", "College of Education"));

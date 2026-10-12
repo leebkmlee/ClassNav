@@ -7,6 +7,7 @@ import static DATA.Room.rooms;
 public class Building {
     private String buildingCode;
     private String buildingName;
+    final static int innerWidth = 70;
 
     public Building(String buildingCode, String buildingName) {
         this.buildingCode = buildingCode;
@@ -45,8 +46,17 @@ public class Building {
         return false;
     }
 
+    public static boolean existBuildingCode(String buildingCode) {
+        for (Building b : buildings) if (buildingCode.equals(b.buildingCode)) return true;
+        return false;
+    }
+
+    public static boolean existBuildingName(String buildingName) {
+        for (Building b : buildings) if (buildingName.equals(b.buildingName)) return true;
+        return false;
+    }
+
     public static void displayBuilding(String buildingCode) {
-        final int innerWidth = 70;
         Building bldg = findBuilding(buildingCode);
         if (bldg == null) {
             UI.print("Building not found");
@@ -55,6 +65,15 @@ public class Building {
         UI.header("BUILDING DETAILS");
         System.out.printf("│  BUILDING CODE   : %-" + (innerWidth - 20) + "s│\n", Building.getBuilding(bldg));
         System.out.printf("│  BUILDING NAME   : %-" + (innerWidth - 20) + "s│\n", Building.getBuildingName(bldg));
+        UI.footer();
+    }
+
+    public static void displayBuildings() {
+        UI.header("BUILDING LIST");
+        for (Building b : buildings) {
+            String building = String.format( "  %-10s %-32s %-15s %-4s", Building.getBuilding(b), Building.getBuildingName(b));
+            System.out.printf("│%-" + innerWidth + "s│\n", building);
+        }
         UI.footer();
     }
 
@@ -81,5 +100,11 @@ public class Building {
             }
         }
         UI.footer();
+    }
+
+    public void setBuildingCode(String buildingCode) { this.buildingCode = buildingCode;
+    }
+
+    public void setBuildingName(String buildingName) { this.buildingName = buildingName;
     }
 }

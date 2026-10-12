@@ -16,7 +16,7 @@ public class Program {
         this.collegeCode = collegeCode;
     }
 
-    static ArrayList<Program> programs = new ArrayList<>();
+    public static ArrayList<Program> programs = new ArrayList<>();
 
     static {
         programs.add(new Program("BSIT", "Bachelor of Science in Information Technology", "CICT"));

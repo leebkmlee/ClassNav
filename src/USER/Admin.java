@@ -1,9 +1,21 @@
 package USER;
 import DATA.Building;
+import DATA.Class;
 import DATA.Room;
 import UI.*;
-import java.util.Scanner;
 
+import java.util.Scanner;
+import DATA.*;
+
+import static DATA.Building.buildings;
+import static DATA.Class.classes;
+import static DATA.College.colleges;
+import static DATA.Course.courses;
+import static DATA.Enrollment.enrollments;
+import static DATA.Program.programs;
+import static DATA.Room.rooms;
+import static DATA.Schedule.schedules;
+import static DATA.Section.sections;
 import static UI.UI.INNERWIDTH;
 
 public class Admin extends User{
@@ -121,7 +133,7 @@ public class Admin extends User{
                     if (roomCode.isEmpty() || roomDescription.isEmpty() || floorNumber == -1 || buildingCode.isEmpty())
                         UI.print("Details are incomplete");
                     else {
-                        Room.rooms.add(new Room(roomCode, roomDescription, floorNumber, buildingCode));
+                        rooms.add(new Room(roomCode, roomDescription, floorNumber, buildingCode));
                         UI.print("Room successfully created");
                         roomManage("ADD", roomCode, roomDescription, floorNumber, buildingCode);
                         submit = true;
@@ -247,7 +259,7 @@ public class Admin extends User{
         } while(!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
-            Room.rooms.remove(r);
+            rooms.remove(r);
             UI.print("Room successfully deleted");
         }
         else manageRooms();
@@ -358,7 +370,7 @@ public class Admin extends User{
                     if (courseCode.isEmpty() || courseDescription.isEmpty() || creditUnits == -1 || programCode.isEmpty())
                         UI.print("Details are incomplete");
                     else {
-                        Course.courses.add(new Course(courseCode, courseDescription, creditUnits, programCode));
+                        courses.add(new Course(courseCode, courseDescription, creditUnits, programCode));
                         UI.print("Course successfully created");
                         roomManage("ADD", courseCode, courseDescription, creditUnits, programCode);
                         submit = true;
@@ -477,7 +489,7 @@ public class Admin extends User{
         } while(!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
-            Course.courses.remove(c);
+            courses.remove(c);
             UI.print("Course successfully deleted");
         }
         else manageCourses();
@@ -1042,6 +1054,242 @@ public class Admin extends User{
     }
 
     public String getRole() { return role;
+    }
+
+    public void manageBuildings(){
+        int choice = -1; String input = "";
+
+        UI.manageUI("Buildings");
+        do {
+            System.out.print("  Select > ");
+            try {
+                input = in.nextLine().trim();
+                if (input.isEmpty()) {
+                    UI.print("Invalid Input");
+                    continue;
+                }
+                choice = Integer.parseInt(input);
+                if (!(choice >= 1 && choice <= 3) && choice != 0) UI.print("Invalid Input");
+            } catch (NumberFormatException e) {
+                UI.print("Invalid Input");
+                choice = -1;
+            }
+        } while (!(choice >= 1 && choice <= 4) && choice != 0);
+
+        switch (choice) {
+            case 1:
+                createBuilding();
+                break;
+            case 2:
+                editBuilding();
+                break;
+            case 3:
+                deleteBuilding();
+                break;
+            case 4:
+                Building.displayBuildings();
+                break;
+            case 0:
+                // menu
+        }
+    }
+
+    public void createBuilding(){
+        String buildingCode = ""; String buildingName = "";  String choice = ""; boolean submit = false;
+
+        while (!submit) {
+            UI.header("CREATE NEW ROOM");
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Building Code         : " + buildingCode);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Building Name  : " + buildingName);
+            UI.option();
+            UI.footer();
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-2X]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-2X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Building Code > ");
+                        buildingCode = in.nextLine();
+                        if (Building.existBuildingCode(buildingCode)) UI.print("Building Code already exists");
+                    } while(Building.existBuildingCode(buildingCode));
+                    break;
+                case "2":
+                    do {
+                        System.out.print("   Enter Building Name > ");
+                        buildingName = in.nextLine();
+                        if (Building.existBuildingName(buildingName)) UI.print("Building Name already exists");
+                    } while(Building.existBuildingName(buildingName));
+                    break;
+                case "X":
+                    manageBuildings();
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public void editBuilding(){
+        String buildingCode = ""; String buildingName = "";
+        boolean submit = false; String input; String choice;
+
+        UI.print("EDIT EXISTING BUILDING");
+        do {
+            System.out.print("  Enter Building Code > ");
+            input = in.nextLine();
+            if (!Building.existBuildingName(input)) UI.print("Building does not exist");
+        } while(!Building.existBuildingName(input));
+
+        Building b = Building.findBuilding(input);
+        if (b == null) {
+            UI.print("Building not found");
+            return;
+        }
+        buildingCode = Building.getBuilding(b);
+        buildingName = Building.getBuildingName(b);
+
+        while (!submit) {
+            buildingManage("EDIT", buildingCode, buildingName);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-2X]") && !choice.equals("/")) UI.print("Invalid Input");
+            } while (!choice.matches("[1-2X]") && !choice.equals("/"));
+
+            switch(choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Building Code > ");
+                        buildingCode = in.nextLine();
+                        if (Building.existBuildingCode(buildingCode) && !buildingCode.equalsIgnoreCase(b.getBuildingCode()))
+                            UI.print("Room Code already exists");
+                    } while(Building.existBuildingCode(buildingCode) && !buildingCode.equalsIgnoreCase(b.getBuildingCode()));
+                    break;
+                case "2":
+                    do {
+                        System.out.print("   Enter Building Name > ");
+                        buildingName = in.nextLine();
+                        if (Building.existBuildingName(buildingName)  && !buildingName.equalsIgnoreCase(Building.getBuildingName(b)))
+                            UI.print("Room Description already exists");
+                    } while(Building.existBuildingName(buildingName)  && !buildingName.equalsIgnoreCase(Building.getBuildingName(b)));
+                    break;
+                case "/":
+                    UI.print("Room successfully edited");
+                    b.setBuildingCode(buildingCode); b.setBuildingName(buildingName);
+                    Building.displayBuilding(b.getBuildingCode());
+                    submit = true;
+                    break;
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public void deleteBuilding(){
+        String input; String choice; String buildingCode; String buildingName;
+
+        UI.print("DELETE EXISTING BUILDING");
+
+        do {
+            System.out.print("  Enter Building Code > ");
+            input = in.nextLine();
+            if (!Building.existBuildingCode(input)) UI.print("Room does not exist");
+        } while(!Building.existBuildingCode(input));
+
+        Building b = Building.findBuilding(input);
+        if (b == null) {
+            UI.print("Building not found");
+            return;
+        }
+
+        buildingCode = Building.getBuilding(b);
+        buildingName = Building.getBuildingName(b);
+
+        buildingManage("DELETE", buildingCode, buildingName);
+        do {
+            System.out.print("  Confirm Building Deletion? (Y/N) > ");
+            choice = in.nextLine().toUpperCase();
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
+        } while(!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            buildings.remove(b);
+            UI.print("Building successfully deleted");
+        }
+        else manageBuildings();
+    }
+
+    private static void buildingManage(String text, String buildingCode, String buildingName) {
+        UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] BUILDING CODE     : %s", buildingCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] BUILDING NAME     : %s", buildingName));
+        System.out.printf("│%-" + innerWidth + "s│\n", "");
+        UI.option();
+        UI.footer();
+    }
+
+    public void viewStatistics(){
+        int totalUser = 0, totalStudent = 0, totalFaculty = 0, totalAdmin = 0, totalBuilding = 0, totalRoom = 0,
+                totalCourse= 0, totalProgram = 0, totalClass = 0, totalCollege = 0, totalEnrollee = 0, totalSchedule = 0,
+                totalSection = 0;
+        for (Building b : buildings) {
+            totalBuilding++;
+        }
+        for (User u : users) {
+            totalUser++;
+            if (u.getUserID().charAt(0) == 'S') {
+                totalStudent++;
+            } else if (u.getUserID().charAt(0) == 'F') {
+                totalFaculty++;
+            } else if (u.getUserID().charAt(0) == 'A') {
+                totalAdmin++;
+            }
+        }
+        for (Room r : rooms) {
+            totalRoom++;
+        }
+        for (Course c : courses){
+            totalCourse++;
+        }
+        for (Program p :programs){
+            totalProgram++;
+        }
+        for (Class c : classes){
+            totalClass++;
+        }
+        for (College c : colleges){
+            totalCollege++;
+        }
+        for (Enrollment e : enrollments){
+            totalEnrollee++;
+        }
+        for (Schedule s : schedules){
+            totalSchedule++;
+        }
+        for (Section s : sections){
+            totalSection++;
+        }
+        UI.header("STATISTICS");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  USER          : %s", totalUser));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("    STUDENT     : %s", totalStudent));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("    FACULTY     : %s", totalFaculty));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("    ADMIN       : %s", totalAdmin));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  PROGRAM       : %s", totalProgram));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE        : %s", totalCourse));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COLLEGE       : %s", totalCollege));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING      : %s", totalBuilding));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM          : %s", totalRoom));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ENROLLEE      : %s", totalEnrollee));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  CLASS         : %s", totalClass));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SECTION       : %s", totalSection));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SCHEDULE      : %s", totalSchedule));
+        UI.footer();
     }
 
 }
