@@ -66,6 +66,32 @@ public class Course {
         return c.programCode;
     }
 
+    public static boolean existCourseCode(String courseCode) {
+        for (Course c : courses) if (courseCode.equals(c.courseCode)) return true;
+        return false;
+    }
+
+    public static boolean existCourseDesc(String courseDescription) {
+        for (Course c : courses) if (courseDescription.equals(c.courseDescription)) return true;
+        return false;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public void setCourseDescription(String courseDescription) {
+        this.courseDescription = courseDescription;
+    }
+
+    public void setCreditUnits(int creditUnits) {
+        this.creditUnits = creditUnits;
+    }
+
+    public void setProgramCode(String programCode) {
+        this.programCode = programCode;
+    }
+
     public static void displayCourse(String courseCode){
         Course c = findCourse(courseCode);
         if (c == null) {
@@ -76,6 +102,17 @@ public class Course {
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE CODE         : %s", Course.getCourseCode(c)));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COURSE DESCRIPTION  : %s", Course.getCourseDescription(c)));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  CREDIT UNITS        : %s", Course.getCreditUnits(c)));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  PROGRAM CODE        : %s", Course.getProgramCode(c)));
+        UI.footer();
+    }
+
+    public static void displayCourses() {
+        UI.header("COURSE LIST");
+        for (Course c : courses) {
+            String room = String.format( "  %-10s %-37s %-12s %-5s", Course.getCourseCode(c),
+                    Course.getCourseDescription(c), Course.getCreditUnits(c) + " units", Course.getProgramCode(c));
+            System.out.printf("│%-" + innerWidth + "s│\n", room);
+        }
         UI.footer();
     }
 
