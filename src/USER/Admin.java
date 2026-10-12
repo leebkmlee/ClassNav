@@ -269,8 +269,241 @@ public class Admin extends User{
         UI.footer();
     }
 
+    public static void manageCourses() {
+        int choice = -1; String input = "";
+        UI.manageUI("Course");
+        do {
+            System.out.print("  Select > ");
+            try {
+                input = in.nextLine().trim();
+                if (input.isEmpty()) {
+                    UI.print("Invalid Input");
+                    continue;
+                }
+                choice = Integer.parseInt(input);
+                if (!(choice >= 1 && choice <= 4) && choice != 0) UI.print("Invalid Input");
+            } catch (NumberFormatException e) {
+                UI.print("Invalid Input");
+                choice = -1;
+            }
+        } while (!(choice >= 1 && choice <= 4) && choice != 0);
+
+        switch (choice) {
+            case 1:
+                createCourse();
+                break;
+            case 2:
+                editCourse();
+                break;
+            case 3:
+                deleteCourse();
+                break;
+            case 4:
+                Course.displayCourses();
+                break;
+            case 0:
+                // menu
+        }
+    }
+
+    private static void createCourse() {
+        String courseCode = ""; String courseDescription = ""; String programCode = ""; String choice = "";
+        int creditUnits = -1; boolean submit = false;
+
+        while (!submit) {
+            courseManage("CREATE", courseCode, courseDescription, creditUnits, programCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine();
+                        if (Course.existCourseCode(courseCode)) UI.print("Course Code already exists");
+                    } while(Course.existCourseCode(courseCode));
+                    break;
+                case "2":
+                    do {
+                        System.out.print("   Enter Course Description > ");
+                        courseDescription = in.nextLine();
+                        if (Course.existCourseDesc(courseDescription)) UI.print("Course Description already exists");
+                    } while(Course.existCourseDesc(courseDescription));
+                    break;
+                case "3":
+                    do {
+                        System.out.print("   Enter Credit Units > ");
+                        try {
+                            String input = in.nextLine();
+                            creditUnits = Integer.parseInt(input);
+                            if (creditUnits != 2 && creditUnits != 3) UI.print("Invalid Credit Units");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Credit Units");
+                            creditUnits = -1;
+                        }
+                    } while (creditUnits != 2 && creditUnits != 3);
+                    break;
+                case "4":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        programCode = in.nextLine();
+                        if(!Program.verifyProgramCode(programCode)) UI.print("Program Code does not exist");
+                    } while(!Program.verifyProgramCode(programCode));
+                    break;
+                case "/":
+                    if (courseCode.isEmpty() || courseDescription.isEmpty() || creditUnits == -1 || programCode.isEmpty())
+                        UI.print("Details are incomplete");
+                    else {
+                        Course.courses.add(new Course(courseCode, courseDescription, creditUnits, programCode));
+                        UI.print("Course successfully created");
+                        roomManage("ADD", courseCode, courseDescription, creditUnits, programCode);
+                        submit = true;
+                    }
+                    break;
+                case "X":
+                    manageCourses();
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void editCourse() {
+        String courseCode = ""; String courseDescription = ""; String programCode = ""; String choice = "";
+        int creditUnits = -1; boolean submit = false; String input;
+
+        UI.print("EDIT EXISTING COURSE");
+        do {
+            System.out.print("  Enter Course Code > ");
+            input = in.nextLine();
+            if (!Course.existCourseCode(input)) UI.print("Course does not exist");
+        } while(!Course.existCourseCode(input));
+
+        Course c = Course.findCourse(input);
+        if (c == null) {
+            UI.print("Room not found");
+            return;
+        }
+        courseCode = Course.getCourseCode(c);
+        courseDescription = Course.getCourseDescription(c);
+        creditUnits = Course.getCreditUnits(c);
+        programCode = Course.getProgramCode(c);
+
+        while (!submit) {
+            courseManage("EDIT", courseCode, courseDescription, creditUnits, programCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Input");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch(choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine();
+                        if (Course.existCourseCode(courseCode)) UI.print("Course Code already exists");
+                    } while(Course.existCourseCode(courseCode));
+                    break;
+                case "2":
+                    do {
+                        System.out.print("   Enter Course Description > ");
+                        courseDescription = in.nextLine();
+                        if (Course.existCourseDesc(courseDescription)) UI.print("Course Description already exists");
+                    } while(Course.existCourseDesc(courseDescription));
+                    break;
+                case "3":
+                    do {
+                        System.out.print("   Enter Credit Units > ");
+                        try {
+                            input = in.nextLine();
+                            creditUnits = Integer.parseInt(input);
+                            if (creditUnits != 2 && creditUnits != 3) UI.print("Invalid Credit Units");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Credit Units");
+                            creditUnits = -1;
+                        }
+                    } while (creditUnits != 2 && creditUnits != 3);
+                    break;
+                case "4":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        programCode = in.nextLine();
+                        if(!Program.verifyProgramCode(programCode)) UI.print("Program Code does not exist");
+                    } while(!Program.verifyProgramCode(programCode));
+                    break;
+                case "/":
+                    UI.print("Room successfully edited");
+                    c.setCourseCode(courseCode); c.setCourseDescription(courseDescription);
+                    c.setCreditUnits(creditUnits); c.setProgramCode(programCode);
+                    Course.displayCourse(c.getCourseCode());
+                    submit = true;
+                    break;
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void deleteCourse() {
+        String input; String choice;
+
+        UI.print("DELETE EXISTING COURSE");
+
+        do {
+            System.out.print("  Enter Course Code > ");
+            input = in.nextLine();
+            if (!Course.existCourseCode(input)) UI.print("Course does not exist");
+        } while(!Course.existCourseCode(input));
+
+        Course c = Course.findCourse(input);
+        if (c == null) {
+            UI.print("Room not found");
+            return;
+        }
+
+        Course.displayCourse(c.getCourseCode());
+
+        do {
+            System.out.print("  Confirm Room Deletion? (Y/N) > ");
+            choice = in.nextLine().toUpperCase();
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
+        } while(!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            Course.courses.remove(c);
+            UI.print("Course successfully deleted");
+        }
+        else manageCourses();
+    }
+
+    private static void courseManage(String text, String courseCode, String courseDescription,
+                                     int creditUnits, String programCode) {
+        UI.header(text.toUpperCase() + ": ROOM INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] COURSE CODE         : %s", courseCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription));
+        String unitText;
+        if (creditUnits == -1) unitText = "";
+        else if (creditUnits == 1) unitText = "1st Floor";
+        else if (creditUnits == 2) unitText = "2nd Floor";
+        else if (creditUnits == 3) unitText = "3rd Floor";
+        else unitText = creditUnits + "th Floor";
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] CREDIT UNITS        : %s", unitText));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4] PROGRAM CODE        : %s", programCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", "");
+        UI.option();
+        UI.footer();
+    }
+
     public static void manageUsers() {
         int choice = -1; String input = "";
+
         UI.manageUI("Users");
         do {
             System.out.print("  Select > ");
@@ -811,236 +1044,4 @@ public class Admin extends User{
     public String getRole() { return role;
     }
 
-
-    public static void manageCourses() {
-        int choice = -1; String input = "";
-        UI.manageUI("Course");
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-                choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 4) && choice != 0) UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                createCourse();
-                break;
-            case 2:
-                editCourse();
-                break;
-            case 3:
-                deleteCourse();
-                break;
-            case 4:
-                Course.displayCourses();
-                break;
-            case 0:
-                // menu
-        }
-    }
-
-    private static void createCourse() {
-        String courseCode = ""; String courseDescription = ""; String programCode = ""; String choice = "";
-        int creditUnits = -1; boolean submit = false;
-
-        while (!submit) {
-            courseManage("CREATE", courseCode, courseDescription, creditUnits, programCode);
-
-            do {
-                System.out.print("  Select > ");
-                choice = in.nextLine();
-                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Choice");
-            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
-
-            switch (choice) {
-                case "1":
-                    do {
-                        System.out.print("   Enter Course Code > ");
-                        courseCode = in.nextLine();
-                        if (Course.existCourseCode(courseCode)) UI.print("Course Code already exists");
-                    } while(Course.existCourseCode(courseCode));
-                    break;
-                case "2":
-                    do {
-                        System.out.print("   Enter Course Description > ");
-                        courseDescription = in.nextLine();
-                        if (Course.existCourseDesc(courseDescription)) UI.print("Course Description already exists");
-                    } while(Course.existCourseDesc(courseDescription));
-                    break;
-                case "3":
-                    do {
-                        System.out.print("   Enter Credit Units > ");
-                        try {
-                            String input = in.nextLine();
-                            creditUnits = Integer.parseInt(input);
-                            if (creditUnits != 2 && creditUnits != 3) UI.print("Invalid Credit Units");
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid Credit Units");
-                            creditUnits = -1;
-                        }
-                    } while (creditUnits != 2 && creditUnits != 3);
-                    break;
-                case "4":
-                    do {
-                        System.out.print("   Enter Program Code > ");
-                        programCode = in.nextLine();
-                        if(!Program.verifyProgramCode(programCode)) UI.print("Program Code does not exist");
-                    } while(!Program.verifyProgramCode(programCode));
-                    break;
-                case "/":
-                    if (courseCode.isEmpty() || courseDescription.isEmpty() || creditUnits == -1 || programCode.isEmpty())
-                        UI.print("Details are incomplete");
-                    else {
-                        Course.courses.add(new Course(courseCode, courseDescription, creditUnits, programCode));
-                        UI.print("Course successfully created");
-                        roomManage("ADD", courseCode, courseDescription, creditUnits, programCode);
-                        submit = true;
-                    }
-                    break;
-                case "X":
-                    manageCourses();
-                    submit = true;
-                    break;
-            }
-        }
-    }
-
-    private static void editCourse() {
-        String courseCode = ""; String courseDescription = ""; String programCode = ""; String choice = "";
-        int creditUnits = -1; boolean submit = false; String input;
-
-        UI.print("EDIT EXISTING COURSE");
-        do {
-            System.out.print("  Enter Course Code > ");
-            input = in.nextLine();
-            if (!Course.existCourseCode(input)) UI.print("Course does not exist");
-        } while(!Course.existCourseCode(input));
-
-        Course c = Course.findCourse(input);
-        if (c == null) {
-            UI.print("Room not found");
-            return;
-        }
-        courseCode = Course.getCourseCode(c);
-        courseDescription = Course.getCourseDescription(c);
-        creditUnits = Course.getCreditUnits(c);
-        programCode = Course.getProgramCode(c);
-
-        while (!submit) {
-            courseManage("EDIT", courseCode, courseDescription, creditUnits, programCode);
-
-            do {
-                System.out.print("  Select > ");
-                choice = in.nextLine();
-                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Input");
-            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
-
-            switch(choice) {
-                case "1":
-                    do {
-                        System.out.print("   Enter Course Code > ");
-                        courseCode = in.nextLine();
-                        if (Course.existCourseCode(courseCode)) UI.print("Course Code already exists");
-                    } while(Course.existCourseCode(courseCode));
-                    break;
-                case "2":
-                    do {
-                        System.out.print("   Enter Course Description > ");
-                        courseDescription = in.nextLine();
-                        if (Course.existCourseDesc(courseDescription)) UI.print("Course Description already exists");
-                    } while(Course.existCourseDesc(courseDescription));
-                    break;
-                case "3":
-                    do {
-                        System.out.print("   Enter Credit Units > ");
-                        try {
-                            input = in.nextLine();
-                            creditUnits = Integer.parseInt(input);
-                            if (creditUnits != 2 && creditUnits != 3) UI.print("Invalid Credit Units");
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid Credit Units");
-                            creditUnits = -1;
-                        }
-                    } while (creditUnits != 2 && creditUnits != 3);
-                    break;
-                case "4":
-                    do {
-                        System.out.print("   Enter Program Code > ");
-                        programCode = in.nextLine();
-                        if(!Program.verifyProgramCode(programCode)) UI.print("Program Code does not exist");
-                    } while(!Program.verifyProgramCode(programCode));
-                    break;
-                case "/":
-                    UI.print("Room successfully edited");
-                    c.setCourseCode(courseCode); c.setCourseDescription(courseDescription);
-                    c.setCreditUnits(creditUnits); c.setProgramCode(programCode);
-                    Course.displayCourse(c.getCourseCode());
-                    submit = true;
-                    break;
-                case "X":
-                    submit = true;
-                    break;
-            }
-        }
-    }
-
-    private static void deleteCourse() {
-        String input; String choice;
-
-        UI.print("DELETE EXISTING COURSE");
-
-        do {
-            System.out.print("  Enter Course Code > ");
-            input = in.nextLine();
-            if (!Course.existCourseCode(input)) UI.print("Course does not exist");
-        } while(!Course.existCourseCode(input));
-
-        Course c = Course.findCourse(input);
-        if (c == null) {
-            UI.print("Room not found");
-            return;
-        }
-
-        Course.displayCourse(c.getCourseCode());
-
-        do {
-            System.out.print("  Confirm Room Deletion? (Y/N) > ");
-            choice = in.nextLine().toUpperCase();
-            if (!choice.matches("[YN]")) UI.print("Invalid Input");
-        } while(!choice.matches("[YN]"));
-
-        if (choice.equals("Y")) {
-            Course.courses.remove(c);
-            UI.print("Course successfully deleted");
-        }
-        else manageCourses();
-    }
-
-    private static void courseManage(String text, String courseCode, String courseDescription,
-                                     int creditUnits, String programCode) {
-        UI.header(text.toUpperCase() + ": ROOM INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] COURSE CODE         : %s", courseCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription));
-        String unitText;
-        if (creditUnits == -1) unitText = "";
-        else if (creditUnits == 1) unitText = "1st Floor";
-        else if (creditUnits == 2) unitText = "2nd Floor";
-        else if (creditUnits == 3) unitText = "3rd Floor";
-        else unitText = creditUnits + "th Floor";
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] CREDIT UNITS        : %s", unitText));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4] PROGRAM CODE        : %s", programCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", "");
-        UI.option();
-        UI.footer();
-    }
 }

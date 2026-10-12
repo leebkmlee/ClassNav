@@ -204,7 +204,7 @@ public class User {
                                         System.out.print("New First Name: ");
                                         in.nextLine();
                                         u.firstName = in.nextLine();
-                                        if (!u.middleInitial.isEmpty()) {
+                                        if (u.middleInitial.isEmpty()) {
                                             u.userName = u.lastName + ", " + u.firstName + " " + u.middleInitial + ".";
                                         } else {
                                             u.userName = u.lastName + ", " + u.firstName;
