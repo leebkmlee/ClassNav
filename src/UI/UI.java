@@ -1,5 +1,7 @@
 package UI;
 
+import java.util.Scanner;
+
 public class UI {
 
     public static final int INNERWIDTH = 70;
@@ -68,5 +70,15 @@ public class UI {
         int left = (INNERWIDTH - options.length()) / 2;
         int right = INNERWIDTH - options.length() - left;
         System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
+    }
+
+    public static String inserted(Scanner sc, String label) {
+        int maxLabelWidth = INNERWIDTH - 4;
+        System.out.print("│  " + label);
+        String input = sc.nextLine().trim();
+        String combined = "  " + label + input;
+        System.out.printf("\r│%-" + INNERWIDTH + "s│\n", combined);
+
+        return input;
     }
 }
