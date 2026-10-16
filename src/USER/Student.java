@@ -1,7 +1,12 @@
 package USER;
 import DATA.*;
+import FUNCTION.Notification;
 import UI.*;
 
+import java.util.ArrayList;
+
+import static DATA.Enrollment.enrollments;
+import static DATA.Enrollment.findEnrollmentByID;
 import static DATA.Room.convertToMinutes;
 
 public class Student extends User{
@@ -70,7 +75,7 @@ public class Student extends User{
         System.out.printf("│%-" + innerWidth + "s│%n", String.format("  STUDENT ID : %s", studentID));
         UI.separator();
         boolean found = false;
-        for (Enrollment e : Enrollment.enrollments) {
+        for (Enrollment e : enrollments) {
             if (studentID.equals(Enrollment.getStudentNumber(e))) {
                 String sectionID = Enrollment.getSectionID(e);
                 for (Schedule s : Schedule.schedules) {
@@ -103,7 +108,7 @@ public class Student extends User{
         UI.footer(); // prints extra row
     }
 
-     public static void viewAvailableRooms(String day, String startTime, String endTime){
+    public static void viewAvailableRooms(String day, String startTime, String endTime){
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
 
@@ -147,9 +152,31 @@ public class Student extends User{
         UI.footer();
     }
 
-    public static void informFaculty(String studentID, String courseCode, String buildingName,
+    public static void informFaculty(String studentID, String buildingName,
                                      String roomCode, String day, String startTime, String endTime) {
-        Enrollment e = Enrollment.findEnrollmentByID(studentID, courseCode);
+
+        String courseCode; boolean found = false;
+
+        do {
+            System.out.println("  Enter Course Code > ");
+            courseCode = in.nextLine();
+
+            for (Enrollment e : enrollments) {
+                if (Enrollment.getStudentNumber(e).equals(studentID)) {
+                    for (Course c : Enrollment.getEnrolledCourses(e)) {
+                        if (Course.getCourseCode(c).equals(courseCode)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!found) UI.print("Course not found");
+        } while(!found);
+
+        Enrollment e = findEnrollmentByID(studentID);
+
         if (e == null) {
             UI.print("Enrollment does not exist");
             return;
@@ -170,20 +197,17 @@ public class Student extends User{
             System.out.printf("│%-" + innerWidth + "s│\n", "  Room is occupied");
             message = "Room is occupied";
         }
-        System.out.printf("│%-" + innerWidth + "s│\n", "  Inform faculty? ");
-        String options = "[/] Submit     [X] Return";
-        System.out.println("│" + " ".repeat((innerWidth - options.length()) / 2) +
-                options + " ".repeat(innerWidth - options.length() - (innerWidth - options.length()) / 2) + "│");
-        System.out.println("└" + "─".repeat(innerWidth) + "┘");
+        UI.liner("Inform Faculty?");
+        UI.option();
         do {
             System.out.print("  Select > ");
             choice = in.nextLine().toUpperCase();
-            if (!choice.equals("/") && !choice.equals("X")) UI.print("Invalid choice");
+            if (!choice.equals("/") && !choice.equals("X")) UI.print("Invalid Input");
         } while(!choice.equals("/") && !choice.equals("X"));
         switch (choice) {
             case "/":
-                Notification.notifications.add(new Notification(studentID, Section.getProfessorID(s), roomCode, buildingName,
-                        day, startTime, endTime, message));
+                Notification.notifications.add(new Notification(studentID, Section.getFacultyID(s), courseCode,
+                        roomCode, buildingName, day, startTime, endTime, message));
                 UI.print("Successfully informed faculty");
                 break;
             case "X":

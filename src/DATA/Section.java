@@ -17,39 +17,57 @@ public class Section {
     private int group;
     private String academicYear;
     private String professorID; // foreign key
+    private String programCode; // foreign key
 
-    public Section(String sectionID, int yearLevel,char block, int group,String academicYear, String professorID) {
+    public Section(String sectionID, int yearLevel, char block, int group,String academicYear, String professorID, String programCode) {
         this.sectionID = sectionID;
         this.yearLevel = yearLevel;
         this.block = block;
         this.group = group;
         this.academicYear = academicYear;
         this.professorID = professorID;
+        this.programCode = programCode;
     }
 
     public static ArrayList<Section> sections = new ArrayList<Section>();
-    static{
-        sections.add(new Section("0001", 2, 'B', 1, "2024-2025", "F001"));
-        sections.add(new Section("0002", 4, 'A', 2, "2022-2023", "F002"));
-        sections.add(new Section("0003", 2, 'B', 2, "2024-2025", "F003"));
-        sections.add(new Section("0004", 3, 'A', 1, "2023-2024", "F004"));
-        sections.add(new Section("0005", 1, 'C', 1, "2025-2026", "F005"));
-        sections.add(new Section("0006", 4, 'A', 1, "2022-2023", "F006"));
-        sections.add(new Section("0007", 3, 'B', 2, "2023-2024", "F001"));
-        sections.add(new Section("0008", 1, 'A', 0, "2025-2026", "F002"));
-        sections.add(new Section("0009", 2, 'C', 1, "2024-2025", "F003"));
-        sections.add(new Section("0010", 3, 'C', 2, "2023-2024", "F004"));
-        sections.add(new Section("0011", 4, 'B', 1, "2022-2023", "F005"));
-        sections.add(new Section("0012", 1, 'B', 0, "2025-2026", "F006"));
+
+    static {
+        sections.add(new Section("0001", 2, 'B', 1, "2024-2025", "F001", "BSIT"));
+        sections.add(new Section("0002", 4, 'A', 2, "2022-2023", "F002", "BSIS"));
+        sections.add(new Section("0003", 2, 'B', 2, "2024-2025", "F003", "BSIT"));
+        sections.add(new Section("0004", 3, 'A', 1, "2023-2024", "F004", "BSIE"));
+        sections.add(new Section("0005", 1, 'C', 1, "2025-2026", "F005", "BSED"));
+        sections.add(new Section("0006", 4, 'A', 1, "2022-2023", "F006", "BSIS"));
+        sections.add(new Section("0007", 3, 'B', 2, "2023-2024", "F001", "BSIT"));
+        sections.add(new Section("0008", 1, 'A', 0, "2025-2026", "F002", "BSIT"));
+        sections.add(new Section("0009", 2, 'C', 1, "2024-2025", "F003", "BSPSY"));
+        sections.add(new Section("0010", 3, 'C', 2, "2023-2024", "F004", "BSCpE"));
+        sections.add(new Section("0011", 4, 'B', 1, "2022-2023", "F005", "BSED"));
+        sections.add(new Section("0012", 1, 'B', 0, "2025-2026", "F006", "BSBA"));
     }
 
     //setters
-    public void setSectionID(String newSectionID) {this.sectionID = newSectionID;}
-    public void setyearLevel(int newyearLevel) {this.yearLevel = newyearLevel;}
-    public void setBlock(char newblock) {this.block = newblock;}
-    public void setGroup(int newgroup) {this.group = newgroup;}
-    public void setAcademicYear(String newAcadyear){this.academicYear = newAcadyear;}
-    public void setProfessorID(String newprofessorID){ this.professorID = newprofessorID;}
+    public void setSectionID(String newSectionID) {
+        this.sectionID = newSectionID;
+    }
+    public void setYearLevel(int yearLevel){
+        this.yearLevel = yearLevel;
+    }
+    public void setBlock(char block) {
+        this.block = block;
+    }
+    public void setGroup(int group) {
+        this.group = group;
+    }
+    public void setAcademicYear(String academicYear){
+        this.academicYear = academicYear;
+    }
+    public void setProfessorID(String professorID){
+        this.professorID = professorID;
+    }
+    public void setProgramCode(String programCode) {
+        this.programCode = programCode;
+    }
 
     //getters
     public String getSectionID() {
@@ -59,7 +77,7 @@ public class Section {
         return s.sectionID;
     }
     public static String getYearSection(Section s) {
-        Enrollment e = findEnrollmentByID(s.sectionID);
+        Enrollment e = Enrollment.findEnrollmentBySec(s.sectionID);
         if (e == null) {
             UI.print("Enrollment not found");
             return null;
@@ -74,42 +92,60 @@ public class Section {
         else sectionText = s.yearLevel + "" + s.block;
         return Student.getProgramCode(st) + " " + sectionText;
     }
-    public int getyearLevel(){
-        return yearLevel;
+    public static int getYearLevel(Section s) {
+        return s.yearLevel;
     }
-    public int getgroup(){
-        return group;
+    public static int getGroup(Section s) {
+        return s.group;
     }
-    public char getBlock(){
-        return block;
+    public static char getBlock(Section s) {
+        return s.block;
     }
     public static String getAcademicYear(Section s) {
         return s.academicYear;
     }
-    public static String getProfessorID(Section s) {
+    public static String getFacultyID(Section s) {
         return s.professorID;
     }
-    public String getProfessorID() {return professorID;}
-
+    public static String getProgramCode(Section s) {
+        return s.programCode;
+    }
 
     //methods
     public static Section findSection(String sectionID) {
         for (Section s : sections) if (sectionID.equals(s.getSectionID())) return s;
         return null;
     }
-    public static void displaySection() {
-        // add summary report for all sections....
-        UI.header("LIST OF ALL SECTIONS");
-        for (Section s : sections) {
-            UI.liner(" Section ID: " + s.sectionID);
-            UI.liner(" Year Level: " + s.yearLevel);
-            UI.liner(" Block: " + s.block);
-            UI.liner(" Group: " + s.group);
-            UI.liner(" Academic Year: " + s.academicYear);
-            UI.liner(" Registered Professor ID: " + s.professorID);
-            UI.liner(" ");
+    public static boolean existSectionID(String sectionID) {
+        for (Section s : sections) if (sectionID.equalsIgnoreCase(s.getSectionID())) return true;
+        return false;
+    }
+
+    public static void displaySections() {
+        UI.header("SECTIONS");
+        for (int i = 0; i < sections.size(); i++) {
+            Section s = sections.get(i);
+            User u = User.getUser(Section.getFacultyID(s));
+            Program p = Program.findProgram(Section.getProgramCode(s));
+
+            if (u == null) {
+                UI.print("Faculty not found");
+                return;
+            }
+            if (p == null) {
+                UI.print("Program not found");
+                return;
+            }
+
+            String section = String.format("  %-10s %-15s %-15s %-25s", Section.getSection(s),
+                    Section.getYearSection(s), Section.getAcademicYear(s), u.getUserName());
+            String details = String.format("  " + Program.getProgramDescription(p));
+
+            System.out.printf("│%-" + innerWidth + "s│\n", section);
+            System.out.printf("│%-" + innerWidth + "s│\n", details);
+
+            if (i < sections.size() - 1) UI.separator();
         }
-        UI.liner(" [0] Back");
         UI.footer();
     }
     public static void displaySection(String sectionID) {

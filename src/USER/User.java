@@ -1,8 +1,6 @@
 package USER;
-import DATA.Schedule;
-import LOGIN.*;
+import FUNCTION.*;
 import UI.*;
-import java.util.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -185,7 +183,7 @@ public class User {
                 Login.loginPassword();
                 break;
             case "2":
-                Signup.signUp();
+                Signup.signUp("SIGN UP");
                 break;
         }
     }
@@ -515,58 +513,6 @@ public class User {
         }while (select != 0);
     } //use editProfile(false) instead;
 
-    public static void start() {
-
-        String select;
-        boolean valid;
-
-        do {
-            UI.startPrint("ClassNav");
-            select = in.nextLine();
-            if (select.equals("X") || select.equals("1") || select.equals("2")) valid = true;
-            else {
-                UI.print("Invalid Choice");
-                valid = false;
-            }
-        } while (!valid);
-
-        if (select.equals("X")) {
-            System.out.println("   Exiting...");
-            System.exit(0);
-        }
-
-        switch (select) {
-            case "1":
-                Login.loginPassword();
-                break;
-            case "2":
-                Signup.signUp("PORTAL SIGN UP");
-                break;
-        }
-    }
-
-    public static void viewProfile(String userID) {
-        User u = getUser(userID);
-        if (u == null) {
-            UI.print("User not found");
-            return;
-        }
-        UI.header("USER PROFILE");
-        System.out.printf("│%-" + innerWidth + "s│\n", "  ACCOUNT INFORMATION");
-        UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  USER ID        : %s", u.getUserID()));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  FULL NAME      : %s", u.getUserName()));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  EMAIL ADDRESS  : %s", u.getEmail()));
-        UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", "  PERSONAL INFORMATION");
-        UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  HOME ADDRESS   : %s", u.getAddress()));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  POSTAL CODE    : %s", u.getPostalCode()));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BIRTHDATE      : %s", u.getBirthDate()));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SEX            : %s", u.getSex()));
-        UI.footer();
-    }
-
     public static void displayUsers() {
         UI.header("USER LIST");
         for (User u : users) {
@@ -657,7 +603,5 @@ public class User {
 
     public void setUserID(String userID) {
         this.userID = userID;
-    }
-        } while (select != 0);
     }
 }

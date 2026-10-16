@@ -322,6 +322,14 @@ public class Enrollment {
                         Course.findCourse("IT 204")
                 ))
         ));
+
+        enrollments.add(new Enrollment(
+                "E0037", "0007", "S001",
+                new ArrayList<>(Arrays.asList(
+                        Course.findCourse("CC 106"),
+                        Course.findCourse("IT 206")
+                ))
+        ));
     }
 
     public String getEnrollmentID() {
@@ -333,15 +341,12 @@ public class Enrollment {
         return null;
     }
 
-    public static Enrollment findEnrollmentByID(String userID, String courseCode) {
-        for (Enrollment e : enrollments) {
-            if (!getStudentNumber(e).equals(userID)) continue;
-            for (Course c : getEnrolledCourses(e)) if (Course.getCourseCode(c).equals(courseCode)) return e;
-        }
+    public static Enrollment findEnrollmentByID(String userID) {
+        for (Enrollment e : enrollments) if (Enrollment.getStudentNumber(e).equals(userID)) return e;
         return null;
     }
 
-    public static Enrollment findEnrollmentByID(String sectionID) {
+    public static Enrollment findEnrollmentBySec(String sectionID) {
         for (Enrollment e : enrollments) if (sectionID.equals(e.sectionID)) return e;
         return null;
     }

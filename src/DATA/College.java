@@ -36,9 +36,20 @@ public class College {
         return c.collegeCode;
     }
 
+    public static boolean existCollegeCode(String collegeCode) {
+        for (College c : colleges) if (collegeCode.equals(c.getCollegeCode())) return  true;
+        return false;
+    }
+
+    public static boolean existCollegeDesc(String collegeDescription) {
+        for (College c : colleges) if (collegeDescription.equals(College.getCollegeDescription(c))) return true;
+        return false;
+    }
+
     public void setCollegeDescription(String collegeDescription) {
         this.collegeDescription = collegeDescription;
     }
+
     public void setCollegeCode(String collegeCode) {
        this.collegeCode = collegeCode;
     }
@@ -47,17 +58,17 @@ public class College {
         return c.collegeDescription;
     }
 
-    public static void displayCollege(){
+    public static void displayColleges(){
         UI.header("COLLEGES");
         for  (College c : colleges) {
-            System.out.printf("│%-" + innerWidth + "s│%n", "College Code: " + c.collegeCode);
-            System.out.printf("│%-" + innerWidth + "s│%n", "College Description: " + c.collegeDescription);
-            System.out.printf("│%-" + innerWidth + "s│%n", " ");
+            String college = String.format( "  %-10s %-40s", College.getCollege(c),
+                    College.getCollegeDescription(c));
+            System.out.printf("│%-" + innerWidth + "s│\n", college);
         }
         UI.footer();
-
     }
-    public static void displayCollege(String collegeCode) {
+
+    public static void displayColleges(String collegeCode) {
         int innerWidth = 70;
         College c = findCollege(collegeCode);
         if (c == null) {

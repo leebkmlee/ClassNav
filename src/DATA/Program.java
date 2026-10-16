@@ -16,7 +16,7 @@ public class Program {
         this.collegeCode = collegeCode;
     }
 
-    static ArrayList<Program> programs = new ArrayList<>();
+    public static ArrayList<Program> programs = new ArrayList<>();
 
     static {
         programs.add(new Program("BSIT", "Bachelor of Science in Information Technology", "CICT"));
@@ -49,7 +49,7 @@ public class Program {
         return p.collegeCode;
     }
 
-    public static boolean verifyProgramCode(String programCode) {
+    public static boolean existProgramCode(String programCode) {
         for (Program p : programs) if (programCode.equals(p.programCode)) return true;
         return false;
     }

@@ -1,4 +1,4 @@
-package LOGIN;
+package FUNCTION;
 
 import UI.*;
 import USER.User;
