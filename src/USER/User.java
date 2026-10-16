@@ -1,5 +1,6 @@
 package USER;
 import DATA.Schedule;
+import DATA.Section;
 import LOGIN.*;
 import UI.*;
 
@@ -143,6 +144,15 @@ public class User {
 
     public static boolean checkDuplicateEmail(String emailAddress) {
         for (User u : users) if (emailAddress.equals(u.getEmail())) return true;
+        return false;
+    }
+
+    public static boolean existsProfID(String professorID) {
+        for (User u : users) {
+            if (u.userID.startsWith("F") && u.userID.equals(professorID)) {
+                return true;
+            }
+        }
         return false;
     }
 

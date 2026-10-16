@@ -41,6 +41,10 @@ public class Course {
         courses.add(new Course("IT 303", "Application Development", 3, "BSIT"));
     }
 
+    public static boolean existCourseDescription(String courseDescription) {
+        return true;
+    }
+
     public String getCourseCode() {
         return courseCode;
     }
@@ -68,11 +72,6 @@ public class Course {
 
     public static boolean existCourseCode(String courseCode) {
         for (Course c : courses) if (courseCode.equals(c.courseCode)) return true;
-        return false;
-    }
-
-    public static boolean existCourseDesc(String courseDescription) {
-        for (Course c : courses) if (courseDescription.equals(c.courseDescription)) return true;
         return false;
     }
 
@@ -137,5 +136,10 @@ public class Course {
             }
         }
         UI.footer();
+    }
+
+    public static boolean existCourseDesc(String courseDescription) {
+        for (Course c : courses) if (courseDescription.equals(c.courseDescription)) return true;
+        return false;
     }
 }

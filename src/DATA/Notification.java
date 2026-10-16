@@ -17,7 +17,7 @@ public class Notification {
 
     // stud to prof
     public Notification(String senderID, String recepientID, String roomCode, String buildingName,
-                        String day, String startTime, String endTime, String message) { // message kay prof
+                        String day, String startTime, String endTime, String message) {
         notificationID++;
         this.senderID = senderID;
         this.recipientID = recepientID;

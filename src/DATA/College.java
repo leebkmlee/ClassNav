@@ -46,6 +46,9 @@ public class College {
     public static String getCollegeDescription(College c) {
         return c.collegeDescription;
     }
+    public String getCollegeDescription() {
+        return collegeDescription;
+    }
 
     public static void displayCollege(){
         UI.header("COLLEGES");
@@ -94,5 +97,14 @@ public class College {
             }
         }
         UI.footer();
+    }
+
+    public static boolean existCollegeCode(String CollegeCode) {
+        for (College c : colleges) if (CollegeCode.equals(c.collegeCode)) return true;
+        return false;
+    }
+    public static boolean existCollegeDescription(String CollegeDescription) {
+        for (College c : colleges) if (CollegeDescription.equals(c.collegeDescription)) return true;
+        return false;
     }
 }

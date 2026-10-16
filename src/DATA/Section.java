@@ -43,6 +43,17 @@ public class Section {
         sections.add(new Section("0012", 1, 'B', 0, "2025-2026", "F006"));
     }
 
+    public static int getYearLevel(Section s) {
+        return s.yearLevel;
+    }
+
+    public static char getBlock(Section s) {
+        return s.block;
+    }
+    public static int getGroup(Section s) {
+        return s.group;
+    }
+
     //setters
     public void setSectionID(String newSectionID) {this.sectionID = newSectionID;}
     public void setyearLevel(int newyearLevel) {this.yearLevel = newyearLevel;}
@@ -146,4 +157,24 @@ public class Section {
         UI.footer();
     }
 
+    public static boolean existSectionID(String sectionID) {
+        for (Section s : sections) if (sectionID.equals(s.sectionID)) return true;
+        return false;
+    }
+
+    public static boolean existYearLevelBlockGroup(int yearLevel, char block, int group) {
+        for (Section s : sections) {
+            if (yearLevel == s.yearLevel && s.block == block && s.group == group) return true;
+        }
+        return false;
+    }
+
+    public static boolean existsProfID(String professorID) {
+        for (Section s : sections) { if(s.professorID.equals(professorID)) return true;}
+        return false;
+    }
+
+    public void setYearLevel(int yearLevel) {
+        this.yearLevel = yearLevel;
+    }
 }
