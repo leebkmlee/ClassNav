@@ -6,9 +6,9 @@ import static DATA.Course.courses;
 
 public class Program {
     static int innerWidth = 70;
-    private final String programCode;
-    private final String programDescription;
-    private final String collegeCode; // foreign key
+    private String programCode;
+    private String programDescription;
+    private String collegeCode; // foreign key
 
     public Program(String programCode, String programDescription, String collegeCode) {
         this.programCode = programCode;
@@ -54,6 +54,16 @@ public class Program {
         return false;
     }
 
+    public static boolean existProgramCode(String programCode) {
+        for (Program p : programs) if (programCode.equals(p.programCode)) return true;
+        return false;
+    }
+
+    public static boolean existProgramDesc(String programDescription) {
+        for (Program p : programs) if (programDescription.equals(p.programDescription)) return true;
+        return false;
+    }
+
     public static void displayProgram(String programCode) {
         Program p = findProgram(programCode);
         if (p == null) {
@@ -68,6 +78,16 @@ public class Program {
         else {
             System.out.printf("│%-" + innerWidth + "s│\n", "  PROGRAM DESCRIPTION  :");
             System.out.printf("│%-" + innerWidth + "s│\n", "  " + programDescription);
+        }
+        UI.footer();
+    }
+
+    public static void displayPrograms() {
+        UI.header("PROGRAM LIST");
+        for (Program p : programs) {
+            String programs = String.format( "  %-10s %-32s %-15s %-4s", Program.getProgram(p), Program.getProgramDescription(p),
+                    Program.getCollegeCode(p));
+            System.out.printf("│%-" + innerWidth + "s│\n", programs);
         }
         UI.footer();
     }
@@ -89,5 +109,14 @@ public class Program {
             }
         }
         UI.footer();
+    }
+
+    public void setProgramCode(String programCode) { this.programCode = programCode;
+    }
+
+    public void setProgramDescription(String programDescription) { this.programDescription = programDescription;
+    }
+
+    public void setCollegeCode(String collegeCode) { this.collegeCode = collegeCode;
     }
 }

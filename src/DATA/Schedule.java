@@ -40,20 +40,18 @@ public class Schedule {
         schedules.add(new Schedule("SCH016", "F", "3:00PM", "4:30PM", "0006", "ICT302"));
     }
 
-    public String getScheduleID(){
-        return scheduleID;
-    }
-
     public static Schedule findSchedule(String scheduleID) {
         for (Schedule s : schedules) if (scheduleID.equals(s.getScheduleID())) return s;
         return null;
     }
 
+    public String getScheduleID(){ return scheduleID; }
+
     public static void addSchedule(Schedule schedule) {
         schedules.add(schedule);
     }
 
-    public static String getSchedule(Schedule s) {
+    public static String getScheduleID(Schedule s) {
         return s.scheduleID;
     }
 
@@ -77,6 +75,11 @@ public class Schedule {
         return s.roomCode;
     }
 
+    public static boolean existScheduleID(String scheduleID) {
+        for (Schedule s : schedules) if (scheduleID.equals(s.scheduleID)) return true;
+        return false;
+    }
+
     public static void displaySchedule(String scheduleID){
         Schedule s = findSchedule(scheduleID);
         if (s == null) {
@@ -84,9 +87,37 @@ public class Schedule {
             return;
         }
         UI.header("SCHEDULE INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SCHEDULE ID    : %s", Schedule.getSchedule(s)));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  SCHEDULE ID    : %s", Schedule.getScheduleID(s)));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DATE AND TIME  : %s",
                 Schedule.getDay(s) + " " + Schedule.getStartTime(s) + "-" + Schedule.getEndTime(s)));
         UI.footer();
+    }
+
+    public static void displaySchedules() {
+        UI.header("SCHEDULE LIST");
+        for (Schedule s : schedules) {
+            String schedules = String.format( "  %-10s %-32s %-15s %-4s", Schedule.getScheduleID(s), Schedule.getDay(s),
+                    Schedule.getStartTime(s), Schedule.getEndTime(s), Schedule.getSectionID(s), Schedule.getRoomCode(s));
+            System.out.printf("│%-" + innerWidth + "s│\n", schedules);
+        }
+        UI.footer();
+    }
+
+    public void setScheduleID(String scheduleID) { this.scheduleID = scheduleID;
+    }
+
+    public void setDay(String day) { this.day = day;
+    }
+
+    public void setStartTime(String startTime) { this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) { this.endTime = endTime;
+    }
+
+    public void setSectionID(String sectionID) { this.sectionID = sectionID;
+    }
+
+    public void setRoomCode(String roomCode) { this.sectionID = sectionID;
     }
 }

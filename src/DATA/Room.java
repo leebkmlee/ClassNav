@@ -168,6 +168,11 @@ public class Room {
         UI.footer();
     }
 
+    public static boolean verifyRoom(String roomCode) {
+        for (Room r : rooms) if (roomCode.equals(r.getRoomCode())) return true;
+        return false;
+    }
+
     public static boolean verifyAvailability(String roomCode, String day, String startTime, String endTime) {
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);

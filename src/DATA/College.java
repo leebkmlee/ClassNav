@@ -39,6 +39,11 @@ public class College {
         return c.collegeDescription;
     }
 
+    public static boolean verifyCollege(String collegeCode) {
+        for (College c : colleges) if (collegeCode.equals(c.getCollegeCode())) return true;
+        return false;
+    }
+
     public static void displayCollege(String collegeCode) {
         int innerWidth = 70;
         College c = findCollege(collegeCode);

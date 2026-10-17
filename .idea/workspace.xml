@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="yan na">
+    <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="manageBuilding, viewStatistics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Building.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/College.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/College.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Course.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Section.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Section.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/USER/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Student.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,66 +45,66 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/leebkmlee/ClassNav.git&quot;,
-    &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
+    &quot;accountId&quot;: &quot;0cd8fe6b-7486-4ac7-a96b-8653c325689a&quot;
   }
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="3.279547257756572E-7" />
-      <entry key="MS500" value="0.0504850486006005" />
-      <entry key="S2" value="0.4740134826714094" />
-      <entry key="S5" value="0.7419532577669431" />
-      <entry key="S10" value="0.871870484797057" />
-      <entry key="S30" value="1.2558604728332703" />
-      <entry key="S60" value="1.835095395413295" />
-      <entry key="M2" value="2.952214013856759" />
-      <entry key="M5" value="9.267071579737742" />
-      <entry key="M10" value="20.940976983176302" />
-      <entry key="M15" value="31.716133064203813" />
-      <entry key="M30" value="61.305201184899566" />
-      <entry key="H1" value="107.29485056669778" />
-      <entry key="H2" value="156.50261076678203" />
-      <entry key="H4" value="194.37408915317496" />
-      <entry key="D1" value="236.2241131840749" />
-      <entry key="W1" value="244.5713972254351" />
+      <entry key="MS100" value="1.000000000000296" />
+      <entry key="MS500" value="1.0031205152986296" />
+      <entry key="S2" value="1.236350529187686" />
+      <entry key="S5" value="1.561594475174783" />
+      <entry key="S10" value="1.75024359495545" />
+      <entry key="S30" value="2.1399399694646366" />
+      <entry key="S60" value="3.366356797046074" />
+      <entry key="M2" value="6.722093229219487" />
+      <entry key="M5" value="14.535843407134669" />
+      <entry key="M10" value="27.239666650165898" />
+      <entry key="M15" value="41.74803554029974" />
+      <entry key="M30" value="79.27405340091714" />
+      <entry key="H1" value="133.3467785222936" />
+      <entry key="H2" value="220.0163733092545" />
+      <entry key="H4" value="341.3570208981782" />
+      <entry key="D1" value="577.3757370117597" />
+      <entry key="W1" value="642.2042056305145" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0000003549206866" />
-      <entry key="S2" value="1.0244764913903806" />
-      <entry key="S5" value="1.250836005176958" />
-      <entry key="S10" value="1.675971695903197" />
-      <entry key="S30" value="2.762028020360736" />
-      <entry key="S60" value="3.737367904354581" />
-      <entry key="M2" value="5.337247062122963" />
-      <entry key="M5" value="9.830004146098382" />
-      <entry key="M10" value="15.153873006571768" />
-      <entry key="M15" value="18.657751924720635" />
-      <entry key="M30" value="26.971555925107044" />
-      <entry key="H1" value="40.75423220023083" />
-      <entry key="H2" value="56.25142189316857" />
-      <entry key="H4" value="68.37516394666108" />
-      <entry key="D1" value="81.84792728672251" />
-      <entry key="W1" value="84.53931194979286" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="6.041449525399881E-71" />
+      <entry key="S2" value="2.7879519716800314E-18" />
+      <entry key="S5" value="9.508547364871206E-8" />
+      <entry key="S10" value="3.084934448234815E-4" />
+      <entry key="S30" value="0.07749465506538945" />
+      <entry key="S60" value="0.4511063915073204" />
+      <entry key="M2" value="1.375290655443379" />
+      <entry key="M5" value="3.029436575919249" />
+      <entry key="M10" value="4.984695824345532" />
+      <entry key="M15" value="6.976262974413588" />
+      <entry key="M30" value="12.78999168717435" />
+      <entry key="H1" value="26.016442255234963" />
+      <entry key="H2" value="54.6067431429755" />
+      <entry key="H4" value="97.22936485364771" />
+      <entry key="D1" value="180.213335231366" />
+      <entry key="W1" value="202.88117685711376" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="4.2451593904374875E-7" />
-      <entry key="MS500" value="0.0790172772417247" />
-      <entry key="S2" value="0.8971380909886277" />
-      <entry key="S5" value="1.6495783184792872" />
-      <entry key="S10" value="2.3274213295788115" />
-      <entry key="S30" value="3.9077459339598937" />
-      <entry key="S60" value="5.497197539776606" />
-      <entry key="M2" value="8.23118314042525" />
-      <entry key="M5" value="19.036164450337107" />
-      <entry key="M10" value="36.035651783990204" />
-      <entry key="M15" value="50.319824035148706" />
-      <entry key="M30" value="88.2318630061936" />
-      <entry key="H1" value="148.01304756509458" />
-      <entry key="H2" value="212.72878170852277" />
-      <entry key="H4" value="262.73386264637" />
-      <entry key="D1" value="318.06896942873954" />
-      <entry key="W1" value="329.1102560952739" />
+      <entry key="MS100" value="5.055004510963662E-4" />
+      <entry key="MS500" value="0.2202936057821845" />
+      <entry key="S2" value="0.8680418572572146" />
+      <entry key="S5" value="1.36705529330451" />
+      <entry key="S10" value="1.6406577921932832" />
+      <entry key="S30" value="2.169734730481072" />
+      <entry key="S60" value="3.770762869039445" />
+      <entry key="M2" value="8.04234635448098" />
+      <entry key="M5" value="17.51683431124674" />
+      <entry key="M10" value="32.17878709522927" />
+      <entry key="M15" value="48.677204574462614" />
+      <entry key="M30" value="92.01796925746883" />
+      <entry key="H1" value="159.32198420810278" />
+      <entry key="H2" value="274.58738139901004" />
+      <entry key="H4" value="438.5583188748893" />
+      <entry key="D1" value="757.5812094589513" />
+      <entry key="W1" value="845.0841364578939" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -113,29 +118,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.Mainn.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "false",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "kai-branch",
-    "java.suggest.annotation.dependency": "false",
-    "kotlin-language-version-configured": "true",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "onboarding.tips.debug.path": "C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "configurable.group.appearance"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Mainn.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;kai-branch&quot;,
+    &quot;java.suggest.annotation.dependency&quot;: &quot;false&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="CLASSNAV" />
@@ -148,6 +160,14 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10968.63" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10968.63" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -296,6 +316,9 @@
     <option name="localTasksCounter" value="18" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -314,7 +337,8 @@
     <MESSAGE value="revision" />
     <MESSAGE value="wag muna pakialaman, thx" />
     <MESSAGE value="yan na" />
-    <option name="LAST_COMMIT_MESSAGE" value="yan na" />
+    <MESSAGE value="manageBuilding, viewStatistics" />
+    <option name="LAST_COMMIT_MESSAGE" value="manageBuilding, viewStatistics" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="XDebuggerManager">

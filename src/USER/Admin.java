@@ -13,7 +13,7 @@ import static DATA.College.colleges;
 import static DATA.Course.courses;
 import static DATA.Enrollment.enrollments;
 import static DATA.Program.programs;
-import static DATA.Room.rooms;
+import static DATA.Room.*;
 import static DATA.Schedule.schedules;
 import static DATA.Section.sections;
 import static UI.UI.INNERWIDTH;
@@ -1229,6 +1229,464 @@ public class Admin extends User{
         UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] BUILDING CODE     : %s", buildingCode));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] BUILDING NAME     : %s", buildingName));
+        System.out.printf("│%-" + innerWidth + "s│\n", "");
+        UI.option();
+        UI.footer();
+    }
+
+    public static void manageSchedules() {
+        int choice = -1; String input = "";
+        UI.manageUI("Schedule");
+        do {
+            System.out.print("  Select > ");
+            try {
+                input = in.nextLine().trim();
+                if (input.isEmpty()) {
+                    UI.print("Invalid Input");
+                    continue;
+                }
+                choice = Integer.parseInt(input);
+                if (!(choice >= 1 && choice <= 3) && choice != 0) UI.print("Invalid Input");
+            } catch (NumberFormatException e) {
+                UI.print("Invalid Input");
+                choice = -1;
+            }
+        } while (!(choice >= 1 && choice <= 4) && choice != 0);
+
+        switch (choice) {
+            case 1:
+                createSchedule();
+                break;
+            case 2:
+                editSchedule();
+                break;
+            case 3:
+                deleteSchedule();
+                break;
+            case 4:
+                Schedule.displaySchedules();
+                break;
+            case 0:
+                // menu
+        }
+    }
+
+    public static void createSchedule(){
+        String scheduleID = ""; String day = ""; String startTime = "";
+        String endTime = ""; String sectionID = ""; String roomCode = "";
+        String choice = ""; boolean submit = false;
+
+        while (!submit) {
+            UI.header("CREATE NEW ROOM");
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Schedule ID         : " + scheduleID);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Day                 : " + day);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Start Time          : " + startTime);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [4] End Time            : " + endTime);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [5] Section ID          : " + sectionID);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [6] Room Code           : " + roomCode);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " ");
+            UI.option();
+            UI.footer();
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Schedule ID > ");
+                        scheduleID = in.nextLine();
+                        if (Schedule.existScheduleID(scheduleID)) UI.print("Room Code already exists");
+                    } while (Schedule.existScheduleID(scheduleID));
+                    break;
+                case "2":
+                        System.out.print("   Enter Day > ");
+                       day = in.nextLine();
+                    break;
+                case "3":
+                        System.out.print("   Enter Start Time > ");
+                        startTime = in.nextLine();
+                    break;
+                case "4":
+                         System.out.print("   Enter End Time > ");
+                         endTime = in.nextLine();
+                    break;
+                case "5":
+                    do {
+                        System.out.print("   Enter Section ID > ");
+                        sectionID = in.nextLine();
+                        if (!Section.verifySectionID(sectionID)) UI.print("Section ID does not exist");
+                    }while(!Section.verifySectionID(sectionID));
+                    break;
+                case "6":
+                    do {
+                        System.out.print("   Enter Room Code > ");
+                        roomCode = in.nextLine();
+                        if(!Room.verifyRoom(roomCode)) UI.print("Room Code does not exist");
+                    } while(!Room.verifyRoom(roomCode));
+                    break;
+                case "/":
+                    if (scheduleID.isEmpty() || day.isEmpty() || startTime.isEmpty() || endTime.isEmpty() ||
+                            sectionID.isEmpty() || roomCode.isEmpty()){
+                        UI.print("Details are incomplete"); }
+                    else if (!verifyAvailability(roomCode, day, startTime, endTime)){
+                            UI.print("Room is Occupied");
+                    }
+                    else {
+                        schedules.add(new Schedule(scheduleID, day, startTime, endTime, sectionID, roomCode));
+                        UI.print("Schedule successfully created");
+                        scheduleManage("ADD", scheduleID, day, startTime, endTime, sectionID, roomCode);
+                        submit = true;
+                    }
+                    break;
+                case "X":
+                    manageRooms();
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void editSchedule() {
+        String scheduleID = ""; String day = ""; String startTime = "";
+        String endTime = ""; String sectionID = ""; String roomCode = "";
+        String choice = ""; boolean submit = false; String input;
+
+        UI.print("EDIT EXISTING SCHEDULE");
+        do {
+            System.out.print("  Enter Schedule ID > ");
+            input = in.nextLine();
+            if (!Schedule.existScheduleID(input)) UI.print("Schedule does not exist");
+        } while(!Schedule.existScheduleID(input));
+
+        Schedule s = Schedule.findSchedule(input);
+        if (s == null) {
+            UI.print("Schedule not found");
+            return;
+        }
+        scheduleID = Schedule.getScheduleID(s);
+        day = Schedule.getDay(s);
+        startTime = Schedule.getStartTime(s);
+        endTime = Schedule.getEndTime(s);
+        sectionID = Schedule.getSectionID(s);
+        roomCode = Schedule.getRoomCode(s);
+
+        while (!submit) {
+            scheduleManage("EDIT", scheduleID, day, startTime, endTime, sectionID, roomCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Input");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch(choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Schedule ID > ");
+                        scheduleID = in.nextLine();
+                        if (Schedule.existScheduleID(scheduleID) && !scheduleID.equalsIgnoreCase(s.getScheduleID()))
+                            UI.print("Schedule ID already exists");
+                    } while(Schedule.existScheduleID(scheduleID) && !scheduleID.equalsIgnoreCase(s.getScheduleID()));
+                    break;
+                case "2":
+                    System.out.print("   Enter Day > ");
+                    day = in.nextLine();
+                    break;
+                case "3":
+                    System.out.print("   Enter Start Time > ");
+                    startTime = in.nextLine();
+                    break;
+                case "4":
+                    System.out.print("   Enter End Time > ");
+                    endTime = in.nextLine();
+                    break;
+                case "5":
+                    do {
+                        System.out.print("   Enter Section ID > ");
+                        sectionID = in.nextLine();
+                        if (!Section.verifySectionID(sectionID)) UI.print("Section ID does not exist");
+                    }while(!Section.verifySectionID(sectionID));
+                    break;
+                case "6":
+                    do {
+                        System.out.print("   Enter Room Code > ");
+                        roomCode = in.nextLine();
+                        if(!Room.verifyRoom(roomCode)) UI.print("Room Code does not exist");
+                    } while(!Room.verifyRoom(roomCode));
+                    break;
+                case "/":
+                    if(!verifyAvailability(roomCode, day, startTime, endTime)){
+                        System.out.println("Room is Occupied.");
+                        editSchedule();
+                    }
+                    UI.print("Schedule successfully edited");
+                    s.setScheduleID(scheduleID); s.setDay(day);
+                    s.setStartTime(startTime); s.setEndTime(endTime);
+                    s.setSectionID(sectionID); s.setRoomCode(roomCode);
+                    Schedule.displaySchedule(s.getScheduleID(s));
+                    submit = true;
+                    break;
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void scheduleManage(String text, String scheduleID, String day, String startTime, String endTime, String sectionID, String roomCode) {
+        UI.header(text.toUpperCase() + ": SCHEDULE INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] SCHEDULE ID       : %s", scheduleID));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] DAY               : %s", day));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] START TIME        : %s", startTime));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4] END TIME          : %s", endTime));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [5] SECTION ID        : %s", sectionID));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [6] ROOM CODE         : %s", roomCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", "");
+        UI.option();
+        UI.footer();
+    }
+
+    private static void deleteSchedule() {
+        String scheduleID; String day; String startTime;
+        String endTime; String sectionID; String roomCode;
+        String choice; String input;
+
+        UI.print("DELETE EXISTING SCHEDULE");
+        do {
+            System.out.print("  Enter Schedule ID > ");
+            input = in.nextLine();
+            if (!Schedule.existScheduleID(input)) UI.print("Schedule does not exist");
+        } while(!Schedule.existScheduleID(input));
+        Schedule s = Schedule.findSchedule(input);
+        if (s == null) {
+            UI.print("Schedule not found");
+            return;
+        }
+        scheduleID = Schedule.getScheduleID(s);
+        day = Schedule.getDay(s);
+        startTime = Schedule.getStartTime(s);
+        endTime = Schedule.getEndTime(s);
+        sectionID = Schedule.getSectionID(s);
+        roomCode = Schedule.getRoomCode(s);
+
+        scheduleManage("DELETE", scheduleID, day, startTime, endTime, sectionID, roomCode);
+        do {
+            System.out.print("  Confirm Room Deletion? (Y/N) > ");
+            choice = in.nextLine().toUpperCase();
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
+        } while(!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            schedules.remove(s);
+            UI.print("Schedule successfully deleted");
+        }
+        else manageSchedules();
+    }
+
+    public static void managePrograms() {
+        int choice = -1; String input = "";
+        UI.manageUI("Programs");
+        do {
+            System.out.print("  Select > ");
+            try {
+                input = in.nextLine().trim();
+                if (input.isEmpty()) {
+                    UI.print("Invalid Input");
+                    continue;
+                }
+                choice = Integer.parseInt(input);
+                if (!(choice >= 1 && choice <= 3) && choice != 0) UI.print("Invalid Input");
+            } catch (NumberFormatException e) {
+                UI.print("Invalid Input");
+                choice = - 1;
+            }
+        } while (!(choice >= 1 && choice <= 4) && choice != 0);
+
+        switch (choice) {
+            case 1:
+                createProgram();
+                break;
+            case 2:
+                editProgram();
+                break;
+            case 3:
+                deleteProgram();
+                break;
+            case 4:
+                Program.displayPrograms();
+                break;
+            case 0:
+                // menu
+        }
+    }
+
+    public static void createProgram(){
+        String programCode = ""; String programDescription = ""; String collegeCode = ""; String choice = "";
+        boolean submit = false;
+
+        while (!submit) {
+            UI.header("CREATE NEW ROOM");
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Program Code         : " + programCode);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Program Description  : " + programDescription);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] College Code         : " + collegeCode);
+            System.out.printf("│%-" + INNERWIDTH + "s│%n", " ");
+            UI.option();
+            UI.footer();
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-3X]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-3X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        programCode = in.nextLine();
+                        if (Program.existProgramCode(programCode)) UI.print("Program Code already exists");
+                    } while(Program.existProgramCode(programCode));
+                    break;
+                case "2":
+                    do {
+                        System.out.print("   Enter Program Description > ");
+                        programDescription = in.nextLine();
+                        if (Program.existProgramDesc(programDescription)) UI.print("Program Description already exists");
+                    } while(Program.existProgramDesc(programDescription));
+                    break;
+                case "3":
+                    do {
+                        System.out.print("   Enter College Code > ");
+                        collegeCode = in.nextLine();
+                        if(!College.verifyCollege(collegeCode)) UI.print("College Code does not exist");
+                    } while(!College.verifyCollege(collegeCode));
+                    break;
+                case "/":
+                    if (programCode.isEmpty() || programDescription.isEmpty() ||  collegeCode.isEmpty())
+                        UI.print("Details are incomplete");
+                    else {
+                        programs.add(new Program(programCode, programDescription, collegeCode));
+                        UI.print("Program successfully created");
+                        programManage("ADD", programCode, programDescription, collegeCode);
+                        submit = true;
+                    }
+                    break;
+                case "X":
+                    manageRooms();
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void editProgram() {
+        String programCode = ""; String programDescription = ""; String collegeCode = "";
+        boolean submit = false; String input; String choice;
+
+        UI.print("EDIT EXISTING PROGRAM");
+        do {
+            System.out.print("  Enter Program Code > ");
+            input = in.nextLine();
+            if (!Program.existProgramCode(input)) UI.print("Program does not exist");
+        } while(!Program.existProgramCode(input));
+
+        Program p = Program.findProgram(input);
+        if (p == null) {
+            UI.print("Program not found");
+            return;
+        }
+        programCode = Program.getProgram(p);
+        programDescription = Program.getProgramDescription(p);
+        collegeCode = Program.getCollegeCode(p);
+
+        while (!submit) {
+            programManage("EDIT", programCode, programDescription, collegeCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine();
+                if (!choice.matches("[1-3X]") && !choice.equals("/")) UI.print("Invalid Input");
+            } while (!choice.matches("[1-3X]") && !choice.equals("/"));
+
+            switch(choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        programCode = in.nextLine();
+                        if (Program.existProgramCode(programCode)) UI.print("Program Code already exists");
+                    } while(Program.existProgramCode(programCode));
+                    break;
+                case "2":
+                    do {
+                        System.out.print("   Enter Program Description > ");
+                        programDescription = in.nextLine();
+                        if (Program.existProgramDesc(programDescription)) UI.print("Program Description already exists");
+                    } while(Program.existProgramDesc(programDescription));
+                    break;
+                case "3":
+                    do {
+                        System.out.print("   Enter College Code > ");
+                        collegeCode = in.nextLine();
+                        if(!College.verifyCollege(collegeCode)) UI.print("College Code does not exist");
+                    } while(!College.verifyCollege(collegeCode));
+                    break;
+                case "/":
+                    UI.print("Program successfully edited");
+                    p.setProgramCode(programCode); p.setProgramDescription(programDescription);
+                    p.setCollegeCode(collegeCode);
+                    Program.displayProgram(p.getProgramID());
+                    submit = true;
+                    break;
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static void deleteProgram() {
+        String input; String choice; String programCode; String programDescription; String collegeCode;
+
+        UI.print("DELETE EXISTING PROGRAM");
+        do {
+            System.out.print("  Enter Program Code > ");
+            input = in.nextLine();
+            if (!Program.existProgramCode(input)) UI.print("Program does not exist");
+        } while(!Program.existProgramCode(input));
+
+        Program p = Program.findProgram(input);
+        if (p == null) {
+            UI.print("Program not found");
+            return;
+        }
+        programCode = Program.getProgram(p);
+        programDescription = Program.getProgramDescription(p);
+        collegeCode = Program.getCollegeCode(p);
+
+
+        programManage("DELETE", programCode, programDescription, collegeCode);
+        do {
+            System.out.print("  Confirm Program Deletion? (Y/N) > ");
+            choice = in.nextLine().toUpperCase();
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
+        } while(!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            programs.remove(p);
+            UI.print("Program successfully deleted");
+        }
+        else managePrograms();
+    }
+
+    private static void programManage(String text, String programCode, String programDescription, String collegeCode) {
+        UI.header(text.toUpperCase() + ": ROOM INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] PROGRAM CODE         : %s", programCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] PROGRAM DESCRIPTION  : %s", programDescription));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] COLLEGE CODE         : %s", collegeCode));
         System.out.printf("│%-" + innerWidth + "s│\n", "");
         UI.option();
         UI.footer();

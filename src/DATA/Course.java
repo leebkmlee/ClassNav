@@ -109,9 +109,9 @@ public class Course {
     public static void displayCourses() {
         UI.header("COURSE LIST");
         for (Course c : courses) {
-            String room = String.format( "  %-10s %-37s %-12s %-5s", Course.getCourseCode(c),
+            String course = String.format( "  %-10s %-37s %-12s %-5s", Course.getCourseCode(c),
                     Course.getCourseDescription(c), Course.getCreditUnits(c) + " units", Course.getProgramCode(c));
-            System.out.printf("│%-" + innerWidth + "s│\n", room);
+            System.out.printf("│%-" + innerWidth + "s│\n", course);
         }
         UI.footer();
     }

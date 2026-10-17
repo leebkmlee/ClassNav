@@ -98,6 +98,11 @@ public class Section {
         UI.footer();
     }
 
+    public static boolean verifySectionID(String sectionID) {
+        for (Section s : sections ) if (sectionID.equals(s.getSectionID())) return true;
+        return false;
+    }
+
     public static void displayStudents(String sectionID){
         Section s = findSection(sectionID);
         if (s == null) {

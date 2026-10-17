@@ -135,7 +135,7 @@ public class Student extends User{
                 for (Schedule s : Schedule.schedules) {
                     if (sectionID.equals(Schedule.getSectionID(s))) {
                         found = true;
-                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  SCHEDULE ID   : %s", Schedule.getSchedule(s)));
+                        System.out.printf("│%-" + innerWidth + "s│%n", String.format("  SCHEDULE ID   : %s", Schedule.getScheduleID(s)));
                         System.out.printf("│%-" + innerWidth + "s│%n", String.format("  DAY           : %s", Schedule.getDay(s)));
                         System.out.printf("│%-" + innerWidth + "s│%n", String.format("  TIME          : %s - %s", Schedule.getStartTime(s), Schedule.getEndTime(s)));
                         System.out.printf("│%-" + innerWidth + "s│%n", String.format("  SECTION ID    : %s", sectionID));
