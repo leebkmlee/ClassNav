@@ -2,29 +2,38 @@ package USER;
 import DATA.*;
 import FUNCTION.*;
 import UI.*;
-import java.util.Scanner;
 
 import static DATA.College.colleges;
 import static DATA.Section.sections;
 import static UI.UI.INNERWIDTH;
-
 import java.util.ArrayList;
 
-import static FUNCTION.Notification.*;
-
-
 public class Admin extends User {
+
+    // ADMIN FIELDS
+    private static int nextAdminID = 1;
     private String role;
 
-    public Admin(String userID, String lastName, String firstName, String middleInitial, String emailAddress,
+    // ADMIN CONSTRUCTOR
+    public Admin(String lastName, String firstName, String middleInitial, String emailAddress,
                  String password, String address, int postalCode, String birthDate, char sex, String role) {
-        super(userID, lastName, firstName, middleInitial, emailAddress, password, address, postalCode, birthDate, sex);
+        super(String.format("A%04d", nextAdminID++), lastName, firstName, middleInitial, emailAddress, password,
+                address, postalCode, birthDate, sex);
         this.role = role;
     }
 
-    static Scanner in = new Scanner(System.in);
+    // ADMIN SETTER METHOD
+    private void setRole(String role) {
+        this.role = role;
+    }
 
-    public static void manageRooms() {
+    // ADMIN GETTER METHOD
+    public String getRole() {
+        return role;
+    }
+
+    // ADMIN METHODS
+    private static void manageRooms() {
         int choice = -1; String input = "";
         UI.manageUI("Room");
         do {
@@ -66,18 +75,16 @@ public class Admin extends User {
 
         while (!submit) {
             UI.header("CREATE NEW ROOM");
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Room Code         : " + roomCode);
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Room Description  : " + roomDescription);
-            if (floorNumber == -1) System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Floor Number      : ");
-            else if (floorNumber == 1) System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Floor Number      : " +
-                    floorNumber + "st Floor");
-            else if (floorNumber == 2) System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Floor Number      : " +
-                    floorNumber + "nd Floor");
-            else if (floorNumber == 3) System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Floor Number      : " +
-                    floorNumber + "rd Floor");
-            else System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Floor Number      : " + floorNumber + "th Floor");
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " [4] Building Code     : " + buildingCode);
-            System.out.printf("│%-" + INNERWIDTH + "s│%n", " ");
+            UI.liner(String.format(" [1] Room Code         : %s", roomCode));
+            UI.liner(String.format(" [2] Room Description  : %s", roomDescription));
+
+            if (floorNumber == -1) UI.liner(String.format(" [3] Floor Number      : %s", floorNumber));
+            else if (floorNumber == 1) UI.liner(String.format(" [3] Floor Number      : %s", floorNumber + "st Floor"));
+            else if (floorNumber == 2) UI.liner(String.format(" [3] Floor Number      : %s", floorNumber + "nd Floor"));
+            else if (floorNumber == 3) UI.liner(String.format(" [3] Floor Number      : %s", floorNumber + "rd Floor"));
+            else UI.liner(String.format(" [3] Floor Number      : %s", floorNumber + "th Floor"));
+            UI.liner(String.format(" [4] Building Code     : %s", buildingCode));
+            UI.liner("");
             UI.option();
             UI.footer();
 
@@ -274,7 +281,7 @@ public class Admin extends User {
         UI.footer();
     }
 
-    public static void manageCourses() {
+    private static void manageCourses() {
         int choice = -1; String input = "";
         UI.manageUI("Course");
         do {
@@ -311,17 +318,17 @@ public class Admin extends User {
         }
     }
     private static void createCourse() {
-        String courseCode = ""; String courseDescription = ""; String programCode = ""; String choice = "";
+        String courseCode = "", courseDescription = "", courseType = "", programCode = "", facultyID = "", choice = "";
         int creditUnits = -1; boolean submit = false;
 
         while (!submit) {
-            courseManage("CREATE", courseCode, courseDescription, creditUnits, programCode);
+            courseManage("CREATE", courseCode, courseDescription, creditUnits, courseType, programCode, facultyID);
 
             do {
                 System.out.print("  Select > ");
                 choice = in.nextLine();
-                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Choice");
-            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+                if (!choice.matches("[1-6X]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-6X]") && !choice.equals("/"));
 
             switch (choice) {
                 case "1":
@@ -353,16 +360,31 @@ public class Admin extends User {
                     break;
                 case "4":
                     do {
+                        System.out.print("   Enter Course Type (GEN ED/MAJOR) > ");
+                        courseType = in.nextLine();
+                        if(!courseType.matches("GEN ED|MAJOR")) UI.print("Invalid Input");
+                    } while(!courseType.matches("GEN ED|MAJOR"));
+                    break;
+                case "5":
+                    do {
                         System.out.print("   Enter Program Code > ");
                         programCode = in.nextLine();
                         if(!Program.existProgramCode(programCode)) UI.print("Program Code does not exist");
                     } while(!Program.existProgramCode(programCode));
                     break;
+                case "6":
+                    do {
+                        System.out.print("   Enter Faculty ID > ");
+                        facultyID = in.nextLine();
+                        if(!Faculty.existUserID(facultyID)) UI.print("Faculty ID does not exist");
+                    } while(!Faculty.existUserID(facultyID));
+                    break;
                 case "/":
-                    if (courseCode.isEmpty() || courseDescription.isEmpty() || creditUnits == -1 || programCode.isEmpty())
+                    if (courseCode.isEmpty() || courseDescription.isEmpty() || creditUnits == -1 ||
+                            courseType.isEmpty() || programCode.isEmpty() || facultyID.isEmpty())
                         UI.print("Details are incomplete");
                     else {
-                        Course.courses.add(new Course(courseCode, courseDescription, creditUnits, programCode));
+                        Course.courses.add(new Course(courseCode, courseDescription, creditUnits, courseType, programCode, facultyID));
                         UI.print("Course successfully created");
                         roomManage("ADD", courseCode, courseDescription, creditUnits, programCode);
                         submit = true;
@@ -376,7 +398,7 @@ public class Admin extends User {
         }
     }
     private static void editCourse() {
-        String courseCode = ""; String courseDescription = ""; String programCode = ""; String choice = "";
+        String courseCode = "", courseDescription = "", courseType = "", programCode = "", facultyID = "", choice = "";
         int creditUnits = -1; boolean submit = false; String input;
 
         UI.print("EDIT EXISTING COURSE");
@@ -394,24 +416,27 @@ public class Admin extends User {
         courseCode = Course.getCourseCode(c);
         courseDescription = Course.getCourseDescription(c);
         creditUnits = Course.getCreditUnits(c);
+
         programCode = Course.getProgramCode(c);
+        facultyID = Course.getFacultyID(c);
 
         while (!submit) {
-            courseManage("EDIT", courseCode, courseDescription, creditUnits, programCode);
+            courseManage("EDIT", courseCode, courseDescription, creditUnits, courseType, programCode, facultyID);
 
             do {
                 System.out.print("  Select > ");
                 choice = in.nextLine();
-                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Input");
-            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+                if (!choice.matches("[1-6X]") && !choice.equals("/")) UI.print("Invalid Input");
+            } while (!choice.matches("[1-6X]") && !choice.equals("/"));
 
             switch(choice) {
                 case "1":
                     do {
                         System.out.print("   Enter Course Code > ");
                         courseCode = in.nextLine();
-                        if (Course.existCourseCode(courseCode)) UI.print("Course Code already exists");
-                    } while(Course.existCourseCode(courseCode));
+                        if (Course.existCourseCode(courseCode) && !Course.getCourseCode(c).equals(courseCode))
+                            UI.print("Course Code already exists");
+                    } while(Course.existCourseCode(courseCode) && !Course.getCourseCode(c).equals(courseCode));
                     break;
                 case "2":
                     do {
@@ -435,16 +460,31 @@ public class Admin extends User {
                     break;
                 case "4":
                     do {
+                        System.out.print("   Enter Course Type (GEN ED/MAJOR) > ");
+                        courseType = in.nextLine();
+                        if(!courseType.matches("GEN ED|MAJOR")) UI.print("Invalid Input");
+                    } while(!courseType.matches("GEN ED|MAJOR"));
+                    break;
+                case "5":
+                    do {
                         System.out.print("   Enter Program Code > ");
                         programCode = in.nextLine();
                         if(!Program.existProgramCode(programCode)) UI.print("Program Code does not exist");
                     } while(!Program.existProgramCode(programCode));
                     break;
+                case "6":
+                    do {
+                        System.out.print("   Enter Faculty ID > ");
+                        facultyID = in.nextLine();
+                        if(!Faculty.existUserID(facultyID)) UI.print("Faculty ID does not exist");
+                    } while(!Faculty.existUserID(facultyID));
+                    break;
                 case "/":
                     UI.print("Room successfully edited");
                     c.setCourseCode(courseCode); c.setCourseDescription(courseDescription);
-                    c.setCreditUnits(creditUnits); c.setProgramCode(programCode);
-                    Course.displayCourse(c.getCourseCode());
+                    c.setCreditUnits(creditUnits); c.setCourseType(courseType);
+                    c.setProgramCode(programCode); c.setFacultyID(facultyID);
+                    Course.displayCourse(Course.getCourseCode(c));
                     submit = true;
                     break;
                 case "X":
@@ -485,19 +525,21 @@ public class Admin extends User {
         else manageCourses();
     }
     private static void courseManage(String text, String courseCode, String courseDescription,
-                                     int creditUnits, String programCode) {
+                                     int creditUnits, String courseType, String programCode, String facultyID) {
         UI.header(text.toUpperCase() + ": ROOM INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] COURSE CODE         : %s", courseCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription));
+        UI.liner(String.format(" [1] COURSE CODE         : %s", courseCode));
+        UI.liner(String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription));
         String unitText;
         if (creditUnits == -1) unitText = "";
         else if (creditUnits == 1) unitText = "1st Floor";
         else if (creditUnits == 2) unitText = "2nd Floor";
         else if (creditUnits == 3) unitText = "3rd Floor";
         else unitText = creditUnits + "th Floor";
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] CREDIT UNITS        : %s", unitText));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4] PROGRAM CODE        : %s", programCode));
-        System.out.printf("│%-" + innerWidth + "s│\n", "");
+        UI.liner(String.format(" [3] CREDIT UNITS        : %s", unitText));
+        UI.liner(String.format(" [4] COURSE TYPE         : %s", programCode));
+        UI.liner(String.format(" [5] PROGRAM CODE        : %s", programCode));
+        UI.liner(String.format(" [6] FACULTY ID          : %s", facultyID));
+        UI.liner("");
         UI.option();
     }
 
@@ -547,7 +589,6 @@ public class Admin extends User {
 //    }
     // ------------------------------------------------------------//
     static ArrayList<String[]> requests = Faculty.requests;
-
     static void viewRequest() {
         ArrayList<Integer> ctr = new ArrayList<>();
         UI.header("ADMIN NOTIFICATION LIST");
@@ -790,36 +831,20 @@ public class Admin extends User {
         }
     }
     public static void createSection() {
-        String sectionID = "";
-        int yearLevel = -1;
-        char block = 0;
-        int group = -1;
-        String academicYear = "";
-        String professorID = "";
-        boolean submit = false;
-        String choice;
-        String input;
-        String programCode = "";
+        String sectionID = ""; String academicYear = ""; String courseID = ""; String choice; String input = "";
+        int yearLevel = -1; int group = -1; char block = 0; boolean submit = false;
 
         while (!submit) {
-            sectionManage("CREATE", sectionID, yearLevel, block, group, academicYear, professorID, programCode);
+            sectionManage("CREATE", yearLevel, block, group, academicYear, courseID);
 
             do {
                 System.out.print("  Select > ");
                 choice = in.nextLine().trim();
-                if (!choice.matches("[1-7X]") && !choice.equals("/")) UI.print("Invalid Choice");
-            } while (!choice.matches("[1-7X]") && !choice.equals("/"));
+                if (!choice.matches("[1-5X]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-5X]") && !choice.equals("/"));
 
             switch (choice) {
                 case "1":
-                    do {
-                        System.out.print("   Enter Section ID > ");
-                        sectionID = in.nextLine().toUpperCase().trim();
-                        if (sectionID.trim().isEmpty()) UI.print("Invalid Input");
-                        if (Section.existSectionID(sectionID)) UI.print("Section ID already exists");
-                    } while (sectionID.trim().isEmpty() && Section.existSectionID(sectionID));
-                    break;
-                case "2":
                     do {
                         System.out.print("   Enter Year Level > ");
                         input = in.nextLine();
@@ -832,7 +857,7 @@ public class Admin extends User {
                         }
                     } while (yearLevel < 1 || yearLevel > 4);
                     break;
-                case "3":
+                case "2":
                     do {
                         System.out.print("   Block > ");
                         input = in.nextLine().trim().toUpperCase();
@@ -840,7 +865,7 @@ public class Admin extends User {
                         block = input.charAt(0);
                     } while (input.length() != 1 || !(input.charAt(0) >= 'A' && input.charAt(0) <= 'J'));
                     break;
-                case "4":
+                case "3":
                     do {
                         System.out.print("  Enter Group > ");
                         input = in.nextLine().trim();
@@ -853,7 +878,7 @@ public class Admin extends User {
                         }
                     } while (group < 0 || group > 2);
                     break;
-                case "5":
+                case "4":
                     do {
                         System.out.print("  Enter Academic Year > ");
                         academicYear = in.nextLine();
@@ -861,25 +886,18 @@ public class Admin extends User {
                         if (!academicYear.matches("\\d{4}-\\d{4}")) UI.print("Invalid Format");
                     } while (academicYear.isEmpty() || !academicYear.matches("\\d{4}-\\d{4}"));
                     break;
-                case "6":
+                case "5":
                     do {
-                        System.out.print("  Enter Professor ID > ");
-                        professorID = in.nextLine();
-                        if (professorID.trim().isEmpty()) UI.print("Invalid Input");
-                        if (!Faculty.existUserID(professorID)) UI.print("Faculty does not exist");
-                    } while (professorID.trim().isEmpty() || !Faculty.existUserID(professorID));
-                    break;
-                case "7":
-                    do {
-                        System.out.print("  Enter Program Code > ");
-                        programCode = in.nextLine();
-                        if (programCode.trim().isEmpty()) UI.print("Invalid Input");
-                        if (!Program.existProgramCode(programCode)) UI.print("Program does not exist");
-                    } while (programCode.trim().isEmpty() || !Program.existProgramCode(programCode));
+                        System.out.print("  Enter Course ID > ");
+                        courseID = in.nextLine();
+                        if (courseID.trim().isEmpty()) UI.print("Invalid Input");
+                        if (!Course.existCourseID(courseID)) UI.print("Course ID does not exist");
+                    } while (courseID.trim().isEmpty() || !Course.existCourseID(courseID));
                     break;
                 case "/":
-                    if (sectionID.isEmpty() || (yearLevel < 1 || yearLevel > 4) || (group < 0 || group > 2) ||
-                            academicYear.isEmpty() || professorID.trim().isEmpty())
+                    if ((yearLevel < 1 || yearLevel > 4) || (group < 0 || group > 2) ||
+                            !(input.charAt(0) >= 'A' && input.charAt(0) <= 'J') || academicYear.isEmpty() ||
+                            courseID.trim().isEmpty())
                         UI.print("Details are incomplete");
                     else {
                         boolean gate = true;
@@ -892,11 +910,10 @@ public class Admin extends User {
                                 break;
                             }
                         }
-
                         if (gate) {
-                            sections.add(new Section(sectionID, yearLevel, block, group, academicYear, professorID, programCode));
+                            sections.add(new Section(yearLevel, block, group, academicYear, courseID));
                             UI.print("Section successfully created");
-                            sectionManage("CREATE", sectionID, yearLevel, block, group, academicYear, professorID, programCode);
+                            sectionManage("CREATE", yearLevel, block, group, academicYear, courseID);
                             submit = true;
                         }
                         else UI.print("Section already exists");
@@ -909,16 +926,8 @@ public class Admin extends User {
         }
     }
     static void editSection() {
-        String sectionID = "";
-        int yearLevel = -1;
-        char block = 0;
-        int group = -1;
-        String academicYear = "";
-        String professorID = "";
-        boolean submit = false;
-        String choice;
-        String input;
-        String programCode = "";
+        String sectionID = ""; String academicYear = ""; String courseID = ""; String choice; String input = "";
+        int yearLevel = -1; int group = -1; char block = 0; boolean submit = false;
 
         UI.print("EDIT EXISTING SECTION");
 
@@ -938,11 +947,11 @@ public class Admin extends User {
         block = Section.getBlock(s);
         group = Section.getGroup(s);
         academicYear = Section.getAcademicYear(s);
-        professorID = Section.getFacultyID(s);
-        programCode = Section.getProgramCode(s);
+        courseID = Section.getCourseID(s);
+
 
         while (!submit) {
-            sectionManage("EDIT", sectionID, yearLevel, block, group, academicYear, professorID, programCode);
+            sectionManage("EDIT", yearLevel, block, group, academicYear, courseID);
 
             do {
                 System.out.print("  Select > ");
@@ -1004,19 +1013,11 @@ public class Admin extends User {
                     break;
                 case "6":
                     do {
-                        System.out.print("  Enter Professor ID > ");
-                        professorID = in.nextLine();
-                        if (professorID.trim().isEmpty()) UI.print("Invalid Input");
-                        if (!Faculty.existUserID(professorID)) UI.print("Faculty does not exist");
-                    } while (professorID.trim().isEmpty() || !Faculty.existUserID(professorID));
-                    break;
-                case "7":
-                    do {
-                        System.out.print("  Enter Program Code > ");
-                        programCode = in.nextLine();
-                        if (programCode.trim().isEmpty()) UI.print("Invalid Input");
-                        if (!Program.existProgramCode(programCode)) UI.print("Program does not exist");
-                    } while (programCode.trim().isEmpty() || !Program.existProgramCode(programCode));
+                        System.out.print("  Enter Course ID > ");
+                        courseID = in.nextLine();
+                        if (courseID.trim().isEmpty()) UI.print("Invalid Input");
+                        if (!Course.existCourseID(courseID)) UI.print("Course ID does not exist");
+                    } while (courseID.trim().isEmpty() || !Course.existCourseID(courseID));
                     break;
                 case "/":
                     boolean gate = true;
@@ -1033,8 +1034,8 @@ public class Admin extends User {
                     if (gate) {
                         UI.print("Section successfully updated");
                         s.setSectionID(sectionID); s.setYearLevel(yearLevel); s.setBlock(block); s.setGroup(group);
-                        s.setAcademicYear(academicYear); s.setProfessorID(professorID); s.setProgramCode(programCode);
-                        sectionManage("EDIT", sectionID, yearLevel, block, group, academicYear, professorID, programCode);
+                        s.setAcademicYear(academicYear); s.setCourseID(courseID);
+                        sectionManage("EDIT", yearLevel, block, group, academicYear, courseID);
                         submit = true;
                     }
                     else UI.print("Section already exists");
@@ -1046,16 +1047,8 @@ public class Admin extends User {
         }
     }
     static void deleteSection() {
-        String sectionID = "";
-        int yearLevel = -1;
-        char block = 0;
-        int group = -1;
-        String academicYear = "";
-        String professorID = "";
-        boolean submit = false;
-        String choice;
-        String input;
-        String programCode = "";
+        String sectionID = ""; String academicYear = ""; String courseID = ""; String choice; String input = "";
+        int yearLevel = -1; int group = -1; char block = 0; boolean submit = false;
 
         UI.print("DELETE EXISTING SECTION");
 
@@ -1070,15 +1063,14 @@ public class Admin extends User {
             UI.print("Section not found");
             return;
         }
-        sectionID = Section.getSection(s);
+
         yearLevel = Section.getYearLevel(s);
         block = Section.getBlock(s);
         group = Section.getGroup(s);
         academicYear = Section.getAcademicYear(s);
-        professorID = Section.getFacultyID(s);
-        programCode = Section.getProgramCode(s);
+        courseID = Section.getCourseID(s);
 
-        sectionManage("DELETE", sectionID, yearLevel, block, group, academicYear, professorID, programCode);
+        sectionManage("DELETE", yearLevel, block, group, academicYear, courseID);
 
         do {
             System.out.print("  Confirm Section Deletion? (Y/N) > ");
@@ -1092,16 +1084,14 @@ public class Admin extends User {
         }
         else manageSections();
     }
-    private static void sectionManage(String text, String sectionID, int yearLevel, char block, int group,
-                                      String academicYear, String professorID, String programCode) {
+    private static void sectionManage(String text, int yearLevel, char block, int group, String academicYear, String courseID) {
         UI.header(text.toUpperCase() + ": SECTION INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] SECTION ID     : %s", sectionID));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [1] SECTION ID     : %s", sections.getLast().getSectionID()));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [2] YEAR LEVEL     : %s", yearLevel));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [3] BLOCK          : %s", block));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [4] GROUP          : %s", group));
         System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [5] ACADEMIC YEAR  : %s", academicYear));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [6] PROFESSOR ID   : %s", professorID));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [7] PROGRAM CODE   : %s", programCode));
+        System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [6] COURSE ID      : %s", courseID));
         System.out.printf("│%-" + innerWidth + "s│\n", "");
         UI.option();
         UI.footer();
@@ -1149,7 +1139,7 @@ public class Admin extends User {
         String userID; String lastName; String firstName; String middleInitial; String emailAddress;
         String password; String address; int postalCode; String birthDate; char sex; boolean valid;
         String choice; boolean submit = false; String enrollmentStatus = ""; String programCode = "";
-        String contactNumber = ""; String collegeCode = ""; String role = ""; String userName;
+        String contactNumber = ""; String collegeCode = ""; String supervisorID = ""; String role = ""; String userName;
 
         UI.print("EDIT EXISTING USER");
         do {
@@ -1177,13 +1167,13 @@ public class Admin extends User {
 
         if (userID.charAt(0) == 'S') {
             Student s = (Student) u;
-            enrollmentStatus = s.getEnrollmentStatus();
-            programCode = s.getProgramCode();
+            enrollmentStatus = Student.getEnrollmentStatus(u);
         }
         else if (userID.charAt(0) == 'F') {
             Faculty f = (Faculty) u;
-            contactNumber = f.getContactNumber();
-            collegeCode = f.getCollegeCode();
+            contactNumber = Faculty.getContactNumber(f);
+            collegeCode = Faculty.getCollegeCode(f);
+            supervisorID = Faculty.getSupervisorID(f);
         }
         else if (userID.charAt(0) == 'A') {
             Admin a = (Admin) u;
@@ -1386,7 +1376,6 @@ public class Admin extends User {
                     if (userID.charAt(0) == 'S') {
                         Student s = (Student) u;
                         s.setEnrollmentStatus(enrollmentStatus);
-                        s.setProgramCode(programCode);
 
                     } else if (userID.charAt(0) == 'F') {
                         Faculty f = (Faculty) u;
@@ -1421,7 +1410,7 @@ public class Admin extends User {
         String userID = ""; String lastName = ""; String firstName = ""; String middleInitial = ""; String emailAddress = "";
         String password = ""; String address = ""; int postalCode = -1; String birthDate= ""; char sex= '\0';
         String choice = ""; boolean submit = false; String enrollmentStatus = ""; String programCode = ""; String contactNumber = "";
-        String collegeCode = ""; String role = "";
+        String collegeCode = ""; String role = ""; String supervisorID = "";
 
         UI.print("DELETE EXISTING ROOM");
         boolean found = true;
@@ -1452,13 +1441,13 @@ public class Admin extends User {
 
         if (userID.charAt(0) == 'S') {
             Student s = (Student) u;
-            enrollmentStatus = s.getEnrollmentStatus();
-            programCode = s.getProgramCode();
+            enrollmentStatus = Student.getEnrollmentStatus(u);
         }
         else if (userID.charAt(0) == 'F') {
             Faculty f = (Faculty) u;
-            contactNumber = f.getContactNumber();
-            collegeCode = f.getCollegeCode();
+            contactNumber = Faculty.getContactNumber(f);
+            collegeCode = Faculty.getCollegeCode(f);
+            supervisorID = Faculty.getSupervisorID(f);
         }
         else if (userID.charAt(0) == 'A') {
             Admin a = (Admin) u;
@@ -1535,14 +1524,6 @@ public class Admin extends User {
             System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [11] CONTACT NUMBER   : %s", input1));
             System.out.printf("│%-" + innerWidth + "s│\n", String.format(" [12] COLLEGE CODE     : %s", input2));
         }
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    private void setRole(String role) {
-        this.role = role;
     }
     // ------------------------------------------------------------//
 //    private static void manageStudents() {

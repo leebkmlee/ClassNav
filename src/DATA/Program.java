@@ -5,7 +5,6 @@ import UI.*;
 import static DATA.Course.courses;
 
 public class Program {
-    static int innerWidth = 70;
     private final String programCode;
     private final String programDescription;
     private final String collegeCode; // foreign key
@@ -28,32 +27,29 @@ public class Program {
         programs.add(new Program("BSBA", "Bachelor of Science in Business Administration", "CBA"));
     }
 
+    // PROGRAM GETTER METHODS
     public String getProgramID() {
         return programCode;
     }
-
     public static Program findProgram(String programCode) {
         for (Program p : programs) if (programCode.equals(p.getProgramID())) return p;
         return null;
     }
-
     public static String getProgram(Program p) {
         return p.programCode;
     }
-
     public static String getProgramDescription(Program p) {
         return p.programDescription;
     }
-
     public static String getCollegeCode(Program p) {
         return p.collegeCode;
     }
-
     public static boolean existProgramCode(String programCode) {
         for (Program p : programs) if (programCode.equals(p.programCode)) return true;
         return false;
     }
 
+    // PROGRAM METHODS
     public static void displayProgram(String programCode) {
         Program p = findProgram(programCode);
         if (p == null) {
@@ -62,30 +58,30 @@ public class Program {
         }
         String programDescription = Program.getProgramDescription(p);
         UI.header("PROGRAM INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  PROGRAM CODE         : %s", Program.getProgram(p)));
-        if (programDescription.length() <= 40)
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  PROGRAM DESCRIPTION  : %s", Program.getProgramDescription(p)));
+        UI.liner(String.format("  PROGRAM CODE         : %s", Program.getProgram(p)));
+        if (programDescription.length() <= 40) UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", Program.getProgramDescription(p)));
         else {
-            System.out.printf("│%-" + innerWidth + "s│\n", "  PROGRAM DESCRIPTION  :");
-            System.out.printf("│%-" + innerWidth + "s│\n", "  " + programDescription);
+            UI.liner("  PROGRAM DESCRIPTION  :");
+            UI.liner("  " + programDescription);
         }
         UI.footer();
     }
-
     public static void displayCourses(String programCode) {
+        ArrayList<String> listCourse = new ArrayList<>();
         Program p = findProgram(programCode);
         if (p == null) {
             UI.print("Program not found");
             return;
         }
         UI.header("COURSE LIST");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  PROGRAM CODE     : %s", Program.getProgram(p)));
-        System.out.printf("│%-" + innerWidth + "s│\n", "  Courses under " + Program.getProgramDescription(p) + ":");
+        UI.liner(String.format("  PROGRAM CODE     : %s", Program.getProgram(p)));
+        UI.liner("  Courses under " + Program.getProgramDescription(p) + ":");
         for (Course c : courses) {
-            if(Course.getProgramCode(c).equals(p.getProgramID())) {
+            if(Course.getProgramCode(c).equals(p.getProgramID()) && !listCourse.contains(Course.getCourseCode(c))) {
+                listCourse.add(Course.getCourseCode(c));
                 String course = String.format("    %-15s %-40s %-8s",
                         Course.getCourseCode(c), Course.getCourseDescription(c), Course.getCreditUnits(c) + " units");
-                System.out.printf("│%-" + innerWidth + "s│\n", course);
+                UI.liner(course);
             }
         }
         UI.footer();

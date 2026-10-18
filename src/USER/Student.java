@@ -3,23 +3,36 @@ import DATA.*;
 import FUNCTION.Notification;
 import UI.*;
 
-import java.util.ArrayList;
-
+import static DATA.Course.courses;
 import static DATA.Enrollment.enrollments;
 import static DATA.Enrollment.findEnrollmentByID;
 import static DATA.Room.convertToMinutes;
+import static DATA.Section.sections;
 
 public class Student extends User{
 
+    private static int nextStudentID = 1;
     private String enrollmentStatus;
-    private String programCode; // foreign key
 
-    public Student(String userID, String lastName, String firstName, String middleInitial, String emailAddress,
-                   String password, String address, int postalCode, String birthDate, char gender, String enrollmentStatus,
-                   String programCode) {
-        super(userID, lastName, firstName, middleInitial, emailAddress, password, address, postalCode, birthDate, gender);
+    public Student(String lastName, String firstName, String middleInitial, String emailAddress,
+                   String password, String address, int postalCode, String birthDate, char gender, String enrollmentStatus) {
+        super(String.format("S%04d", nextStudentID++), lastName, firstName, middleInitial, emailAddress, password,
+                address, postalCode, birthDate, gender);
         this.enrollmentStatus = enrollmentStatus;
-        this.programCode = programCode;
+    }
+
+    public void setEnrollmentStatus(String enrollmentStatus) {
+        this.enrollmentStatus = enrollmentStatus;
+    }
+
+    public static Student findStudent(String userID) {
+        for (User u : users) if (userID.equals(u.getUserID()) && u.getClass() == Student.class) return (Student) u;
+        return null;
+    }
+    public static String getEnrollmentStatus(User u){
+        Student s = Student.findStudent(u.getUserID());
+        if (s == null) return null;
+        return s.enrollmentStatus;
     }
 
     public static void locateRoom(String roomCode) {
@@ -51,20 +64,6 @@ public class Student extends User{
         System.out.printf("│%-" + innerWidth + "s│\n", String.format("  FLOOR NUMBER      : %s", floorText));
         UI.footer();
     }
-
-    public static Student findStudent(String userID) {
-        for (User u : users) if (userID.equals(u.getUserID()) && u.getClass() == Student.class) return (Student) u;
-        return null;
-    }
-
-    public static String getProgramCode(Student s) {
-        return s.programCode;
-    }
-
-    public String getEnrollmentStatus(){ return enrollmentStatus; }
-
-    public String getProgramCode(){ return programCode; }
-
     public static void displaySchedules(String studentID) {
         Student st = Student.findStudent(studentID);
         if (st == null) {
@@ -107,7 +106,6 @@ public class Student extends User{
         if (!found) System.out.printf("│%-" + innerWidth + "s│%n", "  No schedules found.");
         UI.footer(); // prints extra row
     }
-
     public static void viewAvailableRooms(String day, String startTime, String endTime){
         int scheduledStart = convertToMinutes(startTime);
         int scheduledEnd = convertToMinutes(endTime);
@@ -151,62 +149,70 @@ public class Student extends User{
         }
         UI.footer();
     }
-
     public static void informFaculty(String studentID, String buildingName,
                                      String roomCode, String day, String startTime, String endTime) {
 
-        String courseCode; boolean found = false;
+        String courseID; boolean found = false; String facultyID = "";
 
         do {
-            System.out.println("  Enter Course Code > ");
-            courseCode = in.nextLine();
+            System.out.println("  Enter Course ID > ");
+            courseID = in.nextLine();
 
             for (Enrollment e : enrollments) {
                 if (Enrollment.getStudentNumber(e).equals(studentID)) {
-                    for (Course c : Enrollment.getEnrolledCourses(e)) {
-                        if (Course.getCourseCode(c).equals(courseCode)) {
-                            found = true;
-                            break;
+                    for (Section s : sections) {
+                        if (Section.getSection(s).equals(Enrollment.getSectionID(e))) {
+                            if (Section.getCourseID(s).equals(courseID)) {
+                                found = true;
+                            }
                         }
                     }
                 }
+                if (found) break;
             }
 
             if (!found) UI.print("Course not found");
         } while(!found);
 
-        Enrollment e = findEnrollmentByID(studentID);
-
-        if (e == null) {
-            UI.print("Enrollment does not exist");
-            return;
-        }
-        Section s = Section.findSection(Enrollment.getSectionID(e));
-        if (s == null) {
-            UI.print("Section not found");
-            return;
-        }
         UI.header("INFORM FACULTY");
         boolean available = Room.verifyAvailability(roomCode, day, startTime, endTime);
         String choice; String message;
+
         if (available) {
             System.out.printf("│%-" + innerWidth + "s│\n", "  Room is available");
             message = "Room is available";
         }
+
         else {
             System.out.printf("│%-" + innerWidth + "s│\n", "  Room is occupied");
             message = "Room is occupied";
         }
+
         UI.liner("Inform Faculty?");
         UI.option();
+
         do {
             System.out.print("  Select > ");
             choice = in.nextLine().toUpperCase();
             if (!choice.equals("/") && !choice.equals("X")) UI.print("Invalid Input");
         } while(!choice.equals("/") && !choice.equals("X"));
+
         switch (choice) {
             case "/":
-                Notification.notifications.add(new Notification(studentID, Section.getFacultyID(s), courseCode,
+                Course c = Course.findCourse(courseID);
+                if (c == null) {
+                    UI.print("Course not found");
+                    return;
+                }
+                facultyID = Course.getFacultyID(c);
+
+                Faculty f = Faculty.findFaculty(facultyID);
+                if (f == null) {
+                    UI.print("Faculty not found");
+                    return;
+                }
+
+                Notification.notifications.add(new Notification(studentID, f.getUserName(), courseID,
                         roomCode, buildingName, day, startTime, endTime, message));
                 UI.print("Successfully informed faculty");
                 break;
@@ -216,11 +222,4 @@ public class Student extends User{
         }
     }
 
-    public void setEnrollmentStatus(String enrollmentStatus) {
-        this.enrollmentStatus = enrollmentStatus;
-    }
-
-    public void setProgramCode(String programCode) {
-        this.programCode = programCode;
-    }
 }

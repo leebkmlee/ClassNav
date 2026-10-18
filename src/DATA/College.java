@@ -2,9 +2,6 @@ package DATA;
 import java.util.ArrayList;
 import UI.*;
 
-import static DATA.Course.innerWidth;
-import static DATA.Program.programs;
-
 public class College {
     private String collegeCode;
     private String collegeDescription;
@@ -23,53 +20,47 @@ public class College {
         colleges.add(new College("CBA", "College of Business Administration"));
     }
 
+    // COLLEGE GETTER METHODS
     public String getCollegeCode() {
         return collegeCode;
     }
-
     public static College findCollege(String collegeCode) {
         for (College c : colleges) if (collegeCode.equals(c.getCollegeCode())) return c;
         return null;
     }
-
     public static String getCollege(College c) {
         return c.collegeCode;
     }
-
+    public static String getCollegeDescription(College c) {
+        return c.collegeDescription;
+    }
     public static boolean existCollegeCode(String collegeCode) {
         for (College c : colleges) if (collegeCode.equals(c.getCollegeCode())) return  true;
         return false;
     }
-
     public static boolean existCollegeDesc(String collegeDescription) {
         for (College c : colleges) if (collegeDescription.equals(College.getCollegeDescription(c))) return true;
         return false;
     }
 
+    // COLLEGE SETTER METHODS
     public void setCollegeDescription(String collegeDescription) {
         this.collegeDescription = collegeDescription;
     }
-
     public void setCollegeCode(String collegeCode) {
        this.collegeCode = collegeCode;
     }
 
-    public static String getCollegeDescription(College c) {
-        return c.collegeDescription;
-    }
-
+    // COLLEGE METHODS
     public static void displayColleges(){
         UI.header("COLLEGES");
         for  (College c : colleges) {
-            String college = String.format( "  %-10s %-40s", College.getCollege(c),
-                    College.getCollegeDescription(c));
-            System.out.printf("│%-" + innerWidth + "s│\n", college);
+            String college = String.format( "  %-10s %-40s", College.getCollege(c), College.getCollegeDescription(c));
+            UI.liner(college);
         }
         UI.footer();
     }
-
     public static void displayColleges(String collegeCode) {
-        int innerWidth = 70;
         College c = findCollege(collegeCode);
         if (c == null) {
             UI.print("College not found");
@@ -77,32 +68,11 @@ public class College {
         }
         String collegeDescription = College.getCollegeDescription(c);
         UI.header("COLLEGE INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COLLEGE CODE            : %s", College.getCollege(c)));
-        if (collegeDescription.length() <= 40)
-            System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COLLEGE DESCRIPTION     : %s", collegeDescription));
+        UI.liner(String.format("  COLLEGE CODE            : %s", College.getCollege(c)));
+        if (collegeDescription.length() <= 40) UI.liner(String.format("  COLLEGE DESCRIPTION     : %s", collegeDescription));
         else {
-            System.out.printf("│%-" + innerWidth + "s│\n", "  COLLEGE DESCRIPTION     :");
-            System.out.printf("│%-" + innerWidth + "s│\n", "  " + collegeDescription);
-        }
-        UI.footer();
-    }
-
-    public static void displayPrograms(String collegeCode) {
-        int innerWidth = 70;
-        College c = findCollege(collegeCode);
-        if (c == null) {
-            UI.print("College not found");
-            return;
-        }
-        UI.header("PROGRAM LIST");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  COLLEGE CODE     : %s", College.getCollege(c)));
-        System.out.printf("│%-" + innerWidth + "s│\n", "  Programs under " + College.getCollegeDescription(c) + ":");
-        for (Program p : programs) {
-            if (Program.getCollegeCode(p).equals(c.getCollegeCode())) {
-                String program = String.format("    %-10s %-40s",
-                        Program.getProgram(p), Program.getProgramDescription(p));
-                System.out.printf("│%-" + innerWidth + "s│\n", program);
-            }
+            UI.liner("  COLLEGE DESCRIPTION     :");
+            UI.liner("  " + collegeDescription);
         }
         UI.footer();
     }

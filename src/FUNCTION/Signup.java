@@ -205,11 +205,11 @@ public class Signup {
                                     role = in.nextLine();
                                     if (role.trim().isEmpty()) UI.print("Invalid Input");
                                 } while (role.trim().isEmpty());
-                                User.users.add(new Admin(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
+                                User.users.add(new Admin(lastName, firstName, middleInitial,
                                         emailAddress, passKey, location, postalDigit, birthDay, gen, role));
                                 break;
                             case 'F':
-                                String contactNumber; String collegeCode;
+                                String contactNumber; String collegeCode; String supervisorID;
                                 do {
                                     System.out.print("   Contact Number > ");
                                     contactNumber = in.nextLine();
@@ -220,8 +220,14 @@ public class Signup {
                                     collegeCode = in.nextLine();
                                     if (!(collegeCode.length() >= 4 && collegeCode.length() <= 6)) UI.print("Invalid Input");
                                 } while (!(collegeCode.length() >= 4 && collegeCode.length() <= 6));
-                                User.users.add(new Faculty(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
-                                        emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber, collegeCode));
+                                do {
+                                    System.out.println("   Supervisor ID > ");
+                                    supervisorID = in.nextLine();
+                                    if (!User.existUserID(supervisorID)) UI.print("Supervisor ID does not exist");
+                                } while(!User.existUserID(supervisorID));
+                                User.users.add(new Faculty(lastName, firstName, middleInitial,
+                                        emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber,
+                                        collegeCode, supervisorID));
                                 break;
                             case 'S':
                                 String enrollmentStatus; String programCode;
@@ -235,8 +241,8 @@ public class Signup {
                                     programCode = in.nextLine();
                                     if (!(programCode.length() >= 4 && programCode.length() <= 6)) UI.print("Invalid Input");
                                 } while (!(programCode.length() >= 4 && programCode.length() <= 6));
-                                User.users.add(new Student(emailAddress.substring(0, 4), lastName, firstName, middleInitial,
-                                        emailAddress, passKey, location, postalDigit, birthDay, gen, enrollmentStatus, programCode));
+                                User.users.add(new Student(lastName, firstName, middleInitial, emailAddress,
+                                        password, address, Integer.parseInt(postalCode), birthDate, sex.charAt(0), enrollmentStatus));
                                 break;
                         }
                         UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
