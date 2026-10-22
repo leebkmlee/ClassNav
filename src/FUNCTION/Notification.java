@@ -1,9 +1,12 @@
+
 package FUNCTION;
 
 import java.util.ArrayList;
 
 public class Notification {
+
     private static int nextNotificationID = 1;
+
     private int notificationID;
     private String senderID;
     private String recipientID;
@@ -15,18 +18,31 @@ public class Notification {
     private String endTime;
     private String message;
 
-    public Notification(String senderID, String recepientID, String courseCode, String roomCode, String buildingName,
-                        String day, String startTime, String endTime, String message) { // message kay prof
+    public Notification(String senderID, String recipientID, String courseCode, String roomCode,
+                        String buildingName, String day, String startTime, String endTime, String message) {
+
+        if (senderID == null || senderID.isBlank()
+                || recipientID == null || recipientID.isBlank()
+                || courseCode == null || courseCode.isBlank()
+                || roomCode == null || roomCode.isBlank()
+                || buildingName == null || buildingName.isBlank()
+                || day == null || day.isBlank()
+                || startTime == null || startTime.isBlank()
+                || endTime == null || endTime.isBlank()
+                || message == null || message.isBlank()) {
+            throw new IllegalArgumentException("Notification fields cannot be empty.");
+        }
+
         this.notificationID = nextNotificationID++;
-        this.senderID = senderID;
-        this.recipientID = recepientID;
-        this.courseCode = courseCode;
-        this.roomCode = roomCode;
-        this.buildingName = buildingName;
-        this.day = day;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.message = message;
+        this.senderID = senderID.trim();
+        this.recipientID = recipientID.trim();
+        this.courseCode = courseCode.trim();
+        this.roomCode = roomCode.trim();
+        this.buildingName = buildingName.trim();
+        this.day = day.trim();
+        this.startTime = startTime.trim();
+        this.endTime = endTime.trim();
+        this.message = message.trim();
     }
 
     public static ArrayList<Notification> notifications = new ArrayList<>();
@@ -45,7 +61,7 @@ public class Notification {
                 "Room is available"));
 
         notifications.add(new Notification("S004", "F001", "IT 206", "R102",
-                 "Pimentel Hall", "Th", "08:00 AM", "11:00 AM",
+                "Pimentel Hall", "Th", "08:00 AM", "11:00 AM",
                 "Room is occupied"));
 
         notifications.add(new Notification("S005", "F002", "CC 106", "R201",
@@ -57,19 +73,64 @@ public class Notification {
         return notificationID;
     }
 
-    public static Notification findNotification (int notificationID) {
-        for (Notification n : notifications) if (notificationID == n.notificationID) return n;
+    public static Notification findNotification(int notificationID) {
+        for (Notification n : notifications) {
+            if (n != null && n.notificationID == notificationID) return n;
+        }
         return null;
     }
-    public static int getNotification(Notification n) {
-        return n.notificationID;
+
+    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
+        ArrayList<Notification> received = new ArrayList<>();
+
+        if (recipientID == null || recipientID.isBlank()) return received;
+
+        for (Notification n : notifications) {
+            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
+                received.add(n);
+            }
+        }
+
+        return received;
     }
-    public static String getSenderID(Notification n) {return n.senderID;}
-    public static String getRecipientID(Notification n) {return n.recipientID;}
-    public static String getRoomCode(Notification n) {return n.roomCode;}
-    public static String getBuildingName(Notification n) {return n.buildingName;}
-    public static String getDay(Notification n) {return n.day;}
-    public static String getStartTime(Notification n) {return n.startTime;}
-    public static String getEndTime(Notification n) {return n.endTime;}
-    public static String getMessage(Notification n) {return n.message;}
+
+    public static int getNotification(Notification n) {
+        return n == null ? -1 : n.notificationID;
+    }
+
+    public static String getSenderID(Notification n) {
+        return n == null ? null : n.senderID;
+    }
+
+    public static String getRecipientID(Notification n) {
+        return n == null ? null : n.recipientID;
+    }
+
+    public static String getCourseCode(Notification n) {
+        return n == null ? null : n.courseCode;
+    }
+
+    public static String getRoomCode(Notification n) {
+        return n == null ? null : n.roomCode;
+    }
+
+    public static String getBuildingName(Notification n) {
+        return n == null ? null : n.buildingName;
+    }
+
+    public static String getDay(Notification n) {
+        return n == null ? null : n.day;
+    }
+
+    public static String getStartTime(Notification n) {
+        return n == null ? null : n.startTime;
+    }
+
+    public static String getEndTime(Notification n) {
+        return n == null ? null : n.endTime;
+    }
+
+    public static String getMessage(Notification n) {
+        return n == null ? null : n.message;
+    }
 }

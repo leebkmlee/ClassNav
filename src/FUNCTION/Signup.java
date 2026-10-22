@@ -1,13 +1,19 @@
+
 package FUNCTION;
 
 import USER.*;
+import DATA.*;
 import UI.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Signup {
 
     static final int innerWidth = 70;
-
     static Scanner in = new Scanner(System.in);
 
     static String user = "[1] Full Name:";
@@ -18,15 +24,15 @@ public class Signup {
     static String birthDate = "[6] Birthdate:";
     static String sex = "[7] Sex:";
 
-
     public static void signUp(String text) {
-        int complete = 0; boolean submit = false; boolean valid = false;
-        String userName, lastName = "", firstName = "", middleInitial = "";
-        String emailAddress = "";
-        String passKey = "";
-        String street, barangay, city, province, location = "";
-        int postalDigit = 0;
+
+        int complete = 0;
+        boolean submit = false, valid;
+        String userName = "", lastName = "", firstName = "", middleInitial = "";
+        String emailAddress = "", passKey = "";
+        String street = "", barangay = "", city = "", province = "", location = "";
         String birthDay = "";
+        int postalDigit = 0;
         char gen = '\0';
 
         while (!submit) {
@@ -42,36 +48,45 @@ public class Signup {
 
             UI.option();
             UI.footer();
-            String choice = in.nextLine();
+
+            System.out.print("  Select > ");
+            String choice = in.nextLine().trim().toUpperCase();
 
             switch (choice) {
                 case "1":
                     System.out.println("   Enter Full Name (Last Name/First Name/Middle Initial)");
 
                     do {
-                        do {
-                            System.out.print("    Last Name > ");
-                            lastName = in.nextLine();
-                            if (lastName.trim().isEmpty()) UI.print("Invalid Input");
-                        } while (lastName.trim().isEmpty());
+                        System.out.print("    Last Name > ");
+                        lastName = in.nextLine().trim();
 
-                        do {
-                            System.out.print("    First Name > "); // non number error handling
-                            firstName = in.nextLine();
-                            if (firstName.trim().isEmpty()) UI.print("Invalid Input");
-                        } while (firstName.trim().isEmpty());
+                        if (lastName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (lastName.isEmpty());
 
-                        System.out.print("    Middle Initial > ");
-                        middleInitial = in.nextLine().toUpperCase();
+                    do {
+                        System.out.print("    First Name > ");
+                        firstName = in.nextLine().trim();
 
-                        if (middleInitial.endsWith(".")) middleInitial = middleInitial.replace(".", "");
-                        userName = lastName + ", " + firstName + " " + middleInitial + ".";
-                        if (User.checkDuplicateName(userName)) UI.print("Name already exists");
-                    } while (User.checkDuplicateName(userName));
+                        if (firstName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (firstName.isEmpty());
 
-                    if (user.equals("[1] Full Name:")) complete++;
+                    System.out.print("    Middle Initial > ");
+                    middleInitial = in.nextLine().trim().toUpperCase();
 
-                    printUser(userName);
+                    if (middleInitial.endsWith("."))
+                        middleInitial = middleInitial.substring(0, middleInitial.length() - 1);
+
+                    userName = lastName + ", " + firstName
+                            + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+
+                    if (User.checkDuplicateName(userName)) {
+                        UI.print("Name already exists");
+                    } else {
+                        if (user.equals("[1] Full Name:")) complete++;
+                        user = "[1] Full Name: " + userName;
+                    }
                     break;
 
                 case "2":
@@ -79,39 +94,52 @@ public class Signup {
 
                     do {
                         System.out.print("   Enter Email Address > ");
-                        emailAddress = in.nextLine();
-                        if (emailAddress.trim().isEmpty()) UI.print("Invalid Input");
-                        else if (!emailAddress.endsWith("@bulsu.edu.ph")) UI.print("Invalid Email Domain");
-                        else if (!emailAddress.matches("[SFA][0-9]{3}@bulsu\\.edu\\.ph"))
-                            UI.print("Invalid User");
-                        else if (User.checkDuplicateEmail(emailAddress)) UI.print("Email already exists");
-                        else valid = true;
+                        emailAddress = in.nextLine().trim();
+
+                        if (emailAddress.isEmpty()) {
+                            UI.print("Invalid Input");
+                        } else if (!emailAddress.matches(
+                                "(S[0-9]{4}|F[0-9]{4}|DH[0-9]{4})@bulsu\\.edu\\.ph")) {
+                            UI.print("Use the appropriate BulSU account format: S0001, F0001, or DH0001");
+                        } else if (User.checkDuplicateEmail(emailAddress)) {
+                            UI.print("Email already exists");
+                        } else {
+                            valid = true;
+                        }
                     } while (!valid);
 
                     if (email.equals("[2] Email Address:")) complete++;
-                    printEmail(emailAddress);
+                    email = "[2] Email Address: " + emailAddress;
                     break;
 
                 case "3":
                     valid = false;
+
                     do {
                         System.out.print("   Enter Password > ");
                         passKey = in.nextLine();
-                        if (passKey.trim().isEmpty()) UI.print("Invalid Input");
-                        else if (passKey.length() < 8) UI.print("Password must be at least 8 characters");
+
+                        if (passKey.trim().isEmpty())
+                            UI.print("Invalid Input");
+                        else if (passKey.length() < 8)
+                            UI.print("Password must be at least 8 characters");
                         else if (!passKey.matches(".*[A-Z].*"))
                             UI.print("Password must contain an uppercase letter");
                         else if (!passKey.matches(".*[a-z].*"))
-                            UI.print("Password must contain an lowercase letter");
+                            UI.print("Password must contain a lowercase letter");
                         else if (!passKey.matches(".*[0-9].*"))
                             UI.print("Password must contain a number");
                         else if (!passKey.matches(".*[^a-zA-Z0-9].*"))
                             UI.print("Password must contain a special character");
-                        else if (passKey.contains(" ")) UI.print("Password cannot contain spaces");
-                        else valid = true;
+                        else if (passKey.matches(".*\\s+.*"))
+                            UI.print("Password cannot contain whitespace");
+                        else
+                            valid = true;
+
                     } while (!valid);
+
                     if (password.equals("[3] Password:")) complete++;
-                    printPassword(passKey);
+                    password = "[3] Password: " + "*".repeat(passKey.length());
                     break;
 
                 case "4":
@@ -119,154 +147,187 @@ public class Signup {
 
                     do {
                         System.out.print("    Enter Street > ");
-                        street = in.nextLine();
-                        if (street.trim().isEmpty()) UI.print("Invalid Input");
-                    } while (street.trim().isEmpty());
+                        street = in.nextLine().trim();
+                        if (street.isEmpty()) UI.print("Invalid Input");
+                    } while (street.isEmpty());
 
                     do {
                         System.out.print("    Enter Barangay > ");
-                        barangay = in.nextLine();
-                        if (barangay.trim().isEmpty()) UI.print("Invalid Input");
-                    } while (barangay.trim().isEmpty());
+                        barangay = in.nextLine().trim();
+                        if (barangay.isEmpty()) UI.print("Invalid Input");
+                    } while (barangay.isEmpty());
 
                     do {
                         System.out.print("    Enter City > ");
-                        city = in.nextLine();
-                        if (city.trim().isEmpty()) UI.print("Invalid Input");
-                    } while (city.trim().isEmpty());
+                        city = in.nextLine().trim();
+                        if (city.isEmpty()) UI.print("Invalid Input");
+                    } while (city.isEmpty());
 
                     do {
                         System.out.print("    Enter Province > ");
-                        province = in.nextLine();
-                        if (province.trim().isEmpty()) UI.print("Invalid Input");
-                    } while (province.trim().isEmpty());
+                        province = in.nextLine().trim();
+                        if (province.isEmpty()) UI.print("Invalid Input");
+                    } while (province.isEmpty());
 
                     location = street + ", " + barangay + ", " + city + ", " + province;
 
                     if (address.equals("[4] Address:")) complete++;
-                    printAddress(location);
+                    address = "[4] Address: " + location;
                     break;
 
                 case "5":
                     valid = false;
+
                     do {
                         System.out.print("   Enter Postal Code > ");
+                        String postalInput = in.nextLine().trim();
 
-                        try {
-                            postalDigit = in.nextInt();
-                            in.nextLine();
-                            if (postalDigit < 1000 || postalDigit > 9999)
-                                UI.print("Postal code must be 4 digits");
-                            else valid = true;
+                        if (!postalInput.matches("[0-9]{4}")) {
+                            UI.print("Postal code must contain exactly 4 digits");
+                        } else {
+                            postalDigit = Integer.parseInt(postalInput);
+                            valid = true;
                         }
-                        catch (Exception e) {
-                            in.nextLine();
-                            UI.print("Invalid Input");
-                        }
-
                     } while (!valid);
 
                     if (postalCode.equals("[5] Postal Code:")) complete++;
-                    printPostal(postalDigit);
+                    postalCode = "[5] Postal Code: " + String.format("%04d", postalDigit);
                     break;
 
                 case "6":
+                    valid = false;
+                    DateTimeFormatter formatter = DateTimeFormatter
+                            .ofPattern("MM/dd/uuuu")
+                            .withResolverStyle(ResolverStyle.STRICT);
+
                     do {
                         System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
-                        birthDay = in.nextLine();
-                        if (!birthDay.matches("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}"))
-                            UI.print("Invalid birthdate format");
-                    } while (!birthDay.matches("(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}"));
+                        birthDay = in.nextLine().trim();
+
+                        try {
+                            LocalDate date = LocalDate.parse(birthDay, formatter);
+
+                            if (date.isAfter(LocalDate.now())) {
+                                UI.print("Birthdate cannot be in the future");
+                            } else {
+                                valid = true;
+                            }
+                        } catch (DateTimeParseException e) {
+                            UI.print("Invalid birthdate. Use a valid MM/DD/YYYY date");
+                        }
+                    } while (!valid);
 
                     if (birthDate.equals("[6] Birthdate:")) complete++;
-                    printBDate(birthDay);
+                    birthDate = "[6] Birthdate: " + birthDay;
                     break;
 
                 case "7":
+                    String sexInput;
+
                     do {
                         System.out.print("   Enter Sex (M/F) > ");
-                        gen = in.nextLine().toUpperCase().charAt(0);
-                        if  (gen != 'M' && gen != 'F') UI.print("Invalid Input");
-                    } while (gen != 'M' && gen != 'F');
+                        sexInput = in.nextLine().trim().toUpperCase();
+
+                        if (!sexInput.matches("[MF]"))
+                            UI.print("Invalid Input");
+                    } while (!sexInput.matches("[MF]"));
+
+                    gen = sexInput.charAt(0);
 
                     if (sex.equals("[7] Sex:")) complete++;
-                    printSex(gen);
+                    sex = "[7] Sex: " + gen;
                     break;
 
                 case "/":
-                    if (complete == 7) {
+                    if (complete != 7) {
+                        UI.print("Incomplete Details!");
+                        break;
+                    }
+
+                    String accountType = emailAddress.substring(0, emailAddress.indexOf('@'));
+
+                    try {
+                        if (accountType.startsWith("DH")) {
+                            String collegeCode;
+
+                            do {
+                                System.out.print("   College Code > ");
+                                collegeCode = in.nextLine().trim().toUpperCase();
+
+                                if (!College.existCollegeCode(collegeCode))
+                                    UI.print("College code does not exist");
+                            } while (!College.existCollegeCode(collegeCode));
+
+                            User.users.add(new DepartmentHead(
+                                    lastName, firstName, middleInitial,
+                                    emailAddress, passKey, location,
+                                    postalDigit, birthDay, gen, collegeCode));
+
+                        } else if (accountType.startsWith("F")) {
+                            String collegeCode;
+                            String employmentStatus;
+
+                            do {
+                                System.out.print("   College Code > ");
+                                collegeCode = in.nextLine().trim().toUpperCase();
+
+                                if (!College.existCollegeCode(collegeCode))
+                                    UI.print("College code does not exist");
+                            } while (!College.existCollegeCode(collegeCode));
+
+                            do {
+                                System.out.print("   Employment Status > ");
+                                employmentStatus = in.nextLine().trim().toUpperCase();
+
+                                if (!employmentStatus.matches("[A-Z ]+"))
+                                    UI.print("Invalid employment status");
+                            } while (!employmentStatus.matches("[A-Z ]+"));
+
+                            User.users.add(new Faculty(
+                                    lastName, firstName, middleInitial,
+                                    emailAddress, passKey, location,
+                                    postalDigit, birthDay, gen,
+                                    collegeCode, employmentStatus));
+
+                        } else if (accountType.startsWith("S")) {
+                            String enrollmentStatus, programCode;
+
+                            do {
+                                System.out.print("   Enrollment Status (R, IR) > ");
+                                enrollmentStatus = in.nextLine().trim().toUpperCase();
+
+                                if (!enrollmentStatus.matches("R|IR"))
+                                    UI.print("Enter R or IR");
+                            } while (!enrollmentStatus.matches("R|IR"));
+
+                            do {
+                                System.out.print("   Program Code > ");
+                                programCode = in.nextLine().trim().toUpperCase();
+
+                                if (!Program.existProgramCode(programCode))
+                                    UI.print("Program code does not exist");
+                            } while (!Program.existProgramCode(programCode));
+
+                            User.users.add(new Student(
+                                    lastName, firstName, middleInitial,
+                                    emailAddress, passKey, location,
+                                    postalDigit, birthDay, gen,
+                                    enrollmentStatus, programCode));
+                        }
+
+                        UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
+                        resetFields();
                         submit = true;
 
-                        switch (emailAddress.charAt(0)) {
-                            case 'A':
-                                String role;
-                                do {
-                                    System.out.print("   Role > ");
-                                    role = in.nextLine();
-                                    if (role.trim().isEmpty()) UI.print("Invalid Input");
-                                } while (role.trim().isEmpty());
-                                User.users.add(new Admin(lastName, firstName, middleInitial,
-                                        emailAddress, passKey, location, postalDigit, birthDay, gen, role));
-                                break;
-                            case 'F':
-                                String contactNumber; String collegeCode; String supervisorID;
-                                do {
-                                    System.out.print("   Contact Number > ");
-                                    contactNumber = in.nextLine();
-                                    if (contactNumber.matches("[0-9]{11}")) UI.print("Invalid Input");
-                                } while (contactNumber.length() != 11);
-                                do {
-                                    System.out.println("   College Code > ");
-                                    collegeCode = in.nextLine();
-                                    if (!(collegeCode.length() >= 4 && collegeCode.length() <= 6)) UI.print("Invalid Input");
-                                } while (!(collegeCode.length() >= 4 && collegeCode.length() <= 6));
-                                do {
-                                    System.out.println("   Supervisor ID > ");
-                                    supervisorID = in.nextLine();
-                                    if (!User.existUserID(supervisorID)) UI.print("Supervisor ID does not exist");
-                                } while(!User.existUserID(supervisorID));
-                                User.users.add(new Faculty(lastName, firstName, middleInitial,
-                                        emailAddress, passKey, location, postalDigit, birthDay, gen, contactNumber,
-                                        collegeCode, supervisorID));
-                                break;
-                            case 'S':
-                                String enrollmentStatus; String programCode;
-                                do {
-                                    System.out.print("   Enrollment Status (R, IR) > ");
-                                    enrollmentStatus = in.nextLine().toUpperCase();
-                                    if (!enrollmentStatus.matches("R|IR")) UI.print("Invalid Input");
-                                } while (!enrollmentStatus.matches("R|IR"));
-                                do {
-                                    System.out.println("   Program Code > ");
-                                    programCode = in.nextLine();
-                                    if (!(programCode.length() >= 4 && programCode.length() <= 6)) UI.print("Invalid Input");
-                                } while (!(programCode.length() >= 4 && programCode.length() <= 6));
-                                User.users.add(new Student(lastName, firstName, middleInitial, emailAddress,
-                                        password, address, Integer.parseInt(postalCode), birthDate, sex.charAt(0), enrollmentStatus));
-                                break;
-                        }
-                        UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
-                        user = "[1] Full Name:";
-                        email = "[2] Email Address:";
-                        password = "[3] Password:";
-                        address = "[4] Address:";
-                        postalCode = "[5] Postal Code:";
-                        birthDate = "[6] Birthdate:";
-                        sex = "[7] Sex:";
+                    } catch (IllegalArgumentException e) {
+                        UI.print("Unable to create account: " + e.getMessage());
                     }
-                    else UI.print("Incomplete Details!");
                     break;
 
                 case "X":
-                    user = "[1] Full Name:";
-                    email = "[2] Email Address:";
-                    password = "[3] Password:";
-                    address = "[4] Address:";
-                    postalCode = "[5] Postal Code:";
-                    birthDate = "[6] Birthdate:";
-                    sex = "[7] Sex:";
-                    complete = 0;
+                    resetFields();
                     User.start();
+                    submit = true;
                     break;
 
                 default:
@@ -276,19 +337,41 @@ public class Signup {
         }
     }
 
-    static void printUser() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", user);}
-    static void printEmail() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", email);}
-    static void printPassword() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", password);}
-    static void printAddress() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", address);}
-    static void printPostal() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", postalCode);}
-    static void printBDate() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", birthDate);}
-    static void printSex() {System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", sex);}
+    static void resetFields() {
+        user = "[1] Full Name:";
+        email = "[2] Email Address:";
+        password = "[3] Password:";
+        address = "[4] Address:";
+        postalCode = "[5] Postal Code:";
+        birthDate = "[6] Birthdate:";
+        sex = "[7] Sex:";
+    }
 
-    static void printUser(String userName) {user = "[1] Full Name: " + userName;}
-    static void printEmail(String emailAddress) {email = "[2] Email Address: " + emailAddress;}
-    static void printPassword(String passKey) {password = "[3] Password: " + passKey;}
-    static void printAddress(String location) {address = "[4] Address: " + location;}
-    static void printPostal(int postalDigit) {postalCode = "[5] Postal Code: " + postalDigit;}
-    static void printBDate(String BDate) {birthDate = "[6] Birthdate: " + BDate;}
-    static void printSex(char gen) {sex = "[7] Sex: " + gen;}
+    static void printUser() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", user);
+    }
+
+    static void printEmail() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", email);
+    }
+
+    static void printPassword() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", password);
+    }
+
+    static void printAddress() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", address);
+    }
+
+    static void printPostal() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", postalCode);
+    }
+
+    static void printBDate() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", birthDate);
+    }
+
+    static void printSex() {
+        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", sex);
+    }
 }

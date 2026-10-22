@@ -1,97 +1,513 @@
+
 package DATA;
-import java.util.ArrayList;
+
 import UI.*;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.Locale;
 
 public class Schedule {
+
     private static int nextScheduleID = 1;
+
     private String scheduleID;
+    private String offeringID;
     private String day;
     private String startTime;
     private String endTime;
     private String effectiveFrom;
-    private String effectTo;
-    private String sectionID; // foreign key
-    private String roomCode; // foreign key
+    private String effectiveTo;
+    private String roomCode;
 
-    public Schedule(String day, String startTime, String endTime, String effectiveFrom, String effectTo,
-                    String sectionID, String roomCode) {
+    public static ArrayList<Schedule> schedules = new ArrayList<>();
+
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    // SCHEDULE CONSTRUCTOR
+
+    public Schedule(String offeringID, String day, String startTime, String endTime,
+                    String effectiveFrom, String effectiveTo, String roomCode) {
+
+        if (offeringID == null || offeringID.trim().isEmpty())
+            throw new IllegalArgumentException("Course offering ID is required.");
+
+        if (CourseOffering.findOffering(offeringID) == null)
+            throw new IllegalArgumentException("Course offering not found.");
+
+        if (roomCode == null || roomCode.trim().isEmpty())
+            throw new IllegalArgumentException("Room code is required.");
+
+        if (Room.findRoom(roomCode) == null)
+            throw new IllegalArgumentException("Room not found.");
+
+        if (day == null || day.trim().isEmpty())
+            throw new IllegalArgumentException("Day is required.");
+
+        if (startTime == null || startTime.trim().isEmpty()
+                || endTime == null || endTime.trim().isEmpty())
+            throw new IllegalArgumentException("Start and end times are required.");
+
+        if (effectiveFrom == null || effectiveFrom.trim().isEmpty()
+                || effectiveTo == null || effectiveTo.trim().isEmpty())
+            throw new IllegalArgumentException("Effective dates are required.");
+
+        offeringID = offeringID.trim();
+        roomCode = roomCode.trim();
+        day = normalizeDay(day);
+        startTime = startTime.trim();
+        endTime = endTime.trim();
+        effectiveFrom = effectiveFrom.trim();
+        effectiveTo = effectiveTo.trim();
+
+        if (day == null)
+            throw new IllegalArgumentException(
+                    "Invalid day. Use Monday through Sunday.");
+
+        int start = Room.convertToMinutes(startTime);
+        int end = Room.convertToMinutes(endTime);
+
+        if (start < 0 || end < 0 || start >= end)
+            throw new IllegalArgumentException(
+                    "Start time must be earlier than end time.");
+
+        LocalDate from = parseDate(effectiveFrom);
+        LocalDate to = parseDate(effectiveTo);
+
+        if (from == null || to == null)
+            throw new IllegalArgumentException(
+                    "Invalid effective date. Use MM/dd/yyyy.");
+
+        if (from.isAfter(to))
+            throw new IllegalArgumentException(
+                    "Effective start date must not be after effective end date.");
+
+        if (hasRoomConflict(roomCode, day, startTime, endTime,
+                effectiveFrom, effectiveTo, null)) {
+            throw new IllegalArgumentException(
+                    "Room is already scheduled during this period.");
+        }
+
         this.scheduleID = String.format("SCH%04d", nextScheduleID++);
+        this.offeringID = offeringID;
         this.day = day;
         this.startTime = startTime;
         this.endTime = endTime;
         this.effectiveFrom = effectiveFrom;
-        this.effectTo = effectTo;
-        this.sectionID = sectionID;
+        this.effectiveTo = effectiveTo;
         this.roomCode = roomCode;
     }
 
-    public static ArrayList<Schedule> schedules = new ArrayList<>();
+    // VALIDATION HELPERS
 
-    static {
-        schedules.add(new Schedule("M", "7:00AM", "8:30AM", "08/22/2026",
-                "12/13/2026", "0001", "PL101"));
-        schedules.add(new Schedule("M", "9:00AM", "10:30AM", "08/22/2026",
-                "12/13/2026", "0003", "PL101"));
-        schedules.add(new Schedule("M", "7:00AM", "8:30AM", "08/22/2026",
-                "12/13/2026", "0005", "ACAD 1"));
-        schedules.add(new Schedule("M", "9:00AM", "10:30AM", "08/22/2026",
-                "12/13/2026", "0008", "ACAD 1"));
-        schedules.add(new Schedule("T", "8:00AM", "9:30AM", "08/22/2026",
-                "12/13/2026", "0002", "SDL 1"));
-        schedules.add(new Schedule("T", "10:00AM", "11:30AM", "08/22/2026",
-                "12/13/2026", "0006", "SDL 1"));
-        schedules.add(new Schedule("T", "1:00PM", "2:30PM", "08/22/2026",
-                "12/13/2026", "0004", "ICT301"));
-        schedules.add(new Schedule("T", "3:00PM", "4:30PM", "08/22/2026",
-                "12/13/2026", "0007", "ICT301"));
-        schedules.add(new Schedule("W", "7:00AM", "8:30AM", "08/22/2026",
-                "12/13/2026", "0009", "PL102"));
-        schedules.add(new Schedule("W", "9:00AM", "10:30AM", "08/22/2026",
-                "12/13/2026", "0010", "PL102"));
-        schedules.add(new Schedule("W", "1:00PM", "2:30PM", "08/22/2026",
-                "12/13/2026", "0011", "NH201"));
-        schedules.add(new Schedule("W", "3:00PM", "4:30PM", "08/22/2026",
-                "12/13/2026", "0012", "NH201"));
-        schedules.add(new Schedule("TH", "8:00AM", "9:30AM", "08/22/2026",
-                "12/13/2026", "0001", "PL201"));
-        schedules.add(new Schedule("TH", "10:00AM", "11:30AM", "08/22/2026",
-                "12/13/2026", "0004", "PL201"));
-        schedules.add(new Schedule("F", "1:00PM", "2:30PM", "08/22/2026",
-                "12/13/2026", "0002", "ICT302"));
-        schedules.add(new Schedule("F", "3:00PM", "4:30PM", "08/22/2026",
-                "12/13/2026", "0006", "ICT302"));
+    private static String normalizeDay(String day) {
+
+        if (day == null)
+            return null;
+
+        switch (day.trim().toLowerCase(Locale.ROOT)) {
+            case "monday":
+                return "Monday";
+            case "tuesday":
+                return "Tuesday";
+            case "wednesday":
+                return "Wednesday";
+            case "thursday":
+                return "Thursday";
+            case "friday":
+                return "Friday";
+            case "saturday":
+                return "Saturday";
+            case "sunday":
+                return "Sunday";
+            default:
+                return null;
+        }
     }
 
-    // SCHEDULE GETTER
-    public String getScheduleID(){
+    private static LocalDate parseDate(String date) {
+
+        if (date == null || date.trim().isEmpty())
+            return null;
+
+        try {
+            return LocalDate.parse(date.trim(), DATE_FORMAT);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    private static boolean hasRoomConflict(String roomCode, String day,
+                                           String startTime, String endTime,
+                                           String effectiveFrom, String effectiveTo,
+                                           String excludedScheduleID) {
+
+        int requestedStart;
+        int requestedEnd;
+
+        try {
+            requestedStart = Room.convertToMinutes(startTime);
+            requestedEnd = Room.convertToMinutes(endTime);
+        } catch (RuntimeException e) {
+            return true;
+        }
+
+        LocalDate requestedFrom = parseDate(effectiveFrom);
+        LocalDate requestedTo = parseDate(effectiveTo);
+
+        if (requestedStart < 0 || requestedEnd < 0
+                || requestedStart >= requestedEnd
+                || requestedFrom == null || requestedTo == null
+                || requestedFrom.isAfter(requestedTo)) {
+            return true;
+        }
+
+        for (Schedule s : schedules) {
+
+            if (s == null)
+                continue;
+
+            if (excludedScheduleID != null
+                    && excludedScheduleID.equalsIgnoreCase(s.getScheduleID()))
+                continue;
+
+            if (s.getRoomCode() == null || s.getDay() == null)
+                continue;
+
+            if (!roomCode.equalsIgnoreCase(s.getRoomCode().trim())
+                    || !day.equalsIgnoreCase(s.getDay().trim()))
+                continue;
+
+            LocalDate existingFrom = parseDate(s.getEffectiveFrom());
+            LocalDate existingTo = parseDate(s.getEffectiveTo());
+
+            if (existingFrom == null || existingTo == null)
+                continue;
+
+            // Effective date ranges must overlap.
+            boolean datesOverlap =
+                    !requestedFrom.isAfter(existingTo)
+                            && !requestedTo.isBefore(existingFrom);
+
+            if (!datesOverlap)
+                continue;
+
+            int existingStart;
+            int existingEnd;
+
+            try {
+                existingStart = Room.convertToMinutes(s.getStartTime());
+                existingEnd = Room.convertToMinutes(s.getEndTime());
+            } catch (RuntimeException e) {
+                continue;
+            }
+
+            if (existingStart < 0 || existingEnd < 0
+                    || existingStart >= existingEnd)
+                continue;
+
+            // Time ranges overlap if either schedule starts before
+            // the other one ends.
+            if (requestedStart < existingEnd
+                    && requestedEnd > existingStart)
+                return true;
+        }
+
+        return false;
+    }
+
+    // GETTERS
+
+    public String getScheduleID() {
         return scheduleID;
     }
+
+    public String getOfferingID() {
+        return offeringID;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getEffectiveFrom() {
+        return effectiveFrom;
+    }
+
+    public String getEffectiveTo() {
+        return effectiveTo;
+    }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    // STATIC GETTERS
+
+    public static String getSchedule(Schedule s) {
+        return s == null ? null : s.getScheduleID();
+    }
+
+    public static String getOfferingID(Schedule s) {
+        return s == null ? null : s.getOfferingID();
+    }
+
+    public static String getDay(Schedule s) {
+        return s == null ? null : s.getDay();
+    }
+
+    public static String getStartTime(Schedule s) {
+        return s == null ? null : s.getStartTime();
+    }
+
+    public static String getEndTime(Schedule s) {
+        return s == null ? null : s.getEndTime();
+    }
+
+    public static String getEffectiveFrom(Schedule s) {
+        return s == null ? null : s.getEffectiveFrom();
+    }
+
+    public static String getEffectiveTo(Schedule s) {
+        return s == null ? null : s.getEffectiveTo();
+    }
+
+    public static String getRoomCode(Schedule s) {
+        return s == null ? null : s.getRoomCode();
+    }
+
+    public static int getNextID() {
+        return nextScheduleID;
+    }
+
+    // FIND METHODS
+
     public static Schedule findSchedule(String scheduleID) {
-        for (Schedule s : schedules) if (scheduleID.equals(s.getScheduleID())) return s;
+
+        if (scheduleID == null || scheduleID.trim().isEmpty())
+            return null;
+
+        for (Schedule s : schedules) {
+            if (s != null && scheduleID.trim().equalsIgnoreCase(s.getScheduleID()))
+                return s;
+        }
+
         return null;
     }
-    public static String getSchedule(Schedule s) {
-        return s.scheduleID;
+
+    public static boolean existScheduleID(String scheduleID) {
+        return findSchedule(scheduleID) != null;
     }
-    public static String getDay(Schedule s){
-        return s.day;
+
+    // ADD A SCHEDULE
+
+    public static boolean addSchedule(String offeringID, String day,
+                                      String startTime, String endTime,
+                                      String effectiveFrom, String effectiveTo,
+                                      String roomCode) {
+
+        try {
+            Schedule s = new Schedule(offeringID, day, startTime, endTime,
+                    effectiveFrom, effectiveTo, roomCode);
+
+            schedules.add(s);
+            return true;
+
+        } catch (IllegalArgumentException e) {
+            UI.print(e.getMessage());
+            return false;
+        }
     }
-    public static String getStartTime(Schedule s){
-        return s.startTime;
+
+    // RETRIEVE SCHEDULES BY COURSE OFFERING
+
+    public static ArrayList<Schedule> getSchedulesByOffering(String offeringID) {
+
+        ArrayList<Schedule> result = new ArrayList<>();
+
+        if (CourseOffering.findOffering(offeringID) == null)
+            return result;
+
+        for (Schedule s : schedules) {
+            if (s != null && offeringID.trim().equalsIgnoreCase(s.getOfferingID()))
+                result.add(s);
+        }
+
+        return result;
     }
-    public static String getEndTime(Schedule s){
-        return s.endTime;
+
+    // RETRIEVE SCHEDULES BY ROOM
+
+    public static ArrayList<Schedule> getSchedulesByRoom(String roomCode) {
+
+        ArrayList<Schedule> result = new ArrayList<>();
+
+        if (Room.findRoom(roomCode) == null)
+            return result;
+
+        for (Schedule s : schedules) {
+            if (s != null && roomCode.trim().equalsIgnoreCase(s.getRoomCode()))
+                result.add(s);
+        }
+
+        return result;
     }
-    public static String getEffectiveFrom(Schedule s) {
-        return s.effectiveFrom;
+
+    // DISPLAY ALL SCHEDULES
+
+    public static void displaySchedules() {
+
+        UI.header("CLASS SCHEDULES");
+
+        if (schedules.isEmpty()) {
+            UI.liner("  No schedules found.");
+        } else {
+            for (int i = 0; i < schedules.size(); i++) {
+
+                Schedule s = schedules.get(i);
+
+                if (s == null)
+                    continue;
+
+                UI.liner(String.format("  SCHEDULE ID : %s", s.getScheduleID()));
+                UI.liner(String.format("  OFFERING ID : %s", s.getOfferingID()));
+                UI.liner(String.format("  DAY         : %s", s.getDay()));
+                UI.liner(String.format("  TIME        : %s - %s",
+                        s.getStartTime(), s.getEndTime()));
+                UI.liner(String.format("  ROOM        : %s", s.getRoomCode()));
+                UI.liner(String.format("  EFFECTIVE   : %s - %s",
+                        s.getEffectiveFrom(), s.getEffectiveTo()));
+
+                if (i < schedules.size() - 1)
+                    UI.separator();
+            }
+        }
+
+        UI.footer();
     }
-    public static String getEffectiveTo(Schedule s) {
-        return s.effectTo;
+
+    // DISPLAY ONE SCHEDULE WITH COURSE OFFERING DETAILS
+
+    public static void displaySchedule(String scheduleID) {
+
+        Schedule s = findSchedule(scheduleID);
+
+        if (s == null) {
+            UI.print("Schedule not found.");
+            return;
+        }
+
+        CourseOffering offering = CourseOffering.findOffering(s.getOfferingID());
+
+        UI.header("SCHEDULE DETAILS");
+        UI.liner("  SCHEDULE ID   : " + s.getScheduleID());
+        UI.liner("  OFFERING ID   : " + s.getOfferingID());
+
+        if (offering != null) {
+
+            Section section = Section.findSection(offering.getSectionID());
+            Course course = Course.findCourseByID(offering.getCourseID());
+
+            UI.liner("  SECTION       : "
+                    + (section == null ? "Section not found"
+                    : Section.getYearSection(section)));
+
+            UI.liner("  COURSE        : "
+                    + (course == null ? "Course not found"
+                    : course.getCourseCode()));
+
+            UI.liner("  FACULTY ID    : " + offering.getFacultyID());
+            UI.liner("  ACADEMIC YEAR : " + offering.getAcademicYear());
+            UI.liner("  TERM          : " + offering.getTerm());
+
+        } else {
+            UI.liner("  Course offering not found");
+        }
+
+        UI.liner("  ROOM CODE     : " + s.getRoomCode());
+        UI.liner("  DAY           : " + s.getDay());
+        UI.liner("  START TIME    : " + s.getStartTime());
+        UI.liner("  END TIME      : " + s.getEndTime());
+        UI.liner("  EFFECTIVE FROM: " + s.getEffectiveFrom());
+        UI.liner("  EFFECTIVE TO  : " + s.getEffectiveTo());
+
+        UI.footer();
     }
-    public static String getSectionID(Schedule s) {
-        return s.sectionID;
-    }
-    public static String getRoomCode(Schedule s){
-        return s.roomCode;
+
+
+    public boolean updateSchedule(String offeringID, String day, String startTime, String endTime,
+                                  String effectiveFrom, String effectiveTo, String roomCode) {
+        try {
+            if (offeringID == null || offeringID.trim().isEmpty())
+                throw new IllegalArgumentException("Course offering ID is required.");
+
+            if (CourseOffering.findOffering(offeringID) == null)
+                throw new IllegalArgumentException("Course offering not found.");
+
+            if (roomCode == null || roomCode.trim().isEmpty()
+                    || Room.findRoom(roomCode.trim()) == null)
+                throw new IllegalArgumentException("Room not found.");
+
+            if (day == null || day.trim().isEmpty())
+                throw new IllegalArgumentException("Day is required.");
+
+            if (startTime == null || startTime.trim().isEmpty()
+                    || endTime == null || endTime.trim().isEmpty())
+                throw new IllegalArgumentException("Start and end times are required.");
+
+            if (effectiveFrom == null || effectiveFrom.trim().isEmpty()
+                    || effectiveTo == null || effectiveTo.trim().isEmpty())
+                throw new IllegalArgumentException("Effective dates are required.");
+
+            day = normalizeDay(day);
+            offeringID = offeringID.trim();
+            roomCode = roomCode.trim();
+            startTime = startTime.trim();
+            endTime = endTime.trim();
+            effectiveFrom = effectiveFrom.trim();
+            effectiveTo = effectiveTo.trim();
+
+            int start = Room.convertToMinutes(startTime);
+            int end = Room.convertToMinutes(endTime);
+
+            if (start >= end)
+                throw new IllegalArgumentException("End time must be later than start time.");
+
+            LocalDate from = parseDate(effectiveFrom);
+            LocalDate to = parseDate(effectiveTo);
+
+            if (from.isAfter(to))
+                throw new IllegalArgumentException("Effective end date must not be before start date.");
+
+            if (hasRoomConflict(roomCode, day, startTime, endTime,
+                    effectiveFrom, effectiveTo, this.scheduleID))
+                throw new IllegalArgumentException("Room is occupied during the selected schedule.");
+
+            this.offeringID = offeringID;
+            this.day = day;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.effectiveFrom = effectiveFrom;
+            this.effectiveTo = effectiveTo;
+            this.roomCode = roomCode;
+
+            return true;
+
+        } catch (IllegalArgumentException e) {
+            UI.print(e.getMessage());
+            return false;
+        }
     }
 }

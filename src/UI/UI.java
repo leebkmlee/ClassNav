@@ -1,7 +1,10 @@
 package UI;
 
+import java.util.Scanner;
+
 public class UI {
 
+    public static Scanner in = new Scanner(System.in);
     public static final int INNERWIDTH = 70;
 
     public static void print(String input) {

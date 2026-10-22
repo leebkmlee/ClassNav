@@ -1,21 +1,25 @@
+
 package DATA;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import USER.*;
 import UI.*;
+
 public class Enrollment {
+
     private static int nextEnrollmentID = 1;
     private String enrollmentID;
-    private String sectionID; // foreign key
-    private String studentNumber; // foreign key
+    private String sectionID; // FK -> Section.sectionID
+    private String studentNumber; // FK -> Student.userID
+
+    public static ArrayList<Enrollment> enrollments = new ArrayList<>();
 
     Enrollment(String sectionID, String studentNumber) {
+
         this.enrollmentID = String.format("E%04d", nextEnrollmentID++);
         this.sectionID = sectionID;
         this.studentNumber = studentNumber;
     }
-
-    public static ArrayList<Enrollment> enrollments = new ArrayList<>();
 
     static {
         enrollments.add(new Enrollment("0001", "S0001"));
@@ -61,38 +65,116 @@ public class Enrollment {
     public String getEnrollmentID() {
         return enrollmentID;
     }
+
+    // FIND ENROLLMENT BY ENROLLMENT ID
     public static Enrollment findEnrollment(String enrollmentID) {
-        for (Enrollment e : enrollments) if (enrollmentID.equals(e.getEnrollmentID())) return e;
+
+        if (enrollmentID == null || enrollmentID.isBlank())
+            return null;
+
+        enrollmentID = enrollmentID.trim();
+
+        for (Enrollment e : enrollments) {
+            if (enrollmentID.equalsIgnoreCase(e.getEnrollmentID()))
+                return e;
+        }
+
         return null;
-    }
-    public static Enrollment findEnrollmentByID(String userID) {
-        for (Enrollment e : enrollments) if (Enrollment.getStudentNumber(e).equals(userID)) return e;
-        return null;
-    }
-    public static Enrollment findEnrollmentBySec(String sectionID) {
-        for (Enrollment e : enrollments) if (sectionID.equals(e.sectionID)) return e;
-        return null;
-    }
-    public static String getEnrollment(Enrollment e) {
-        return e.enrollmentID;
-    }
-    public static String getStudentNumber(Enrollment e) {
-        return e.studentNumber;
-    }
-    public static String getSectionID(Enrollment e) {
-        return e.sectionID;
     }
 
-    // ENROLLMENT METHOD
+    // FIND FIRST ENROLLMENT BY STUDENT ID
+    public static Enrollment findEnrollmentByID(String userID) {
+
+        if (userID == null || userID.isBlank())
+            return null;
+
+        userID = userID.trim();
+
+        for (Enrollment e : enrollments) {
+            if (userID.equalsIgnoreCase(Enrollment.getStudentNumber(e)))
+                return e;
+        }
+
+        return null;
+    }
+
+    // FIND FIRST ENROLLMENT BY SECTION ID
+    public static Enrollment findEnrollmentBySec(String sectionID) {
+
+        if (sectionID == null || sectionID.isBlank())
+            return null;
+
+        sectionID = sectionID.trim();
+
+        for (Enrollment e : enrollments) {
+            if (sectionID.equalsIgnoreCase(Enrollment.getSectionID(e)))
+                return e;
+        }
+
+        return null;
+    }
+
+    // RETRIEVE ALL ENROLLMENTS BY STUDENT ID
+    public static ArrayList<Enrollment> getEnrollmentsByStudent(String studentNumber) {
+
+        ArrayList<Enrollment> result = new ArrayList<>();
+
+        if (studentNumber == null || studentNumber.isBlank())
+            return result;
+
+        studentNumber = studentNumber.trim();
+
+        for (Enrollment e : enrollments) {
+            if (studentNumber.equalsIgnoreCase(Enrollment.getStudentNumber(e)))
+                result.add(e);
+        }
+
+        return result;
+    }
+
+    // RETRIEVE ALL ENROLLMENTS BY SECTION ID
+    public static ArrayList<Enrollment> getEnrollmentsBySection(String sectionID) {
+
+        ArrayList<Enrollment> result = new ArrayList<>();
+
+        if (sectionID == null || sectionID.isBlank())
+            return result;
+
+        sectionID = sectionID.trim();
+
+        for (Enrollment e : enrollments) {
+            if (sectionID.equalsIgnoreCase(Enrollment.getSectionID(e)))
+                result.add(e);
+        }
+
+        return result;
+    }
+
+    // STATIC GETTER METHODS
+    public static String getEnrollment(Enrollment e) {
+        return e == null ? null : e.enrollmentID;
+    }
+
+    public static String getStudentNumber(Enrollment e) {
+        return e == null ? null : e.studentNumber;
+    }
+
+    public static String getSectionID(Enrollment e) {
+        return e == null ? null : e.sectionID;
+    }
+
+    // DISPLAY ENROLLMENT INFORMATION
     public static void displayEnrollment(String enrollmentID) {
-        int innerWidth = 70;
-        Enrollment e = findEnrollment(enrollmentID);
+
+        Enrollment e = Enrollment.findEnrollment(enrollmentID);
+
         if (e == null) {
             UI.print("Enrollment not found");
             return;
         }
+
         UI.header("ENROLLMENT INFORMATION");
-        UI.liner(String.format("  ENROLLMENT ID  : %s", Enrollment.getEnrollment(e)));
+        UI.liner(String.format("  ENROLLMENT ID  : %s", e.getEnrollmentID()));
         UI.separator();
         UI.liner(String.format("  STUDENT ID     : %s", Enrollment.getStudentNumber(e)));
         UI.liner(String.format("  SECTION ID     : %s", Enrollment.getSectionID(e)));

@@ -1,3 +1,4 @@
+
 package FUNCTION;
 
 import UI.*;
@@ -9,50 +10,49 @@ public class Login {
 
     static Scanner in = new Scanner(System.in);
 
-    static final int innerWidth = 70;
-
     public static void loginPassword() {
-        boolean authenticated = false; int tries = 2;
+
+        int maxAttempts = 3;
 
         UI.print("PORTAL LOG-IN");
 
-        while (!authenticated && tries != -1) {
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
 
             System.out.print("  Enter ID            : ");
-            String userID = in.nextLine();
+            String userID = in.nextLine().trim();
 
-            if (User.getUser(userID) != null) {
-                while (!authenticated && tries != -1) {
-                    System.out.print("  Enter Email Address : ");
-                    String emailAddress = in.nextLine();
+            if (User.getUser(userID) == null) {
+                UI.print("ID does not exist. Try again.");
+            } else {
 
-                    System.out.print("  Enter Password      : ");
-                    String password = in.nextLine();
+                System.out.print("  Enter Email Address : ");
+                String emailAddress = in.nextLine().trim();
 
-                    if (User.verifyEmail(userID, emailAddress) && User.verifyPassword(userID, password)) {
-                        authenticated = true;
-                        UI.print("LOGIN SUCCESSFUL! Welcome to ClassNav.");
-                    }
-                    else {
-                        if (tries != 0) {
-                            String message = "Incorrect Email or Password. Try again.";
-                            String attempt;
-                            if (tries == 2) attempt = tries + " attempts remaining.";
-                            else attempt = tries + " attempt remaining.";
-                            UI.print(message, attempt);
-                        }
-                        tries--;
-                    }
+                System.out.print("  Enter Password      : ");
+                String password = in.nextLine();
+
+                if (User.verifyEmail(userID, emailAddress)
+                        && User.verifyPassword(userID, password)) {
+
+                    UI.print("LOGIN SUCCESSFUL! Welcome to ClassNav.");
+                    return;
                 }
 
+                UI.print("Incorrect Email or Password.");
             }
-            else UI.print("ID does not exist. Try again.");
+
+            int remaining = maxAttempts - attempt;
+
+            if (remaining > 0) {
+                String message = remaining == 1
+                        ? "1 attempt remaining."
+                        : remaining + " attempts remaining.";
+
+                UI.print("Try again.", message);
+            }
         }
 
-        if (tries == -1) {
-            UI.print("Ran out of attempts.");
-            System.out.println("Exiting system...");
-            System.exit(0);
-        }
+        UI.print("Ran out of attempts.");
+        System.out.println("Login unsuccessful.");
     }
 }

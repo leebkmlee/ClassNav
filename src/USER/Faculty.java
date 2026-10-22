@@ -1,455 +1,383 @@
+
 package USER;
+
 import DATA.*;
-import FUNCTION.Notification;
 import UI.*;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
-
-import static DATA.Course.courses;
-import static DATA.Enrollment.enrollments;
-import static DATA.Room.*;
-import static DATA.Schedule.schedules;
-import static DATA.Section.sections;
-
-import static FUNCTION.Notification.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 public class Faculty extends User {
-    static Scanner in = new Scanner(System.in);
 
     // FACULTY FIELDS
     private static int nextFacultyID = 1;
-    private String contactNumber;
     private String collegeCode;
-    private String supervisorID;
+    private String employmentStatus;
+
+    // Legacy temporary storage; replace with MakeUpSchedule records later.
     public static ArrayList<String[]> requests = new ArrayList<>();
+
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
 
     // FACULTY CONSTRUCTOR
     public Faculty(String lastName, String firstName, String middleInitial, String emailAddress,
-                   String password, String address, int postalCode, String birthDate, char gender, String contactNumber,
-                   String collegeCode, String supervisorID) {
-        super(String.format("F%04d", nextFacultyID++), lastName, firstName, middleInitial, emailAddress, password,
-                address, postalCode, birthDate, gender);
-        this.contactNumber = contactNumber;
-        this.collegeCode = collegeCode;
-        this.supervisorID = supervisorID;
-    }
+                   String password, String address, int postalCode, String birthDate, char gender,
+                   String collegeCode, String employmentStatus) {
 
-    // add notificationID
-//    static {
-//        requests.add(new String[]{"S001", "F001", "R101", "PM1", "Monday", "08:00 AM", "10:00 AM",
-//                "Request for Room R101 in PM1 has been submitted."});
-//        requests.add(new String[]{"S002", "F002", "R202", "R1",
-//                "Tuesday", "10:00 AM", "12:00 PM", "Request for Room R202 in R1 has been submitted."});
-//        requests.add(new String[]{"S003", "F003", "R303", "CB2",
-//                "Wednesday", "01:00 PM", "03:00 PM", "Request for Room R303 in CB2 has been submitted."});
-//        requests.add(new String[]{"S004", "F001", "R102", "PM1",
-//                "Thursday", "08:00 AM", "11:00 AM", "Request for Room R102 in PM1 has been submitted."});
-//        requests.add(new String[]{"S005", "F002", "R201", "R1",
-//                "Friday", "02:00 PM", "04:00 PM", "Request for Room R201 in R1 has been submitted."});
-//    }
+        super(String.format("F%04d", nextFacultyID++), lastName, firstName, middleInitial,
+                emailAddress, password, address, postalCode, birthDate, gender);
+
+        College college = College.findCollege(collegeCode);
+
+        if (college == null) {
+            throw new IllegalArgumentException("Invalid college code.");
+        }
+
+        if (employmentStatus == null || employmentStatus.trim().isEmpty()) {
+            throw new IllegalArgumentException("Employment status cannot be empty.");
+        }
+
+        this.collegeCode = college.getCollegeCode();
+        this.employmentStatus = employmentStatus.trim();
+    }
 
     // FACULTY SETTER METHODS
-        public void setContactNumber(String contactNumber) {
-            this.contactNumber = contactNumber;
+    public void setCollegeCode(String collegeCode) {
+        College college = College.findCollege(collegeCode);
+
+        if (college == null) {
+            throw new IllegalArgumentException("Invalid college code.");
         }
-        public void setCollegeCode(String collegeCode) {
-            this.collegeCode = collegeCode;
+
+        this.collegeCode = college.getCollegeCode();
+    }
+
+    public void setEmploymentStatus(String employmentStatus) {
+        if (employmentStatus == null || employmentStatus.trim().isEmpty()) {
+            throw new IllegalArgumentException("Employment status cannot be empty.");
         }
-        public void setSupervisorID(String supervisorID) {
-            this.supervisorID = supervisorID;
-        }
+
+        this.employmentStatus = employmentStatus.trim();
+    }
 
     // FACULTY GETTER METHODS
-    public static Faculty findFaculty(String userID) {
-        for (User u : users) if (userID.equals(u.getUserID()) && u.getClass() == Faculty.class) return (Faculty) u;
+    public static Faculty findFaculty(String facultyID) {
+        if (facultyID == null || facultyID.trim().isEmpty())
+            return null;
+
+        for (User u : users) {
+            if (u instanceof Faculty
+                    && facultyID.trim().equalsIgnoreCase(u.getUserID())) {
+                return (Faculty) u;
+            }
+        }
+
         return null;
     }
-    public static String getContactNumber(User u) {
-        Faculty f = findFaculty(u.getUserID());
-        if (f == null) return null;
-        return f.contactNumber;
-    }
+
     public static String getCollegeCode(User u) {
+        if (u == null)
+            return null;
+
         Faculty f = findFaculty(u.getUserID());
-        if (f == null) return null;
-        return f.collegeCode;
+        return f == null ? null : f.collegeCode;
     }
-    public static String getSupervisorID(User u) {
+
+    public static String getEmploymentStatus(User u) {
+        if (u == null)
+            return null;
+
         Faculty f = findFaculty(u.getUserID());
-        if (f == null) return null;
-        return f.supervisorID;
+        return f == null ? null : f.employmentStatus;
     }
 
-    // FACULTY MENU METHODS
-    public static void requestRoom(String facultyID) {
-        String buildingCode, roomCode, day, startTime, endTime, courseCode = "";
-        Faculty f = Faculty.findFaculty(facultyID);
-        if (f == null) {
-            UI.print("Faculty not found");
-            return;
-        }
-        Room r = null;
-
-        UI.print("REQUEST ROOM");
-
-        do {
-            System.out.print("  Course Code > ");
-            courseCode = in.nextLine().trim();
-            if (courseCode.trim().isEmpty()) UI.print("Invalid Input");
-            if (!Course.courseLoad(facultyID, courseCode))
-                UI.print("Course is not in your teaching load.");
-        } while (!Course.courseLoad(facultyID, courseCode));
-
-        do {
-            System.out.print("  Building Code > ");
-            buildingCode = in.nextLine();
-            if (!Building.verifyBuilding(buildingCode)) UI.print("Building does not exist");
-        } while (!Building.verifyBuilding(buildingCode));
-
-        do {
-            System.out.print("  Room Code > ");
-            roomCode = in.nextLine();
-            if (!Room.existRoomCode(roomCode)) UI.print("Room does not exist");
-            else {
-                r = findRoom(roomCode);
-                if (r == null) return;
-                if (!Room.getBuildingCode(r).equals(buildingCode)) UI.print("Room does not exist in " + buildingCode);
-            }
-            if (r == null) return;
-        } while (!getBuildingCode(r).equals(buildingCode));
-
-        do {
-            System.out.print("  Day > ");
-            day = in.nextLine();
-            if (!day.matches("M|T|W|Th|F|S|Su")) UI.print("Invalid Input");
-        } while (!day.matches("M|T|W|Th|F|S|Su"));
-
-        do {
-            System.out.print("  Start Time > ");
-            startTime = in.nextLine();
-            if (!startTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)")) UI.print("Invalid Input");
-        } while (!startTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)"));
-
-        do {
-            do {
-                System.out.print("  End Time > ");
-                endTime = in.nextLine();
-                if (!endTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)")) UI.print("Invalid Input");
-            } while (!endTime.matches("(?:0?[1-9]|1[0-2]):[0-5][0-9]\\s?(?i:AM|PM)"));
-            if (convertToMinutes(endTime) <= convertToMinutes(startTime))
-                UI.print("End time must be later than start time.");
-        } while (convertToMinutes(endTime) <= convertToMinutes(startTime));
-
-
-        for (Section s : sections) {
-            Course c = Course.findCourse(Section.getCourseID(s));
-
-            if (c != null && Course.getFacultyID(c).equals(facultyID)) {
-                for (Schedule sc : schedules) {
-                    if (Schedule.getSectionID(sc).equals(s.getSectionID())) {
-                        boolean sameCourse = Course.getCourseCode(c).equalsIgnoreCase(courseCode);
-
-
-                    }
-                }
-            }
-        }
-
-        for (Section s : sections) {
-            Course c = Course.findCourse(Section.getCourseID(s));
-
-            if (c != null && Course.getFacultyID(c).equals(facultyID)) {
-                for (Schedule sc : schedules) {
-                    if (Schedule.getSectionID(sc).equals(s.getSectionID())) {
-
-                        if (day.equalsIgnoreCase(Schedule.getDay(sc))) {
-                            int existingStart = convertToMinutes(Schedule.getStartTime(sc));
-                            int existingEnd = convertToMinutes(Schedule.getEndTime(sc));
-
-                            int requestedStart = convertToMinutes(startTime);
-                            int requestedEnd = convertToMinutes(endTime);
-
-                            if (requestedStart < existingEnd && requestedEnd > existingStart) {
-                                UI.print("Faculty has an existing schedule during this time.");
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (Room.verifyAvailability(roomCode, day, startTime, endTime)) {
-            UI.header("REQUEST ROOM");
-            UI.liner(String.format("  FACULTY ID    : %s", f.getUserID()));
-            UI.separator();
-            UI.liner(String.format("  BUILDING CODE : %s", buildingCode));
-            UI.liner(String.format("  ROOM CODE     : %s", roomCode));
-            UI.liner(String.format("  DAY           : %s", day));
-            UI.liner(String.format("  START TIME    : %s", startTime));
-            UI.liner(String.format("  END TIME      : %s", endTime));
-            UI.footer();
-
-            System.out.print("  Request (Y/N) > ");
-            char choice = in.next().toUpperCase().charAt(0);
-
-            if (choice == 'Y') {
-                requests.add(new String[]{
-                        buildingCode, roomCode, day, startTime, endTime
-                });
-                UI.print("Room request submitted successfully.");
-            } else {
-                requestRoom(facultyID);
-            }
-        } else {
-            UI.print("Room is occupied.");
-        }
-    }
-
-
+    // DISPLAY FACULTY SCHEDULES
     public static void displaySchedules(String facultyID) {
-        Faculty f = Faculty.findFaculty(facultyID);
+        Faculty f = findFaculty(facultyID);
+
         if (f == null) {
-            UI.print("Faculty not found");
+            UI.print("Faculty not found.");
             return;
         }
 
         UI.header("FACULTY SCHEDULE");
-        UI.liner(String.format("  FACULTY ID    : %s", facultyID));
+        UI.liner(String.format("  FACULTY ID    : %s", f.getUserID()));
+        UI.liner(String.format("  FACULTY NAME  : %s", f.getUserName()));
+        UI.liner(String.format("  EMAIL ADDRESS : %s", f.getEmail()));
+        UI.liner(String.format("  EMPLOYMENT    : %s", f.employmentStatus));
+
+        College college = College.findCollege(f.collegeCode);
+
+        UI.liner(String.format("  COLLEGE       : %s",
+                college == null ? "College not found"
+                        : College.getCollegeDescription(college)));
+
         UI.separator();
 
         boolean found = false;
 
-        for (Section s : sections) {
-            Course c = Course.findCourse(Section.getCourseID(s));
+        for (CourseOffering offering : CourseOffering.getOfferingsByFaculty(f.getUserID())) {
 
-            if (c != null && Course.getFacultyID(c).equals(facultyID)) {
-                String sectionID = Section.getSection(s);
+            if (offering == null)
+                continue;
 
-                for (Schedule sc : schedules) {
-                    if (sectionID.equals(Schedule.getSectionID(sc))) {
-                        found = true;
+            Section section = Section.findSection(offering.getSectionID());
+            Course course = Course.findCourseByID(offering.getCourseID());
 
-                        UI.liner(String.format("  SCHEDULE ID   : %s", Schedule.getSchedule(sc)));
-                        UI.liner(String.format("  COURSE CODE   : %s", Course.getCourseCode(c)));
-                        UI.liner(String.format("  DAY           : %s", Schedule.getDay(sc)));
-                        UI.liner(String.format("  TIME          : %s - %s",
-                                Schedule.getStartTime(sc), Schedule.getEndTime(sc)));
-                        UI.liner(String.format("  SECTION ID    : %s", sectionID));
+            for (Schedule schedule :
+                    Schedule.getSchedulesByOffering(offering.getOfferingID())) {
 
-                        String roomCode = Schedule.getRoomCode(sc);
-                        UI.liner(String.format("  ROOM CODE     : %s", roomCode));
+                if (schedule == null)
+                    continue;
 
-                        Room r = findRoom(roomCode);
+                found = true;
 
-                        if (r != null) {
-                            String buildingCode = getBuildingCode(r);
-                            Building b = Building.findBuilding(buildingCode);
-                            if (b != null) {
-                                UI.liner(String.format("  BUILDING NAME : %s",
-                                        Building.getBuildingName(b)));
-                            } else {
-                                UI.liner("  BUILDING NAME : Building not found");
-                            }
-                        } else {
-                            UI.liner("  BUILDING NAME : Room not found");
-                        }
-                        UI.separator();
-                    }
+                UI.liner(String.format("  SCHEDULE ID   : %s",
+                        schedule.getScheduleID()));
+
+                UI.liner(String.format("  COURSE CODE   : %s",
+                        course == null ? "Course not found"
+                                : course.getCourseCode()));
+
+                UI.liner(String.format("  SECTION       : %s",
+                        section == null ? "Section not found"
+                                : Section.getYearSection(section)));
+
+                UI.liner(String.format("  ACADEMIC YEAR : %s",
+                        offering.getAcademicYear()));
+
+                UI.liner(String.format("  TERM          : %d",
+                        offering.getTerm()));
+
+                UI.liner(String.format("  DAY           : %s",
+                        schedule.getDay()));
+
+                UI.liner(String.format("  TIME          : %s - %s",
+                        schedule.getStartTime(), schedule.getEndTime()));
+
+                UI.liner(String.format("  EFFECTIVE     : %s - %s",
+                        schedule.getEffectiveFrom(), schedule.getEffectiveTo()));
+
+                String roomCode = schedule.getRoomCode();
+                Room room = Room.findRoom(roomCode);
+
+                UI.liner(String.format("  ROOM CODE     : %s", roomCode));
+
+                if (room != null) {
+                    Building building = Building.findBuilding(room.getBuildingCode());
+
+                    UI.liner(String.format("  ROOM          : %s",
+                            room.getRoomDescription()));
+
+                    UI.liner(String.format("  ROOM TYPE     : %s",
+                            room.getRoomType()));
+
+                    UI.liner(String.format("  CAPACITY      : %d",
+                            room.getCapacity()));
+
+                    UI.liner(String.format("  FLOOR         : %d",
+                            room.getFloorNumber()));
+
+                    UI.liner(String.format("  BUILDING      : %s",
+                            building == null ? "Building not found"
+                                    : Building.getBuildingName(building)));
+                } else {
+                    UI.liner("  ROOM          : Room not found");
                 }
+
+                UI.separator();
             }
         }
-        if (!found) UI.liner("  No schedules found.");
+
+        if (!found) {
+            UI.liner("  No schedules found.");
+        }
+
         UI.footer();
     }
+
+    // LOCATE ROOM
     public static void locateRoom(String roomCode) {
-        Room r = findRoom(roomCode);
-        if (r == null) {
-            UI.print("Room not found");
+        Room room = Room.findRoom(roomCode);
+
+        if (room == null) {
+            UI.print("Room not found.");
             return;
         }
-        Building b = Building.findBuilding(getBuildingCode(r));
-        if (b == null) {
-            UI.print("Building not found");
+
+        Building building = Building.findBuilding(room.getBuildingCode());
+
+        if (building == null) {
+            UI.print("Building not found.");
             return;
         }
+
         UI.header("ROOM INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM DETAILS");
-        UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM CODE         : %s", getRoom(r)));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  ROOM DESCRIPTION  : %s", getRoomDescription(r)));
-        UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", "  ROOM LOCATION");
-        UI.separator();
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  BUILDING NAME     : %s", Building.getBuildingName(b)));
-        int floor = getFloorNumber(r);
-        String floorText;
-        if (floor == 1) floorText = "1st Floor";
-        else if (floor == 2) floorText = "2nd Floor";
-        else if (floor == 3) floorText = "3rd Floor";
-        else floorText = floor + "th Floor";
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  FLOOR NUMBER      : %s", floorText));
+        UI.liner(String.format("  ROOM CODE        : %s", room.getRoomCode()));
+        UI.liner(String.format("  ROOM DESCRIPTION : %s", room.getRoomDescription()));
+        UI.liner(String.format("  ROOM TYPE        : %s", room.getRoomType()));
+        UI.liner(String.format("  CAPACITY         : %d", room.getCapacity()));
+        UI.liner(String.format("  BUILDING NAME    : %s",
+                Building.getBuildingName(building)));
+        UI.liner(String.format("  FLOOR NUMBER     : %d", room.getFloorNumber()));
         UI.footer();
     }
+
+    // CHECK WHETHER A SCHEDULE IS ACTIVE TODAY
+    private static boolean isScheduleActiveToday(Schedule schedule) {
+        if (schedule == null
+                || schedule.getEffectiveFrom() == null
+                || schedule.getEffectiveTo() == null) {
+            return false;
+        }
+
+        try {
+            LocalDate effectiveFrom =
+                    LocalDate.parse(schedule.getEffectiveFrom().trim(), DATE_FORMAT);
+
+            LocalDate effectiveTo =
+                    LocalDate.parse(schedule.getEffectiveTo().trim(), DATE_FORMAT);
+
+            LocalDate today = LocalDate.now();
+
+            return !today.isBefore(effectiveFrom)
+                    && !today.isAfter(effectiveTo);
+
+        } catch (DateTimeParseException e) {
+            // Invalid date ranges must not be treated as active schedules.
+            return false;
+        }
+    }
+
+    // VIEW AVAILABLE ROOMS
     public static void viewAvailableRooms(String day, String startTime, String endTime) {
-        int scheduledStart = convertToMinutes(startTime);
-        int scheduledEnd = convertToMinutes(endTime);
+
+        if (day == null || day.trim().isEmpty()
+                || startTime == null || startTime.trim().isEmpty()
+                || endTime == null || endTime.trim().isEmpty()) {
+            UI.print("Invalid schedule details.");
+            return;
+        }
+
+        String requestedDay = day.trim();
+
+        boolean validDay = false;
+
+        String[] days = {
+                "Monday", "Tuesday", "Wednesday", "Thursday",
+                "Friday", "Saturday", "Sunday"
+        };
+
+        for (String valid : days) {
+            if (valid.equalsIgnoreCase(requestedDay)) {
+                requestedDay = valid;
+                validDay = true;
+                break;
+            }
+        }
+
+        if (!validDay) {
+            UI.print("Invalid day. Use Monday through Sunday.");
+            return;
+        }
+
+        int requestedStart;
+        int requestedEnd;
+
+        try {
+            requestedStart = Room.convertToMinutes(startTime);
+            requestedEnd = Room.convertToMinutes(endTime);
+        } catch (IllegalArgumentException e) {
+            UI.print("Invalid time format.");
+            return;
+        }
+
+        if (requestedStart >= requestedEnd) {
+            UI.print("Start time must be earlier than end time.");
+            return;
+        }
 
         UI.header("AVAILABLE ROOMS");
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  DAY          : %s", day));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  START TIME   : %s", startTime));
-        System.out.printf("│%-" + innerWidth + "s│\n", String.format("  END TIME     : %s", endTime));
+        UI.liner(String.format("  DAY        : %s", requestedDay));
+        UI.liner(String.format("  START TIME : %s", startTime));
+        UI.liner(String.format("  END TIME   : %s", endTime));
+        UI.liner(String.format("  CHECK DATE : %s", LocalDate.now()));
         UI.separator();
+
         boolean found = false;
 
-        for (Room r : rooms) {
-            String roomCode = getRoom(r);
+        for (Room room : Room.rooms) {
+            if (room == null)
+                continue;
+
             boolean available = true;
 
-            for (Schedule s : schedules) {
-                if (roomCode.equals(Schedule.getRoomCode(s)) && day.equalsIgnoreCase(Schedule.getDay(s))) {
-                    int existingStart = convertToMinutes(Schedule.getStartTime(s));
-                    int existingEnd = convertToMinutes(Schedule.getEndTime(s));
-                    if (scheduledStart < existingEnd && scheduledEnd > existingStart) {
-                        available = false;
-                        break;
-                    }
+            for (Schedule schedule : Schedule.schedules) {
+                if (schedule == null)
+                    continue;
+
+                // Ignore schedules that are not active today.
+                if (!isScheduleActiveToday(schedule))
+                    continue;
+
+                String scheduledRoom = schedule.getRoomCode();
+                String scheduledDay = schedule.getDay();
+
+                if (scheduledRoom == null || scheduledDay == null)
+                    continue;
+
+                // Only check schedules assigned to this room on the requested day.
+                if (!room.getRoomCode().equalsIgnoreCase(scheduledRoom.trim())
+                        || !requestedDay.equalsIgnoreCase(scheduledDay.trim())) {
+                    continue;
+                }
+
+                int existingStart;
+                int existingEnd;
+
+                try {
+                    existingStart = Room.convertToMinutes(schedule.getStartTime());
+                    existingEnd = Room.convertToMinutes(schedule.getEndTime());
+                } catch (IllegalArgumentException e) {
+                    // Conservatively treat an invalid active schedule as a conflict.
+                    available = false;
+                    break;
+                }
+
+                // Check whether the requested time overlaps an active schedule.
+                if (requestedStart < existingEnd && requestedEnd > existingStart) {
+                    available = false;
+                    break;
                 }
             }
-            if (available) {
-                found = true;
-                int floor = getFloorNumber(r);
-                String floorText;
-                if (floor == 1) floorText = "1st Floor";
-                else if (floor == 2) floorText = "2nd Floor";
-                else if (floor == 3) floorText = "3rd Floor";
-                else floorText = floor + "th Floor";
-                String room = String.format("  %-10s %-32s %-15s %-4s", getRoom(r), getRoomDescription(r),
-                        floorText, getBuildingCode(r));
-                System.out.printf("│%-" + innerWidth + "s│\n", room);
-            }
+
+            if (!available)
+                continue;
+
+            found = true;
+
+            Building building = Building.findBuilding(room.getBuildingCode());
+
+            UI.liner(String.format("  ROOM CODE   : %s", room.getRoomCode()));
+            UI.liner(String.format("  DESCRIPTION : %s", room.getRoomDescription()));
+            UI.liner(String.format("  ROOM TYPE   : %s", room.getRoomType()));
+            UI.liner(String.format("  CAPACITY    : %d", room.getCapacity()));
+            UI.liner(String.format("  FLOOR       : %d", room.getFloorNumber()));
+            UI.liner(String.format("  BUILDING    : %s",
+                    building == null ? "Building not found"
+                            : Building.getBuildingName(building)));
+            UI.separator();
         }
+
         if (!found) {
-            System.out.printf("│%-" + innerWidth + "s│%n", "  NO AVAILABLE ROOMS FOUND");
+            UI.liner("  No available rooms found.");
         }
+
         UI.footer();
-    }
-    public static void viewNotifications(String facultyID) {
-        String choice;
-        int valid = 0, value = -1, find = 1;
-        User u = findFaculty(facultyID);
-
-        if (u == null) {
-            UI.print("Faculty not found");
-            return;
-        }
-
-        UI.header("CHECK NOTIFICATION");
-        UI.liner("  FACULTY ID    : " + facultyID);
-        UI.liner("  FACULTY NAME  : " + u.getUserName());
-        UI.separator();
-
-        for (Notification n : notifications) {
-            if (facultyID.equals(getRecipientID(n))) {
-                String message = getMessage(n);
-
-                if (message.length() > 25) {
-                    message = message.substring(0, 20) + "...";
-                }
-
-                User us = getUser(Notification.getSenderID(n));
-                if (us == null) {
-                    UI.print("Sender not found");
-                    return;
-                }
-
-                if (valid == 0) UI.liner(String.format("  %-6s %-9s %-25s %-24s", "NO.", "ID", "FROM", "MESSAGE"));
-
-                String text = String.format("  %-10s %-25s %-20s",
-                        String.format("%04d", Notification.getNotification(n)),
-                        us.getUserName(), message);
-
-                UI.liner("  [" + (valid + 1) + "] " + text);
-                valid++;
-            }
-        }
-
-        if (valid == 0) {
-            UI.liner("  No notifications");
-            UI.footer();
-            return;
-        }
-
-        UI.liner("");
-        UI.liner("  [0] Back");
-        UI.footer();
-
-        do {
-            System.out.print("  Select > ");
-            choice = in.nextLine().trim();
-
-            try {
-                value = Integer.parseInt(choice);
-                if (!(value >= 0 && value <= valid)) {
-                    UI.print("Invalid Input");
-                }
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                value = -1;
-            }
-        } while (!(value >= 0 && value <= valid));
-
-        if (value != 0) {
-
-            for (Notification n : notifications) {
-                if (facultyID.equals(getRecipientID(n))) {
-                    if (value == find++) {
-                        User us = getUser(Notification.getSenderID(n));
-
-                        if (us == null) {
-                            UI.print("Sender not found");
-                            return;
-                        }
-
-                        String sec = "";
-
-                        for (Section s : sections) {
-                            Course c = Course.findCourse(Section.getCourseID(s));
-
-                            if (c != null && Course.getFacultyID(c).equals(facultyID)) {
-                                for (Enrollment e : enrollments) {
-                                    if (s.getSectionID().equals(Enrollment.getSectionID(e))
-                                            && us.getUserID().equals(Enrollment.getStudentNumber(e))) {
-                                        sec = Section.getYearSection(s);
-                                        break;
-                                    }
-                                }
-
-                                if (!sec.trim().isEmpty()) break;
-                            }
-                        }
-
-                        UI.header("NOTIFICATION MAIL");
-                        UI.liner("  NOTIFICATION ID  : " +
-                                String.format("%04d", getNotification(n)));
-                        UI.liner("  FROM             : " + us.getUserName());
-                        UI.liner("  TO               : " + Notification.getRecipientID(n));
-                        UI.separator();
-                        UI.liner("  SECTION          : " + sec);
-                        UI.liner("  ROOM CODE        : " + Notification.getRoomCode(n));
-                        UI.liner("  BUILDING NAME    : " + Notification.getBuildingName(n));
-                        UI.liner("  DAY              : " + Notification.getDay(n));
-                        UI.liner("  TIME             : " + Notification.getStartTime(n)
-                                + " - " + Notification.getEndTime(n));
-                        UI.separator();
-                        UI.liner("  MESSAGE          : " + Notification.getMessage(n));
-                        UI.footer();
-                        return;
-                    }
-                }
-            }
-        }
     }
 }
