@@ -4,6 +4,7 @@ package USER;
 import DATA.*;
 import FUNCTION.Request;
 import UI.*;
+import static UI.UI.in;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -55,8 +56,9 @@ public class Faculty extends User {
         do {
             super.menu();
             UI.liner(" [3] View Schedule");
-            UI.liner(" [4] Locate Room");
-            UI.liner(" [5] Request Make-Up Class");
+            UI.liner("[4] View Available Rooms");
+            UI.liner(" [5] Locate Room");
+            UI.liner(" [6] Request Make-Up Class");
             UI.liner("");
             UI.liner(" [X] Log out");
             UI.footer();
@@ -78,7 +80,7 @@ public class Faculty extends User {
                 break;
 
             case "2":
-                User.updateProfile(getUserID());
+                User.editUser(getUserID());
                 menu();
                 break;
 
@@ -88,11 +90,16 @@ public class Faculty extends User {
                 break;
 
             case "4":
-                Faculty.locateRoom();
+                Student.viewAvailableRooms();
                 menu();
                 break;
 
             case "5":
+                Faculty.locateRoom();
+                menu();
+                break;
+
+            case "6":
                 Request.submitRequest(getUserID());
                 menu();
                 break;
@@ -184,7 +191,7 @@ public class Faculty extends User {
                 continue;
 
             Section section = Section.findSection(offering.getSectionID());
-            Course course = Course.findCourseByID(offering.getCourseID());
+            Course course = Course.findCourse(offering.getCourseCode());
 
             for (Schedule schedule :
                     Schedule.getSchedulesByOffering(offering.getOfferingID())) {

@@ -15,7 +15,7 @@ public class CourseOffering {
 
     private String offeringID;
     private String sectionID; // FK -> Section.sectionID
-    private String courseID;  // FK -> Course.courseID
+    private String courseCode;  // FK -> Course.courseCode
     private String facultyID; // FK -> Faculty.facultyID
     private String academicYear;
     private int term;
@@ -24,14 +24,14 @@ public class CourseOffering {
 
     // COURSE OFFERING CONSTRUCTOR
 
-    public CourseOffering(String sectionID, String courseID, String facultyID,
+    public CourseOffering(String sectionID, String courseCode, String facultyID,
                           String academicYear, int term) {
 
         if (sectionID == null || sectionID.trim().isEmpty())
             throw new IllegalArgumentException("Section ID is required.");
 
-        if (courseID == null || courseID.trim().isEmpty())
-            throw new IllegalArgumentException("Course ID is required.");
+        if (courseCode == null || courseCode.trim().isEmpty())
+            throw new IllegalArgumentException("Course Code is required.");
 
         if (facultyID == null || facultyID.trim().isEmpty())
             throw new IllegalArgumentException("Faculty ID is required.");
@@ -40,14 +40,14 @@ public class CourseOffering {
             throw new IllegalArgumentException("Academic year is required.");
 
         sectionID = sectionID.trim();
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
         facultyID = facultyID.trim();
         academicYear = academicYear.trim();
 
         if (Section.findSection(sectionID) == null)
             throw new IllegalArgumentException("Section not found.");
 
-        if (Course.findCourseByID(courseID) == null)
+        if (Course.findCourse(courseCode) == null)
             throw new IllegalArgumentException("Course not found.");
 
         if (Faculty.findFaculty(facultyID) == null)
@@ -58,7 +58,7 @@ public class CourseOffering {
 
         this.offeringID = String.format("COF%03d", nextOfferingID++);
         this.sectionID = sectionID;
-        this.courseID = courseID;
+        this.courseCode = courseCode;
         this.facultyID = facultyID;
         this.academicYear = academicYear;
         this.term = term;
@@ -74,8 +74,8 @@ public class CourseOffering {
         return sectionID;
     }
 
-    public String getCourseID() {
-        return courseID;
+    public String getCourseCode() {
+        return courseCode;
     }
 
     public String getFacultyID() {
@@ -100,8 +100,8 @@ public class CourseOffering {
         return o == null ? null : o.getSectionID();
     }
 
-    public static String getCourseID(CourseOffering o) {
-        return o == null ? null : o.getCourseID();
+    public static String getCourseCode(CourseOffering o) {
+        return o == null ? null : o.getCourseCode();
     }
 
     public static String getFacultyID(CourseOffering o) {
@@ -137,12 +137,12 @@ public class CourseOffering {
 
     // ADD A COURSE OFFERING
 
-    public static boolean addOffering(String sectionID, String courseID,
+    public static boolean addOffering(String sectionID, String courseCode,
                                       String facultyID, String academicYear,
                                       int term) {
 
         if (sectionID == null || sectionID.trim().isEmpty()
-                || courseID == null || courseID.trim().isEmpty()
+                || courseCode == null || courseCode.trim().isEmpty()
                 || facultyID == null || facultyID.trim().isEmpty()
                 || academicYear == null || academicYear.trim().isEmpty()) {
 
@@ -151,7 +151,7 @@ public class CourseOffering {
         }
 
         sectionID = sectionID.trim();
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
         facultyID = facultyID.trim();
         academicYear = academicYear.trim();
 
@@ -160,7 +160,7 @@ public class CourseOffering {
             return false;
         }
 
-        if (Course.findCourseByID(courseID) == null) {
+        if (Course.findCourse(courseCode) == null) {
             UI.print("Course not found.");
             return false;
         }
@@ -181,7 +181,7 @@ public class CourseOffering {
         for (CourseOffering o : offerings) {
 
             if (sectionID.equalsIgnoreCase(o.getSectionID())
-                    && courseID.equalsIgnoreCase(o.getCourseID())
+                    && courseCode.equalsIgnoreCase(o.getCourseCode())
                     && academicYear.equalsIgnoreCase(o.getAcademicYear())
                     && term == o.getTerm()) {
 
@@ -190,7 +190,7 @@ public class CourseOffering {
             }
         }
 
-        offerings.add(new CourseOffering(sectionID, courseID, facultyID,
+        offerings.add(new CourseOffering(sectionID, courseCode, facultyID,
                 academicYear, term));
 
         return true;
@@ -220,20 +220,20 @@ public class CourseOffering {
 
     // RETRIEVE OFFERINGS BY COURSE
 
-    public static ArrayList<CourseOffering> getOfferingsByCourse(String courseID) {
+    public static ArrayList<CourseOffering> getOfferingsByCourse(String courseCode) {
 
         ArrayList<CourseOffering> result = new ArrayList<>();
 
-        if (courseID == null || courseID.trim().isEmpty())
+        if (courseCode == null || courseCode.trim().isEmpty())
             return result;
 
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
 
-        if (Course.findCourseByID(courseID) == null)
+        if (Course.findCourse(courseCode) == null)
             return result;
 
         for (CourseOffering o : offerings) {
-            if (courseID.equalsIgnoreCase(o.getCourseID()))
+            if (courseCode.equalsIgnoreCase(o.getCourseCode()))
                 result.add(o);
         }
 
@@ -279,7 +279,7 @@ public class CourseOffering {
                 CourseOffering o = offerings.get(i);
 
                 Section section = Section.findSection(o.getSectionID());
-                Course course = Course.findCourseByID(o.getCourseID());
+                Course course = Course.findCourse(o.getCourseCode());
                 Faculty faculty = Faculty.findFaculty(o.getFacultyID());
 
                 UI.liner(String.format("  OFFERING ID  : %s",
@@ -326,7 +326,7 @@ public class CourseOffering {
         }
 
         Section section = Section.findSection(o.getSectionID());
-        Course course = Course.findCourseByID(o.getCourseID());
+        Course course = Course.findCourse(o.getCourseCode());
         Faculty faculty = Faculty.findFaculty(o.getFacultyID());
 
         UI.header("COURSE OFFERING DETAILS");
@@ -341,8 +341,8 @@ public class CourseOffering {
                 section == null ? "Section not found"
                         : Section.getYearSection(section)));
 
-        UI.liner(String.format("  COURSE ID     : %s",
-                o.getCourseID()));
+        UI.liner(String.format("  COURSE CODE     : %s",
+                o.getCourseCode()));
 
         UI.liner(String.format("  COURSE        : %s",
                 course == null ? "Course not found"
@@ -368,12 +368,12 @@ public class CourseOffering {
 
     // CREATE COURSE OFFERING
     public static void createCourseOffering() {
-        String sectionID = ""; String courseID = ""; String facultyID = "";
+        String sectionID = ""; String courseCode = ""; String facultyID = "";
         String academicYear = ""; String choice = "";
         int term = -1; boolean submit = false;
 
         while (!submit) {
-            courseOfferingManage("CREATE", "", sectionID, courseID,
+            courseOfferingManage("CREATE", "", sectionID, courseCode,
                     facultyID, academicYear, term);
 
             do {
@@ -398,14 +398,14 @@ public class CourseOffering {
 
                 case "2":
                     do {
-                        System.out.print("   Enter Course ID > ");
-                        courseID = in.nextLine().trim();
-                        if (courseID.isEmpty())
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine().trim();
+                        if (courseCode.isEmpty())
                             UI.print("Invalid Input");
-                        else if (Course.findCourseByID(courseID) == null)
+                        else if (Course.findCourse(courseCode) == null)
                             UI.print("Course does not exist");
-                    } while (courseID.isEmpty()
-                            || Course.findCourseByID(courseID) == null);
+                    } while (courseCode.isEmpty()
+                            || Course.findCourse(courseCode) == null);
                     break;
 
                 case "3":
@@ -445,11 +445,11 @@ public class CourseOffering {
                     break;
 
                 case "/":
-                    if (sectionID.isEmpty() || courseID.isEmpty()
+                    if (sectionID.isEmpty() || courseCode.isEmpty()
                             || facultyID.isEmpty() || academicYear.isEmpty()
                             || term == -1) {
                         UI.print("Details are incomplete");
-                    } else if (addOffering(sectionID, courseID, facultyID,
+                    } else if (addOffering(sectionID, courseCode, facultyID,
                             academicYear, term)) {
                         CourseOffering o = offerings.get(offerings.size() - 1);
                         UI.print("Course offering successfully created");
@@ -468,7 +468,7 @@ public class CourseOffering {
     // EDIT COURSE OFFERING
     public static void editCourseOffering() {
         String input; String choice;
-        String sectionID; String courseID; String facultyID;
+        String sectionID; String courseCode; String facultyID;
         String academicYear; int term;
         boolean submit = false;
 
@@ -490,14 +490,14 @@ public class CourseOffering {
         }
 
         sectionID = o.getSectionID();
-        courseID = o.getCourseID();
+        courseCode = o.getCourseCode();
         facultyID = o.getFacultyID();
         academicYear = o.getAcademicYear();
         term = o.getTerm();
 
         while (!submit) {
             courseOfferingManage("EDIT", o.getOfferingID(), sectionID,
-                    courseID, facultyID, academicYear, term);
+                    courseCode, facultyID, academicYear, term);
 
             do {
                 System.out.print("  Select > ");
@@ -521,14 +521,14 @@ public class CourseOffering {
 
                 case "2":
                     do {
-                        System.out.print("   Enter Course ID > ");
-                        courseID = in.nextLine().trim();
-                        if (courseID.isEmpty())
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine().trim();
+                        if (courseCode.isEmpty())
                             UI.print("Invalid Input");
-                        else if (Course.findCourseByID(courseID) == null)
+                        else if (Course.findCourse(courseCode) == null)
                             UI.print("Course does not exist");
-                    } while (courseID.isEmpty()
-                            || Course.findCourseByID(courseID) == null);
+                    } while (courseCode.isEmpty()
+                            || Course.findCourse(courseCode) == null);
                     break;
 
                 case "3":
@@ -568,7 +568,7 @@ public class CourseOffering {
                     break;
 
                 case "/":
-                    if (sectionID.isEmpty() || courseID.isEmpty()
+                    if (sectionID.isEmpty() || courseCode.isEmpty()
                             || facultyID.isEmpty() || academicYear.isEmpty()
                             || term == -1) {
                         UI.print("Details are incomplete");
@@ -578,7 +578,7 @@ public class CourseOffering {
                         for (CourseOffering existing : offerings) {
                             if (existing != o
                                     && sectionID.equalsIgnoreCase(existing.getSectionID())
-                                    && courseID.equalsIgnoreCase(existing.getCourseID())
+                                    && courseCode.equalsIgnoreCase(existing.getCourseCode())
                                     && academicYear.equalsIgnoreCase(existing.getAcademicYear())
                                     && term == existing.getTerm()) {
                                 duplicate = true;
@@ -590,7 +590,7 @@ public class CourseOffering {
                             UI.print("This course is already offered to this section for that academic year and term.");
                         } else {
                             o.sectionID = sectionID;
-                            o.courseID = courseID;
+                            o.courseCode = courseCode;
                             o.facultyID = facultyID;
                             o.academicYear = academicYear;
                             o.term = term;
@@ -647,14 +647,14 @@ public class CourseOffering {
 
     // COURSE OFFERING FORM
     private static void courseOfferingManage(String text, String offeringID,
-                                             String sectionID, String courseID, String facultyID,
+                                             String sectionID, String courseCode, String facultyID,
                                              String academicYear, int term) {
 
         UI.header(text.toUpperCase() + ": COURSE OFFERING INFORMATION");
         if (!offeringID.isEmpty())
             UI.liner(String.format(" OFFERING ID   : %s", offeringID));
         UI.liner(String.format(" [1] SECTION ID    : %s", sectionID));
-        UI.liner(String.format(" [2] COURSE ID     : %s", courseID));
+        UI.liner(String.format(" [2] COURSE CODE     : %s", courseCode));
         UI.liner(String.format(" [3] FACULTY ID    : %s", facultyID));
         UI.liner(String.format(" [4] ACADEMIC YEAR : %s", academicYear));
         UI.liner(String.format(" [5] TERM          : %s", term == -1 ? "" : term));

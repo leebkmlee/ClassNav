@@ -244,7 +244,7 @@ public class Building {
                         System.out.print("   Enter Building Name > ");
                         buildingName = in.nextLine().trim();
 
-                        if (buildingName.isEmpty())
+                        if (buildingName.trim().isEmpty())
                             UI.print("Building name is required");
                         else if (Building.findBuildingByName(buildingName) != null)
                             UI.print("Building name already exists");

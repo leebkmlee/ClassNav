@@ -4,9 +4,14 @@ import DATA.College;
 import DATA.Program;
 import FUNCTION.*;
 import UI.*;
+import static UI.UI.in;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class User {
 
@@ -58,12 +63,14 @@ public class User {
         switch (select) {
             case "1":
                 String user = Login.logIn();
-                User u = User.getUser(user);
-                if (u == null) {
-                    UI.print("User not found");
-                    return;
+                if (!user.equals("Ran out of attempts.")) {
+                    User u = User.getUser(user);
+                    if (u == null) {
+                        UI.print("User not found");
+                        return;
+                    }
+                    u.menu();
                 }
-                u.menu();
                 User.start();
                 break;
             case "2":
@@ -72,7 +79,6 @@ public class User {
                 break;
             case "X":
                 System.out.println("   Exiting...");
-                User.start();
                 break;
         }
     }
@@ -95,77 +101,77 @@ public class User {
             return;
 
         users.add(new Student("Sabulao", "Josh", "P",
-                "S001@bulsu.edu.ph", "Student001!", "CSJDM, Bulacan", 3023,
+                "S0001@bulsu.edu.ph", "Student001!", "CSJDM, Bulacan", 3023,
                 "06/03/2007", 'M', "R", "BSIT"));
         users.add(new Student("Rural", "Elijah", "R",
-                "S002@bulsu.edu.ph", "Student002!", "Malolos, Bulacan", 3000,
+                "S0002@bulsu.edu.ph", "Student002!", "Malolos, Bulacan", 3000,
                 "04/20/2006", 'M', "R", "BSIT"));
         users.add(new Student("Caparas", "Kyle", "A",
-                "S003@bulsu.edu.ph", "Student003!", "Meycauayan, Bulacan", 3020,
+                "S0003@bulsu.edu.ph", "Student003!", "Meycauayan, Bulacan", 3020,
                 "08/14/2005", 'M', "R", "BSIT"));
         users.add(new Student("Banot", "Josh", "R",
-                "S004@bulsu.edu.ph", "Student004!", "Bocaue, Bulacan", 3018,
+                "S0004@bulsu.edu.ph", "Student004!", "Bocaue, Bulacan", 3018,
                 "11/09/2006", 'M', "IR", "BSIT"));
         users.add(new Student("Reyes", "Andrea", "M",
-                "S005@bulsu.edu.ph", "Student005!", "Guiguinto, Bulacan", 3015,
+                "S0005@bulsu.edu.ph", "Student005!", "Guiguinto, Bulacan", 3015,
                 "01/12/2005", 'F', "R", "BSIT"));
         users.add(new Student("Santos", "Miguel", "L",
-                "S006@bulsu.edu.ph", "Student006!", "Plaridel, Bulacan", 3004,
+                "S0006@bulsu.edu.ph", "Student006!", "Plaridel, Bulacan", 3004,
                 "03/22/2004", 'M', "R", "BSIT"));
         users.add(new Student("Cruz", "Bianca", "T",
-                "S007@bulsu.edu.ph", "Student007!", "Baliwag, Bulacan", 3006,
+                "S0007@bulsu.edu.ph", "Student007!", "Baliwag, Bulacan", 3006,
                 "07/30/2006", 'F', "R", "BSIT"));
         users.add(new Student("Garcia", "Nathan", "J",
-                "S008@bulsu.edu.ph", "Student008!", "Paombong, Bulacan", 3001,
+                "S0008@bulsu.edu.ph", "Student008!", "Paombong, Bulacan", 3001,
                 "09/18/2005", 'M', "R", "BSIT"));
         users.add(new Student("Mendoza", "Sofia", "C",
-                "S009@bulsu.edu.ph", "Student009!", "Calumpit, Bulacan", 3003,
+                "S0009@bulsu.edu.ph", "Student009!", "Calumpit, Bulacan", 3003,
                 "12/05/2004", 'F', "IR", "BSIT"));
         users.add(new Student("Flores", "Daniel", "B",
-                "S010@bulsu.edu.ph", "Student010!", "Hagonoy, Bulacan", 3002,
+                "S0010@bulsu.edu.ph", "Student010!", "Hagonoy, Bulacan", 3002,
                 "02/17/2005", 'M', "R", "BSIT"));
         users.add(new Student("Torres", "Nicole", "D",
-                "S011@bulsu.edu.ph", "Student011!", "Malolos, Bulacan", 3000,
+                "S0011@bulsu.edu.ph", "Student011!", "Malolos, Bulacan", 3000,
                 "05/11/2006", 'F', "R", "BSIT"));
         users.add(new Student("Villanueva", "Gabriel", "S",
-                "S012@bulsu.edu.ph", "Student012!", "San Rafael, Bulacan", 3008,
+                "S0012@bulsu.edu.ph", "Student012!", "San Rafael, Bulacan", 3008,
                 "10/23/2004", 'M', "R", "BSIT"));
         users.add(new Student("Aquino", "Patricia", "E",
-                "S013@bulsu.edu.ph", "Student013!", "Angat, Bulacan", 3012,
+                "S0013@bulsu.edu.ph", "Student013!", "Angat, Bulacan", 3012,
                 "06/19/2005", 'F', "R", "BSIT"));
         users.add(new Student("Castillo", "Adrian", "F",
-                "S014@bulsu.edu.ph", "Student014!", "Bustos, Bulacan", 3007,
+                "S0014@bulsu.edu.ph", "Student014!", "Bustos, Bulacan", 3007,
                 "03/08/2006", 'M', "R", "BSIT"));
         users.add(new Student("Domingo", "Jasmine", "K",
-                "S015@bulsu.edu.ph", "Student015!", "Pulilan, Bulacan", 3005,
+                "S0015@bulsu.edu.ph", "Student015!", "Pulilan, Bulacan", 3005,
                 "08/27/2004", 'F', "R", "BSIT"));
         users.add(new Student("Dela Cruz", "Marco", "R",
-                "S016@bulsu.edu.ph", "Student016!", "Marilao, Bulacan", 3019,
+                "S0016@bulsu.edu.ph", "Student016!", "Marilao, Bulacan", 3019,
                 "01/16/2005", 'M', "IR", "BSIT"));
         users.add(new Student("Navarro", "Angela", "V",
-                "S017@bulsu.edu.ph", "Student017!", "Obando, Bulacan", 3021,
+                "S0017@bulsu.edu.ph", "Student017!", "Obando, Bulacan", 3021,
                 "04/02/2006", 'F', "R", "BSIT"));
         users.add(new Student("Pascual", "Enzo", "M",
-                "S018@bulsu.edu.ph", "Student018!", "Balagtas, Bulacan", 3016,
+                "S0018@bulsu.edu.ph", "Student018!", "Balagtas, Bulacan", 3016,
                 "07/07/2005", 'M', "R", "BSIT"));
 
         users.add(new Faculty("Kim", "Elijah", "",
-                "F001@bulsu.edu.ph", "Faculty001!", "Malolos, Bulacan", 3000,
+                "F0001@bulsu.edu.ph", "Faculty001!", "Malolos, Bulacan", 3000,
                 "04/20/1988", 'M', "CICT", "ACTIVE"));
         users.add(new Faculty("Ortega", "Maria", "L",
-                "F002@bulsu.edu.ph", "Faculty002!", "Guiguinto, Bulacan", 3015,
+                "F0002@bulsu.edu.ph", "Faculty002!", "Guiguinto, Bulacan", 3015,
                 "02/14/1985", 'F', "CICT", "ACTIVE"));
         users.add(new Faculty("Dizon", "Paolo", "R",
-                "F003@bulsu.edu.ph", "Faculty003!", "Bocaue, Bulacan", 3018,
+                "F0003@bulsu.edu.ph", "Faculty003!", "Bocaue, Bulacan", 3018,
                 "09/03/1982", 'M', "CICT", "ACTIVE"));
         users.add(new Faculty("Santiago", "Leah", "M",
-                "F004@bulsu.edu.ph", "Faculty004!", "Meycauayan, Bulacan", 3020,
+                "F0004@bulsu.edu.ph", "Faculty004!", "Meycauayan, Bulacan", 3020,
                 "12/19/1987", 'F', "CICT", "ACTIVE"));
         users.add(new Faculty("Bautista", "Ramon", "C",
-                "F005@bulsu.edu.ph", "Faculty005!", "Plaridel, Bulacan", 3004,
+                "F0005@bulsu.edu.ph", "Faculty005!", "Plaridel, Bulacan", 3004,
                 "05/25/1980", 'M', "CICT", "ACTIVE"));
         users.add(new Faculty("Lopez", "Catherine", "A",
-                "F006@bulsu.edu.ph", "Faculty006!", "Baliwag, Bulacan", 3006,
+                "F0006@bulsu.edu.ph", "Faculty006!", "Baliwag, Bulacan", 3006,
                 "11/30/1984", 'F', "CICT", "ACTIVE"));
 
         users.add(new DepartmentHead("Maangas", "Andrei", "P",
@@ -237,10 +243,8 @@ public class User {
     public String getBirthDate() { return birthDate; }
     public char getSex() { return sex; }
 
-    static Scanner in = new Scanner(System.in);
-
     static final int innerWidth = 70;
-    
+
 
     public static void viewProfile(String userID) {
         User u = getUser(userID);
@@ -264,107 +268,6 @@ public class User {
         UI.liner(String.format("  BIRTHDATE      : %s", u.getBirthDate()));
         UI.liner(String.format("  SEX            : %s", u.getSex()));
         UI.footer();
-    }
-
-    public static void updateProfile(String userID) {
-        User u = getUser(userID);
-
-        if (u == null) {
-            UI.print("User not found");
-            return;
-        }
-
-        int select;
-
-        do {
-            UI.header("UPDATE PROFILE");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [1] Name");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [2] Email Address");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [3] Password");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [4] Address");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [5] Postal Code");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [6] Birthday");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [7] Sex");
-            System.out.printf("│%-" + innerWidth + "s│%n", " [0] Back");
-            UI.footer();
-
-            select = readInt("  Select > ");
-
-            switch (select) {
-                case 1:
-                    updateName(u);
-                    break;
-
-                case 2:
-                    updateEmail(u);
-                    break;
-
-                case 3:
-                    updatePassword(u);
-                    break;
-
-                case 4:
-                    System.out.print("New Address: ");
-                    String address = in.nextLine().trim();
-
-                    if (address.isEmpty())
-                        UI.print("Address cannot be blank");
-                    else {
-                        u.setAddress(address);
-                        UI.print("Address updated successfully!");
-                    }
-                    break;
-
-                case 5:
-                    System.out.print("New Postal Code: ");
-                    String postalInput = in.nextLine().trim();
-
-                    try {
-                        int postalCode = Integer.parseInt(postalInput);
-
-                        if (postalCode <= 0)
-                            UI.print("Postal code must be positive");
-                        else {
-                            u.setPostalCode(postalCode);
-                            UI.print("Postal Code updated successfully!");
-                        }
-                    } catch (NumberFormatException e) {
-                        UI.print("Invalid postal code");
-                    }
-                    break;
-
-                case 6:
-                    System.out.print("New Birthdate (MM/dd/yyyy): ");
-                    String birthDate = in.nextLine().trim();
-
-                    if (!isValidDate(birthDate))
-                        UI.print("Invalid birthdate. Use MM/dd/yyyy.");
-                    else {
-                        u.setBirthDate(birthDate);
-                        UI.print("Birthdate updated successfully!");
-                    }
-                    break;
-
-                case 7:
-                    System.out.print("New Sex (M/F): ");
-                    String sexInput = in.nextLine().trim().toUpperCase();
-
-                    if (sexInput.equals("M") || sexInput.equals("F")) {
-                        u.setSex(sexInput.charAt(0));
-                        UI.print("Sex updated successfully!");
-                    } else {
-                        UI.print("Invalid sex. Enter M or F.");
-                    }
-                    break;
-
-                case 0:
-                    break;
-
-                default:
-                    UI.print("Invalid input. Please try again.");
-                    break;
-            }
-        } while (select != 0);
     }
 
     private static int readInt(String prompt) {
@@ -482,14 +385,14 @@ public class User {
             return false;
 
         try {
-            java.time.LocalDate parsed = java.time.LocalDate.parse(
-                    date, java.time.format.DateTimeFormatter
+            LocalDate parsed = LocalDate.parse(
+                    date, DateTimeFormatter
                             .ofPattern("MM/dd/uuuu")
                             .withResolverStyle(
-                                    java.time.format.ResolverStyle.STRICT));
+                                    ResolverStyle.STRICT));
 
-            return !parsed.isAfter(java.time.LocalDate.now());
-        } catch (java.time.format.DateTimeParseException e) {
+            return !parsed.isAfter(LocalDate.now());
+        } catch (DateTimeParseException e) {
             return false;
         }
     }
@@ -636,7 +539,7 @@ public class User {
         this.userID = userID.trim();
     }
 
-    public static void editUser(boolean permit) {
+    public static void editUser() {
         String userID, lastName, firstName, middleInitial, emailAddress;
         String password, address, birthDate, choice, userName;
         String enrollmentStatus = "", programCode = "", collegeCode = "";
@@ -653,6 +556,310 @@ public class User {
             if (!User.existUserID(userID))
                 UI.print("User does not exist");
         } while (!User.existUserID(userID));
+
+        User u = User.getUser(userID);
+
+        if (u == null) {
+            UI.print("User not found");
+            return;
+        }
+
+        userID = u.getUserID();
+        lastName = u.getLastName();
+        firstName = u.getFirstName();
+        middleInitial = u.getMiddleInitial();
+        emailAddress = u.getEmailAddress();
+        password = u.getPassword();
+        address = u.getAddress();
+        postalCode = u.getPostalCode();
+        birthDate = u.getBirthDate();
+        sex = u.getSex();
+
+        if (u instanceof Student) {
+            Student s = (Student) u;
+            enrollmentStatus = s.getEnrollmentStatus();
+            programCode = s.getProgramCode();
+        } else if (u instanceof Faculty) {
+            Faculty f = (Faculty) u;
+            collegeCode = Faculty.getCollegeCode(f);
+        } else if (u instanceof DepartmentHead) {
+            DepartmentHead dh = (DepartmentHead) u;
+            collegeCode = dh.getCollegeCode();
+        } else {
+            UI.print("Invalid User Type");
+            return;
+        }
+
+        while (!submit) {
+            if (u instanceof Student) {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, enrollmentStatus, programCode);
+            } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, collegeCode);
+            }
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("([1-9]|10|X|/)"))
+                    UI.print("Invalid Input");
+            } while (!choice.matches("([1-9]|10|X|/)"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Last Name > ");
+                        lastName = in.nextLine().trim();
+                        if (lastName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (lastName.isEmpty());
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter First Name > ");
+                        firstName = in.nextLine().trim();
+                        if (firstName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (firstName.isEmpty());
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Middle Initial > ");
+                        middleInitial = in.nextLine().trim();
+
+                        if (middleInitial.endsWith("."))
+                            middleInitial = middleInitial.substring(
+                                    0, middleInitial.length() - 1);
+
+                        if (!middleInitial.isEmpty()
+                                && !middleInitial.matches("[A-Za-z]"))
+                            UI.print("Enter one letter only");
+                    } while (!middleInitial.isEmpty()
+                            && !middleInitial.matches("[A-Za-z]"));
+                    break;
+
+                case "4":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Email Address > ");
+                        emailAddress = in.nextLine().trim();
+
+                        if (emailAddress.isEmpty()) {
+                            UI.print("Invalid Input");
+                        } else if (!emailAddress.endsWith("@bulsu.edu.ph")) {
+                            UI.print("Invalid Email Domain");
+                        } else if (!emailAddress.matches(
+                                "(S|F)[0-9]{4}@bulsu\\.edu\\.ph")
+                                && !emailAddress.matches(
+                                "DH[0-9]{4}@bulsu\\.edu\\.ph")) {
+                            UI.print("Invalid User");
+                        } else if (User.checkDuplicateEmail(emailAddress)
+                                && !emailAddress.equalsIgnoreCase(
+                                u.getEmailAddress())) {
+                            UI.print("Email already exists");
+                        } else {
+                            valid = true;
+                        }
+                    } while (!valid);
+                    break;
+
+                case "5":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Password > ");
+                        password = in.nextLine();
+
+                        if (password.trim().isEmpty())
+                            UI.print("Invalid Input");
+                        else if (password.length() < 8)
+                            UI.print("Password must be at least 8 characters");
+                        else if (!password.matches(".*[A-Z].*"))
+                            UI.print("Password must contain an uppercase letter");
+                        else if (!password.matches(".*[a-z].*"))
+                            UI.print("Password must contain a lowercase letter");
+                        else if (!password.matches(".*[0-9].*"))
+                            UI.print("Password must contain a number");
+                        else if (!password.matches(".*[^a-zA-Z0-9].*"))
+                            UI.print("Password must contain a special character");
+                        else if (password.contains(" "))
+                            UI.print("Password cannot contain spaces");
+                        else
+                            valid = true;
+                    } while (!valid);
+                    break;
+
+                case "6":
+                    String street, barangay, city, province;
+
+                    do {
+                        System.out.print("    Enter Street > ");
+                        street = in.nextLine().trim();
+                        if (street.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (street.isEmpty());
+
+                    do {
+                        System.out.print("    Enter Barangay > ");
+                        barangay = in.nextLine().trim();
+                        if (barangay.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (barangay.isEmpty());
+
+                    do {
+                        System.out.print("    Enter City > ");
+                        city = in.nextLine().trim();
+                        if (city.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (city.isEmpty());
+
+                    do {
+                        System.out.print("    Enter Province > ");
+                        province = in.nextLine().trim();
+                        if (province.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (province.isEmpty());
+
+                    address = street + ", " + barangay + ", " + city + ", " + province;
+                    break;
+
+                case "7":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Postal Code > ");
+                        String postalInput = in.nextLine().trim();
+
+                        if (!postalInput.matches("[0-9]{4}")) {
+                            UI.print("Postal code must be 4 digits");
+                        } else {
+                            postalCode = Integer.parseInt(postalInput);
+                            valid = true;
+                        }
+                    } while (!valid);
+                    break;
+
+                case "8":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
+                        birthDate = in.nextLine().trim();
+
+                        if (!isValidBirthDate(birthDate))
+                            UI.print("Invalid birthdate");
+                        else
+                            valid = true;
+                    } while (!valid);
+                    break;
+
+                case "9":
+                    String sexInput;
+
+                    do {
+                        System.out.print("   Enter Sex (M/F) > ");
+                        sexInput = in.nextLine().trim().toUpperCase();
+
+                        if (!sexInput.matches("[MF]"))
+                            UI.print("Invalid Input");
+                    } while (!sexInput.matches("[MF]"));
+
+                    sex = sexInput.charAt(0);
+                    break;
+
+                case "10":
+                    if (u instanceof Student) {
+                        do {
+                            System.out.print("   Enrollment Status (R, IR) > ");
+                            enrollmentStatus = in.nextLine().trim().toUpperCase();
+
+                            if (!enrollmentStatus.matches("R|IR"))
+                                UI.print("Invalid Input");
+                        } while (!enrollmentStatus.matches("R|IR"));
+
+                        do {
+                            System.out.print("   Program Code > ");
+                            programCode = in.nextLine().trim().toUpperCase();
+
+                            if (!Program.existProgramCode(programCode))
+                                UI.print("Program Code does not exist");
+                        } while (!Program.existProgramCode(programCode));
+
+                    } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                        do {
+                            System.out.print("   College Code > ");
+                            collegeCode = in.nextLine().trim().toUpperCase();
+
+                            if (!College.existCollegeCode(collegeCode))
+                                UI.print("College Code does not exist");
+                        } while (!College.existCollegeCode(collegeCode));
+                    }
+                    break;
+
+                case "/":
+                    userName = lastName + ", " + firstName
+                            + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+
+                    if (checkDuplicateName(userName)
+                            && !userName.equalsIgnoreCase(u.getUserName())) {
+                        UI.print("Name already exists");
+                        break;
+                    }
+
+                    u.setLastName(lastName);
+                    u.setFirstName(firstName);
+                    u.setMiddleInitial(middleInitial);
+                    u.setEmailAddress(emailAddress);
+                    u.setPassword(password);
+                    u.setAddress(address);
+                    u.setPostalCode(postalCode);
+                    u.setBirthDate(birthDate);
+                    u.setSex(sex);
+
+                    try {
+                        if (u instanceof Student) {
+                            Student s = (Student) u;
+                            s.setEnrollmentStatus(enrollmentStatus);
+                            s.setProgramCode(programCode);
+                        } else if (u instanceof Faculty) {
+                            Faculty f = (Faculty) u;
+                            f.setCollegeCode(collegeCode);
+                        } else if (u instanceof DepartmentHead) {
+                            DepartmentHead dh = (DepartmentHead) u;
+                            dh.setCollegeCode(collegeCode);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        UI.print(e.getMessage());
+                        break;
+                    }
+
+                    UI.print("User successfully edited");
+                    User.viewProfile(u.getUserID());
+                    submit = true;
+                    break;
+
+                case "X":
+                    UI.print("User edit cancelled");
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void editUser(String userID) {
+        String lastName, firstName, middleInitial, emailAddress;
+        String password, address, birthDate, choice, userName;
+        String enrollmentStatus = "", programCode = "", collegeCode = "";
+        int postalCode;
+        char sex;
+        boolean valid, submit = false;
 
         User u = User.getUser(userID);
 
@@ -1001,39 +1208,19 @@ public class User {
         }
 
         UI.header(text.toUpperCase() + ": USER INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [1]  USER ID          : %s", userID));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [2]  LAST NAME        : %s", lastName));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [3]  FIRST NAME       : %s", firstName));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [4]  MIDDLE INITIAL   : %s", middleInitial));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [5]  EMAIL ADDRESS    : %s", emailAddress));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [6]  PASSWORD         : %s", password));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [7]  ADDRESS          : %s", address));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [8]  POSTAL CODE      : %s", postalCode));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [9]  BIRTHDATE        : %s", birthDate));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [10] SEX              : %s", sex));
-
-        if (u instanceof Student) {
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    String.format(" [11] ENROLLMENT STATUS: %s", input1));
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    String.format(" [12] PROGRAM CODE     : %s", input2));
-        } else if (u instanceof Faculty) {
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    String.format(" [11] COLLEGE CODE     : %s", input2));
-        } else if (u instanceof DepartmentHead) {
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    String.format(" [11] COLLEGE CODE     : %s", input2));
-        }
+        UI.liner(String.format("  USER ID                : %s", userID));
+        UI.separator();
+        UI.liner(String.format(" [1] LAST NAME           : %s", lastName));
+        UI.liner(String.format(" [2] FIRST NAME          : %s", firstName));
+        UI.liner(String.format(" [3] MIDDLE INITIAL      : %s", middleInitial));
+        UI.liner(String.format(" [4] EMAIL ADDRESS       : %s", emailAddress));
+        UI.liner(String.format(" [5] PASSWORD            : %s", password));
+        UI.liner(String.format(" [6] ADDRESS             : %s", address));
+        UI.liner(String.format(" [7] POSTAL CODE         : %s", postalCode));
+        UI.liner(String.format(" [8] BIRTHDATE           : %s", birthDate));
+        UI.liner(String.format(" [9] SEX                 : %s", sex));
+        UI.liner(String.format(" [10] ENROLLMENT STATUS  : %s", input1));
+        UI.liner(String.format(" [11] PROGRAM CODE       : %s", input2));
 
         UI.liner("");
         UI.option();
@@ -1053,29 +1240,18 @@ public class User {
         }
 
         UI.header(text.toUpperCase() + ": USER INFORMATION");
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [1]  USER ID          : %s", userID));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [2]  LAST NAME        : %s", lastName));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [3]  FIRST NAME       : %s", firstName));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [4]  MIDDLE INITIAL   : %s", middleInitial));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [5]  EMAIL ADDRESS    : %s", emailAddress));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [6]  PASSWORD         : %s", password));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [7]  ADDRESS          : %s", address));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [8]  POSTAL CODE      : %s", postalCode));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [9]  BIRTHDATE        : %s", birthDate));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [10] SEX              : %s", sex));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format(" [11] COLLEGE CODE     : %s", collegeCode));
-
+        UI.liner(String.format("  USER ID            : %s", userID));
+        UI.separator();
+        UI.liner(String.format(" [1] LAST NAME       : %s", lastName));
+        UI.liner(String.format(" [2] FIRST NAME      : %s", firstName));
+        UI.liner(String.format(" [3] MIDDLE INITIAL  : %s", middleInitial));
+        UI.liner(String.format(" [4] EMAIL ADDRESS   : %s", emailAddress));
+        UI.liner(String.format(" [5] PASSWORD        : %s", password));
+        UI.liner(String.format(" [6] ADDRESS         : %s", address));
+        UI.liner(String.format(" [7] POSTAL CODE     : %s", postalCode));
+        UI.liner(String.format(" [8] BIRTHDATE       : %s", birthDate));
+        UI.liner(String.format(" [9] SEX             : %s", sex));
+        UI.liner(String.format(" [10] COLLEGE CODE   : %s", collegeCode));
         UI.liner("");
         UI.option();
         UI.footer();
@@ -1083,16 +1259,16 @@ public class User {
 
     public static boolean isValidBirthDate(String birthDate) {
         try {
-            java.time.format.DateTimeFormatter formatter =
-                    java.time.format.DateTimeFormatter.ofPattern("MM/dd/uuuu")
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("MM/dd/uuuu")
                             .withResolverStyle(
-                                    java.time.format.ResolverStyle.STRICT);
+                                    ResolverStyle.STRICT);
 
-            java.time.LocalDate date =
-                    java.time.LocalDate.parse(birthDate, formatter);
+            LocalDate date =
+                    LocalDate.parse(birthDate, formatter);
 
-            return !date.isAfter(java.time.LocalDate.now());
-        } catch (java.time.DateTimeException e) {
+            return !date.isAfter(LocalDate.now());
+        } catch (DateTimeException e) {
             return false;
         }
     }

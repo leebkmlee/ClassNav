@@ -3,12 +3,9 @@ package FUNCTION;
 
 import UI.*;
 import USER.User;
-
-import java.util.Scanner;
+import static UI.UI.in;
 
 public class Login {
-
-    static Scanner in = new Scanner(System.in);
 
     public static String logIn() {
 
@@ -52,7 +49,6 @@ public class Login {
         }
 
         UI.print("Ran out of attempts.");
-
-        return null;
+        return "Ran out of attempts.";
     }
 }

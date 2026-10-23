@@ -1,4 +1,3 @@
-
 package USER;
 
 import DATA.*;
@@ -6,11 +5,16 @@ import UI.*;
 import FUNCTION.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import static DATA.Room.convertToMinutes;
+import static FUNCTION.Request.TIME_FORMAT;
 import static UI.UI.in;
 
 public class Student extends User {
@@ -21,7 +25,7 @@ public class Student extends User {
                     .withResolverStyle(ResolverStyle.STRICT);
 
     private String enrollmentStatus;
-    private String programCode; // foreign key
+    private String programCode;
 
     private static final String[] DAYS = {
             "Monday", "Tuesday", "Wednesday", "Thursday",
@@ -79,7 +83,7 @@ public class Student extends User {
                 break;
 
             case "2":
-                User.updateProfile(getUserID());
+                User.editUser(getUserID());
                 menu();
                 break;
 
@@ -338,7 +342,8 @@ public class Student extends User {
 
                 found = true;
 
-                Course c = Course.findCourseByID(o.getCourseID());
+                // Course is now searched using its courseCode.
+                Course c = Course.findCourse(o.getCourseCode());
                 Room r = Room.findRoom(s.getRoomCode());
 
                 Building b = r == null ? null
@@ -385,68 +390,47 @@ public class Student extends User {
     // VIEW AVAILABLE ROOMS FORM
 
     public static void viewAvailableRooms() {
-        String day = "", startTime = "", endTime = "", choice;
-        boolean submit = false;
 
-        while (!submit) {
-            UI.header("VIEW AVAILABLE ROOMS");
-            UI.liner("  DAY        : " + (day.isEmpty() ? " " : day));
-            UI.liner("  START TIME : " + (startTime.isEmpty() ? " " : startTime));
-            UI.liner("  END TIME   : " + (endTime.isEmpty() ? " " : endTime));
-            UI.option();
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
 
-            do {
-                System.out.print("  Select > ");
-                choice = in.nextLine().trim().toUpperCase();
+        String currentDate = today.format(DATE_FORMAT);
+        String currentTime = now.format(TIME_FORMAT);
+        String checkEndTime = now.plusMinutes(1).format(TIME_FORMAT);
 
-                if (!choice.matches("[1-2X]") && !choice.equals("/"))
-                    UI.print("Invalid Choice");
+        boolean available = false;
 
-            } while (!choice.matches("[1-2X]") && !choice.equals("/") && !choice.equals("X"));
+        UI.header("ROOMS AVAILABLE RIGHT NOW");
 
-            switch (choice) {
-                case "1":
-                    do {
-                        System.out.print("  Enter Day > ");
-                        day = in.nextLine().trim();
+        for (Room room : Room.rooms) {
 
-                        if (!isValidDay(day))
-                            UI.print("Invalid day");
+            if (room == null)
+                continue;
 
-                    } while (!isValidDay(day));
+            if (Room.verifyAvailability(
+                    room.getRoomCode(),
+                    currentDate,
+                    currentTime,
+                    checkEndTime)) {
 
-                    day = normalizeDay(day);
-                    break;
+                UI.liner("  " + room.getRoomCode()
+                        + " - " + room.getRoomDescription());
+                UI.liner("  Type: " + room.getRoomType()
+                        + " | Capacity: " + room.getCapacity());
+                UI.liner("  Floor: "
+                        + Room.getFloorText(room.getFloorNumber()));
+                UI.liner("");
 
-                case "2":
-                    do {
-                        System.out.print("  Enter Start Time > ");
-                        startTime = in.nextLine().trim();
-
-                        System.out.print("  Enter End Time > ");
-                        endTime = in.nextLine().trim();
-
-                        if (!isValidTimeRange(startTime, endTime))
-                            UI.print("Invalid time range");
-
-                    } while (!isValidTimeRange(startTime, endTime));
-                    break;
-
-                case "/":
-                    if (day.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
-                        UI.print("Please complete all required fields");
-                        break;
-                    }
-
-                    viewAvailableRooms(day, startTime, endTime);
-                    submit = true;
-                    break;
-
-                case "X":
-                    submit = true;
-                    break;
+                available = true;
             }
         }
+
+        if (!available)
+            UI.liner("  No rooms are currently available.");
+
+        UI.footer();
+
+        if (!available) return;
     }
 
     public static void viewAvailableRooms(String day, String startTime, String endTime) {
@@ -631,14 +615,14 @@ public class Student extends User {
             return;
         }
 
-        String courseID;
+        String courseCode;
         String facultyID;
         CourseOffering selectedOffering = null;
         boolean found;
 
         do {
-            System.out.print("  Enter Course ID > ");
-            courseID = in.nextLine().trim();
+            System.out.print("  Enter Course Code > ");
+            courseCode = in.nextLine().trim();
 
             found = false;
             selectedOffering = null;
@@ -651,8 +635,8 @@ public class Student extends User {
 
                 CourseOffering o = CourseOffering.findOffering(cr.getOfferingID());
 
-                if (o != null && o.getCourseID() != null
-                        && o.getCourseID().equalsIgnoreCase(courseID)) {
+                if (o != null && o.getCourseCode() != null
+                        && o.getCourseCode().equalsIgnoreCase(courseCode)) {
                     selectedOffering = o;
                     found = true;
                     break;
@@ -708,7 +692,7 @@ public class Student extends User {
                     return;
                 }
 
-                Course c = Course.findCourseByID(selectedOffering.getCourseID());
+                Course c = Course.findCourse(selectedOffering.getCourseCode());
 
                 if (c == null) {
                     UI.print("Course not found");

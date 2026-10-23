@@ -420,7 +420,7 @@ public class Schedule {
         if (offering != null) {
 
             Section section = Section.findSection(offering.getSectionID());
-            Course course = Course.findCourseByID(offering.getCourseID());
+            Course course = Course.findCourse(offering.getCourseCode());
 
             UI.liner("  SECTION       : "
                     + (section == null ? "Section not found"

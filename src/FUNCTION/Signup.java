@@ -5,16 +5,15 @@ import USER.*;
 import DATA.*;
 import UI.*;
 
+import static UI.UI.in;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.time.format.DateTimeParseException;
-import java.util.Scanner;
+
 
 public class Signup {
-
-    static final int innerWidth = 70;
-    static Scanner in = new Scanner(System.in);
 
     static String user = "[1] Full Name:";
     static String email = "[2] Email Address:";
@@ -325,7 +324,6 @@ public class Signup {
 
                 case "X":
                     resetFields();
-                    User.start();
                     submit = true;
                     break;
 
@@ -336,7 +334,7 @@ public class Signup {
         }
     }
 
-    static void resetFields() {
+    public static void resetFields() {
         user = "[1] Full Name:";
         email = "[2] Email Address:";
         password = "[3] Password:";
@@ -347,30 +345,30 @@ public class Signup {
     }
 
     static void printUser() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", user);
+        UI.liner(" " + user);
     }
 
     static void printEmail() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", email);
+        UI.liner(" " + email);
     }
 
     static void printPassword() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", password);
+        UI.liner(" " + password);
     }
 
     static void printAddress() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", address);
+        UI.liner(" " + address);
     }
 
     static void printPostal() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", postalCode);
+        UI.liner(" " + postalCode);
     }
 
     static void printBDate() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", birthDate);
+        UI.liner(" " + birthDate);
     }
 
     static void printSex() {
-        System.out.printf("│ %-" + (innerWidth - 2) + "s │%n", sex);
+        UI.liner(" " + sex);
     }
 }

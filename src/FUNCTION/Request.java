@@ -34,20 +34,20 @@ public class Request {
     private String reviewedAt;
     private String rejectionReason;
 
-    private static final DateTimeFormatter DATE_FORMAT =
+    static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("MM/dd/uuuu")
                     .withResolverStyle(ResolverStyle.STRICT);
 
     // INTERNAL TIME FORMAT
-    private static final DateTimeFormatter TIME_FORMAT =
+    public static final DateTimeFormatter TIME_FORMAT =
             DateTimeFormatter.ofPattern("HH:mm");
 
     // DISPLAY AND INPUT TIME FORMAT
-    private static final DateTimeFormatter DISPLAY_TIME_FORMAT =
+    static final DateTimeFormatter DISPLAY_TIME_FORMAT =
             DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
 
     // CONVERT INPUT TIME TO INTERNAL 24-HOUR FORMAT
-    private static String convertTime(String time) {
+    static String convertTime(String time) {
 
         if (time == null || time.trim().isEmpty())
             throw new IllegalArgumentException("Time cannot be empty.");
@@ -65,7 +65,7 @@ public class Request {
     }
 
     // FORMAT INTERNAL TIME FOR DISPLAY
-    private static String formatTime(String time) {
+    static String formatTime(String time) {
 
         if (time == null || time.trim().isEmpty())
             return "";
@@ -275,8 +275,7 @@ public class Request {
 
         UI.footer();
 
-        if (!available)
-            return;
+        if (!available) return;
 
         // ENTER RESERVATION DETAILS
         UI.header("REQUEST ROOM RESERVATION");

@@ -8,9 +8,6 @@ import java.util.ArrayList;
 
 public class Course {
 
-    private static int nextCourseID = 1;
-
-    private String courseID; // PK
     private String courseCode;
     private String courseDescription;
     private int creditUnits;
@@ -39,7 +36,6 @@ public class Course {
         if (existCourseDesc(courseDescription))
             throw new IllegalArgumentException("Course description already exists.");
 
-        this.courseID = String.format("C%03d", nextCourseID++);
         this.courseCode = courseCode.trim();
         this.courseDescription = courseDescription.trim();
         this.creditUnits = creditUnits;
@@ -115,10 +111,6 @@ public class Course {
 
     // COURSE GETTER METHODS
 
-    public String getCourseID() {
-        return courseID;
-    }
-
     public String getCourseCode() {
         return courseCode;
     }
@@ -135,25 +127,9 @@ public class Course {
         return courseType;
     }
 
-    // FIND USING THE PRIMARY KEY
-
-    public static Course findCourseByID(String courseID) {
-
-        if (courseID == null || courseID.trim().isEmpty())
-            return null;
-
-        for (Course c : courses) {
-            if (courseID.trim().equalsIgnoreCase(c.getCourseID()))
-                return c;
-        }
-
-        return null;
-    }
-
     // FIND USING THE OFFICIAL COURSE CODE
 
     public static Course findCourse(String courseCode) {
-
         if (courseCode == null || courseCode.trim().isEmpty())
             return null;
 
@@ -166,10 +142,6 @@ public class Course {
     }
 
     // EXISTING STATIC GETTERS
-
-    public static String getCourse(Course c) {
-        return c == null ? null : c.getCourseID();
-    }
 
     public static String getCourseCode(Course c) {
         return c == null ? null : c.getCourseCode();
@@ -185,10 +157,6 @@ public class Course {
 
     public static String getCourseType(Course c) {
         return c == null ? null : c.getCourseType();
-    }
-
-    public static boolean existCourseID(String courseID) {
-        return findCourseByID(courseID) != null;
     }
 
     public static boolean existCourseCode(String courseCode) {
@@ -220,7 +188,6 @@ public class Course {
         }
 
         UI.header("COURSE DETAILS");
-        UI.liner(String.format("  COURSE ID           : %s", c.getCourseID()));
         UI.liner(String.format("  COURSE CODE         : %s", c.getCourseCode()));
         UI.liner(String.format("  COURSE DESCRIPTION  : %s", c.getCourseDescription()));
         UI.liner(String.format("  CREDIT UNITS        : %d", c.getCreditUnits()));
@@ -263,7 +230,7 @@ public class Course {
 
         for (CourseOffering o : CourseOffering.offerings) {
 
-            if (o.getCourseID().equalsIgnoreCase(c.getCourseID())
+            if (o.getCourseCode().equalsIgnoreCase(c.getCourseCode())
                     && o.getFacultyID().equalsIgnoreCase(facultyID.trim())) {
                 return true;
             }
@@ -293,7 +260,7 @@ public class Course {
 
         for (CourseOffering o : CourseOffering.offerings) {
 
-            if (o.getCourseID().equalsIgnoreCase(c.getCourseID())
+            if (o.getCourseCode().equalsIgnoreCase(c.getCourseCode())
                     && o.getFacultyID().equalsIgnoreCase(facultyID.trim())) {
                 matchingOfferings.add(o);
             }

@@ -7,28 +7,28 @@ import java.util.ArrayList;
 public class Curriculum {
 
     private String programCode; // PK, FK -> Program.programCode
-    private String courseID; // PK, FK -> Course.courseID
+    private String courseCode; // PK, FK -> Course.courseCode
     private String curriculumYearLevel;
     private int curriculumTerm;
 
     public static ArrayList<Curriculum> curriculums = new ArrayList<>();
 
-    public Curriculum(String programCode, String courseID,
+    public Curriculum(String programCode, String courseCode,
                       String curriculumYearLevel, int curriculumTerm) {
 
         if (programCode == null || programCode.isBlank())
             throw new IllegalArgumentException("Program code cannot be empty");
 
-        if (courseID == null || courseID.isBlank())
-            throw new IllegalArgumentException("Course ID cannot be empty");
+        if (courseCode == null || courseCode.isBlank())
+            throw new IllegalArgumentException("Course Code cannot be empty");
 
         programCode = programCode.trim();
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
 
         if (Program.findProgram(programCode) == null)
             throw new IllegalArgumentException("Program not found");
 
-        if (Course.findCourseByID(courseID) == null)
+        if (Course.findCourse(courseCode) == null)
             throw new IllegalArgumentException("Course not found");
 
         if (curriculumYearLevel == null || curriculumYearLevel.isBlank())
@@ -38,7 +38,7 @@ public class Curriculum {
             throw new IllegalArgumentException("Invalid curriculum term");
 
         this.programCode = programCode;
-        this.courseID = courseID;
+        this.courseCode = courseCode;
         this.curriculumYearLevel = curriculumYearLevel.trim();
         this.curriculumTerm = curriculumTerm;
     }
@@ -48,8 +48,8 @@ public class Curriculum {
         return programCode;
     }
 
-    public String getCourseID() {
-        return courseID;
+    public String getCourseCode() {
+        return courseCode;
     }
 
     public String getCurriculumYearLevel() {
@@ -61,33 +61,33 @@ public class Curriculum {
     }
 
     // FIND USING COMPOSITE PRIMARY KEY
-    public static Curriculum findCurriculum(String programCode, String courseID) {
+    public static Curriculum findCurriculum(String programCode, String courseCode) {
 
-        if (programCode == null || courseID == null)
+        if (programCode == null || courseCode == null)
             return null;
 
         programCode = programCode.trim();
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
 
         for (Curriculum c : curriculums) {
             if (programCode.equalsIgnoreCase(c.getProgramCode())
-                    && courseID.equalsIgnoreCase(c.getCourseID()))
+                    && courseCode.equalsIgnoreCase(c.getCourseCode()))
                 return c;
         }
 
         return null;
     }
 
-    public static boolean existCurriculum(String programCode, String courseID) {
-        return findCurriculum(programCode, courseID) != null;
+    public static boolean existCurriculum(String programCode, String courseCode) {
+        return findCurriculum(programCode, courseCode) != null;
     }
 
     // ADD CURRICULUM ENTRY
-    public static boolean addCurriculum(String programCode, String courseID,
+    public static boolean addCurriculum(String programCode, String courseCode,
                                         String curriculumYearLevel, int curriculumTerm) {
 
         if (programCode == null || programCode.isBlank()
-                || courseID == null || courseID.isBlank()
+                || courseCode == null || courseCode.isBlank()
                 || curriculumYearLevel == null || curriculumYearLevel.isBlank()) {
 
             UI.print("Please complete all curriculum fields");
@@ -95,7 +95,7 @@ public class Curriculum {
         }
 
         programCode = programCode.trim();
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
         curriculumYearLevel = curriculumYearLevel.trim();
 
         if (Program.findProgram(programCode) == null) {
@@ -103,7 +103,7 @@ public class Curriculum {
             return false;
         }
 
-        if (Course.findCourseByID(courseID) == null) {
+        if (Course.findCourse(courseCode) == null) {
             UI.print("Course not found");
             return false;
         }
@@ -113,12 +113,12 @@ public class Curriculum {
             return false;
         }
 
-        if (findCurriculum(programCode, courseID) != null) {
+        if (findCurriculum(programCode, courseCode) != null) {
             UI.print("Course is already included in this program");
             return false;
         }
 
-        curriculums.add(new Curriculum(programCode, courseID,
+        curriculums.add(new Curriculum(programCode, courseCode,
                 curriculumYearLevel, curriculumTerm));
 
         return true;
@@ -139,7 +139,7 @@ public class Curriculum {
 
         for (Curriculum c : curriculums) {
             if (programCode.equalsIgnoreCase(c.getProgramCode())) {
-                Course course = Course.findCourseByID(c.getCourseID());
+                Course course = Course.findCourse(c.getCourseCode());
 
                 if (course != null && !result.contains(course))
                     result.add(course);
@@ -150,20 +150,20 @@ public class Curriculum {
     }
 
     // RETRIEVE PROGRAMS THROUGH COURSE -> CURRICULUM -> PROGRAM
-    public static ArrayList<Program> getProgramsByCourse(String courseID) {
+    public static ArrayList<Program> getProgramsByCourse(String courseCode) {
 
         ArrayList<Program> result = new ArrayList<>();
 
-        if (courseID == null || courseID.isBlank())
+        if (courseCode == null || courseCode.isBlank())
             return result;
 
-        courseID = courseID.trim();
+        courseCode = courseCode.trim();
 
-        if (Course.findCourseByID(courseID) == null)
+        if (Course.findCourse(courseCode) == null)
             return result;
 
         for (Curriculum c : curriculums) {
-            if (courseID.equalsIgnoreCase(c.getCourseID())) {
+            if (courseCode.equalsIgnoreCase(c.getCourseCode())) {
                 Program program = Program.findProgram(c.getProgramCode());
 
                 if (program != null && !result.contains(program))
@@ -202,7 +202,7 @@ public class Curriculum {
             UI.liner("  No courses found in this curriculum.");
         } else {
             for (Course c : courses) {
-                Curriculum entry = findCurriculum(programCode, c.getCourseID());
+                Curriculum entry = findCurriculum(programCode, c.getCourseCode());
 
                 if (entry == null)
                     continue;
@@ -225,12 +225,12 @@ public class Curriculum {
 
     // CREATE CURRICULUM ENTRY
     public static void createCurriculum() {
-        String programCode = ""; String courseID = "";
+        String programCode = ""; String courseCode = "";
         String curriculumYearLevel = ""; String choice = "";
         int curriculumTerm = -1; boolean submit = false;
 
         while (!submit) {
-            curriculumManage("CREATE", programCode, courseID,
+            curriculumManage("CREATE", programCode, courseCode,
                     curriculumYearLevel, curriculumTerm);
 
             do {
@@ -255,17 +255,17 @@ public class Curriculum {
 
                 case "2":
                     do {
-                        System.out.print("   Enter Course ID > ");
-                        courseID = in.nextLine().trim();
-                        if (courseID.isEmpty())
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine().trim();
+                        if (courseCode.isEmpty())
                             UI.print("Invalid Input");
-                        else if (Course.findCourseByID(courseID) == null)
+                        else if (Course.findCourse(courseCode) == null)
                             UI.print("Course does not exist");
-                        else if (findCurriculum(programCode, courseID) != null)
+                        else if (findCurriculum(programCode, courseCode) != null)
                             UI.print("Course is already included in this program");
-                    } while (courseID.isEmpty()
-                            || Course.findCourseByID(courseID) == null
-                            || findCurriculum(programCode, courseID) != null);
+                    } while (courseCode.isEmpty()
+                            || Course.findCourse(courseCode) == null
+                            || findCurriculum(programCode, courseCode) != null);
                     break;
 
                 case "3":
@@ -293,10 +293,10 @@ public class Curriculum {
                     break;
 
                 case "/":
-                    if (programCode.isEmpty() || courseID.isEmpty()
+                    if (programCode.isEmpty() || courseCode.isEmpty()
                             || curriculumYearLevel.isEmpty() || curriculumTerm == -1) {
                         UI.print("Details are incomplete");
-                    } else if (addCurriculum(programCode, courseID,
+                    } else if (addCurriculum(programCode, courseCode,
                             curriculumYearLevel, curriculumTerm)) {
                         UI.print("Curriculum entry successfully created");
                         submit = true;
@@ -313,7 +313,7 @@ public class Curriculum {
     // EDIT CURRICULUM ENTRY
     public static void editCurriculum() {
         String input; String choice;
-        String programCode; String courseID;
+        String programCode; String courseCode;
         String curriculumYearLevel; int curriculumTerm;
         boolean submit = false;
 
@@ -331,20 +331,20 @@ public class Curriculum {
         programCode = input;
 
         do {
-            System.out.print("  Enter Course ID > ");
+            System.out.print("  Enter Course Code > ");
             input = in.nextLine().trim();
             if (input.isEmpty())
                 UI.print("Invalid Input");
-            else if (Course.findCourseByID(input) == null)
+            else if (Course.findCourse(input) == null)
                 UI.print("Course does not exist");
             else if (findCurriculum(programCode, input) == null)
                 UI.print("Curriculum entry does not exist");
-        } while (input.isEmpty() || Course.findCourseByID(input) == null
+        } while (input.isEmpty() || Course.findCourse(input) == null
                 || findCurriculum(programCode, input) == null);
 
-        courseID = input;
+        courseCode = input;
 
-        Curriculum c = findCurriculum(programCode, courseID);
+        Curriculum c = findCurriculum(programCode, courseCode);
         if (c == null) {
             UI.print("Curriculum entry not found");
             return;
@@ -354,7 +354,7 @@ public class Curriculum {
         curriculumTerm = c.getCurriculumTerm();
 
         while (!submit) {
-            curriculumManage("EDIT", programCode, courseID,
+            curriculumManage("EDIT", programCode, courseCode,
                     curriculumYearLevel, curriculumTerm);
 
             do {
@@ -409,7 +409,7 @@ public class Curriculum {
 
     // DELETE CURRICULUM ENTRY
     public static void deleteCurriculum() {
-        String input; String choice; String programCode; String courseID;
+        String input; String choice; String programCode; String courseCode;
 
         UI.print("DELETE CURRICULUM ENTRY");
 
@@ -425,26 +425,26 @@ public class Curriculum {
         programCode = input;
 
         do {
-            System.out.print("  Enter Course ID > ");
+            System.out.print("  Enter Course Code > ");
             input = in.nextLine().trim();
             if (input.isEmpty())
                 UI.print("Invalid Input");
-            else if (Course.findCourseByID(input) == null)
+            else if (Course.findCourse(input) == null)
                 UI.print("Course does not exist");
             else if (findCurriculum(programCode, input) == null)
                 UI.print("Curriculum entry does not exist");
-        } while (input.isEmpty() || Course.findCourseByID(input) == null
+        } while (input.isEmpty() || Course.findCourse(input) == null
                 || findCurriculum(programCode, input) == null);
 
-        courseID = input;
+        courseCode = input;
 
-        Curriculum c = findCurriculum(programCode, courseID);
+        Curriculum c = findCurriculum(programCode, courseCode);
         if (c == null) {
             UI.print("Curriculum entry not found");
             return;
         }
 
-        curriculumManage("DELETE", programCode, courseID,
+        curriculumManage("DELETE", programCode, courseCode,
                 c.getCurriculumYearLevel(), c.getCurriculumTerm());
 
         do {
@@ -469,7 +469,7 @@ public class Curriculum {
         } else {
             for (Curriculum c : curriculums) {
                 UI.liner(String.format("  PROGRAM CODE : %s", c.getProgramCode()));
-                UI.liner(String.format("  COURSE ID    : %s", c.getCourseID()));
+                UI.liner(String.format("  COURSE CODE    : %s", c.getCourseCode()));
                 UI.liner(String.format("  YEAR LEVEL   : %s", c.getCurriculumYearLevel()));
                 UI.liner(String.format("  TERM         : %d", c.getCurriculumTerm()));
                 UI.separator();
@@ -481,11 +481,11 @@ public class Curriculum {
 
     // CURRICULUM FORM
     private static void curriculumManage(String text, String programCode,
-                                         String courseID, String curriculumYearLevel, int curriculumTerm) {
+                                         String courseCode, String curriculumYearLevel, int curriculumTerm) {
 
         UI.header(text.toUpperCase() + ": CURRICULUM INFORMATION");
         UI.liner(String.format(" [1] PROGRAM CODE : %s", programCode));
-        UI.liner(String.format(" [2] COURSE ID    : %s", courseID));
+        UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode));
         UI.liner(String.format(" [3] YEAR LEVEL   : %s", curriculumYearLevel));
         UI.liner(String.format(" [4] TERM         : %s",
                 curriculumTerm == -1 ? "" : curriculumTerm));

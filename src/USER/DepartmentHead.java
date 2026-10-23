@@ -70,7 +70,7 @@ public class DepartmentHead extends User {
                 break;
 
             case "2":
-                User.updateProfile(getUserID());
+                User.editUser(getUserID());
                 menu();
                 break;
 
@@ -203,7 +203,7 @@ public class DepartmentHead extends User {
                 Signup.signUp("CREATE NEW USER");
                 break;
             case 2:
-                User.editUser(true);
+                User.editUser();
                 break;
             case 3:
                 User.deleteUser();
