@@ -1,5 +1,7 @@
 package USER;
 
+import DATA.College;
+import DATA.Program;
 import FUNCTION.*;
 import UI.*;
 
@@ -17,6 +19,7 @@ public class User {
     private int postalCode;
     private String birthDate;
     private char sex;
+    public static ArrayList<User> users = new ArrayList<>();
 
     public User(String userID, String lastName, String firstName, String middleInitial,
                 String emailAddress, String password, String address, int postalCode,
@@ -36,7 +39,49 @@ public class User {
         updateUserName();
     }
 
-    public static ArrayList<User> users = new ArrayList<>();
+    public static void start() {
+        String select;
+        boolean valid;
+
+        do {
+            UI.startPrint("ClassNav");
+            select = in.nextLine().trim().toUpperCase();
+
+            if (select.equals("X") || select.equals("1") || select.equals("2"))
+                valid = true;
+            else {
+                UI.print("Invalid Choice");
+                valid = false;
+            }
+        } while (!valid);
+
+        switch (select) {
+            case "1":
+                String user = Login.logIn();
+                User u = User.getUser(user);
+                if (u == null) {
+                    UI.print("User not found");
+                    return;
+                }
+                u.menu();
+                User.start();
+                break;
+            case "2":
+                Signup.signUp("SIGN UP");
+                User.start();
+                break;
+            case "X":
+                System.out.println("   Exiting...");
+                User.start();
+                break;
+        }
+    }
+
+    public void menu() {
+        UI.header("USER MENU");
+        UI.liner(" [1] View Profile");
+        UI.liner(" [2] Update Profile");
+    }
 
     private void updateUserName() {
         if (middleInitial.isEmpty())
@@ -195,37 +240,7 @@ public class User {
     static Scanner in = new Scanner(System.in);
 
     static final int innerWidth = 70;
-
-    public static void start() {
-        String select;
-        boolean valid;
-
-        do {
-            UI.startPrint("ClassNav");
-            select = in.nextLine().trim().toUpperCase();
-
-            if (select.equals("X") || select.equals("1") || select.equals("2"))
-                valid = true;
-            else {
-                UI.print("Invalid Choice");
-                valid = false;
-            }
-        } while (!valid);
-
-        if (select.equals("X")) {
-            System.out.println("   Exiting...");
-            System.exit(0);
-        }
-
-        switch (select) {
-            case "1":
-                Login.loginPassword();
-                break;
-            case "2":
-                Signup.signUp("SIGN UP");
-                break;
-        }
-    }
+    
 
     public static void viewProfile(String userID) {
         User u = getUser(userID);
@@ -619,5 +634,466 @@ public class User {
             throw new IllegalArgumentException("User ID cannot be blank");
 
         this.userID = userID.trim();
+    }
+
+    public static void editUser(boolean permit) {
+        String userID, lastName, firstName, middleInitial, emailAddress;
+        String password, address, birthDate, choice, userName;
+        String enrollmentStatus = "", programCode = "", collegeCode = "";
+        int postalCode;
+        char sex;
+        boolean valid, submit = false;
+
+        UI.print("EDIT EXISTING USER");
+
+        do {
+            System.out.print("  Enter User ID > ");
+            userID = in.nextLine().trim().toUpperCase();
+
+            if (!User.existUserID(userID))
+                UI.print("User does not exist");
+        } while (!User.existUserID(userID));
+
+        User u = User.getUser(userID);
+
+        if (u == null) {
+            UI.print("User not found");
+            return;
+        }
+
+        userID = u.getUserID();
+        lastName = u.getLastName();
+        firstName = u.getFirstName();
+        middleInitial = u.getMiddleInitial();
+        emailAddress = u.getEmailAddress();
+        password = u.getPassword();
+        address = u.getAddress();
+        postalCode = u.getPostalCode();
+        birthDate = u.getBirthDate();
+        sex = u.getSex();
+
+        if (u instanceof Student) {
+            Student s = (Student) u;
+            enrollmentStatus = s.getEnrollmentStatus();
+            programCode = s.getProgramCode();
+        } else if (u instanceof Faculty) {
+            Faculty f = (Faculty) u;
+            collegeCode = Faculty.getCollegeCode(f);
+        } else if (u instanceof DepartmentHead) {
+            DepartmentHead dh = (DepartmentHead) u;
+            collegeCode = dh.getCollegeCode();
+        } else {
+            UI.print("Invalid User Type");
+            return;
+        }
+
+        while (!submit) {
+            if (u instanceof Student) {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, enrollmentStatus, programCode);
+            } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, collegeCode);
+            }
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("([1-9]|10|X|/)"))
+                    UI.print("Invalid Input");
+            } while (!choice.matches("([1-9]|10|X|/)"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Last Name > ");
+                        lastName = in.nextLine().trim();
+                        if (lastName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (lastName.isEmpty());
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter First Name > ");
+                        firstName = in.nextLine().trim();
+                        if (firstName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (firstName.isEmpty());
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Middle Initial > ");
+                        middleInitial = in.nextLine().trim();
+
+                        if (middleInitial.endsWith("."))
+                            middleInitial = middleInitial.substring(
+                                    0, middleInitial.length() - 1);
+
+                        if (!middleInitial.isEmpty()
+                                && !middleInitial.matches("[A-Za-z]"))
+                            UI.print("Enter one letter only");
+                    } while (!middleInitial.isEmpty()
+                            && !middleInitial.matches("[A-Za-z]"));
+                    break;
+
+                case "4":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Email Address > ");
+                        emailAddress = in.nextLine().trim();
+
+                        if (emailAddress.isEmpty()) {
+                            UI.print("Invalid Input");
+                        } else if (!emailAddress.endsWith("@bulsu.edu.ph")) {
+                            UI.print("Invalid Email Domain");
+                        } else if (!emailAddress.matches(
+                                "(S|F)[0-9]{4}@bulsu\\.edu\\.ph")
+                                && !emailAddress.matches(
+                                "DH[0-9]{4}@bulsu\\.edu\\.ph")) {
+                            UI.print("Invalid User");
+                        } else if (User.checkDuplicateEmail(emailAddress)
+                                && !emailAddress.equalsIgnoreCase(
+                                u.getEmailAddress())) {
+                            UI.print("Email already exists");
+                        } else {
+                            valid = true;
+                        }
+                    } while (!valid);
+                    break;
+
+                case "5":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Password > ");
+                        password = in.nextLine();
+
+                        if (password.trim().isEmpty())
+                            UI.print("Invalid Input");
+                        else if (password.length() < 8)
+                            UI.print("Password must be at least 8 characters");
+                        else if (!password.matches(".*[A-Z].*"))
+                            UI.print("Password must contain an uppercase letter");
+                        else if (!password.matches(".*[a-z].*"))
+                            UI.print("Password must contain a lowercase letter");
+                        else if (!password.matches(".*[0-9].*"))
+                            UI.print("Password must contain a number");
+                        else if (!password.matches(".*[^a-zA-Z0-9].*"))
+                            UI.print("Password must contain a special character");
+                        else if (password.contains(" "))
+                            UI.print("Password cannot contain spaces");
+                        else
+                            valid = true;
+                    } while (!valid);
+                    break;
+
+                case "6":
+                    String street, barangay, city, province;
+
+                    do {
+                        System.out.print("    Enter Street > ");
+                        street = in.nextLine().trim();
+                        if (street.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (street.isEmpty());
+
+                    do {
+                        System.out.print("    Enter Barangay > ");
+                        barangay = in.nextLine().trim();
+                        if (barangay.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (barangay.isEmpty());
+
+                    do {
+                        System.out.print("    Enter City > ");
+                        city = in.nextLine().trim();
+                        if (city.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (city.isEmpty());
+
+                    do {
+                        System.out.print("    Enter Province > ");
+                        province = in.nextLine().trim();
+                        if (province.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (province.isEmpty());
+
+                    address = street + ", " + barangay + ", " + city + ", " + province;
+                    break;
+
+                case "7":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Postal Code > ");
+                        String postalInput = in.nextLine().trim();
+
+                        if (!postalInput.matches("[0-9]{4}")) {
+                            UI.print("Postal code must be 4 digits");
+                        } else {
+                            postalCode = Integer.parseInt(postalInput);
+                            valid = true;
+                        }
+                    } while (!valid);
+                    break;
+
+                case "8":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
+                        birthDate = in.nextLine().trim();
+
+                        if (!isValidBirthDate(birthDate))
+                            UI.print("Invalid birthdate");
+                        else
+                            valid = true;
+                    } while (!valid);
+                    break;
+
+                case "9":
+                    String sexInput;
+
+                    do {
+                        System.out.print("   Enter Sex (M/F) > ");
+                        sexInput = in.nextLine().trim().toUpperCase();
+
+                        if (!sexInput.matches("[MF]"))
+                            UI.print("Invalid Input");
+                    } while (!sexInput.matches("[MF]"));
+
+                    sex = sexInput.charAt(0);
+                    break;
+
+                case "10":
+                    if (u instanceof Student) {
+                        do {
+                            System.out.print("   Enrollment Status (R, IR) > ");
+                            enrollmentStatus = in.nextLine().trim().toUpperCase();
+
+                            if (!enrollmentStatus.matches("R|IR"))
+                                UI.print("Invalid Input");
+                        } while (!enrollmentStatus.matches("R|IR"));
+
+                        do {
+                            System.out.print("   Program Code > ");
+                            programCode = in.nextLine().trim().toUpperCase();
+
+                            if (!Program.existProgramCode(programCode))
+                                UI.print("Program Code does not exist");
+                        } while (!Program.existProgramCode(programCode));
+
+                    } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                        do {
+                            System.out.print("   College Code > ");
+                            collegeCode = in.nextLine().trim().toUpperCase();
+
+                            if (!College.existCollegeCode(collegeCode))
+                                UI.print("College Code does not exist");
+                        } while (!College.existCollegeCode(collegeCode));
+                    }
+                    break;
+
+                case "/":
+                    userName = lastName + ", " + firstName
+                            + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+
+                    if (checkDuplicateName(userName)
+                            && !userName.equalsIgnoreCase(u.getUserName())) {
+                        UI.print("Name already exists");
+                        break;
+                    }
+
+                    u.setLastName(lastName);
+                    u.setFirstName(firstName);
+                    u.setMiddleInitial(middleInitial);
+                    u.setEmailAddress(emailAddress);
+                    u.setPassword(password);
+                    u.setAddress(address);
+                    u.setPostalCode(postalCode);
+                    u.setBirthDate(birthDate);
+                    u.setSex(sex);
+
+                    try {
+                        if (u instanceof Student) {
+                            Student s = (Student) u;
+                            s.setEnrollmentStatus(enrollmentStatus);
+                            s.setProgramCode(programCode);
+                        } else if (u instanceof Faculty) {
+                            Faculty f = (Faculty) u;
+                            f.setCollegeCode(collegeCode);
+                        } else if (u instanceof DepartmentHead) {
+                            DepartmentHead dh = (DepartmentHead) u;
+                            dh.setCollegeCode(collegeCode);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        UI.print(e.getMessage());
+                        break;
+                    }
+
+                    UI.print("User successfully edited");
+                    User.viewProfile(u.getUserID());
+                    submit = true;
+                    break;
+
+                case "X":
+                    UI.print("User edit cancelled");
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void deleteUser() {
+        String userID, choice;
+
+        UI.print("DELETE EXISTING USER");
+
+        do {
+            System.out.print("  Enter User ID > ");
+            userID = in.nextLine().trim();
+
+            if (!User.existUserID(userID))
+                UI.print("User does not exist");
+        } while (!User.existUserID(userID));
+
+        User u = User.getUser(userID);
+
+        if (u == null) {
+            UI.print("User not found");
+            return;
+        }
+
+        User.viewProfile(userID);
+
+        do {
+            System.out.print("  Confirm User Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            User.users.remove(u);
+            UI.print("User successfully deleted");
+        } else {
+            UI.print("User deletion cancelled");
+        }
+    }
+
+    public static void userManage(String text, String userID, String lastName,
+                                  String firstName, String middleInitial, String emailAddress,
+                                  String password, String address, int postalCode, String birthDate,
+                                  char sex, String input1, String input2) {
+
+        User u = User.getUser(userID);
+
+        if (u == null) {
+            UI.print("User not found");
+            return;
+        }
+
+        UI.header(text.toUpperCase() + ": USER INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [1]  USER ID          : %s", userID));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [2]  LAST NAME        : %s", lastName));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [3]  FIRST NAME       : %s", firstName));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [4]  MIDDLE INITIAL   : %s", middleInitial));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [5]  EMAIL ADDRESS    : %s", emailAddress));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [6]  PASSWORD         : %s", password));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [7]  ADDRESS          : %s", address));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [8]  POSTAL CODE      : %s", postalCode));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [9]  BIRTHDATE        : %s", birthDate));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [10] SEX              : %s", sex));
+
+        if (u instanceof Student) {
+            System.out.printf("│%-" + innerWidth + "s│%n",
+                    String.format(" [11] ENROLLMENT STATUS: %s", input1));
+            System.out.printf("│%-" + innerWidth + "s│%n",
+                    String.format(" [12] PROGRAM CODE     : %s", input2));
+        } else if (u instanceof Faculty) {
+            System.out.printf("│%-" + innerWidth + "s│%n",
+                    String.format(" [11] COLLEGE CODE     : %s", input2));
+        } else if (u instanceof DepartmentHead) {
+            System.out.printf("│%-" + innerWidth + "s│%n",
+                    String.format(" [11] COLLEGE CODE     : %s", input2));
+        }
+
+        UI.liner("");
+        UI.option();
+        UI.footer();
+    }
+
+    public static void userManage(String text, String userID, String lastName,
+                                  String firstName, String middleInitial, String emailAddress,
+                                  String password, String address, int postalCode, String birthDate,
+                                  char sex, String collegeCode) {
+
+        User u = User.getUser(userID);
+
+        if (u == null) {
+            UI.print("User not found");
+            return;
+        }
+
+        UI.header(text.toUpperCase() + ": USER INFORMATION");
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [1]  USER ID          : %s", userID));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [2]  LAST NAME        : %s", lastName));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [3]  FIRST NAME       : %s", firstName));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [4]  MIDDLE INITIAL   : %s", middleInitial));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [5]  EMAIL ADDRESS    : %s", emailAddress));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [6]  PASSWORD         : %s", password));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [7]  ADDRESS          : %s", address));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [8]  POSTAL CODE      : %s", postalCode));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [9]  BIRTHDATE        : %s", birthDate));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [10] SEX              : %s", sex));
+        System.out.printf("│%-" + innerWidth + "s│%n",
+                String.format(" [11] COLLEGE CODE     : %s", collegeCode));
+
+        UI.liner("");
+        UI.option();
+        UI.footer();
+    }
+
+    public static boolean isValidBirthDate(String birthDate) {
+        try {
+            java.time.format.DateTimeFormatter formatter =
+                    java.time.format.DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                            .withResolverStyle(
+                                    java.time.format.ResolverStyle.STRICT);
+
+            java.time.LocalDate date =
+                    java.time.LocalDate.parse(birthDate, formatter);
+
+            return !date.isAfter(java.time.LocalDate.now());
+        } catch (java.time.DateTimeException e) {
+            return false;
+        }
     }
 }

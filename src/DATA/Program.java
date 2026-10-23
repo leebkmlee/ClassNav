@@ -3,6 +3,7 @@ package DATA;
 
 import java.util.ArrayList;
 import UI.*;
+import static UI.UI.in;
 
 public class Program {
 
@@ -150,6 +151,300 @@ public class Program {
             }
         }
 
+        UI.footer();
+    }
+
+    public static void createProgram() {
+        String programCode = "", programDescription = "", collegeCode = "";
+        String choice;
+        boolean submit = false;
+
+        while (!submit) {
+            programManage("CREATE", programCode, programDescription, collegeCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1-3X/]"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-3X/]"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        programCode = in.nextLine().trim();
+
+                        if (programCode.isEmpty())
+                            UI.print("Program Code is required");
+                        else if (Program.existProgramCode(programCode))
+                            UI.print("Program Code already exists");
+
+                    } while (programCode.isEmpty()
+                            || Program.existProgramCode(programCode));
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Program Description > ");
+                        programDescription = in.nextLine().trim();
+
+                        if (programDescription.isEmpty())
+                            UI.print("Program Description is required");
+                        else if (programDescriptionExists(programDescription, null))
+                            UI.print("Program Description already exists");
+
+                    } while (programDescription.isEmpty()
+                            || programDescriptionExists(programDescription, null));
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter College Code > ");
+                        collegeCode = in.nextLine().trim();
+
+                        if (collegeCode.isEmpty())
+                            UI.print("College Code is required");
+                        else if (College.findCollege(collegeCode) != null)
+                            UI.print("College Code does not exist");
+
+                    } while (collegeCode.isEmpty()
+                            || College.findCollege(collegeCode) != null);
+                    break;
+
+                case "/":
+                    if (programCode.isEmpty() || programDescription.isEmpty()
+                            || collegeCode.isEmpty()) {
+                        UI.print("Details are incomplete");
+                        break;
+                    }
+
+                    try {
+                        Program p = new Program(
+                                programCode, programDescription, collegeCode);
+
+                        Program.programs.add(p);
+                        UI.print("Program successfully created");
+                        Program.displayProgram(p.getProgramID());
+                        submit = true;
+
+                    } catch (IllegalArgumentException e) {
+                        UI.print(e.getMessage());
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void editProgram() {
+        String input, choice;
+        boolean submit = false;
+
+        UI.print("EDIT EXISTING PROGRAM");
+
+        do {
+            System.out.print("  Enter Program Code > ");
+            input = in.nextLine().trim();
+
+            if (!Program.existProgramCode(input))
+                UI.print("Program does not exist");
+
+        } while (!Program.existProgramCode(input));
+
+        Program p = Program.findProgram(input);
+
+        if (p == null) {
+            UI.print("Program not found");
+            return;
+        }
+
+        String programCode = p.getProgramID();
+        String programDescription = p.getProgramDescription();
+        String collegeCode = p.getCollegeCode();
+
+        while (!submit) {
+            programManage("EDIT", programCode, programDescription, collegeCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1-3X/]"))
+                    UI.print("Invalid Choice");
+
+            } while (!choice.matches("[1-3X/]"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        input = in.nextLine().trim();
+
+                        if (input.isEmpty())
+                            UI.print("Program Code is required");
+                        else if (Program.existProgramCode(input)
+                                && !input.equalsIgnoreCase(p.getProgramID()))
+                            UI.print("Program Code already exists");
+
+                    } while (input.isEmpty()
+                            || (Program.existProgramCode(input)
+                            && !input.equalsIgnoreCase(p.getProgramID())));
+
+                    programCode = input;
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Program Description > ");
+                        input = in.nextLine().trim();
+
+                        if (input.isEmpty())
+                            UI.print("Program Description is required");
+                        else if (programDescriptionExists(input, p))
+                            UI.print("Program Description already exists");
+
+                    } while (input.isEmpty()
+                            || programDescriptionExists(input, p));
+
+                    programDescription = input;
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter College Code > ");
+                        input = in.nextLine().trim();
+
+                        if (input.isEmpty())
+                            UI.print("College Code is required");
+                        else if (College.findCollege(collegeCode) != null)
+                            UI.print("College Code does not exist");
+
+                    } while (input.isEmpty()
+                            || College.findCollege(collegeCode) != null);
+
+                    collegeCode = input;
+                    break;
+
+                case "/":
+                    if (programCode.isEmpty() || programDescription.isEmpty()
+                            || collegeCode.isEmpty()) {
+                        UI.print("Details are incomplete");
+                        break;
+                    }
+
+                    if (Program.existProgramCode(programCode)
+                            && !programCode.equalsIgnoreCase(p.getProgramID())) {
+                        UI.print("Program Code already exists");
+                        break;
+                    }
+
+                    if (programDescriptionExists(programDescription, p)) {
+                        UI.print("Program Description already exists");
+                        break;
+                    }
+
+                    if (College.findCollege(collegeCode) != null) {
+                        UI.print("College Code does not exist");
+                        break;
+                    }
+
+                    try {
+                        Program updated = new Program(
+                                programCode, programDescription, collegeCode);
+
+                        int index = Program.programs.indexOf(p);
+
+                        if (index != -1) {
+                            Program.programs.set(index, updated);
+                            UI.print("Program successfully edited");
+                            Program.displayProgram(updated.getProgramID());
+                            submit = true;
+                        } else {
+                            UI.print("Program could not be updated");
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        UI.print(e.getMessage());
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    private static boolean programDescriptionExists(
+            String description, Program excludedProgram) {
+
+        if (description == null || description.trim().isEmpty())
+            return false;
+
+        for (Program p : Program.programs) {
+            if (p != excludedProgram
+                    && description.trim().equalsIgnoreCase(
+                    p.getProgramDescription())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void deleteProgram() {
+        String input, choice;
+
+        UI.print("DELETE EXISTING PROGRAM");
+
+        do {
+            System.out.print("  Enter Program Code > ");
+            input = in.nextLine().trim();
+
+            if (!Program.existProgramCode(input))
+                UI.print("Program does not exist");
+
+        } while (!Program.existProgramCode(input));
+
+        Program p = Program.findProgram(input);
+
+        if (p == null) {
+            UI.print("Program not found");
+            return;
+        }
+
+        programManage("DELETE", p.getProgramID(),
+                p.getProgramDescription(), p.getCollegeCode());
+
+        do {
+            System.out.print("  Confirm Program Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            Program.programs.remove(p);
+            UI.print("Program successfully deleted");
+        }
+    }
+
+    private static void programManage(String text, String programCode,
+                                      String programDescription, String collegeCode) {
+
+        UI.header(text.toUpperCase() + ": PROGRAM INFORMATION");
+        UI.liner(" [1] PROGRAM CODE        : " + programCode);
+        UI.liner(" [2] PROGRAM DESCRIPTION : " + programDescription);
+        UI.liner(" [3] COLLEGE CODE        : " + collegeCode);
+        UI.liner("");
+        UI.option();
         UI.footer();
     }
 }

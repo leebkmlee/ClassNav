@@ -10,7 +10,7 @@ public class Login {
 
     static Scanner in = new Scanner(System.in);
 
-    public static void loginPassword() {
+    public static String logIn() {
 
         int maxAttempts = 3;
 
@@ -18,24 +18,23 @@ public class Login {
 
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
 
-            System.out.print("  Enter ID            : ");
+            System.out.print("  Enter ID > ");
             String userID = in.nextLine().trim();
 
             if (User.getUser(userID) == null) {
                 UI.print("ID does not exist. Try again.");
             } else {
-
-                System.out.print("  Enter Email Address : ");
+                System.out.print("  Enter Email Address > ");
                 String emailAddress = in.nextLine().trim();
 
-                System.out.print("  Enter Password      : ");
+                System.out.print("  Enter Password > ");
                 String password = in.nextLine();
 
                 if (User.verifyEmail(userID, emailAddress)
                         && User.verifyPassword(userID, password)) {
 
                     UI.print("LOGIN SUCCESSFUL! Welcome to ClassNav.");
-                    return;
+                    return userID;
                 }
 
                 UI.print("Incorrect Email or Password.");
@@ -53,6 +52,7 @@ public class Login {
         }
 
         UI.print("Ran out of attempts.");
-        System.out.println("Login unsuccessful.");
+
+        return null;
     }
 }

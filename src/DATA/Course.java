@@ -2,6 +2,7 @@ package DATA;
 
 import UI.*;
 import USER.*;
+import static UI.UI.in;
 
 import java.util.ArrayList;
 
@@ -332,5 +333,247 @@ public class Course {
         }
 
         UI.footer();
+    }
+
+    public static void createCourse() {
+        String courseCode = "", courseDescription = "", courseType = "", choice = "";
+        int creditUnits = -1; boolean submit = false;
+
+        while (!submit) {
+            courseManage("CREATE", courseCode, courseDescription, creditUnits, courseType);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+                if (!choice.matches("[1-4X]") && !choice.equals("/"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine().trim();
+
+                        if (courseCode.isEmpty())
+                            UI.print("Course Code cannot be empty");
+                        else if (Course.existCourseCode(courseCode))
+                            UI.print("Course Code already exists");
+                    } while (courseCode.isEmpty() || Course.existCourseCode(courseCode));
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Course Description > ");
+                        courseDescription = in.nextLine().trim();
+
+                        if (courseDescription.isEmpty())
+                            UI.print("Course Description cannot be empty");
+                        else if (Course.existCourseDesc(courseDescription))
+                            UI.print("Course Description already exists");
+                    } while (courseDescription.isEmpty() || Course.existCourseDesc(courseDescription));
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Credit Units > ");
+                        try {
+                            String input = in.nextLine().trim();
+                            creditUnits = Integer.parseInt(input);
+                            if (creditUnits != 2 && creditUnits != 3)
+                                UI.print("Invalid Credit Units");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Credit Units");
+                            creditUnits = -1;
+                        }
+                    } while (creditUnits != 2 && creditUnits != 3);
+                    break;
+
+                case "4":
+                    do {
+                        System.out.print("   Enter Course Type (GEN ED/MAJOR) > ");
+                        courseType = in.nextLine().trim().toUpperCase();
+
+                        if (!courseType.matches("GEN ED|MAJOR"))
+                            UI.print("Invalid Input");
+                    } while (!courseType.matches("GEN ED|MAJOR"));
+                    break;
+
+                case "/":
+                    if (courseCode.isEmpty() || courseDescription.isEmpty() ||
+                            creditUnits == -1 || courseType.isEmpty()) {
+                        UI.print("Details are incomplete");
+                    } else {
+                        Course.courses.add(new Course(courseCode, courseDescription, creditUnits, courseType));
+                        UI.print("Course successfully created");
+                        Course.displayCourse(courseCode);
+                        submit = true;
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void editCourse() {
+        String courseCode, courseDescription, courseType, choice = "", input;
+        int creditUnits; boolean submit = false;
+
+        UI.print("EDIT EXISTING COURSE");
+
+        do {
+            System.out.print("  Enter Course Code > ");
+            input = in.nextLine().trim();
+
+            if (input.isEmpty() || !Course.existCourseCode(input))
+                UI.print("Course does not exist");
+        } while (input.isEmpty() || !Course.existCourseCode(input));
+
+        Course c = Course.findCourse(input);
+
+        if (c == null) {
+            UI.print("Course not found");
+            return;
+        }
+
+        courseCode = Course.getCourseCode(c);
+        courseDescription = Course.getCourseDescription(c);
+        creditUnits = Course.getCreditUnits(c);
+        courseType = Course.getCourseType(c);
+
+        while (!submit) {
+            courseManage("EDIT", courseCode, courseDescription, creditUnits, courseType);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1-4X]") && !choice.equals("/"))
+                    UI.print("Invalid Input");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Course Code > ");
+                        courseCode = in.nextLine().trim();
+
+                        if (courseCode.isEmpty())
+                            UI.print("Course Code cannot be empty");
+                        else if (Course.existCourseCode(courseCode) &&
+                                !Course.getCourseCode(c).equalsIgnoreCase(courseCode))
+                            UI.print("Course Code already exists");
+                    } while (courseCode.isEmpty() ||
+                            (Course.existCourseCode(courseCode) &&
+                                    !Course.getCourseCode(c).equalsIgnoreCase(courseCode)));
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Course Description > ");
+                        courseDescription = in.nextLine().trim();
+
+                        if (courseDescription.isEmpty())
+                            UI.print("Course Description cannot be empty");
+                        else if (Course.existCourseDesc(courseDescription) &&
+                                !Course.getCourseDescription(c).equalsIgnoreCase(courseDescription))
+                            UI.print("Course Description already exists");
+                    } while (courseDescription.isEmpty() ||
+                            (Course.existCourseDesc(courseDescription) &&
+                                    !Course.getCourseDescription(c).equalsIgnoreCase(courseDescription)));
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Credit Units > ");
+                        try {
+                            input = in.nextLine().trim();
+                            creditUnits = Integer.parseInt(input);
+
+                            if (creditUnits != 2 && creditUnits != 3)
+                                UI.print("Invalid Credit Units");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Credit Units");
+                            creditUnits = -1;
+                        }
+                    } while (creditUnits != 2 && creditUnits != 3);
+                    break;
+
+                case "4":
+                    do {
+                        System.out.print("   Enter Course Type (GEN ED/MAJOR) > ");
+                        courseType = in.nextLine().trim().toUpperCase();
+
+                        if (!courseType.matches("GEN ED|MAJOR"))
+                            UI.print("Invalid Input");
+                    } while (!courseType.matches("GEN ED|MAJOR"));
+                    break;
+
+                case "/":
+                    c.setCourseCode(courseCode);
+                    c.setCourseDescription(courseDescription);
+                    c.setCreditUnits(creditUnits);
+                    c.setCourseType(courseType);
+
+                    UI.print("Course successfully edited");
+                    Course.displayCourse(Course.getCourseCode(c));
+                    submit = true;
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void deleteCourse() {
+        String input, choice;
+
+        UI.print("DELETE EXISTING COURSE");
+
+        do {
+            System.out.print("  Enter Course Code > ");
+            input = in.nextLine().trim();
+
+            if (input.isEmpty() || !Course.existCourseCode(input))
+                UI.print("Course does not exist");
+        } while (input.isEmpty() || !Course.existCourseCode(input));
+
+        Course c = Course.findCourse(input);
+
+        if (c == null) {
+            UI.print("Course not found");
+            return;
+        }
+
+        Course.displayCourse(c.getCourseCode());
+
+        do {
+            System.out.print("  Confirm Course Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            Course.courses.remove(c);
+            UI.print("Course successfully deleted");
+        }
+    }
+
+    private static void courseManage(String text, String courseCode, String courseDescription,
+                                     int creditUnits, String courseType) {
+        UI.header(text.toUpperCase() + ": COURSE INFORMATION");
+        UI.liner(String.format(" [1] COURSE CODE         : %s", courseCode));
+        UI.liner(String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription));
+        UI.liner(String.format(" [3] CREDIT UNITS        : %s", creditUnits == -1 ? "" : creditUnits));
+        UI.liner(String.format(" [4] COURSE TYPE         : %s", courseType));
+        UI.liner("");
+        UI.option();
     }
 }

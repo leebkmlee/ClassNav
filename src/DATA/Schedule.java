@@ -9,6 +9,8 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
 
+import static UI.UI.in;
+
 public class Schedule {
 
     private static int nextScheduleID = 1;
@@ -509,5 +511,256 @@ public class Schedule {
             UI.print(e.getMessage());
             return false;
         }
+    }
+
+
+    public static void createSchedule() {
+        String offeringID = "", day = "", startTime = "", endTime = "";
+        String effectiveFrom = "", effectiveTo = "", roomCode = "";
+        String choice;
+        boolean submit = false;
+
+        while (!submit) {
+            scheduleManage("EDIT", String.format("SCH%04d", (schedules.size() + 1)), offeringID, day,
+                    startTime, endTime, effectiveFrom, effectiveTo, roomCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1-7X/]"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-7X/]"));
+
+            switch (choice) {
+                case "1":
+                    CourseOffering.displayOfferings();
+                    System.out.print("   Enter Offering ID > ");
+                    offeringID = in.nextLine().trim();
+                    if (!CourseOffering.existOffering(offeringID)) {
+                        UI.print("Course offering does not exist");
+                        offeringID = "";
+                    }
+                    break;
+
+                case "2":
+                    System.out.print("   Enter Day > ");
+                    day = in.nextLine().trim();
+                    break;
+
+                case "3":
+                    System.out.print("   Enter Start Time (e.g. 8:30 AM) > ");
+                    startTime = in.nextLine().trim();
+                    break;
+
+                case "4":
+                    System.out.print("   Enter End Time (e.g. 10:00 AM) > ");
+                    endTime = in.nextLine().trim();
+                    break;
+
+                case "5":
+                    System.out.print("   Enter Effective From (MM/dd/yyyy) > ");
+                    effectiveFrom = in.nextLine().trim();
+                    break;
+
+                case "6":
+                    System.out.print("   Enter Effective To (MM/dd/yyyy) > ");
+                    effectiveTo = in.nextLine().trim();
+                    break;
+
+                case "7":
+                    System.out.print("   Enter Room Code > ");
+                    roomCode = in.nextLine().trim();
+
+                    if (Room.findRoom(roomCode) == null) {
+                        UI.print("Room does not exist");
+                        roomCode = "";
+                    }
+                    break;
+
+                case "/":
+                    if (offeringID.isEmpty() || day.isEmpty()
+                            || startTime.isEmpty() || endTime.isEmpty()
+                            || effectiveFrom.isEmpty() || effectiveTo.isEmpty()
+                            || roomCode.isEmpty()) {
+                        UI.print("Details are incomplete");
+                        break;
+                    }
+
+                    try {
+                        Schedule s = new Schedule(offeringID, day, startTime, endTime,
+                                effectiveFrom, effectiveTo, roomCode);
+
+                        schedules.add(s);
+                        UI.print("Schedule successfully created");
+                        Schedule.displaySchedule(s.getScheduleID());
+                        submit = true;
+
+                    } catch (IllegalArgumentException e) {
+                        UI.print(e.getMessage());
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+
+    public static void editSchedule() {
+        String input, choice;
+        boolean submit = false;
+
+        UI.print("EDIT EXISTING SCHEDULE");
+
+        Schedule s;
+
+        do {
+            System.out.print("  Enter Schedule ID > ");
+            input = in.nextLine().trim();
+
+            s = Schedule.findSchedule(input);
+
+            if (s == null)
+                UI.print("Schedule does not exist");
+        } while (s == null);
+
+        String offeringID = s.getOfferingID();
+        String day = s.getDay();
+        String startTime = s.getStartTime();
+        String endTime = s.getEndTime();
+        String effectiveFrom = s.getEffectiveFrom();
+        String effectiveTo = s.getEffectiveTo();
+        String roomCode = s.getRoomCode();
+
+        while (!submit) {
+            scheduleManage("EDIT", s.getScheduleID(), offeringID, day,
+                    startTime, endTime, effectiveFrom, effectiveTo, roomCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1-7X/]"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-7X/]"));
+
+            switch (choice) {
+                case "1":
+                    CourseOffering.displayOfferings();
+                    System.out.print("   Enter Offering ID > ");
+                    input = in.nextLine().trim();
+
+                    if (CourseOffering.existOffering(input))
+                        offeringID = input;
+                    else
+                        UI.print("Course offering does not exist");
+                    break;
+
+                case "2":
+                    System.out.print("   Enter Day > ");
+                    day = in.nextLine().trim();
+                    break;
+
+                case "3":
+                    System.out.print("   Enter Start Time > ");
+                    startTime = in.nextLine().trim();
+                    break;
+
+                case "4":
+                    System.out.print("   Enter End Time > ");
+                    endTime = in.nextLine().trim();
+                    break;
+
+                case "5":
+                    System.out.print("   Enter Effective From (MM/dd/yyyy) > ");
+                    effectiveFrom = in.nextLine().trim();
+                    break;
+
+                case "6":
+                    System.out.print("   Enter Effective To (MM/dd/yyyy) > ");
+                    effectiveTo = in.nextLine().trim();
+                    break;
+
+                case "7":
+                    System.out.print("   Enter Room Code > ");
+                    input = in.nextLine().trim();
+
+                    if (Room.findRoom(input) != null)
+                        roomCode = input;
+                    else
+                        UI.print("Room does not exist");
+                    break;
+
+                case "/":
+                    if (s.updateSchedule(offeringID, day, startTime, endTime,
+                            effectiveFrom, effectiveTo, roomCode)) {
+                        UI.print("Schedule successfully edited");
+                        Schedule.displaySchedule(s.getScheduleID());
+                        submit = true;
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+
+    public static void deleteSchedule() {
+        String input, choice;
+
+        UI.print("DELETE EXISTING SCHEDULE");
+
+        Schedule s;
+
+        do {
+            System.out.print("  Enter Schedule ID > ");
+            input = in.nextLine().trim();
+
+            s = Schedule.findSchedule(input);
+
+            if (s == null)
+                UI.print("Schedule does not exist");
+        } while (s == null);
+
+        scheduleManage("DELETE", s.getScheduleID(), s.getOfferingID(),
+                s.getDay(), s.getStartTime(), s.getEndTime(),
+                s.getEffectiveFrom(), s.getEffectiveTo(), s.getRoomCode());
+
+        do {
+            System.out.print("  Confirm Schedule Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            schedules.remove(s);
+            UI.print("Schedule successfully deleted");
+        }
+    }
+
+
+    private static void scheduleManage(String text, String scheduleID,
+                                       String offeringID, String day, String startTime, String endTime,
+                                       String effectiveFrom, String effectiveTo, String roomCode) {
+
+        UI.header(text.toUpperCase() + ": SCHEDULE INFORMATION");
+        UI.liner(" [1] OFFERING ID        : " + offeringID);
+        UI.liner(" [2] DAY                : " + day);
+        UI.liner(" [3] START TIME         : " + startTime);
+        UI.liner(" [4] END TIME           : " + endTime);
+        UI.liner(" [5] EFFECTIVE FROM     : " + effectiveFrom);
+        UI.liner(" [6] EFFECTIVE TO       : " + effectiveTo);
+        UI.liner(" [7] ROOM CODE          : " + roomCode);
+        UI.liner("");
+        UI.option();
+        UI.footer();
     }
 }

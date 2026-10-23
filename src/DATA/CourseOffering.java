@@ -7,6 +7,8 @@ import DATA.*;
 
 import java.util.ArrayList;
 
+import static UI.UI.in;
+
 public class CourseOffering {
 
     private static int nextOfferingID = 1;
@@ -359,6 +361,305 @@ public class CourseOffering {
         UI.liner(String.format("  TERM          : %d",
                 o.getTerm()));
 
+        UI.footer();
+    }
+
+    // MANAGE COURSE OFFERING
+
+    // CREATE COURSE OFFERING
+    public static void createCourseOffering() {
+        String sectionID = ""; String courseID = ""; String facultyID = "";
+        String academicYear = ""; String choice = "";
+        int term = -1; boolean submit = false;
+
+        while (!submit) {
+            courseOfferingManage("CREATE", "", sectionID, courseID,
+                    facultyID, academicYear, term);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim();
+                if (!choice.matches("[1-5X]") && !choice.equals("/"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-5X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Section ID > ");
+                        sectionID = in.nextLine().trim();
+                        if (sectionID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Section.findSection(sectionID) == null)
+                            UI.print("Section does not exist");
+                    } while (sectionID.isEmpty()
+                            || Section.findSection(sectionID) == null);
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Course ID > ");
+                        courseID = in.nextLine().trim();
+                        if (courseID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Course.findCourseByID(courseID) == null)
+                            UI.print("Course does not exist");
+                    } while (courseID.isEmpty()
+                            || Course.findCourseByID(courseID) == null);
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Faculty ID > ");
+                        facultyID = in.nextLine().trim();
+                        if (facultyID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Faculty.findFaculty(facultyID) == null)
+                            UI.print("Faculty does not exist");
+                    } while (facultyID.isEmpty()
+                            || Faculty.findFaculty(facultyID) == null);
+                    break;
+
+                case "4":
+                    do {
+                        System.out.print("   Enter Academic Year (e.g. 2026-2027) > ");
+                        academicYear = in.nextLine().trim();
+                        if (academicYear.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (academicYear.isEmpty());
+                    break;
+
+                case "5":
+                    do {
+                        System.out.print("   Enter Term (1-3) > ");
+                        try {
+                            String input = in.nextLine().trim();
+                            term = Integer.parseInt(input);
+                            if (!(term >= 1 && term <= 3))
+                                UI.print("Invalid Term");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Term");
+                            term = -1;
+                        }
+                    } while (!(term >= 1 && term <= 3));
+                    break;
+
+                case "/":
+                    if (sectionID.isEmpty() || courseID.isEmpty()
+                            || facultyID.isEmpty() || academicYear.isEmpty()
+                            || term == -1) {
+                        UI.print("Details are incomplete");
+                    } else if (addOffering(sectionID, courseID, facultyID,
+                            academicYear, term)) {
+                        CourseOffering o = offerings.get(offerings.size() - 1);
+                        UI.print("Course offering successfully created");
+                        displayOffering(o.getOfferingID());
+                        submit = true;
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    // EDIT COURSE OFFERING
+    public static void editCourseOffering() {
+        String input; String choice;
+        String sectionID; String courseID; String facultyID;
+        String academicYear; int term;
+        boolean submit = false;
+
+        UI.print("EDIT EXISTING COURSE OFFERING");
+
+        do {
+            System.out.print("  Enter Offering ID > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty())
+                UI.print("Invalid Input");
+            else if (findOffering(input) == null)
+                UI.print("Course offering does not exist");
+        } while (input.isEmpty() || findOffering(input) == null);
+
+        CourseOffering o = findOffering(input);
+        if (o == null) {
+            UI.print("Course offering not found");
+            return;
+        }
+
+        sectionID = o.getSectionID();
+        courseID = o.getCourseID();
+        facultyID = o.getFacultyID();
+        academicYear = o.getAcademicYear();
+        term = o.getTerm();
+
+        while (!submit) {
+            courseOfferingManage("EDIT", o.getOfferingID(), sectionID,
+                    courseID, facultyID, academicYear, term);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim();
+                if (!choice.matches("[1-5X]") && !choice.equals("/"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-5X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Section ID > ");
+                        sectionID = in.nextLine().trim();
+                        if (sectionID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Section.findSection(sectionID) == null)
+                            UI.print("Section does not exist");
+                    } while (sectionID.isEmpty()
+                            || Section.findSection(sectionID) == null);
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Course ID > ");
+                        courseID = in.nextLine().trim();
+                        if (courseID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Course.findCourseByID(courseID) == null)
+                            UI.print("Course does not exist");
+                    } while (courseID.isEmpty()
+                            || Course.findCourseByID(courseID) == null);
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Faculty ID > ");
+                        facultyID = in.nextLine().trim();
+                        if (facultyID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Faculty.findFaculty(facultyID) == null)
+                            UI.print("Faculty does not exist");
+                    } while (facultyID.isEmpty()
+                            || Faculty.findFaculty(facultyID) == null);
+                    break;
+
+                case "4":
+                    do {
+                        System.out.print("   Enter Academic Year > ");
+                        academicYear = in.nextLine().trim();
+                        if (academicYear.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (academicYear.isEmpty());
+                    break;
+
+                case "5":
+                    do {
+                        System.out.print("   Enter Term (1-3) > ");
+                        try {
+                            input = in.nextLine().trim();
+                            term = Integer.parseInt(input);
+                            if (!(term >= 1 && term <= 3))
+                                UI.print("Invalid Term");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Term");
+                            term = -1;
+                        }
+                    } while (!(term >= 1 && term <= 3));
+                    break;
+
+                case "/":
+                    if (sectionID.isEmpty() || courseID.isEmpty()
+                            || facultyID.isEmpty() || academicYear.isEmpty()
+                            || term == -1) {
+                        UI.print("Details are incomplete");
+                    } else {
+                        boolean duplicate = false;
+
+                        for (CourseOffering existing : offerings) {
+                            if (existing != o
+                                    && sectionID.equalsIgnoreCase(existing.getSectionID())
+                                    && courseID.equalsIgnoreCase(existing.getCourseID())
+                                    && academicYear.equalsIgnoreCase(existing.getAcademicYear())
+                                    && term == existing.getTerm()) {
+                                duplicate = true;
+                                break;
+                            }
+                        }
+
+                        if (duplicate) {
+                            UI.print("This course is already offered to this section for that academic year and term.");
+                        } else {
+                            o.sectionID = sectionID;
+                            o.courseID = courseID;
+                            o.facultyID = facultyID;
+                            o.academicYear = academicYear;
+                            o.term = term;
+
+                            UI.print("Course offering successfully edited");
+                            displayOffering(o.getOfferingID());
+                            submit = true;
+                        }
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    // DELETE COURSE OFFERING
+    public static void deleteCourseOffering() {
+        String input; String choice;
+
+        UI.print("DELETE EXISTING COURSE OFFERING");
+
+        do {
+            System.out.print("  Enter Offering ID > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty())
+                UI.print("Invalid Input");
+            else if (findOffering(input) == null)
+                UI.print("Course offering does not exist");
+        } while (input.isEmpty() || findOffering(input) == null);
+
+        CourseOffering o = findOffering(input);
+        if (o == null) {
+            UI.print("Course offering not found");
+            return;
+        }
+
+        displayOffering(o.getOfferingID());
+
+        do {
+            System.out.print("  Confirm Course Offering Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            offerings.remove(o);
+            UI.print("Course offering successfully deleted");
+        }
+    }
+
+    // COURSE OFFERING FORM
+    private static void courseOfferingManage(String text, String offeringID,
+                                             String sectionID, String courseID, String facultyID,
+                                             String academicYear, int term) {
+
+        UI.header(text.toUpperCase() + ": COURSE OFFERING INFORMATION");
+        if (!offeringID.isEmpty())
+            UI.liner(String.format(" OFFERING ID   : %s", offeringID));
+        UI.liner(String.format(" [1] SECTION ID    : %s", sectionID));
+        UI.liner(String.format(" [2] COURSE ID     : %s", courseID));
+        UI.liner(String.format(" [3] FACULTY ID    : %s", facultyID));
+        UI.liner(String.format(" [4] ACADEMIC YEAR : %s", academicYear));
+        UI.liner(String.format(" [5] TERM          : %s", term == -1 ? "" : term));
+        UI.liner("");
+        UI.option();
         UI.footer();
     }
 }

@@ -1,6 +1,7 @@
 package DATA;
 
 import UI.*;
+import static UI.UI.in;
 import java.util.ArrayList;
 
 public class Curriculum {
@@ -217,6 +218,279 @@ public class Curriculum {
             }
         }
 
+        UI.footer();
+    }
+
+    // MANAGE CURRICULUM
+
+    // CREATE CURRICULUM ENTRY
+    public static void createCurriculum() {
+        String programCode = ""; String courseID = "";
+        String curriculumYearLevel = ""; String choice = "";
+        int curriculumTerm = -1; boolean submit = false;
+
+        while (!submit) {
+            curriculumManage("CREATE", programCode, courseID,
+                    curriculumYearLevel, curriculumTerm);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim();
+                if (!choice.matches("[1-4X]") && !choice.equals("/"))
+                    UI.print("Invalid Choice");
+            } while (!choice.matches("[1-4X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Program Code > ");
+                        programCode = in.nextLine().trim();
+                        if (programCode.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Program.findProgram(programCode) == null)
+                            UI.print("Program does not exist");
+                    } while (programCode.isEmpty()
+                            || Program.findProgram(programCode) == null);
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Course ID > ");
+                        courseID = in.nextLine().trim();
+                        if (courseID.isEmpty())
+                            UI.print("Invalid Input");
+                        else if (Course.findCourseByID(courseID) == null)
+                            UI.print("Course does not exist");
+                        else if (findCurriculum(programCode, courseID) != null)
+                            UI.print("Course is already included in this program");
+                    } while (courseID.isEmpty()
+                            || Course.findCourseByID(courseID) == null
+                            || findCurriculum(programCode, courseID) != null);
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Year Level > ");
+                        curriculumYearLevel = in.nextLine().trim();
+                        if (curriculumYearLevel.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (curriculumYearLevel.isEmpty());
+                    break;
+
+                case "4":
+                    do {
+                        System.out.print("   Enter Curriculum Term (1-3) > ");
+                        try {
+                            String input = in.nextLine().trim();
+                            curriculumTerm = Integer.parseInt(input);
+                            if (!(curriculumTerm >= 1 && curriculumTerm <= 3))
+                                UI.print("Invalid Curriculum Term");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Curriculum Term");
+                            curriculumTerm = -1;
+                        }
+                    } while (!(curriculumTerm >= 1 && curriculumTerm <= 3));
+                    break;
+
+                case "/":
+                    if (programCode.isEmpty() || courseID.isEmpty()
+                            || curriculumYearLevel.isEmpty() || curriculumTerm == -1) {
+                        UI.print("Details are incomplete");
+                    } else if (addCurriculum(programCode, courseID,
+                            curriculumYearLevel, curriculumTerm)) {
+                        UI.print("Curriculum entry successfully created");
+                        submit = true;
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    // EDIT CURRICULUM ENTRY
+    public static void editCurriculum() {
+        String input; String choice;
+        String programCode; String courseID;
+        String curriculumYearLevel; int curriculumTerm;
+        boolean submit = false;
+
+        UI.print("EDIT EXISTING CURRICULUM ENTRY");
+
+        do {
+            System.out.print("  Enter Program Code > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty())
+                UI.print("Invalid Input");
+            else if (Program.findProgram(input) == null)
+                UI.print("Program does not exist");
+        } while (input.isEmpty() || Program.findProgram(input) == null);
+
+        programCode = input;
+
+        do {
+            System.out.print("  Enter Course ID > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty())
+                UI.print("Invalid Input");
+            else if (Course.findCourseByID(input) == null)
+                UI.print("Course does not exist");
+            else if (findCurriculum(programCode, input) == null)
+                UI.print("Curriculum entry does not exist");
+        } while (input.isEmpty() || Course.findCourseByID(input) == null
+                || findCurriculum(programCode, input) == null);
+
+        courseID = input;
+
+        Curriculum c = findCurriculum(programCode, courseID);
+        if (c == null) {
+            UI.print("Curriculum entry not found");
+            return;
+        }
+
+        curriculumYearLevel = c.getCurriculumYearLevel();
+        curriculumTerm = c.getCurriculumTerm();
+
+        while (!submit) {
+            curriculumManage("EDIT", programCode, courseID,
+                    curriculumYearLevel, curriculumTerm);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim();
+                if (!choice.matches("[3-4X]") && !choice.equals("/"))
+                    UI.print("Invalid Input");
+            } while (!choice.matches("[3-4X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "3":
+                    do {
+                        System.out.print("   Enter Year Level > ");
+                        curriculumYearLevel = in.nextLine().trim();
+                        if (curriculumYearLevel.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (curriculumYearLevel.isEmpty());
+                    break;
+
+                case "4":
+                    do {
+                        System.out.print("   Enter Curriculum Term (1-3) > ");
+                        try {
+                            input = in.nextLine().trim();
+                            curriculumTerm = Integer.parseInt(input);
+                            if (!(curriculumTerm >= 1 && curriculumTerm <= 3))
+                                UI.print("Invalid Curriculum Term");
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid Curriculum Term");
+                            curriculumTerm = -1;
+                        }
+                    } while (!(curriculumTerm >= 1 && curriculumTerm <= 3));
+                    break;
+
+                case "/":
+                    if (curriculumYearLevel.isEmpty() || curriculumTerm == -1) {
+                        UI.print("Details are incomplete");
+                    } else {
+                        c.curriculumYearLevel = curriculumYearLevel;
+                        c.curriculumTerm = curriculumTerm;
+                        UI.print("Curriculum entry successfully edited");
+                        submit = true;
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    // DELETE CURRICULUM ENTRY
+    public static void deleteCurriculum() {
+        String input; String choice; String programCode; String courseID;
+
+        UI.print("DELETE CURRICULUM ENTRY");
+
+        do {
+            System.out.print("  Enter Program Code > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty())
+                UI.print("Invalid Input");
+            else if (Program.findProgram(input) == null)
+                UI.print("Program does not exist");
+        } while (input.isEmpty() || Program.findProgram(input) == null);
+
+        programCode = input;
+
+        do {
+            System.out.print("  Enter Course ID > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty())
+                UI.print("Invalid Input");
+            else if (Course.findCourseByID(input) == null)
+                UI.print("Course does not exist");
+            else if (findCurriculum(programCode, input) == null)
+                UI.print("Curriculum entry does not exist");
+        } while (input.isEmpty() || Course.findCourseByID(input) == null
+                || findCurriculum(programCode, input) == null);
+
+        courseID = input;
+
+        Curriculum c = findCurriculum(programCode, courseID);
+        if (c == null) {
+            UI.print("Curriculum entry not found");
+            return;
+        }
+
+        curriculumManage("DELETE", programCode, courseID,
+                c.getCurriculumYearLevel(), c.getCurriculumTerm());
+
+        do {
+            System.out.print("  Confirm Curriculum Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            curriculums.remove(c);
+            UI.print("Curriculum entry successfully deleted");
+        }
+    }
+
+    // DISPLAY ALL CURRICULUM ENTRIES
+    public static void displayCurriculums() {
+        UI.header("ALL CURRICULUM ENTRIES");
+
+        if (curriculums.isEmpty()) {
+            UI.liner("  No curriculum entries found.");
+        } else {
+            for (Curriculum c : curriculums) {
+                UI.liner(String.format("  PROGRAM CODE : %s", c.getProgramCode()));
+                UI.liner(String.format("  COURSE ID    : %s", c.getCourseID()));
+                UI.liner(String.format("  YEAR LEVEL   : %s", c.getCurriculumYearLevel()));
+                UI.liner(String.format("  TERM         : %d", c.getCurriculumTerm()));
+                UI.separator();
+            }
+        }
+
+        UI.footer();
+    }
+
+    // CURRICULUM FORM
+    private static void curriculumManage(String text, String programCode,
+                                         String courseID, String curriculumYearLevel, int curriculumTerm) {
+
+        UI.header(text.toUpperCase() + ": CURRICULUM INFORMATION");
+        UI.liner(String.format(" [1] PROGRAM CODE : %s", programCode));
+        UI.liner(String.format(" [2] COURSE ID    : %s", courseID));
+        UI.liner(String.format(" [3] YEAR LEVEL   : %s", curriculumYearLevel));
+        UI.liner(String.format(" [4] TERM         : %s",
+                curriculumTerm == -1 ? "" : curriculumTerm));
+        UI.liner("");
+        UI.option();
         UI.footer();
     }
 }

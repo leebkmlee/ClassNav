@@ -3,6 +3,7 @@ package DATA;
 import java.util.ArrayList;
 import UI.*;
 import static DATA.Room.rooms;
+import static UI.UI.in;
 
 public class Building {
 
@@ -55,9 +56,23 @@ public class Building {
         return nextBuildingCode;
     }
 
+    // SETTERS
+
+    public void setBuildingName(String buildingName) {
+
+        if (buildingName == null || buildingName.trim().isEmpty())
+            throw new IllegalArgumentException("Building name is required");
+
+        Building existing = findBuildingByName(buildingName);
+
+        if (existing != null && existing != this)
+            throw new IllegalArgumentException("Building name already exists");
+
+        this.buildingName = buildingName.trim();
+    }
+
     // FIND METHODS
 
-    // Find by primary key: BUILDING.buildingCode
     public static Building findBuilding(String buildingCode) {
 
         if (buildingCode == null)
@@ -71,7 +86,6 @@ public class Building {
         return null;
     }
 
-    // Find by name; useful for preventing duplicate building names
     public static Building findBuildingByName(String buildingName) {
 
         if (buildingName == null)
@@ -147,11 +161,10 @@ public class Building {
         UI.header("BUILDING DETAILS");
         UI.liner(String.format("  BUILDING CODE  : %s", b.getBuildingCode()));
         UI.liner(String.format("  BUILDING NAME  : %s", b.getBuildingName()));
-
         UI.footer();
     }
 
-    // DISPLAY ROOMS BY BUILDING PRIMARY KEY
+    // DISPLAY ROOMS BY BUILDING CODE
 
     public static void displayRooms(String buildingCode) {
 
@@ -171,10 +184,9 @@ public class Building {
 
         for (Room r : rooms) {
 
-            // ROOM.buildingCode (FK) -> BUILDING.buildingCode (PK)
-            if (b.getBuildingCode().equalsIgnoreCase(Room.getBuildingCode(r))) {
+            if (b.getBuildingCode().equalsIgnoreCase(r.getBuildingCode())) {
 
-                int floor = Room.getFloorNumber(r);
+                int floor = r.getFloorNumber();
                 String floorText;
 
                 if (floor < 1) {
@@ -193,8 +205,8 @@ public class Building {
 
                 UI.liner(String.format(
                         "  %-10s %-35s %s",
-                        Room.getRoom(r),
-                        Room.getRoomDescription(r),
+                        r.getRoomCode(),
+                        r.getRoomDescription(),
                         floorText
                 ));
 
@@ -206,6 +218,189 @@ public class Building {
             UI.liner("  No rooms registered under this building.");
 
         UI.liner("  TOTAL ROOMS: " + count);
+        UI.footer();
+    }
+
+    public static void createBuilding() {
+        String buildingName = "";
+        String choice;
+        boolean submit = false;
+
+        while (!submit) {
+            buildingManage("CREATE", "AUTO-GENERATED", buildingName);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1X]") && !choice.equals("/"))
+                    UI.print("Invalid Choice");
+
+            } while (!choice.matches("[1X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Building Name > ");
+                        buildingName = in.nextLine().trim();
+
+                        if (buildingName.isEmpty())
+                            UI.print("Building name is required");
+                        else if (Building.findBuildingByName(buildingName) != null)
+                            UI.print("Building name already exists");
+
+                    } while (buildingName.isEmpty()
+                            || Building.findBuildingByName(buildingName) != null);
+                    break;
+
+                case "/":
+                    if (buildingName.isEmpty()) {
+                        UI.print("Building name is required");
+                        break;
+                    }
+
+                    if (Building.addBuilding(buildingName)) {
+                        UI.print("Building successfully created");
+
+                        Building b = Building.findBuildingByName(buildingName);
+                        Building.displayBuilding(b.getBuildingCode());
+
+                        submit = true;
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void editBuilding() {
+        String input;
+        String buildingName;
+        String choice;
+        boolean submit = false;
+
+        UI.print("EDIT EXISTING BUILDING");
+
+        do {
+            System.out.print("  Enter Building Code > ");
+            input = in.nextLine().trim();
+
+            if (Building.findBuilding(input) == null)
+                UI.print("Building does not exist");
+
+        } while (Building.findBuilding(input) == null);
+
+        Building b = Building.findBuilding(input);
+        buildingName = b.getBuildingName();
+
+        while (!submit) {
+            buildingManage("EDIT", b.getBuildingCode(), buildingName);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1X]") && !choice.equals("/"))
+                    UI.print("Invalid Choice");
+
+            } while (!choice.matches("[1X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Building Name > ");
+                        buildingName = in.nextLine().trim();
+
+                        if (buildingName.isEmpty()) {
+                            UI.print("Building name is required");
+                        } else {
+                            Building existing =
+                                    Building.findBuildingByName(buildingName);
+
+                            if (existing != null && existing != b)
+                                UI.print("Building name already exists");
+                        }
+
+                    } while (buildingName.isEmpty()
+                            || (Building.findBuildingByName(buildingName) != null
+                            && Building.findBuildingByName(buildingName) != b));
+                    break;
+
+                case "/":
+                    if (buildingName.isEmpty()) {
+                        UI.print("Building name is required");
+                        break;
+                    }
+
+                    Building existing = Building.findBuildingByName(buildingName);
+
+                    if (existing != null && existing != b) {
+                        UI.print("Building name already exists");
+                        break;
+                    }
+
+                    b.setBuildingName(buildingName);
+
+                    UI.print("Building successfully edited");
+                    Building.displayBuilding(b.getBuildingCode());
+
+                    submit = true;
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+    }
+
+    public static void deleteBuilding() {
+        String input;
+        String choice;
+
+        UI.print("DELETE EXISTING BUILDING");
+
+        do {
+            System.out.print("  Enter Building Code > ");
+            input = in.nextLine().trim();
+
+            if (Building.findBuilding(input) == null)
+                UI.print("Building does not exist");
+
+        } while (Building.findBuilding(input) == null);
+
+        Building b = Building.findBuilding(input);
+
+        Building.displayBuilding(b.getBuildingCode());
+
+        do {
+            System.out.print("  Confirm Building Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]"))
+                UI.print("Invalid Input");
+
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            Building.buildings.remove(b);
+            UI.print("Building successfully deleted");
+        }
+    }
+
+    private static void buildingManage(
+            String text, String buildingCode, String buildingName) {
+
+        UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
+
+        UI.liner(String.format("  [1] BUILDING NAME : %s", buildingName));
+        UI.liner(String.format("      BUILDING CODE : %s", buildingCode));
+        UI.liner("");
+
+        UI.option();
         UI.footer();
     }
 }

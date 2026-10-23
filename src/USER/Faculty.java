@@ -2,6 +2,7 @@
 package USER;
 
 import DATA.*;
+import FUNCTION.Request;
 import UI.*;
 
 import java.util.ArrayList;
@@ -44,6 +45,62 @@ public class Faculty extends User {
 
         this.collegeCode = college.getCollegeCode();
         this.employmentStatus = employmentStatus.trim();
+    }
+
+    @Override
+    public void menu() {
+        String select;
+        boolean valid;
+
+        do {
+            super.menu();
+            UI.liner(" [3] View Schedule");
+            UI.liner(" [4] Locate Room");
+            UI.liner(" [5] Request Make-Up Class");
+            UI.liner("");
+            UI.liner(" [X] Log out");
+            UI.footer();
+
+            System.out.print("  Select > ");
+            select = in.nextLine().trim().toUpperCase();
+
+            valid = select.matches("[1-6X]");
+
+            if (!valid)
+                UI.print("Invalid Choice");
+
+        } while (!valid);
+
+        switch (select) {
+            case "1":
+                User.viewProfile(getUserID());
+                menu();
+                break;
+
+            case "2":
+                User.updateProfile(getUserID());
+                menu();
+                break;
+
+            case "3":
+                Faculty.displaySchedules(getUserID());
+                menu();
+                break;
+
+            case "4":
+                Faculty.locateRoom();
+                menu();
+                break;
+
+            case "5":
+                Request.submitRequest(getUserID());
+                menu();
+                break;
+
+            case "X":
+                User.start();
+                break;
+        }
     }
 
     // FACULTY SETTER METHODS
@@ -202,7 +259,13 @@ public class Faculty extends User {
     }
 
     // LOCATE ROOM
-    public static void locateRoom(String roomCode) {
+    public static void locateRoom() {
+
+        String roomCode;
+
+        System.out.print("  Enter Room Code > ");
+        roomCode = in.nextLine().trim();
+
         Room room = Room.findRoom(roomCode);
 
         if (room == null) {

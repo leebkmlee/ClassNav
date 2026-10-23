@@ -46,7 +46,6 @@ public class Notification {
     }
 
     public static ArrayList<Notification> notifications = new ArrayList<>();
-
     static {
         notifications.add(new Notification("S001", "F001", "CC 106", "R101",
                 "Pimentel Hall", "M", "08:00 AM", "10:00 AM",

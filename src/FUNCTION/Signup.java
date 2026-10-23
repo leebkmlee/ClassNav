@@ -318,7 +318,6 @@ public class Signup {
                         UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
                         resetFields();
                         submit = true;
-
                     } catch (IllegalArgumentException e) {
                         UI.print("Unable to create account: " + e.getMessage());
                     }
