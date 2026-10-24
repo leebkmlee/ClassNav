@@ -5,35 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="Merge remote-tracking branch 'origin/Josh-Branch' into Revision&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;src/MAIN/Main.java&#10;#&#9;src/UI/UI.java&#10;#&#9;src/USER/Admin.java&#10;#&#9;src/USER/Faculty.java&#10;#&#9;src/USER/Student.java&#10;#&#9;src/USER/User.java">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Building.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/CancelledSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CancelledSchedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/College.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/College.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Course.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/CourseOffering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CourseOffering.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CourseRegistration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Curriculum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Curriculum.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/MakeUpSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/MakeUpSchedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Program.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Notification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Signup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Signup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MAIN/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MAIN/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/UI/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UI/UI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/DepartmentHead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/DepartmentHead.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
     </list>
     <list id="03568440-2b64-4424-b1eb-4dd91c54e752" name="Changes by ASUS TUF" comment="" />
-    <list id="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" name="Changes by josh" comment="">
-      <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
-    </list>
-    <list id="b973db62-df63-43bd-80b9-9eb620220f07" name="Changes by kylea" comment="Changes by kylea">
-      <change beforePath="$PROJECT_DIR$/src/DATA/Curriculum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Curriculum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/USER/DepartmentHead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/DepartmentHead.java" afterDir="false" />
-    </list>
+    <list id="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" name="Changes by josh" comment="" />
+    <list id="b973db62-df63-43bd-80b9-9eb620220f07" name="Changes by kylea" comment="Changes by kylea" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,82 +48,68 @@
     &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
   }
 }</component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/USER/User.java">
-      <ranges>
-        <range start1="106" end1="107" start2="106" end2="107" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="108" end1="110" start2="108" end2="110" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="142" end1="143" start2="142" end2="143" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="145" end1="146" start2="145" end2="146" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="239" end1="240" start2="239" end2="239" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="250" end1="251" start2="249" end2="249" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="257" end1="258" start2="255" end2="255" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="264" end1="265" start2="261" end2="261" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="275" end1="276" start2="271" end2="271" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="295" end1="298" start2="290" end2="302" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="323" end1="327" start2="327" end2="328" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="328" end1="403" start2="329" end2="333" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="404" end1="408" start2="334" end2="336" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="409" end1="433" start2="337" end2="342" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="449" end1="450" start2="358" end2="358" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="487" end1="488" start2="395" end2="395" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="506" end1="507" start2="413" end2="413" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="514" end1="515" start2="420" end2="420" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="526" end1="527" start2="431" end2="431" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="533" end1="534" start2="437" end2="437" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="540" end1="541" start2="443" end2="443" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="547" end1="548" start2="449" end2="449" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="554" end1="555" start2="455" end2="455" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="561" end1="562" start2="461" end2="461" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="571" end1="574" start2="470" end2="472" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="575" end1="578" start2="473" end2="476" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="579" end1="582" start2="477" end2="490" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="583" end1="586" start2="491" end2="499" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="587" end1="590" start2="500" end2="502" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="591" end1="592" start2="503" end2="504" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="852" end1="853" start2="764" end2="765" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="854" end1="855" start2="766" end2="767" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="907" end1="908" start2="819" end2="819" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="1156" end1="1157" start2="1067" end2="1068" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="1158" end1="1159" start2="1069" end2="1070" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="1211" end1="1212" start2="1122" end2="1122" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="1250" end1="1287" start2="1160" end2="1160" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="1318" end1="1319" start2="1191" end2="1191" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="1348" end1="1364" start2="1220" end2="1220" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/USER/DepartmentHead.java">
-      <ranges>
-        <range start1="145" end1="146" start2="145" end2="147" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="484" end1="485" start2="485" end2="486" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-        <range start1="609" end1="610" start2="610" end2="611" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="612" end1="613" start2="613" end2="614" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="615" end1="616" start2="616" end2="617" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/USER/Faculty.java">
-      <ranges>
-        <range start1="4" end1="4" start2="4" end2="5" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="6" end1="6" start2="7" end2="10" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="107" end1="108" start2="111" end2="113" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="122" end1="122" start2="127" end2="128" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="144" end1="144" start2="150" end2="151" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="151" end1="151" start2="158" end2="159" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="446" end1="446" start2="454" end2="551" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="447" end1="447" start2="552" end2="553" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/DATA/Curriculum.java">
-      <ranges>
-        <range start1="8" end1="10" start2="8" end2="10" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="14" end1="14" start2="14" end2="15" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-        <range start1="465" end1="466" start2="466" end2="467" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="512" end1="512" start2="513" end2="514" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-        <range start1="542" end1="543" start2="544" end2="545" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-        <range start1="544" end1="546" start2="546" end2="547" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-        <range start1="550" end1="550" start2="551" end2="573" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-      </ranges>
-    </file>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="2.7189291296450145E-69" />
+      <entry key="MS500" value="1.935885101489259E-14" />
+      <entry key="S2" value="3.7300950136855474E-4" />
+      <entry key="S5" value="0.042529272887554766" />
+      <entry key="S10" value="0.2062262662406386" />
+      <entry key="S30" value="0.5908102114386891" />
+      <entry key="S60" value="0.7686417965728177" />
+      <entry key="M2" value="0.8767221987296778" />
+      <entry key="M5" value="0.9497146388265073" />
+      <entry key="M10" value="1.0364503404726362" />
+      <entry key="M15" value="1.3145146252941315" />
+      <entry key="M30" value="3.606853228844119" />
+      <entry key="H1" value="10.257615867703958" />
+      <entry key="H2" value="19.61563189316045" />
+      <entry key="H4" value="27.81329878043603" />
+      <entry key="D1" value="37.61524537419412" />
+      <entry key="W1" value="39.649435061240766" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000000000017257" />
+      <entry key="S2" value="1.001146140799103" />
+      <entry key="S5" value="1.0666338932814299" />
+      <entry key="S10" value="1.258135416557724" />
+      <entry key="S30" value="1.6367210357480895" />
+      <entry key="S60" value="1.7979480156928078" />
+      <entry key="M2" value="1.8932793655607174" />
+      <entry key="M5" value="1.956384335567766" />
+      <entry key="M10" value="2.0221987461030446" />
+      <entry key="M15" value="2.2641472855366205" />
+      <entry key="M30" value="4.3373386765761275" />
+      <entry key="H1" value="10.024828228160588" />
+      <entry key="H2" value="17.70536642821496" />
+      <entry key="H4" value="24.304219335616107" />
+      <entry key="D1" value="32.110379296615235" />
+      <entry key="W1" value="33.72241534578868" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.5028618326964308E-4" />
+      <entry key="MS500" value="0.17194272726749485" />
+      <entry key="S2" value="0.6446040961054544" />
+      <entry key="S5" value="0.9195392884646911" />
+      <entry key="S10" value="1.3180042118981996" />
+      <entry key="S30" value="2.14280195416602" />
+      <entry key="S60" value="2.516248721898987" />
+      <entry key="M2" value="2.742436918651034" />
+      <entry key="M5" value="2.8944366884358774" />
+      <entry key="M10" value="3.052537773633674" />
+      <entry key="M15" value="3.57382045651906" />
+      <entry key="M30" value="7.938070477354309" />
+      <entry key="H1" value="20.274100301687888" />
+      <entry key="H2" value="37.313244899757365" />
+      <entry key="H4" value="52.112108552697435" />
+      <entry key="D1" value="69.7244222275422" />
+      <entry key="W1" value="73.37166977953352" />
+    </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -154,28 +122,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Mainn.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Revision&quot;,
-    &quot;java.suggest.annotation.dependency&quot;: &quot;false&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;discord-project&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Mainn.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "kakai-backup",
+    "java.suggest.annotation.dependency": "false",
+    "kotlin-language-version-configured": "true",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "onboarding.tips.debug.path": "C:/Users/josh/IdeaProjects/CLASSNAV/src/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "discord-project"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="MAIN.Main" />

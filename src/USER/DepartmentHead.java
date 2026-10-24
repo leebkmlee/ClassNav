@@ -530,7 +530,7 @@ public class DepartmentHead extends User {
                 MakeUpSchedule.editMakeUpSchedule();
                 break;
             case 3:
-                MakeUpSchedule.deleteMakeUpSchedule();
+                MakeUpSchedule.archiveMakeUpSchedule();
                 break;
             case 4:
                 MakeUpSchedule.displayMakeUpSchedules();

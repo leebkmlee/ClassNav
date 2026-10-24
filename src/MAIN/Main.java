@@ -1,14 +1,13 @@
 package MAIN;
 import DATA.*;
 import USER.*;
+import java.util.ArrayList;
+import DATA.Schedule;
 
 class Main {
     public static void main(String[] args) {
         User.initializeUsers();
-        DepartmentHead dh = DepartmentHead.findDepartmentHead("DH0001");
-        dh.menu();
-        College.archiveCollege();
-        CourseRegistration.createRegistration();
+        User.displayArchivedStudent();
 
     }
 }

@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
-public class UI {
+public abstract class UI {
 
     public static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("MM/dd/uuuu")

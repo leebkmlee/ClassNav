@@ -12,6 +12,7 @@ public class MakeUpSchedule {
     // ROOM REQUEST FIELDS
     private static int nextMakeUpID = 1;
     public static ArrayList<MakeUpSchedule> requests = new ArrayList<>();
+    public static ArrayList<MakeUpSchedule> archiveMakeUpClasses = new ArrayList<>();
 
     private String makeupID;
     private String facultyID;       // FK -> Faculty.facultyID
@@ -294,7 +295,7 @@ public class MakeUpSchedule {
                 editMakeUpSchedule();
                 break;
             case 3:
-                deleteMakeUpSchedule();
+                archiveMakeUpSchedule();
                 break;
             case 4:
                 displayMakeUpSchedules();
@@ -570,7 +571,7 @@ public class MakeUpSchedule {
             }
         }
     }
-    public static void deleteMakeUpSchedule() {
+    public static void archiveMakeUpSchedule() {
         String input, choice;
 
         UI.print("DELETE ROOM REQUEST");
@@ -603,6 +604,7 @@ public class MakeUpSchedule {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
+            archiveMakeUpClasses.add(request);
             MakeUpSchedule.requests.remove(request);
             UI.print("Room request successfully deleted");
         }
