@@ -112,22 +112,18 @@ public class Student extends User {
                 break;
         }
     }
-
     public void setEnrollmentStatus(String enrollmentStatus) {
         if (enrollmentStatus == null || enrollmentStatus.isBlank())
             throw new IllegalArgumentException("Enrollment status cannot be blank");
 
         this.enrollmentStatus = enrollmentStatus.trim();
     }
-
     public String getEnrollmentStatus() {
         return enrollmentStatus;
     }
-
     public String getProgramCode() {
         return programCode;
     }
-
     public void setProgramCode(String programCode) {
         Program p = Program.findProgram(programCode);
 
@@ -136,7 +132,6 @@ public class Student extends User {
 
         this.programCode = Program.getProgram(p);
     }
-
     public static Student findStudent(String userID) {
         if (userID == null) return null;
 
@@ -149,7 +144,6 @@ public class Student extends User {
 
         return null;
     }
-
     public static String getEnrollmentStatus(User u) {
         if (u == null) return null;
 
@@ -158,7 +152,6 @@ public class Student extends User {
 
         return s.getEnrollmentStatus();
     }
-
     public static String getProgramCode(User u) {
         if (u == null) return null;
 
@@ -214,7 +207,6 @@ public class Student extends User {
             }
         }
     }
-
     public static void locateRoom(String roomCode) {
         Room r = Room.findRoom(roomCode);
 
@@ -241,12 +233,11 @@ public class Student extends User {
         UI.liner("  ROOM LOCATION");
         UI.separator();
 
-        UI.liner(String.format("  BUILDING NAME     : %s", Building.getBuildingName(b)));
+        UI.liner(String.format("  BUILDING NAME     : %s", b.getBuildingName()));
         UI.liner(String.format("  FLOOR NUMBER      : %s", Room.getFloorText(r.getFloorNumber())));
 
         UI.footer();
     }
-
     private static boolean isValidDay(String day) {
         if (day == null) return false;
 
@@ -257,7 +248,6 @@ public class Student extends User {
 
         return false;
     }
-
     private static String normalizeDay(String day) {
         if (day == null) return null;
 
@@ -268,7 +258,6 @@ public class Student extends User {
 
         return null;
     }
-
     private static boolean isValidTimeRange(String startTime, String endTime) {
         try {
             if (startTime == null || endTime == null
@@ -283,7 +272,6 @@ public class Student extends User {
             return false;
         }
     }
-
     private static boolean isScheduleActiveToday(Schedule schedule) {
         if (schedule == null
                 || schedule.getEffectiveFrom() == null
@@ -305,7 +293,6 @@ public class Student extends User {
             return false;
         }
     }
-
     public static void displaySchedules(String studentID) {
         Student st = Student.findStudent(studentID);
 
@@ -374,7 +361,7 @@ public class Student extends User {
                 System.out.printf("│%-" + innerWidth + "s│%n",
                         String.format("  BUILDING NAME : %s",
                                 b == null ? "Building not found"
-                                        : Building.getBuildingName(b)));
+                                        : b.getBuildingName()));
 
                 UI.separator();
             }
@@ -388,7 +375,6 @@ public class Student extends User {
     }
 
     // VIEW AVAILABLE ROOMS FORM
-
     public static void viewAvailableRooms() {
 
         LocalDate today = LocalDate.now();
@@ -432,7 +418,6 @@ public class Student extends User {
 
         if (!available) return;
     }
-
     public static void viewAvailableRooms(String day, String startTime, String endTime) {
         if (!isValidDay(day) || !isValidTimeRange(startTime, endTime)) {
             UI.print("Invalid day or time range");
@@ -479,7 +464,7 @@ public class Student extends User {
                 System.out.printf("│%-" + innerWidth + "s│%n",
                         String.format("  BUILDING NAME : %s",
                                 building == null ? "Building not found"
-                                        : Building.getBuildingName(building)));
+                                        : building.getBuildingName()));
 
                 UI.separator();
             }
@@ -491,9 +476,7 @@ public class Student extends User {
 
         UI.footer();
     }
-
     // INFORM FACULTY FORM
-
     public void informFaculty() {
         String roomCode = "", day = "", startTime = "", endTime = "", choice;
         boolean submit = false;
@@ -571,7 +554,7 @@ public class Student extends User {
 
                     informFaculty(
                             getUserID(),
-                            Building.getBuildingName(building),
+                            building.getBuildingName(),
                             roomCode,
                             day,
                             startTime,
@@ -586,7 +569,6 @@ public class Student extends User {
             }
         }
     }
-
     public static void informFaculty(String studentID, String buildingName,
                                      String roomCode, String day,
                                      String startTime, String endTime) {

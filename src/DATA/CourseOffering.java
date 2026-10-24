@@ -23,7 +23,28 @@ public class CourseOffering {
     public static ArrayList<CourseOffering> offerings = new ArrayList<>();
 
     // COURSE OFFERING CONSTRUCTOR
-
+    static {
+        offerings.add(new CourseOffering("SEC001", "IT101", "F0001", "2025-2026", 1));
+        offerings.add(new CourseOffering("SEC001", "GE101", "F0002", "2025-2026", 1));
+        offerings.add(new CourseOffering("SEC001", "PE101", "F0003", "2025-2026", 1));
+        offerings.add(new CourseOffering("SEC002", "IT102", "F0004", "2024-2025", 2));
+        offerings.add(new CourseOffering("SEC002", "GE103", "F0007", "2024-2025", 2));
+        offerings.add(new CourseOffering("SEC003", "IT103", "F0001", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC003", "GE101", "F0002", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC004", "IT104", "F0003", "2025-2026", 2));
+        offerings.add(new CourseOffering("SEC004", "GE104", "F0004", "2025-2026", 2));
+        offerings.add(new CourseOffering("SEC005", "IS102", "F0007", "2024-2025", 1));
+        offerings.add(new CourseOffering("SEC005", "GE102", "F0002", "2024-2025", 1));
+        offerings.add(new CourseOffering("SEC006", "IS101", "F0001", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC006", "GE106", "F0002", "2026-2027", 2));
+        offerings.add(new CourseOffering("SEC007", "BL101", "F0003", "2025-2026", 1));
+        offerings.add(new CourseOffering("SEC008", "CR101", "F0004", "2024-2025", 1));
+        offerings.add(new CourseOffering("SEC009", "TM101", "F0007", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC010", "HM101", "F0007", "2025-2026", 1));
+        offerings.add(new CourseOffering("SEC011", "NS101", "F0010", "2024-2025", 1));
+        offerings.add(new CourseOffering("SEC012", "CE101", "F0011", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC013", "BIO101", "F0013", "2025-2026", 1));
+    }
     public CourseOffering(String sectionID, String courseCode, String facultyID,
                           String academicYear, int term) {
 

@@ -21,6 +21,28 @@ public class CourseRegistration {
     public static ArrayList<CourseRegistration> registrations = new ArrayList<>();
 
     // COURSE REGISTRATION CONSTRUCTOR
+    static {
+        registrations.add(new CourseRegistration("S0001", "COF001"));
+        registrations.add(new CourseRegistration("S0001", "COF002"));
+        registrations.add(new CourseRegistration("S0001", "COF003"));
+        registrations.add(new CourseRegistration("S0004", "COF004"));
+        registrations.add(new CourseRegistration("S0005", "COF005"));
+        registrations.add(new CourseRegistration("S0006", "COF006"));
+        registrations.add(new CourseRegistration("S0007", "COF007"));
+        registrations.add(new CourseRegistration("S0008", "COF008"));
+        registrations.add(new CourseRegistration("S0009", "COF009"));
+        registrations.add(new CourseRegistration("S0010", "COF010"));
+        registrations.add(new CourseRegistration("S0011", "COF011"));
+        registrations.add(new CourseRegistration("S0012", "COF012"));
+        registrations.add(new CourseRegistration("S0013", "COF013"));
+        registrations.add(new CourseRegistration("S0014", "COF014"));
+        registrations.add(new CourseRegistration("S0015", "COF015"));
+        registrations.add(new CourseRegistration("S0002", "COF001"));
+        registrations.add(new CourseRegistration("S0003", "COF002"));
+        registrations.add(new CourseRegistration("S0004", "COF003"));
+        registrations.add(new CourseRegistration("S0005", "COF004"));
+        registrations.add(new CourseRegistration("S0006", "COF005"));
+    }
 
     public CourseRegistration(String studentID, String offeringID) {
 

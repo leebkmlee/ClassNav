@@ -100,91 +100,141 @@ public class User {
         if (!users.isEmpty())
             return;
 
-        users.add(new Student("Sabulao", "Josh", "P",
-                "S0001@bulsu.edu.ph", "Student001!", "CSJDM, Bulacan", 3023,
-                "06/03/2007", 'M', "R", "BSIT"));
-        users.add(new Student("Rural", "Elijah", "R",
-                "S0002@bulsu.edu.ph", "Student002!", "Malolos, Bulacan", 3000,
-                "04/20/2006", 'M', "R", "BSIT"));
-        users.add(new Student("Caparas", "Kyle", "A",
-                "S0003@bulsu.edu.ph", "Student003!", "Meycauayan, Bulacan", 3020,
-                "08/14/2005", 'M', "R", "BSIT"));
-        users.add(new Student("Banot", "Josh", "R",
-                "S0004@bulsu.edu.ph", "Student004!", "Bocaue, Bulacan", 3018,
-                "11/09/2006", 'M', "IR", "BSIT"));
-        users.add(new Student("Reyes", "Andrea", "M",
-                "S0005@bulsu.edu.ph", "Student005!", "Guiguinto, Bulacan", 3015,
-                "01/12/2005", 'F', "R", "BSIT"));
-        users.add(new Student("Santos", "Miguel", "L",
-                "S0006@bulsu.edu.ph", "Student006!", "Plaridel, Bulacan", 3004,
-                "03/22/2004", 'M', "R", "BSIT"));
-        users.add(new Student("Cruz", "Bianca", "T",
-                "S0007@bulsu.edu.ph", "Student007!", "Baliwag, Bulacan", 3006,
-                "07/30/2006", 'F', "R", "BSIT"));
-        users.add(new Student("Garcia", "Nathan", "J",
-                "S0008@bulsu.edu.ph", "Student008!", "Paombong, Bulacan", 3001,
-                "09/18/2005", 'M', "R", "BSIT"));
-        users.add(new Student("Mendoza", "Sofia", "C",
-                "S0009@bulsu.edu.ph", "Student009!", "Calumpit, Bulacan", 3003,
-                "12/05/2004", 'F', "IR", "BSIT"));
-        users.add(new Student("Flores", "Daniel", "B",
-                "S0010@bulsu.edu.ph", "Student010!", "Hagonoy, Bulacan", 3002,
-                "02/17/2005", 'M', "R", "BSIT"));
-        users.add(new Student("Torres", "Nicole", "D",
-                "S0011@bulsu.edu.ph", "Student011!", "Malolos, Bulacan", 3000,
-                "05/11/2006", 'F', "R", "BSIT"));
-        users.add(new Student("Villanueva", "Gabriel", "S",
-                "S0012@bulsu.edu.ph", "Student012!", "San Rafael, Bulacan", 3008,
-                "10/23/2004", 'M', "R", "BSIT"));
-        users.add(new Student("Aquino", "Patricia", "E",
-                "S0013@bulsu.edu.ph", "Student013!", "Angat, Bulacan", 3012,
-                "06/19/2005", 'F', "R", "BSIT"));
-        users.add(new Student("Castillo", "Adrian", "F",
-                "S0014@bulsu.edu.ph", "Student014!", "Bustos, Bulacan", 3007,
-                "03/08/2006", 'M', "R", "BSIT"));
-        users.add(new Student("Domingo", "Jasmine", "K",
-                "S0015@bulsu.edu.ph", "Student015!", "Pulilan, Bulacan", 3005,
-                "08/27/2004", 'F', "R", "BSIT"));
-        users.add(new Student("Dela Cruz", "Marco", "R",
-                "S0016@bulsu.edu.ph", "Student016!", "Marilao, Bulacan", 3019,
-                "01/16/2005", 'M', "IR", "BSIT"));
-        users.add(new Student("Navarro", "Angela", "V",
-                "S0017@bulsu.edu.ph", "Student017!", "Obando, Bulacan", 3021,
-                "04/02/2006", 'F', "R", "BSIT"));
-        users.add(new Student("Pascual", "Enzo", "M",
-                "S0018@bulsu.edu.ph", "Student018!", "Balagtas, Bulacan", 3016,
-                "07/07/2005", 'M', "R", "BSIT"));
+        users.add(new Student("Alvarez", "Ariana", "A",
+                "S0001@bulsu.edu.ph", "Student001!", "Street one, Balibago, Angeles City, Pampanga", 2000,
+                "01/01/2003", 'M', "R", "BSIT"));
+        users.add(new Student("Bernardo", "Beatriz", "B",
+                "S0002@bulsu.edu.ph", "Student002!", "Street two, Dolores, San Fernando, Pampanga", 2001,
+                "02/02/2004", 'F', "IR", "BSIS"));
+        users.add(new Student("Castro", "Carlos", "C",
+                "S0003@bulsu.edu.ph", "Student003!", "Street three, Sampaloc, Apalit, Pampanga", 2002,
+                "03/03/2005", 'M', "LOA", "BLIS"));
+        users.add(new Student("David", "Daphne", "D",
+                "S0004@bulsu.edu.ph", "Student004!", "Street four, Dau, Mabalacat, Pampanga", 2003,
+                "04/04/2006", 'F', "R", "BSCrim"));
+        users.add(new Student("Espino", "Emmanuel", "E",
+                "S0005@bulsu.edu.ph", "Student005!", "Street five, Poblacion, Baliwag, Bulacan", 2004,
+                "05/05/2007", 'M', "IR", "BSTM"));
+        users.add(new Student("Francisco", "Faith", "F",
+                "S0006@bulsu.edu.ph", "Student006!", "Street six, Sto. Rosario, Malolos, Bulacan", 2005,
+                "06/06/2003", 'F', "LOA", "BSHM"));
+        users.add(new Student("Gonzales", "Gian", "G",
+                "S0007@bulsu.edu.ph", "Student007!", "Street seven, Tabang, Guiguinto, Bulacan", 2006,
+                "07/07/2004", 'M', "R", "BSN"));
+        users.add(new Student("Hernandez", "Hannah", "H",
+                "S0008@bulsu.edu.ph", "Student008!", "Street eight, Malhacan, Meycauyan, Bulacan", 2007,
+                "08/08/2005", 'F', "IR", "BSIT"));
+        users.add(new Student("Ignacio", "Ivan", "I",
+                "S0009@bulsu.edu.ph", "Student009!", "Street nine, Turo, Bocaue, Bulacan", 2008,
+                "09/09/2006", 'M', "LOA", "BSCE"));
+        users.add(new Student("Jimenez", "Julia", "J",
+                "S0010@bulsu.edu.ph", "Student010!", "Street ten, Poblacion, Plaridel, Bulacan", 2009,
+                "10/10/2007", 'F', "R", "BSIT"));
+        users.add(new Student("Luna", "Kenzo", "K",
+                "S0011@bulsu.edu.ph", "Student011!", "Street eleven, Sta. Cruz, Pulilan, Bulacan", 2010,
+                "11/11/2003", 'M', "IR", "BSIT"));
+        users.add(new Student("Morales", "Lara", "L",
+                "S0012@bulsu.edu.ph", "Student012!", "Street twelve, Loma de Gato, Marilao, Bulacan", 2011,
+                "12/12/2004", 'F', "LOA", "BSElecEng"));
+        users.add(new Student("Nicolas", "Mateo", "M",
+                "S0013@bulsu.edu.ph", "Student013!", "Street thirteen, Binwangan, Obando, Bulacan", 2012,
+                "01/13/2005", 'M', "R", "BSPsych"));
+        users.add(new Student("Ocampo", "Nina", "N",
+                "S0014@bulsu.edu.ph", "Student014!", "Street fourteen, Calizon, Calumpit, Bulacan", 2013,
+                "02/14/2006", 'F', "IR", "BSBio"));
+        users.add(new Student("Pineda", "Oscar", "O",
+                "S0015@bulsu.edu.ph", "Student015!", "Street fifteen, Poblacion, Bustos, Bulacan", 2014,
+                "03/15/2007", 'M', "LOA", "BSIT"));
 
-        users.add(new Faculty("Kim", "Elijah", "",
-                "F0001@bulsu.edu.ph", "Faculty001!", "Malolos, Bulacan", 3000,
-                "04/20/1988", 'M', "CICT", "ACTIVE"));
-        users.add(new Faculty("Ortega", "Maria", "L",
-                "F0002@bulsu.edu.ph", "Faculty002!", "Guiguinto, Bulacan", 3015,
-                "02/14/1985", 'F', "CICT", "ACTIVE"));
-        users.add(new Faculty("Dizon", "Paolo", "R",
-                "F0003@bulsu.edu.ph", "Faculty003!", "Bocaue, Bulacan", 3018,
-                "09/03/1982", 'M', "CICT", "ACTIVE"));
-        users.add(new Faculty("Santiago", "Leah", "M",
-                "F0004@bulsu.edu.ph", "Faculty004!", "Meycauayan, Bulacan", 3020,
-                "12/19/1987", 'F', "CICT", "ACTIVE"));
-        users.add(new Faculty("Bautista", "Ramon", "C",
-                "F0005@bulsu.edu.ph", "Faculty005!", "Plaridel, Bulacan", 3004,
-                "05/25/1980", 'M', "CICT", "ACTIVE"));
-        users.add(new Faculty("Lopez", "Catherine", "A",
-                "F0006@bulsu.edu.ph", "Faculty006!", "Baliwag, Bulacan", 3006,
-                "11/30/1984", 'F', "CICT", "ACTIVE"));
 
-        users.add(new DepartmentHead("Maangas", "Andrei", "P",
-                "DH0001@bulsu.edu.ph", "Head001!", "Guiguinto, Bulacan", 3015,
-                "09/17/1987", 'M', "CICT"));
+        users.add(new Faculty("Betong", "Maam", "A",
+                "F0001@bulsu.edu.ph", "Faculty001!", "McArthur Highway, Bulihan, Malolos, Bulacan", 3000,
+                "01/01/2000", 'F', "CICT", "ACTIVE"));
+        users.add(new Faculty("Lanie", "Maam", "B",
+                "F0002@bulsu.edu.ph", "Faculty002!", "Calumpit–Apalit Road, Poblacion, Calumpit, Bulacan", 3017,
+                "02/17/2000", 'F', "CICT", "ACTIVE"));
+        users.add(new Faculty("Ivy", "Maam", "C",
+                "F0003@bulsu.edu.ph", "Faculty003!", "Plaridel Bypass Road, Lumang Bayan, Plaridel, Bulacan", 3070,
+                "04/24/2000", 'F', "CICT", "ACTIVE"));
+        users.add(new Faculty("Bautista", "Ramon", "E",
+                "F0004@bulsu.edu.ph", "Faculty004!", "MacArthur Highway, Turo, Bocaue, Bulacan", 3004,
+                "05/05/1982", 'M', "CICT", "ACTIVE"));
+        users.add(new Faculty("Santiago", "Leah", "D",
+                "F0005@bulsu.edu.ph", "Faculty005!", "McArthur Highway, Malhacan, Meycauayan, Bulacan", 3003,
+                "04/04/1981", 'F', "CICT", "INACTIVE"));
+        users.add(new Faculty("Clemente", "Sir", "E",
+                "F0006@bulsu.edu.ph", "Faculty006!", "Paseo del Congreso Street, San Agustin, Malolos, Bulacan", 3000,
+                "05/12/2004", 'M', "CSER", "ACTIVE"));
+        users.add(new Faculty("Ortega", "Maria", "B",
+                "F0007@bulsu.edu.ph", "Faculty007!", "Cagayan Valley Road, Poblacion, Malolos, Bulacan", 3001,
+                "02/02/1979", 'F', "CICT", "ACTIVE"));
+        users.add(new Faculty("Dizon", "Paolo", "C",
+                "F0008@bulsu.edu.ph", "Faculty008!", "MacArthur Highway, Tabang, Guiguinto, Bulacan", 3002,
+                "03/03/1980", 'M', "CICT", "INACTIVE"));
+        users.add(new Faculty("Lopez", "Catherine", "F",
+                "F0009@bulsu.edu.ph", "Faculty009!", "Plaridel–Baliwag Road, Poblacion, Plaridel, Bulacan", 3005,
+                "06/06/1983", 'F', "CICT", "INACTIVE"));
+        users.add(new Faculty("Alcantara", "Noel", "G",
+                "F0010@bulsu.edu.ph", "Faculty010!", "Pulilan Regional Road, Poblacion, Pulilan, Bulacan", 3006,
+                "07/07/1984", 'M', "COE", "ACTIVE"));
+        users.add(new Faculty("Barrera", "Therese", "H",
+                "F0011@bulsu.edu.ph", "Faculty011!", "MacArthur Highway, Loma de Gato, Marilao, Bulacan", 3007,
+                "08/08/1985", 'F', "COE", "ACTIVE"));
+        users.add(new Faculty("Cabrera", "Marco", "I",
+                "F0012@bulsu.edu.ph", "Faculty012!", "Obando–Paco Road, Paliwas, Obando, Bulacan", 3008,
+                "09/09/1986", 'M', "CON", "INACTIVE"));
+        users.add(new Faculty("Delos Santos", "Isabel", "J",
+                "F0013@bulsu.edu.ph", "Faculty013!", "Calumpit–Apalit Road, Poblacion, Calumpit, Bulacan", 3009,
+                "10/10/1987", 'F', "CAFA", "ACTIVE"));
+        users.add(new Faculty("Estrada", "Rafael", "K",
+                "F0014@bulsu.edu.ph", "Faculty014!", "Bustos–Pandi Road, Poblacion, Bustos, Bulacan", 3010,
+                "11/11/1988", 'M', "CBEA", "ACTIVE"));
+        users.add(new Faculty("Fernandez", "Joy", "L",
+                "F0015@bulsu.edu.ph", "Faculty015!", "MacArthur Highway, Balibago, Angeles City, Pampanga", 3011,
+                "12/12/1989", 'F', "CICT", "INACTIVE"));
 
-        users.add(new DepartmentHead("Mercado", "Rina", "S",
-                "DH0002@bulsu.edu.ph", "Head002!", "Malolos, Bulacan", 3000,
-                "03/11/1990", 'F', "CICT"));
-
-        users.add(new DepartmentHead("Manalo", "Victor", "D",
-                "DH0003@bulsu.edu.ph", "Head003!", "Bustos, Bulacan", 3007,
-                "07/29/1986", 'M', "COE"));
+        users.add(new DepartmentHead("Maangas", "Andrei", "A",
+                "DH0001@bulsu.edu.ph", "Head001!", "McArthur Highway, Malhacan, Meycauayan, Bulacan", 3000,
+                "01/01/1970", 'M', "CAFA"));
+        users.add(new DepartmentHead("Mercado", "Rina", "",
+                "DH0002@bulsu.edu.ph", "Head002!", "Plaridel Bypass Road, Turo, Bocaue, Bulacan", 3001,
+                "02/02/1971", 'F', "CAL"));
+        users.add(new DepartmentHead("Manalo", "Victor", "C",
+                "DH0003@bulsu.edu.ph", "Head003!", "Malhacan Road, Poblacion, Plaridel, Bulacan", 3002,
+                "03/03/1972", 'M', "CBEA"));
+        users.add(new DepartmentHead("Aquino", "Paula", "D",
+                "DH0004@bulsu.edu.ph", "Head004!", "Crossing Street, Sta. Cruz, Pulilan, Bulacan", 3003,
+                "04/04/1973", 'F', "CCJE"));
+        users.add(new DepartmentHead("Bautista", "Renato", "E",
+                "DH0005@bulsu.edu.ph", "Head005!", "Provincial Road, Loma de Gato, Marilao, Bulacan", 3004,
+                "05/05/1974", 'M', "CHTM"));
+        users.add(new DepartmentHead("Cortez", "Celina", "F",
+                "DH0006@bulsu.edu.ph", "Head006!", "Capitol View Park, Binwangan, Obando, Bulacan", 3005,
+                "06/06/1975", 'F', "CICT"));
+        users.add(new DepartmentHead("Dominguez", "Dante", "G",
+                "DH0007@bulsu.edu.ph", "Head007!", "M. Villarica Road, Calizon, Calumpit, Bulacan", 3006,
+                "07/07/1976", 'M', "CIT"));
+        users.add(new DepartmentHead("Enriquez", "Erika", "",
+                "DH0008@bulsu.edu.ph", "Head008!", "Gov. Fortunato Halili Avenue, Poblacion, Bustos, Bulacan", 3007,
+                "08/08/1977", 'F', "CLaw"));
+        users.add(new DepartmentHead("Flores", "Felix", "I",
+                "DH0009@bulsu.edu.ph", "Head009!", "Igulot Road, Balibago, Angeles City, Pampanga", 3008,
+                "09/09/1978", 'M', "CON"));
+        users.add(new DepartmentHead("Gomez", "Grace", "J",
+                "DH0010@bulsu.edu.ph", "Head010!", "San Jose Road, Dolores, San Fernando, Pampanga", 3009,
+                "10/10/1979", 'F', "COE"));
+        users.add(new DepartmentHead("Hidalgo", "Hector", "K",
+                "DH0011@bulsu.edu.ph", "Head011!", "Bagbaguin Road, Sampaloc, Apalit, Pampanga", 3010,
+                "11/11/1980", 'M', "CPTED"));
+        users.add(new DepartmentHead("Jimenez", "Irene", "L",
+                "DH0012@bulsu.edu.ph", "Head012!", "Pandayan Road, Dau, Mabalacat, Pampanga", 3011,
+                "12/12/1981", 'F', "CS"));
+        users.add(new DepartmentHead("Lazaro", "Javier", "M",
+                "DH0013@bulsu.edu.ph", "Head013!", "Perez Street, Poblacion, Baliwag, Bulacan", 3012,
+                "01/13/1982", 'M', "CSER"));
+        users.add(new DepartmentHead("Miranda", "Karen", "N",
+                "DH0014@bulsu.edu.ph", "Head014!", "Rizal Street, Sto. Rosario, Malolos, Bulacan", 3013,
+                "02/14/1983", 'F', "CSSP"));
     }
 
     public static User getUser(String userID) {

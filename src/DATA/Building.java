@@ -9,51 +9,39 @@ public class Building {
 
     private static int nextBuildingCode = 1;
 
-    private String buildingCode;
+    private final String buildingCode;
     private String buildingName;
+    public static ArrayList<Building> buildings = new ArrayList<>();
+    public static ArrayList<Building> archiveBuildings = new ArrayList<>();
 
     public Building(String buildingName) {
-
-        if (buildingName == null || buildingName.trim().isEmpty())
-            throw new IllegalArgumentException("Building name is required");
-
-        if (findBuildingByName(buildingName) != null)
-            throw new IllegalArgumentException("Building name already exists");
-
         this.buildingCode = String.format("BLD%02d", nextBuildingCode++);
         this.buildingName = buildingName.trim();
     }
 
-    public static ArrayList<Building> buildings = new ArrayList<>();
-
     static {
         buildings.add(new Building("Pimentel Hall"));
-        buildings.add(new Building("NSTP Building"));
-        buildings.add(new Building("Federizo Hall"));
-        buildings.add(new Building("Natividad Hall"));
         buildings.add(new Building("Roxas Hall"));
+        buildings.add(new Building("Alvarado Hall"));
+        buildings.add(new Building("SLRC"));
+        buildings.add(new Building("CBA Building"));
+        buildings.add(new Building("Natividad Hall"));
+        buildings.add(new Building("CHTM Building"));
+        buildings.add(new Building("Federizo"));
+        buildings.add(new Building("NSTP Building"));
+        buildings.add(new Building("Mendoza Hall"));
+        buildings.add(new Building("Carpio Hall"));
+        buildings.add(new Building("Flores Hall"));
+        buildings.add(new Building("Valencia Hall"));
+        buildings.add(new Building("E-Library"));
+        buildings.add(new Building("College of Law Building"));
     }
-
     // GETTERS
-
     public String getBuildingCode() {
         return buildingCode;
     }
-
     public String getBuildingName() {
         return buildingName;
-    }
-
-    public static String getBuilding(Building b) {
-        return b.getBuildingCode();
-    }
-
-    public static String getBuildingName(Building b) {
-        return b.getBuildingName();
-    }
-
-    public static int getNextID() {
-        return nextBuildingCode;
     }
 
     // SETTERS
@@ -85,7 +73,6 @@ public class Building {
 
         return null;
     }
-
     public static Building findBuildingByName(String buildingName) {
 
         if (buildingName == null)
@@ -99,30 +86,7 @@ public class Building {
         return null;
     }
 
-    public static boolean verifyBuilding(String buildingCode) {
-        return findBuilding(buildingCode) != null;
-    }
-
-    // ADD BUILDING
-
-    public static boolean addBuilding(String buildingName) {
-
-        if (buildingName == null || buildingName.trim().isEmpty()) {
-            UI.print("Building name is required");
-            return false;
-        }
-
-        if (findBuildingByName(buildingName) != null) {
-            UI.print("Building name already exists");
-            return false;
-        }
-
-        buildings.add(new Building(buildingName));
-        return true;
-    }
-
-    // DISPLAY ALL BUILDINGS
-
+    // DISPLAY METHODS
     public static void displayBuildings() {
 
         UI.header("BUILDINGS");
@@ -130,25 +94,37 @@ public class Building {
         if (buildings.isEmpty()) {
             UI.liner("  No buildings found.");
         } else {
-            for (int i = 0; i < buildings.size(); i++) {
-                Building b = buildings.get(i);
-
+            for (Building b : buildings) {
                 UI.liner(String.format(
                         "  %-15s %-30s",
                         b.getBuildingCode(),
                         b.getBuildingName()
                 ));
-
-                if (i < buildings.size() - 1)
-                    UI.separator();
             }
         }
 
         UI.footer();
+
     }
+    public static void displayArchiveBuildings() {
 
-    // DISPLAY ONE BUILDING
+        UI.header("ARCHIVED BUILDINGS");
 
+        if (archiveBuildings.isEmpty()) {
+            UI.liner("  No archived buildings found.");
+        } else {
+            for (Building b : archiveBuildings) {
+                UI.liner(String.format(
+                        "  %-15s %-30s",
+                        b.getBuildingCode(),
+                        b.getBuildingName()
+                ));
+            }
+        }
+
+        UI.footer();
+
+    }
     public static void displayBuilding(String buildingCode) {
 
         Building b = findBuilding(buildingCode);
@@ -163,9 +139,6 @@ public class Building {
         UI.liner(String.format("  BUILDING NAME  : %s", b.getBuildingName()));
         UI.footer();
     }
-
-    // DISPLAY ROOMS BY BUILDING CODE
-
     public static void displayRooms(String buildingCode) {
 
         Building b = findBuilding(buildingCode);
@@ -204,7 +177,7 @@ public class Building {
                 }
 
                 UI.liner(String.format(
-                        "  %-10s %-35s %s",
+                        "  %-15s %-35s %s",
                         r.getRoomCode(),
                         r.getRoomDescription(),
                         floorText
@@ -216,11 +189,14 @@ public class Building {
 
         if (count == 0)
             UI.liner("  No rooms registered under this building.");
-
-        UI.liner("  TOTAL ROOMS: " + count);
+        else {
+            UI.liner("");
+            UI.liner("  TOTAL ROOMS: " + count);
+        }
         UI.footer();
     }
 
+    // MANAGE METHODS
     public static void createBuilding() {
         String buildingName = "";
         String choice;
@@ -254,28 +230,19 @@ public class Building {
                     break;
 
                 case "/":
-                    if (buildingName.isEmpty()) {
-                        UI.print("Building name is required");
-                        break;
-                    }
+                    buildings.add(new Building(buildingName));
+                    UI.print("Building successfully created");
 
-                    if (Building.addBuilding(buildingName)) {
-                        UI.print("Building successfully created");
-
-                        Building b = Building.findBuildingByName(buildingName);
-                        Building.displayBuilding(b.getBuildingCode());
-
-                        submit = true;
-                    }
+                    Building b = Building.findBuildingByName(buildingName);
+                    Building.displayBuilding(b.getBuildingCode());
+                    submit = true;
                     break;
-
                 case "X":
                     submit = true;
                     break;
             }
         }
     }
-
     public static void editBuilding() {
         String input;
         String buildingName;
@@ -314,34 +281,15 @@ public class Building {
                         System.out.print("   Enter Building Name > ");
                         buildingName = in.nextLine().trim();
 
-                        if (buildingName.isEmpty()) {
-                            UI.print("Building name is required");
-                        } else {
-                            Building existing =
-                                    Building.findBuildingByName(buildingName);
-
-                            if (existing != null && existing != b)
+                        if (buildingName.isEmpty()) UI.print("Building name is required");
+                        else if (Building.findBuildingByName(buildingName) != null && Building.findBuildingByName(buildingName) != b)
                                 UI.print("Building name already exists");
-                        }
 
                     } while (buildingName.isEmpty()
                             || (Building.findBuildingByName(buildingName) != null
                             && Building.findBuildingByName(buildingName) != b));
                     break;
-
                 case "/":
-                    if (buildingName.isEmpty()) {
-                        UI.print("Building name is required");
-                        break;
-                    }
-
-                    Building existing = Building.findBuildingByName(buildingName);
-
-                    if (existing != null && existing != b) {
-                        UI.print("Building name already exists");
-                        break;
-                    }
-
                     b.setBuildingName(buildingName);
 
                     UI.print("Building successfully edited");
@@ -349,15 +297,13 @@ public class Building {
 
                     submit = true;
                     break;
-
                 case "X":
                     submit = true;
                     break;
             }
         }
     }
-
-    public static void deleteBuilding() {
+    public static void archiveBuilding() {
         String input;
         String choice;
 
@@ -373,11 +319,10 @@ public class Building {
         } while (Building.findBuilding(input) == null);
 
         Building b = Building.findBuilding(input);
-
         Building.displayBuilding(b.getBuildingCode());
 
         do {
-            System.out.print("  Confirm Building Deletion? (Y/N) > ");
+            System.out.print("  Confirm Building Archive? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
 
             if (!choice.matches("[YN]"))
@@ -386,18 +331,17 @@ public class Building {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
-            Building.buildings.remove(b);
-            UI.print("Building successfully deleted");
+            archiveBuildings.add(b);
+            buildings.remove(b);
+            UI.print("Building successfully archived");
         }
+        else UI.print("Archive building cancelled");
     }
-
-    private static void buildingManage(
-            String text, String buildingCode, String buildingName) {
+    private static void buildingManage(String text, String buildingCode, String buildingName) {
 
         UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
-
-        UI.liner(String.format("  [1] BUILDING NAME : %s", buildingName));
         UI.liner(String.format("      BUILDING CODE : %s", buildingCode));
+        UI.liner(String.format("  [1] BUILDING NAME : %s", buildingName));
         UI.liner("");
 
         UI.option();

@@ -31,25 +31,30 @@ public class College {
     }
 
     static {
+        colleges.add(new College("CAFA", "College of Architecture and Fine Arts"));
+        colleges.add(new College("CAL", "College of Arts and Letters"));
+        colleges.add(new College("CBEA", "College of Business Education and Accountancy"));
+        colleges.add(new College("CCJE", "College of Criminal Justice Education"));
+        colleges.add(new College("CHTM", "College of Hospitality and Tourism Management"));
         colleges.add(new College("CICT", "College of Information and Communication Technology"));
-        colleges.add(new College("COED", "College of Education"));
+        colleges.add(new College("CIT", "College of Industrial Technology"));
+        colleges.add(new College("COL", "College of Law"));
+        colleges.add(new College("CON", "College of Nursing"));
         colleges.add(new College("COE", "College of Engineering"));
-        colleges.add(new College("CAS", "College of Arts and Sciences"));
-        colleges.add(new College("CBA", "College of Business Administration"));
+        colleges.add(new College("CPTED", "College of Professional Teacher Education"));
+        colleges.add(new College("CS", "College of Science"));
+        colleges.add(new College("CSER", "College of Sports, Exercise and Recreation"));
+        colleges.add(new College("CSSP", "College of Social Sciences and Philosophy"));
     }
 
     // COLLEGE GETTER METHODS
-
     public String getCollegeCode() {
         return collegeCode;
     }
-
     public String getCollegeDescription() {
         return collegeDescription;
     }
-
     public static College findCollege(String collegeCode) {
-
         if (collegeCode == null || collegeCode.trim().isEmpty())
             return null;
 
@@ -60,19 +65,9 @@ public class College {
 
         return null;
     }
-
-    public static String getCollege(College c) {
-        return c == null ? null : c.getCollegeCode();
-    }
-
-    public static String getCollegeDescription(College c) {
-        return c == null ? null : c.getCollegeDescription();
-    }
-
     public static boolean existCollegeCode(String collegeCode) {
         return findCollege(collegeCode) != null;
     }
-
     public static boolean existCollegeDesc(String collegeDescription) {
 
         if (collegeDescription == null || collegeDescription.trim().isEmpty())
@@ -87,22 +82,19 @@ public class College {
     }
 
     // COLLEGE SETTER METHODS
-
     public void setCollegeDescription(String collegeDescription) {
 
         if (collegeDescription == null || collegeDescription.trim().isEmpty())
             throw new IllegalArgumentException("College description cannot be empty.");
 
         for (College c : colleges) {
-            if (c != this &&
-                    collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription())) {
+            if (c != this && collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription())) {
                 throw new IllegalArgumentException("College description already exists.");
             }
         }
 
         this.collegeDescription = collegeDescription.trim();
     }
-
     public void setCollegeCode(String collegeCode) {
 
         if (collegeCode == null || collegeCode.trim().isEmpty())
@@ -118,22 +110,28 @@ public class College {
         this.collegeCode = collegeCode.trim().toUpperCase();
     }
 
-    // COLLEGE METHODS
-
+    // DISPLAY METHODS
     public static void displayColleges() {
 
         UI.header("COLLEGES");
 
-        for (College c : colleges) {
-            String college = String.format("  %-10s %-40s",
-                    College.getCollege(c), College.getCollegeDescription(c));
+        if (colleges.isEmpty()) {
+            UI.liner("  No colleges found.");
+        } else {
+            for (College c : colleges) {
 
-            UI.liner(college);
+                if (c == null)
+                    continue;
+
+                String college = String.format("  %-10s %-40s",
+                        c.getCollegeCode(), c.getCollegeDescription());
+
+                UI.liner(college);
+            }
         }
 
         UI.footer();
     }
-
     public static void displayColleges(String collegeCode) {
 
         College c = findCollege(collegeCode);
@@ -158,6 +156,7 @@ public class College {
         UI.footer();
     }
 
+    // MANAGE METHODS
     public static void createCollege() {
         String collegeDescription = "", collegeCode = "", choice = "";
         boolean submit = false;
@@ -214,7 +213,6 @@ public class College {
             }
         }
     }
-
     public static void editCollege() {
         String input = "", choice = "", collegeDescription, collegeCode;
         boolean submit = false;
@@ -236,8 +234,8 @@ public class College {
             return;
         }
 
-        collegeCode = College.getCollege(c);
-        collegeDescription = College.getCollegeDescription(c);
+        collegeCode = c.getCollegeCode();
+        collegeDescription = c.getCollegeDescription();
 
         while (!submit) {
             collegeManage("EDIT", collegeCode, collegeDescription);
@@ -259,11 +257,11 @@ public class College {
                         if (collegeCode.isEmpty())
                             UI.print("Invalid Input");
                         else if (College.existCollegeCode(collegeCode) &&
-                                !collegeCode.equalsIgnoreCase(College.getCollege(c)))
+                                !collegeCode.equalsIgnoreCase(c.getCollegeCode()))
                             UI.print("College Code already exists");
                     } while (collegeCode.isEmpty() ||
                             (College.existCollegeCode(collegeCode) &&
-                                    !collegeCode.equalsIgnoreCase(College.getCollege(c))));
+                                    !collegeCode.equalsIgnoreCase(c.getCollegeCode())));
                     break;
 
                 case "2":
@@ -274,11 +272,11 @@ public class College {
                         if (collegeDescription.isEmpty())
                             UI.print("Invalid Input");
                         else if (College.existCollegeDesc(collegeDescription) &&
-                                !collegeDescription.equalsIgnoreCase(College.getCollegeDescription(c)))
+                                !collegeDescription.equalsIgnoreCase(c.getCollegeDescription()))
                             UI.print("College Description already exists");
                     } while (collegeDescription.isEmpty() ||
                             (College.existCollegeDesc(collegeDescription) &&
-                                    !collegeDescription.equalsIgnoreCase(College.getCollegeDescription(c))));
+                                    !collegeDescription.equalsIgnoreCase(c.getCollegeDescription())));
                     break;
 
                 case "/":
@@ -286,7 +284,7 @@ public class College {
                     c.setCollegeDescription(collegeDescription);
 
                     UI.print("College successfully edited");
-                    College.displayColleges(College.getCollege(c));
+                    College.displayColleges(c.getCollegeCode());
                     submit = true;
                     break;
 
@@ -296,7 +294,6 @@ public class College {
             }
         }
     }
-
     public static void deleteCollege() {
         String input, choice;
 
@@ -317,7 +314,7 @@ public class College {
             return;
         }
 
-        College.displayColleges(College.getCollege(c));
+        College.displayColleges(c.getCollegeCode());
 
         do {
             System.out.print("  Confirm College Deletion? (Y/N) > ");
@@ -332,7 +329,6 @@ public class College {
             UI.print("College successfully deleted");
         }
     }
-
     private static void collegeManage(String text, String collegeCode, String collegeDescription) {
         UI.header(text.toUpperCase() + ": COLLEGE INFORMATION");
         UI.liner(String.format(" [1] COLLEGE CODE         : %s", collegeCode));

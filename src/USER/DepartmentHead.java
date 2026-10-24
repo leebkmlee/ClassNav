@@ -3,14 +3,7 @@ import DATA.*;
 import FUNCTION.*;
 import UI.*;
 
-import static DATA.College.colleges;
-import static DATA.Schedule.schedules;
-import static DATA.Section.sections;
-import static UI.UI.INNERWIDTH;
 import static UI.UI.in;
-
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
 
 public class DepartmentHead extends User {
 
@@ -241,7 +234,7 @@ public class DepartmentHead extends User {
             else if (choice == 2)
                 Building.editBuilding();
             else if (choice == 3)
-                Building.deleteBuilding();
+                Building.archiveBuilding();
             else if (choice == 4)
                 Building.displayBuildings();
 
@@ -281,13 +274,13 @@ public class DepartmentHead extends User {
                 CancelledSchedule.createCancelledSchedule();
                 break;
             case 2:
-                CancelledSchedule.editCancelledSchedule();
+//                CancelledSchedule.editCancelledSchedule();
                 break;
             case 3:
-                CancelledSchedule.deleteCancelledSchedule();
+                CancelledSchedule.archiveCancelledSchedule();
                 break;
             case 4:
-                CancelledSchedule.displayExceptions();
+                CancelledSchedule.displayCancellations();
                 break;
             case 0:
                 // Return to previous menu

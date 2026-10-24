@@ -36,18 +36,21 @@ public class Section {
     }
 
     static {
-        sections.add(new Section(2, 'B', 1, "2024-2025"));
-        sections.add(new Section(4, 'A', 2, "2022-2023"));
-        sections.add(new Section(2, 'B', 2, "2024-2025"));
-        sections.add(new Section(3, 'A', 1, "2023-2024"));
-        sections.add(new Section(1, 'C', 1, "2025-2026"));
-        sections.add(new Section(4, 'A', 1, "2022-2023"));
-        sections.add(new Section(3, 'B', 2, "2023-2024"));
-        sections.add(new Section(1, 'A', 0, "2025-2026"));
-        sections.add(new Section(2, 'C', 1, "2024-2025"));
-        sections.add(new Section(3, 'C', 2, "2023-2024"));
-        sections.add(new Section(4, 'B', 1, "2022-2023"));
-        sections.add(new Section(1, 'B', 0, "2025-2026"));
+        sections.add(new Section(1, 'A', 2, "2025-2026"));
+        sections.add(new Section(1, 'B', 0, "2024-2025"));
+        sections.add(new Section(1, 'C', 1, "2026-2027"));
+        sections.add(new Section(1, 'D', 2, "2025-2026"));
+        sections.add(new Section(2, 'A', 0, "2024-2025"));
+        sections.add(new Section(2, 'B', 1, "2026-2027"));
+        sections.add(new Section(2, 'C', 2, "2025-2026"));
+        sections.add(new Section(2, 'D', 0, "2024-2025"));
+        sections.add(new Section(3, 'A', 1, "2026-2027"));
+        sections.add(new Section(3, 'B', 2, "2025-2026"));
+        sections.add(new Section(3, 'C', 0, "2024-2025"));
+        sections.add(new Section(3, 'D', 1, "2026-2027"));
+        sections.add(new Section(4, 'A', 2, "2025-2026"));
+        sections.add(new Section(4, 'B', 0, "2024-2025"));
+        sections.add(new Section(4, 'C', 1, "2026-2027"));
     }
 
     // VALIDATION METHODS
@@ -440,7 +443,6 @@ public class Section {
             }
         }
     }
-
     public static void editSection() {
         String sectionID = "", academicYear = "", choice, input = "";
         int yearLevel, group;
@@ -582,7 +584,6 @@ public class Section {
             }
         }
     }
-
     public static void deleteSection() {
         String choice, input;
 
@@ -625,13 +626,11 @@ public class Section {
             UI.print("Section deletion cancelled");
         }
     }
-
     private static String getYearSection(int yearLevel, char block, int group) {
         if (group != 0)
             return yearLevel + "" + block + "-G" + group;
         return yearLevel + "" + block;
     }
-
     private static void sectionManage(String text, String sectionID,
                                       int yearLevel, char block, int group, String academicYear) {
 

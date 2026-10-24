@@ -106,47 +106,60 @@ public class MakeUpSchedule {
         requests.add(this);
     }
 
+    static {
+        requests.add(new MakeUpSchedule("F0001", "RM001", "Reservation", "10/26/2026",
+                "8:00 AM", "9:00 AM", "Additional laboratory session"));
+        requests.add(new MakeUpSchedule("F0002", "RM004", "Room Change", "10/27/2026",
+                "10:00 AM", "11:00 AM", "Original room unavailable"));
+        requests.add(new MakeUpSchedule("F0003", "RM003", "Make-up Class", "10/28/2026",
+                "1:00 PM", "2:00 PM", "Replacement lecture session"));
+        requests.add(new MakeUpSchedule("F0004", "RM005", "Reservation", "10/29/2026",
+                "2:00 PM", "3:00 PM", "Additional review class"));
+        requests.add(new MakeUpSchedule("F0006", "RM008", "Make-up Class", "11/2/2026",
+                "10:00 AM", "11:00 AM", "Missed laboratory session"));
+        requests.add(new MakeUpSchedule("F0007", "RM002", "Reservation", "11/03/2026",
+                "1:00 PM", "2:00 PM", "Additional computer laboratory use"));
+        requests.add(new MakeUpSchedule("F0010", "RM010", "Reservation", "11/06/2026",
+                "10:00 AM", "11:00 AM", "Additional science laboratory session"));
+        requests.add(new MakeUpSchedule("F0011", "RM004", "Room Change", "11/09/2026",
+                "12:00 PM", "1:00 PM", "Scheduling conflict in original room"));
+        requests.add(new MakeUpSchedule("F0013", "RM013", "Reservation", "11/11/2026",
+                "8:00 AM", "9:00 AM", "Additional biology laboratory session"));
+        requests.add(new MakeUpSchedule("F0014", "RM005", "Room Change", "11/12/2026",
+                "9:00 AM", "10:00 AM", "Room needed for a larger class"));
+    }
+
     // ROOM REQUEST GETTER METHODS
     public String getRequestID() {
         return requestID;
     }
-
     public String getFacultyID() {
         return facultyID;
     }
-
     public String getRoomCode() {
         return roomCode;
     }
-
     public String getRequestType() {
         return requestType;
     }
-
     public String getRequestedDate() {
         return requestedDate;
     }
-
     public String getStartTime() {
         return startTime;
     }
-
     public String getEndTime() {
         return endTime;
     }
-
     public String getReason() {
         return reason;
     }
-
     public String getStatus() {
         return status;
     }
-
     public String getReviewedBy() {
         return reviewedBy;
     }
-
     public String getReviewedAt() {
         return reviewedAt;
     }
@@ -260,6 +273,53 @@ public class MakeUpSchedule {
         this.reviewedAt = reviewedAt.trim();
     }
 
+    public static void displayMakeUpSchedules() {
+        UI.header("ROOM REQUESTS");
+
+        if (MakeUpSchedule.requests.isEmpty()) {
+            UI.liner("  No room requests found.");
+        } else {
+            for (MakeUpSchedule request : MakeUpSchedule.requests) {
+                UI.liner(String.format(
+                        "  %-8s %-10s %-16s %-12s %-10s",
+                        request.getRequestID(),
+                        request.getFacultyID(),
+                        request.getRequestType(),
+                        request.getRequestedDate(),
+                        request.getStatus()
+                ));
+                UI.separator();
+            }
+        }
+
+        UI.footer();
+    }
+
+    public static void displayMakeUpSchedule(String requestID) {
+        MakeUpSchedule request = MakeUpSchedule.findRequest(requestID);
+
+        if (request == null) {
+            UI.print("Request not found");
+            return;
+        }
+
+        UI.header("ROOM REQUEST DETAILS");
+        UI.liner("  REQUEST ID    : " + request.getRequestID());
+        UI.liner("  FACULTY ID    : " + request.getFacultyID());
+        UI.liner("  ROOM CODE     : "
+                + (request.getRoomCode() == null ? "N/A" : request.getRoomCode()));
+        UI.liner("  REQUEST TYPE  : " + request.getRequestType());
+        UI.liner("  DATE          : " + request.getRequestedDate());
+        UI.liner("  START TIME    : " + request.getStartTime());
+        UI.liner("  END TIME      : " + request.getEndTime());
+        UI.liner("  REASON        : " + request.getReason());
+        UI.liner("  STATUS        : " + request.getStatus());
+        UI.liner("  REVIEWED BY   : "
+                + (request.getReviewedBy() == null ? "N/A" : request.getReviewedBy()));
+        UI.liner("  REVIEWED AT   : "
+                + (request.getReviewedAt() == null ? "N/A" : request.getReviewedAt()));
+        UI.footer();
+    }
 
     public static void manageMakeUpSchedules() {
         int choice = -1;
@@ -308,7 +368,6 @@ public class MakeUpSchedule {
                 break;
         }
     }
-
     public static void createMakeUpSchedule() {
         String facultyID = "", roomCode = "", requestType = "";
         String requestedDate = "", startTime = "", endTime = "", reason = "";
@@ -477,7 +536,6 @@ public class MakeUpSchedule {
             }
         }
     }
-
     public static void editMakeUpSchedule() {
         String input = "", choice = "", departmentHeadID = "";
         String decision = "", reviewedAt = "";
@@ -576,7 +634,6 @@ public class MakeUpSchedule {
             }
         }
     }
-
     public static void deleteMakeUpSchedule() {
         String input, choice;
 
@@ -614,55 +671,6 @@ public class MakeUpSchedule {
             UI.print("Room request successfully deleted");
         }
     }
-
-    public static void displayMakeUpSchedules() {
-        UI.header("ROOM REQUESTS");
-
-        if (MakeUpSchedule.requests.isEmpty()) {
-            UI.liner("  No room requests found.");
-        } else {
-            for (MakeUpSchedule request : MakeUpSchedule.requests) {
-                UI.liner(String.format(
-                        "  %-8s %-10s %-16s %-12s %-10s",
-                        request.getRequestID(),
-                        request.getFacultyID(),
-                        request.getRequestType(),
-                        request.getRequestedDate(),
-                        request.getStatus()
-                ));
-                UI.separator();
-            }
-        }
-
-        UI.footer();
-    }
-
-    public static void displayMakeUpSchedule(String requestID) {
-        MakeUpSchedule request = MakeUpSchedule.findRequest(requestID);
-
-        if (request == null) {
-            UI.print("Request not found");
-            return;
-        }
-
-        UI.header("ROOM REQUEST DETAILS");
-        UI.liner("  REQUEST ID    : " + request.getRequestID());
-        UI.liner("  FACULTY ID    : " + request.getFacultyID());
-        UI.liner("  ROOM CODE     : "
-                + (request.getRoomCode() == null ? "N/A" : request.getRoomCode()));
-        UI.liner("  REQUEST TYPE  : " + request.getRequestType());
-        UI.liner("  DATE          : " + request.getRequestedDate());
-        UI.liner("  START TIME    : " + request.getStartTime());
-        UI.liner("  END TIME      : " + request.getEndTime());
-        UI.liner("  REASON        : " + request.getReason());
-        UI.liner("  STATUS        : " + request.getStatus());
-        UI.liner("  REVIEWED BY   : "
-                + (request.getReviewedBy() == null ? "N/A" : request.getReviewedBy()));
-        UI.liner("  REVIEWED AT   : "
-                + (request.getReviewedAt() == null ? "N/A" : request.getReviewedAt()));
-        UI.footer();
-    }
-
     private static void makeUpScheduleManage(
             String text,
             String requestID,

@@ -1,8 +1,14 @@
 package UI;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class UI {
+
+    public static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
 
     public static Scanner in = new Scanner(System.in);
     public static final int INNERWIDTH = 70;

@@ -43,24 +43,39 @@ public class Course {
     }
 
     static {
-        courses.add(new Course("PE 12", "PathFit 3", 2, "GEN ED"));
-        courses.add(new Course("RLW 101", "Rizal Life and Works", 3, "GEN ED"));
-        courses.add(new Course("ETH 101", "Ethics", 3, "GEN ED"));
-        courses.add(new Course("STS 101", "Science, Technology, and Society", 3, "GEN ED"));
-        courses.add(new Course("IT 204", "Networking", 3, "MAJOR"));
-        courses.add(new Course("CC 106", "Information Management", 3, "MAJOR"));
-        courses.add(new Course("IT 203", "Object-Oriented Programming", 3, "MAJOR"));
-        courses.add(new Course("IT 205", "Quantitative Methods", 3, "MAJOR"));
-        courses.add(new Course("CC 105", "Data Structure Algorithm", 3, "MAJOR"));
-        courses.add(new Course("CC 104", "Computer Programming 2", 3, "MAJOR"));
-        courses.add(new Course("IT 206", "Web Systems and Technologies", 3, "MAJOR"));
-        courses.add(new Course("IT 207", "Platform Technologies", 3, "MAJOR"));
-        courses.add(new Course("GE 101", "General Education Elective", 3, "GEN ED"));
-        courses.add(new Course("IT 301", "Systems Analysis and Design", 3, "MAJOR"));
-        courses.add(new Course("IT 302", "Information Assurance and Security", 3, "MAJOR"));
-        courses.add(new Course("IT 303", "Application Development", 3, "MAJOR"));
-    }
+        courses.add(new Course("GE101", "Purposive Communication", 3, "GEN ED"));
+        courses.add(new Course("GE102", "Mathematics in the Modern World", 3, "GEN ED"));
+        courses.add(new Course("GE103", "Understanding the Self", 3, "GEN ED"));
+        courses.add(new Course("GE104", "Readings in Philippine History", 3, "GEN ED"));
+        courses.add(new Course("GE105", "The Contemporary World", 3, "GEN ED"));
+        courses.add(new Course("GE106", "Ethics", 3, "GEN ED"));
+        courses.add(new Course("GE107", "Science, Technology, and Society", 3, "GEN ED"));
+        courses.add(new Course("GE108", "Art Appreciation", 3, "GEN ED"));
+        courses.add(new Course("GE109", "Filipino sa Piling Larang", 3, "GEN ED"));
+        courses.add(new Course("PE101", "Physical Education 1", 2, "GEN ED"));
 
+        courses.add(new Course("IT101", "Introduction to Computing", 3, "MAJOR"));
+        courses.add(new Course("IT102", "Computer Programming 1", 3, "MAJOR"));
+        courses.add(new Course("IT103", "Object-Oriented Programming", 3, "MAJOR"));
+        courses.add(new Course("IT104", "Data Structures and Algorithms", 3, "MAJOR"));
+        courses.add(new Course("IT105", "Database Management Systems", 3, "MAJOR"));
+
+        courses.add(new Course("IS101", "Systems Analysis and Design", 3, "MAJOR"));
+        courses.add(new Course("IS102", "Information Systems Fundamentals", 3, "MAJOR"));
+        courses.add(new Course("BL101", "Information Resources and Services", 3, "MAJOR"));
+        courses.add(new Course("CR101", "Introduction to Criminology", 3, "MAJOR"));
+        courses.add(new Course("CR102", "Philippine Criminal Justice System", 3, "MAJOR"));
+        courses.add(new Course("TM101", "Principles of Tourism", 3, "MAJOR"));
+        courses.add(new Course("HM101", "Fundamentals of Hospitality Management", 3, "MAJOR"));
+        courses.add(new Course("NS101", "Anatomy and Physiology", 4, "MAJOR"));
+        courses.add(new Course("NS102", "Fundamentals of Nursing", 3, "MAJOR"));
+        courses.add(new Course("CE101", "Engineering Drawing", 3, "MAJOR"));
+        courses.add(new Course("CE102", "Engineering Mechanics", 3, "MAJOR"));
+        courses.add(new Course("ED101", "The Teaching Profession", 3, "MAJOR"));
+        courses.add(new Course("PS101", "Introduction to Psychology", 3, "MAJOR"));
+        courses.add(new Course("BIO101", "General Biology", 4, "MAJOR"));
+        courses.add(new Course("CH101", "General Chemistry", 4, "MAJOR"));
+    }
     // COURSE SETTER METHODS
 
     public void setCourseCode(String courseCode) {
@@ -77,7 +92,6 @@ public class Course {
 
         this.courseCode = courseCode.trim();
     }
-
     public void setCourseDescription(String courseDescription) {
 
         if (courseDescription == null || courseDescription.trim().isEmpty())
@@ -92,7 +106,6 @@ public class Course {
 
         this.courseDescription = courseDescription.trim();
     }
-
     public void setCreditUnits(int creditUnits) {
 
         if (creditUnits <= 0)
@@ -100,7 +113,6 @@ public class Course {
 
         this.creditUnits = creditUnits;
     }
-
     public void setCourseType(String courseType) {
 
         if (courseType == null || courseType.trim().isEmpty())
@@ -114,15 +126,12 @@ public class Course {
     public String getCourseCode() {
         return courseCode;
     }
-
     public String getCourseDescription() {
         return courseDescription;
     }
-
     public int getCreditUnits() {
         return creditUnits;
     }
-
     public String getCourseType() {
         return courseType;
     }
@@ -146,23 +155,18 @@ public class Course {
     public static String getCourseCode(Course c) {
         return c == null ? null : c.getCourseCode();
     }
-
     public static String getCourseDescription(Course c) {
         return c == null ? null : c.getCourseDescription();
     }
-
     public static int getCreditUnits(Course c) {
         return c == null ? 0 : c.getCreditUnits();
     }
-
     public static String getCourseType(Course c) {
         return c == null ? null : c.getCourseType();
     }
-
     public static boolean existCourseCode(String courseCode) {
         return findCourse(courseCode) != null;
     }
-
     public static boolean existCourseDesc(String courseDescription) {
 
         if (courseDescription == null || courseDescription.trim().isEmpty())
@@ -194,7 +198,6 @@ public class Course {
         UI.liner(String.format("  COURSE TYPE         : %s", c.getCourseType()));
         UI.footer();
     }
-
     public static void displayCourses() {
 
         UI.header("COURSE LIST");
@@ -384,7 +387,6 @@ public class Course {
             }
         }
     }
-
     public static void editCourse() {
         String courseCode, courseDescription, courseType, choice = "", input;
         int creditUnits; boolean submit = false;
@@ -496,7 +498,6 @@ public class Course {
             }
         }
     }
-
     public static void deleteCourse() {
         String input, choice;
 
@@ -532,7 +533,6 @@ public class Course {
             UI.print("Course successfully deleted");
         }
     }
-
     private static void courseManage(String text, String courseCode, String courseDescription,
                                      int creditUnits, String courseType) {
         UI.header(text.toUpperCase() + ": COURSE INFORMATION");

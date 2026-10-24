@@ -120,7 +120,6 @@ public class Faculty extends User {
 
         this.collegeCode = college.getCollegeCode();
     }
-
     public void setEmploymentStatus(String employmentStatus) {
         if (employmentStatus == null || employmentStatus.trim().isEmpty()) {
             throw new IllegalArgumentException("Employment status cannot be empty.");
@@ -143,7 +142,6 @@ public class Faculty extends User {
 
         return null;
     }
-
     public static String getCollegeCode(User u) {
         if (u == null)
             return null;
@@ -151,7 +149,6 @@ public class Faculty extends User {
         Faculty f = findFaculty(u.getUserID());
         return f == null ? null : f.collegeCode;
     }
-
     public static String getEmploymentStatus(User u) {
         if (u == null)
             return null;
@@ -179,7 +176,7 @@ public class Faculty extends User {
 
         UI.liner(String.format("  COLLEGE       : %s",
                 college == null ? "College not found"
-                        : College.getCollegeDescription(college)));
+                        : college.getCollegeDescription()));
 
         UI.separator();
 
@@ -249,7 +246,7 @@ public class Faculty extends User {
 
                     UI.liner(String.format("  BUILDING      : %s",
                             building == null ? "Building not found"
-                                    : Building.getBuildingName(building)));
+                                    : building.getBuildingName()));
                 } else {
                     UI.liner("  ROOM          : Room not found");
                 }
@@ -292,8 +289,7 @@ public class Faculty extends User {
         UI.liner(String.format("  ROOM DESCRIPTION : %s", room.getRoomDescription()));
         UI.liner(String.format("  ROOM TYPE        : %s", room.getRoomType()));
         UI.liner(String.format("  CAPACITY         : %d", room.getCapacity()));
-        UI.liner(String.format("  BUILDING NAME    : %s",
-                Building.getBuildingName(building)));
+        UI.liner(String.format("  BUILDING NAME    : %s", building.getBuildingName()));
         UI.liner(String.format("  FLOOR NUMBER     : %d", room.getFloorNumber()));
         UI.footer();
     }
@@ -438,9 +434,7 @@ public class Faculty extends User {
             UI.liner(String.format("  ROOM TYPE   : %s", room.getRoomType()));
             UI.liner(String.format("  CAPACITY    : %d", room.getCapacity()));
             UI.liner(String.format("  FLOOR       : %d", room.getFloorNumber()));
-            UI.liner(String.format("  BUILDING    : %s",
-                    building == null ? "Building not found"
-                            : Building.getBuildingName(building)));
+            UI.liner(String.format("  BUILDING    : %s", building == null ? "Building not found" : building.getBuildingName()));
             UI.separator();
         }
 

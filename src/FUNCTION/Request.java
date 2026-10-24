@@ -171,6 +171,29 @@ public class Request {
         requests.add(this);
     }
 
+    static {
+        requests.add(new Request("F0001", "RM001", "10/26/2026", "8:00 AM", "9:00 AM",
+                "Room needed for class"));
+        requests.add(new Request("F0002", "RM002", "10/27/2026", "9:00 AM", "10:00 AM",
+                "Room change due to equipment"));
+        requests.add(new Request("F0003", "RM003", "10/28/2026", "10:00 AM", "11:00 AM",
+                "Make-up session"));
+        requests.add(new Request("F0004", "RM004", "10/29/2026", "11:00 AM", "12:00 PM",
+                "Room needed for class"));
+        requests.add(new Request("F0006", "RM008", "11/02/2026", "1:00 PM", "2:00 PM",
+                "Make-up session"));
+        requests.add(new Request("F0007", "RM002", "11/03/2026", "8:00 AM", "9:00 AM",
+                "Room needed for class"));
+        requests.add(new Request("F0010", "RM010", "11/06/2026", "11:00 AM", "12:00 PM",
+                "Room needed for class"));
+        requests.add(new Request("F0011", "RM004", "11/09/2026", "9:00 AM", "10:00 AM",
+                "Room change due to equipment"));
+        requests.add(new Request("F0013", "RM013", "11/11/2026", "8:00 AM", "9:00 AM",
+                "Room needed for class"));
+        requests.add(new Request("F0014", "RM005", "11/12/2026", "9:00 AM", "10:00 AM",
+                "Room change due to equipment"));
+    }
+
     // REQUEST GETTER METHODS
     public String getRequestID() { return requestID; }
     public String getFacultyID() { return facultyID; }
@@ -227,8 +250,8 @@ public class Request {
         String roomCode, requestedDate, startTime, endTime, reason;
 
         UI.header("REQUEST ROOM RESERVATION");
-        UI.liner("  FACULTY ID : " + faculty.getUserID());
-        UI.liner("  NAME       : " + faculty.getUserName());
+        UI.liner("  FACULTY ID  : " + faculty.getUserID());
+        UI.liner("  NAME        : " + faculty.getUserName());
         UI.separator();
 
         LocalDate today = LocalDate.now();

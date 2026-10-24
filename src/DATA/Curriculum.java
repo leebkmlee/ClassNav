@@ -11,7 +11,7 @@ public class Curriculum {
     private String curriculumYearLevel;
     private int curriculumTerm;
 
-    public static ArrayList<Curriculum> curriculums = new ArrayList<>();
+    public static ArrayList<Curriculum> curricula = new ArrayList<>();
 
     public Curriculum(String programCode, String courseCode,
                       String curriculumYearLevel, int curriculumTerm) {
@@ -43,6 +43,61 @@ public class Curriculum {
         this.curriculumTerm = curriculumTerm;
     }
 
+    static {
+        curricula.add(new Curriculum("BSIT", "IT101", "1", 1));
+        curricula.add(new Curriculum("BSIT", "IT102", "1", 2));
+        curricula.add(new Curriculum("BSIT", "IT103", "2", 1));
+        curricula.add(new Curriculum("BSIT", "IT104", "2", 2));
+        curricula.add(new Curriculum("BSIT", "IT105", "3", 1));
+
+        curricula.add(new Curriculum("BSIS", "IS102", "1", 1));
+        curricula.add(new Curriculum("BSIS", "IS101", "2", 1));
+        curricula.add(new Curriculum("BSIS", "IT101", "1", 2));
+
+        curricula.add(new Curriculum("BLIS", "BL101", "1", 1));
+        curricula.add(new Curriculum("BLIS", "IT101", "1", 2));
+
+        curricula.add(new Curriculum("BSCrim", "CR101", "1", 1));
+        curricula.add(new Curriculum("BSCrim", "CR102", "2", 1));
+
+        curricula.add(new Curriculum("BSTM", "TM101", "1", 1));
+        curricula.add(new Curriculum("BSHM", "HM101", "1", 1));
+
+        curricula.add(new Curriculum("BSN", "NS101", "1", 1));
+        curricula.add(new Curriculum("BSN", "NS102", "2", 1));
+
+        curricula.add(new Curriculum("BSCE", "CE101", "1", 1));
+        curricula.add(new Curriculum("BSElecEng", "CE102", "2", 1));
+
+        curricula.add(new Curriculum("BSBio", "BIO101", "1", 1));
+        curricula.add(new Curriculum("BSPsych", "PS101", "1", 1));
+
+        curricula.add(new Curriculum("BSIT", "GE101", "1", 1));
+        curricula.add(new Curriculum("BSIT", "GE102", "1", 1));
+        curricula.add(new Curriculum("BSIT", "GE103", "1", 2));
+        curricula.add(new Curriculum("BSIT", "GE104", "1", 2));
+        curricula.add(new Curriculum("BSIT", "PE101", "1", 1));
+
+        curricula.add(new Curriculum("BLIS", "GE101", "1", 1));
+        curricula.add(new Curriculum("BLIS", "GE102", "1", 1));
+        curricula.add(new Curriculum("BLIS", "GE105", "1", 2));
+        curricula.add(new Curriculum("BLIS", "PE101", "1", 1));
+
+        curricula.add(new Curriculum("BSIS", "GE101", "1", 1));
+        curricula.add(new Curriculum("BSIS", "GE103", "1", 1));
+        curricula.add(new Curriculum("BSIS", "GE106", "1", 2));
+        curricula.add(new Curriculum("BSIS", "PE101", "1", 1));
+
+        curricula.add(new Curriculum("BSArch", "GE102", "1", 1));
+        curricula.add(new Curriculum("BSArch", "GE107", "1", 2));
+        curricula.add(new Curriculum("BSArch", "PE101", "1", 1));
+
+        curricula.add(new Curriculum("BSBroad", "GE103", "1", 1));
+        curricula.add(new Curriculum("BSBroad", "GE108", "1", 2));
+        curricula.add(new Curriculum("BSBroad", "GE109", "1", 2));
+        curricula.add(new Curriculum("BSBroad", "PE101", "1", 1));
+    }
+
     // INSTANCE GETTER METHODS
     public String getProgramCode() {
         return programCode;
@@ -69,7 +124,7 @@ public class Curriculum {
         programCode = programCode.trim();
         courseCode = courseCode.trim();
 
-        for (Curriculum c : curriculums) {
+        for (Curriculum c : curricula) {
             if (programCode.equalsIgnoreCase(c.getProgramCode())
                     && courseCode.equalsIgnoreCase(c.getCourseCode()))
                 return c;
@@ -118,7 +173,7 @@ public class Curriculum {
             return false;
         }
 
-        curriculums.add(new Curriculum(programCode, courseCode,
+        curricula.add(new Curriculum(programCode, courseCode,
                 curriculumYearLevel, curriculumTerm));
 
         return true;
@@ -137,7 +192,7 @@ public class Curriculum {
         if (Program.findProgram(programCode) == null)
             return result;
 
-        for (Curriculum c : curriculums) {
+        for (Curriculum c : curricula) {
             if (programCode.equalsIgnoreCase(c.getProgramCode())) {
                 Course course = Course.findCourse(c.getCourseCode());
 
@@ -162,7 +217,7 @@ public class Curriculum {
         if (Course.findCourse(courseCode) == null)
             return result;
 
-        for (Curriculum c : curriculums) {
+        for (Curriculum c : curricula) {
             if (courseCode.equalsIgnoreCase(c.getCourseCode())) {
                 Program program = Program.findProgram(c.getProgramCode());
 
@@ -455,7 +510,7 @@ public class Curriculum {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
-            curriculums.remove(c);
+            curricula.remove(c);
             UI.print("Curriculum entry successfully deleted");
         }
     }
@@ -464,10 +519,10 @@ public class Curriculum {
     public static void displayCurriculums() {
         UI.header("ALL CURRICULUM ENTRIES");
 
-        if (curriculums.isEmpty()) {
+        if (curricula.isEmpty()) {
             UI.liner("  No curriculum entries found.");
         } else {
-            for (Curriculum c : curriculums) {
+            for (Curriculum c : curricula) {
                 UI.liner(String.format("  PROGRAM CODE : %s", c.getProgramCode()));
                 UI.liner(String.format("  COURSE CODE    : %s", c.getCourseCode()));
                 UI.liner(String.format("  YEAR LEVEL   : %s", c.getCurriculumYearLevel()));

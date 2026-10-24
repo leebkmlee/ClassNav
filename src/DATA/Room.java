@@ -25,18 +25,21 @@ public class Room {
     public static ArrayList<Room> rooms = new ArrayList<>();
 
     static {
-        rooms.add(new Room("PL101", "Programming Laboratory 1", 1, "Laboratory", 40, "BLD01"));
-        rooms.add(new Room("PL102", "Programming Laboratory 2", 1, "Laboratory", 40, "BLD01"));
-        rooms.add(new Room("PL201", "Programming Laboratory 3", 2, "Laboratory", 40, "BLD01"));
-        rooms.add(new Room("SDL 1", "Student Development Laboratory 1", 1, "Laboratory", 30, "BLD02"));
-        rooms.add(new Room("SDL 2", "Student Development Laboratory 2", 1, "Laboratory", 30, "BLD02"));
-        rooms.add(new Room("ACAD 1", "Academic Room 1", 1, "Classroom", 40, "BLD03"));
-        rooms.add(new Room("ACAD 2", "Academic Room 2", 2, "Classroom", 40, "BLD03"));
-        rooms.add(new Room("ACAD 3", "Academic Room 3", 3, "Classroom", 40, "BLD03"));
-        rooms.add(new Room("NH201", "New Hall Room 201", 2, "Classroom", 40, "BLD04"));
-        rooms.add(new Room("NH202", "New Hall Room 202", 2, "Classroom", 40, "BLD04"));
-        rooms.add(new Room("ICT301", "ICT Room 301", 3, "Laboratory", 40, "BLD05"));
-        rooms.add(new Room("ICT302", "ICT Room 302", 3, "Laboratory", 40, "BLD05"));
+        rooms.add(new Room("RM001", "SDL 3", 3, "Computer Laboratory", 30, "BLD01"));
+        rooms.add(new Room("RM002", "Prog Lab 2", 3, "Computer Laboratory", 30, "BLD01"));
+        rooms.add(new Room("RM003", "CON 1", 2, "Computer Laboratory", 30, "BLD01"));
+        rooms.add(new Room("RM004", "ACAD 6", 1, "Classroom", 50, "BLD09"));
+        rooms.add(new Room("RM005", "ACAD 3", 1, "Classroom", 50, "BLD09"));
+        rooms.add(new Room("RM006", "AAP10", 1, "Classroom", 50, "BLD10"));
+        rooms.add(new Room("RM007", "AAP15", 2, "Classroom", 50, "BLD10"));
+        rooms.add(new Room("RM008", "Science Lab 3", 1, "Science Laboratory", 20, "BLD02"));
+        rooms.add(new Room("RM009", "Science Lab 2", 1, "Science Laboratory", 20, "BLD02"));
+        rooms.add(new Room("RM010", "Science Lab 1", 1, "Science Laboratory", 20, "BLD02"));
+        rooms.add(new Room("RM011", "Recreation Room 1", 2, "Exercise Room", 30, "BLD13"));
+        rooms.add(new Room("RM012", "Recreation Room 2", 2, "Exercise Room", 30, "BLD13"));
+        rooms.add(new Room("RM013", "Bio Lab 2", 3, "Biology Room", 20, "BLD08"));
+        rooms.add(new Room("RM014", "Bio Lab 3", 3, "Biology Room", 20, "BLD08"));
+        rooms.add(new Room("RM015", "ACAD 2", 1, "ClassRoom", 50, "BLD09"));
     }
 
     public Room(String roomCode, String roomDescription, int floorNumber,
@@ -284,14 +287,11 @@ public class Room {
             return false;
         }
 
-        for (CancelledSchedule exception : CancelledSchedule.exceptions) {
+        for (CancelledSchedule exception : CancelledSchedule.cancellations) {
             if (exception.getScheduleID() != null
-                    && exception.getExceptionType() != null
                     && exception.getAffectedDate() != null
                     && exception.getScheduleID().equalsIgnoreCase(scheduleID)
-                    && sameDate(exception.getAffectedDate(), requestedDate)
-                    && exception.getExceptionType().equalsIgnoreCase(exceptionType)
-                    && isApproved(exception.getStatus())) {
+                    && sameDate(exception.getAffectedDate(), requestedDate)) {
                 return true;
             }
         }
@@ -379,22 +379,11 @@ public class Room {
             }
         }
 
-        // Check approved room-change exceptions occupying the replacement room.
-        for (CancelledSchedule exception : CancelledSchedule.exceptions) {
-
-            if (!isApproved(exception.getStatus())
-                    || exception.getExceptionType() == null
-                    || !exception.getExceptionType().equalsIgnoreCase("ROOM CHANGE")
-                    || !sameDate(exception.getAffectedDate(), normalizedDate)
-                    || exception.getReplacementRoomCode() == null
-                    || !exception.getReplacementRoomCode().equalsIgnoreCase(roomCode.trim())) {
-                continue;
-            }
-
+        // Check approved room-change cancellations occupying the replacement room.
+        for (CancelledSchedule exception : CancelledSchedule.cancellations) {
             Schedule original = Schedule.findSchedule(exception.getScheduleID());
 
-            if (original == null
-                    || !isScheduleActiveOnDate(original, date)
+            if (!isScheduleActiveOnDate(original, date)
                     || !sameDay(original.getDay(), fullDay)) {
                 continue;
             }

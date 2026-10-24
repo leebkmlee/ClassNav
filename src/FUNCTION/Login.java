@@ -6,7 +6,6 @@ import USER.User;
 import static UI.UI.in;
 
 public class Login {
-
     public static String logIn() {
 
         int maxAttempts = 3;

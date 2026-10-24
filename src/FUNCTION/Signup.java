@@ -347,27 +347,21 @@ public class Signup {
     static void printUser() {
         UI.liner(" " + user);
     }
-
     static void printEmail() {
         UI.liner(" " + email);
     }
-
     static void printPassword() {
         UI.liner(" " + password);
     }
-
     static void printAddress() {
         UI.liner(" " + address);
     }
-
     static void printPostal() {
         UI.liner(" " + postalCode);
     }
-
     static void printBDate() {
         UI.liner(" " + birthDate);
     }
-
     static void printSex() {
         UI.liner(" " + sex);
     }

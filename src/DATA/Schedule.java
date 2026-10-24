@@ -104,6 +104,34 @@ public class Schedule {
         this.roomCode = roomCode;
     }
 
+    static {
+        schedules.add(new Schedule("COF001", "Monday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM001"));
+        schedules.add(new Schedule("COF002", "Tuesday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF003", "Wednesday", "12:00 PM", "1:30 PM", "10/26/2026", "12/18/2026", "RM011"));
+        schedules.add(new Schedule("COF004", "Thursday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF005", "Friday", "4:00 PM", "5:30 PM", "10/26/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF006", "Monday", "9:45 AM", "11:15 AM", "10/26/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF007", "Tuesday", "1:00 PM", "2:30 PM", "10/26/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF008", "Wednesday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM001"));
+        schedules.add(new Schedule("COF009", "Thursday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF010", "Friday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM003"));
+        schedules.add(new Schedule("COF011", "Monday", "1:00 PM", "2:30 PM", "10/26/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF012", "Tuesday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF013", "Wednesday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF014", "Thursday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM013"));
+        schedules.add(new Schedule("COF015", "Friday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF016", "Monday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM006"));
+        schedules.add(new Schedule("COF017", "Tuesday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM007"));
+        schedules.add(new Schedule("COF018", "Wednesday", "10:00 AM", "12:00 PM", "10/26/2026", "12/18/2026", "RM008"));
+        schedules.add(new Schedule("COF019", "Thursday", "12:00 PM", "1:30 PM", "10/26/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF020", "Friday", "1:00 PM", "3:00 PM", "10/26/2026", "12/18/2026", "RM013"));
+        schedules.add(new Schedule("COF001", "Wednesday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF002", "Thursday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM001"));
+        schedules.add(new Schedule("COF003", "Friday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM012"));
+        schedules.add(new Schedule("COF004", "Monday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF005", "Tuesday", "4:00 PM", "5:30 PM", "10/26/2026", "12/18/2026", "RM004"));
+    }
+
     // VALIDATION HELPERS
 
     private static String normalizeDay(String day) {
@@ -448,7 +476,6 @@ public class Schedule {
         UI.footer();
     }
 
-
     public boolean updateSchedule(String offeringID, String day, String startTime, String endTime,
                                   String effectiveFrom, String effectiveTo, String roomCode) {
         try {
@@ -512,7 +539,6 @@ public class Schedule {
             return false;
         }
     }
-
 
     public static void createSchedule() {
         String offeringID = "", day = "", startTime = "", endTime = "";
@@ -607,8 +633,6 @@ public class Schedule {
             }
         }
     }
-
-
     public static void editSchedule() {
         String input, choice;
         boolean submit = false;
@@ -709,8 +733,6 @@ public class Schedule {
             }
         }
     }
-
-
     public static void deleteSchedule() {
         String input, choice;
 
@@ -745,8 +767,6 @@ public class Schedule {
             UI.print("Schedule successfully deleted");
         }
     }
-
-
     private static void scheduleManage(String text, String scheduleID,
                                        String offeringID, String day, String startTime, String endTime,
                                        String effectiveFrom, String effectiveTo, String roomCode) {

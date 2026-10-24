@@ -43,12 +43,20 @@ public class Program {
 
     static {
         programs.add(new Program("BSIT", "Bachelor of Science in Information Technology", "CICT"));
+        programs.add(new Program("BLIS", "Bachelor of Library and Information Science", "CICT"));
         programs.add(new Program("BSIS", "Bachelor of Science in Information Systems", "CICT"));
-        programs.add(new Program("BSCpE", "Bachelor of Science in Computer Engineering", "COE"));
-        programs.add(new Program("BSIE", "Bachelor of Science in Industrial Engineering", "COE"));
-        programs.add(new Program("BSED", "Bachelor of Secondary Education", "COED"));
-        programs.add(new Program("BSPSY", "Bachelor of Science in Psychology", "CAS"));
-        programs.add(new Program("BSBA", "Bachelor of Science in Business Administration", "CBA"));
+        programs.add(new Program("BSArch", "Bachelor of Science in Architecture", "CAFA"));
+        programs.add(new Program("BSBroad", "Bachelor of Arts in Broadcasting", "CAL"));
+        programs.add(new Program("BSA", "Bachelor of Science in Accountancy", "CBEA"));
+        programs.add(new Program("BSEntrep", "Bachelor of Science in Entrepreneurship", "CBEA"));
+        programs.add(new Program("BSCrim", "Bachelor of Science in Criminology", "CCJE"));
+        programs.add(new Program("BSTM", "Bachelor of Science in Tourism Management", "CHTM"));
+        programs.add(new Program("BSHM", "Bachelor of Science in Hospitality Management", "CHTM"));
+        programs.add(new Program("BSN", "Bachelor of Science in Nursing", "CON"));
+        programs.add(new Program("BSCE", "Bachelor of Science in Civil Engineering", "COE"));
+        programs.add(new Program("BSElecEng", "Bachelor of Science in Electrical Engineering", "COE"));
+        programs.add(new Program("BSBio", "Bachelor of Science in Biology", "CS"));
+        programs.add(new Program("BSPsych", "Bachelor of Science in Psychology", "CSSP"));
     }
 
     // PROGRAM GETTER METHODS
@@ -125,7 +133,7 @@ public class Program {
 
         if (c != null)
             UI.liner(String.format("  COLLEGE DESCRIPTION  : %s",
-                    College.getCollegeDescription(c)));
+                    c.getCollegeDescription()));
 
         UI.footer();
     }
@@ -206,9 +214,8 @@ public class Program {
 
                         if (collegeCode.isEmpty())
                             UI.print("College Code is required");
-                        else if (College.findCollege(collegeCode) != null)
-                            UI.print("College Code does not exist");
-
+                        else if (College.existCollegeCode(collegeCode))
+                            UI.print("College Code already exist");
                     } while (collegeCode.isEmpty()
                             || College.findCollege(collegeCode) != null);
                     break;
