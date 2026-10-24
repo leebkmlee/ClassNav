@@ -6,12 +6,13 @@ import java.util.ArrayList;
 
 public class Curriculum {
 
-    private String programCode; // PK, FK -> Program.programCode
-    private String courseCode; // PK, FK -> Course.courseCode
+    private String programCode;
+    private String courseCode;
     private String curriculumYearLevel;
     private int curriculumTerm;
 
     public static ArrayList<Curriculum> curricula = new ArrayList<>();
+    public static ArrayList<Curriculum> archiveCurricula = new ArrayList<>();
 
     public Curriculum(String programCode, String courseCode,
                       String curriculumYearLevel, int curriculumTerm) {
@@ -463,7 +464,7 @@ public class Curriculum {
     }
 
     // DELETE CURRICULUM ENTRY
-    public static void deleteCurriculum() {
+    public static void archiveCurriculum() {
         String input; String choice; String programCode; String courseCode;
 
         UI.print("DELETE CURRICULUM ENTRY");
@@ -510,6 +511,7 @@ public class Curriculum {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
+            archiveCurricula.add(c);
             curricula.remove(c);
             UI.print("Curriculum entry successfully deleted");
         }
@@ -540,12 +542,33 @@ public class Curriculum {
 
         UI.header(text.toUpperCase() + ": CURRICULUM INFORMATION");
         UI.liner(String.format(" [1] PROGRAM CODE : %s", programCode));
-        UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode));
+        UI.liner(String.format(" [2] COURSE CODE  : %s", courseCode));
         UI.liner(String.format(" [3] YEAR LEVEL   : %s", curriculumYearLevel));
-        UI.liner(String.format(" [4] TERM         : %s",
-                curriculumTerm == -1 ? "" : curriculumTerm));
+        UI.liner(String.format(" [4] TERM         : %s", curriculumTerm == -1 ? "" : curriculumTerm));
         UI.liner("");
         UI.option();
         UI.footer();
+    }
+
+    public static void displayArchiveCurricula() {
+
+        UI.header("ARCHIVED CURRICULA");
+
+        if (archiveCurricula.isEmpty()) {
+            UI.liner("  No archived buildings found.");
+        } else {
+            for (Curriculum c : archiveCurricula) {
+                UI.liner(String.format(
+                        "  %-15s %-20s %-10s %10s",
+                        c.programCode,
+                        c.courseCode,
+                        c.curriculumYearLevel,
+                        c.curriculumTerm
+                ));
+            }
+        }
+
+        UI.footer();
+
     }
 }

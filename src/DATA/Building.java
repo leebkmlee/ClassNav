@@ -6,19 +6,22 @@ import static DATA.Room.rooms;
 import static UI.UI.in;
 
 public class Building {
-
+    // FIELDS
     private static int nextBuildingCode = 1;
 
     private final String buildingCode;
     private String buildingName;
+
     public static ArrayList<Building> buildings = new ArrayList<>();
     public static ArrayList<Building> archiveBuildings = new ArrayList<>();
 
+    // CONSTRUCTOR
     public Building(String buildingName) {
         this.buildingCode = String.format("BLD%02d", nextBuildingCode++);
         this.buildingName = buildingName.trim();
     }
 
+    // DUMMY DATA
     static {
         buildings.add(new Building("Pimentel Hall"));
         buildings.add(new Building("Roxas Hall"));
@@ -36,7 +39,8 @@ public class Building {
         buildings.add(new Building("E-Library"));
         buildings.add(new Building("College of Law Building"));
     }
-    // GETTERS
+
+    // GETTERS METHOD
     public String getBuildingCode() {
         return buildingCode;
     }
@@ -44,8 +48,7 @@ public class Building {
         return buildingName;
     }
 
-    // SETTERS
-
+    // SETTERS METHOD
     public void setBuildingName(String buildingName) {
 
         if (buildingName == null || buildingName.trim().isEmpty())
@@ -60,7 +63,6 @@ public class Building {
     }
 
     // FIND METHODS
-
     public static Building findBuilding(String buildingCode) {
 
         if (buildingCode == null)

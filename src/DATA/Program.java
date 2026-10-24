@@ -307,11 +307,11 @@ public class Program {
 
                         if (input.isEmpty())
                             UI.print("College Code is required");
-                        else if (College.findCollege(collegeCode) != null)
+                        else if (College.findCollege(collegeCode) == null)
                             UI.print("College Code does not exist");
 
                     } while (input.isEmpty()
-                            || College.findCollege(collegeCode) != null);
+                            || College.findCollege(collegeCode) == null);
 
                     collegeCode = input;
                     break;
@@ -334,7 +334,7 @@ public class Program {
                         break;
                     }
 
-                    if (College.findCollege(collegeCode) != null) {
+                    if (College.findCollege(collegeCode) == null) {
                         UI.print("College Code does not exist");
                         break;
                     }

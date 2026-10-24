@@ -63,9 +63,10 @@ public class Request {
             return parsedTime.format(TIME_FORMAT);
 
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(
-                    "Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
+            UI.print("Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
         }
+
+        return time;
     }
 
     // FORMAT INTERNAL TIME FOR DISPLAY
@@ -117,10 +118,10 @@ public class Request {
                    String startTime, String endTime, String reason) {
 
         if (Faculty.findFaculty(facultyID) == null)
-            throw new IllegalArgumentException("Invalid faculty ID.");
+            UI.print("Invalid faculty ID.");
 
         if (Room.findRoom(roomCode) == null)
-            throw new IllegalArgumentException("Invalid room code.");
+            UI.print("Invalid room code.");
 
         if (requestedDate == null || startTime == null
                 || endTime == null || reason == null
@@ -128,22 +129,19 @@ public class Request {
                 || startTime.trim().isEmpty()
                 || endTime.trim().isEmpty()
                 || reason.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Request details cannot be empty.");
+            UI.print("Request details cannot be empty.");
         }
 
-        LocalDate date;
+        LocalDate date = null;
 
         try {
             date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
 
             if (date.isBefore(LocalDate.now()))
-                throw new IllegalArgumentException(
-                        "Request date cannot be in the past.");
+                UI.print("Request date cannot be in the past.");
 
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(
-                    "Invalid date. Use MM/dd/yyyy.");
+            UI.print("Invalid date. Use MM/dd/yyyy.");
         }
 
         String convertedStart = convertTime(startTime);
@@ -171,8 +169,6 @@ public class Request {
         this.reviewedBy = null;
         this.reviewedAt = null;
         this.rejectionReason = null;
-
-        requests.add(this);
     }
 
     static {
@@ -570,7 +566,7 @@ public class Request {
 
                 UI.print("Request approved successfully.");
                 UI.print("Make-up schedule record created: "
-                        + approved.getRequestID());
+                        + approved.getMakeUpID());
 
             } catch (IllegalArgumentException | IllegalStateException e) {
 

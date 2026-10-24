@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public class MakeUpSchedule {
 
     // ROOM REQUEST FIELDS
-    private static int nextRequestID = 1;
+    private static int nextMakeUpID = 1;
     public static ArrayList<MakeUpSchedule> requests = new ArrayList<>();
 
-    private String requestID;
+    private String makeupID;
     private String facultyID;       // FK -> Faculty.facultyID
     private String roomCode;        // Nullable FK -> Room.roomCode
     private String requestType;
@@ -29,71 +29,9 @@ public class MakeUpSchedule {
     public MakeUpSchedule(String facultyID, String roomCode, String requestType,
                           String requestedDate, String startTime, String endTime,
                           String reason) {
-
-        if (facultyID == null || facultyID.trim().isEmpty()) {
-            throw new IllegalArgumentException("Faculty ID is required.");
-        }
-
-        facultyID = facultyID.trim();
-
-        if (Faculty.findFaculty(facultyID) == null) {
-            throw new IllegalArgumentException("Invalid faculty ID.");
-        }
-
-        if (roomCode != null) {
-            roomCode = roomCode.trim();
-
-            if (!roomCode.isEmpty() && Room.findRoom(roomCode) == null) {
-                throw new IllegalArgumentException("Invalid room code.");
-            }
-        }
-
-        if (requestType == null || requestType.trim().isEmpty()) {
-            throw new IllegalArgumentException("Request type is required.");
-        }
-
-        requestType = requestType.trim();
-
-        if (requestType.equalsIgnoreCase("Reservation")) {
-            requestType = "Reservation";
-        } else if (requestType.equalsIgnoreCase("Room Change")) {
-            requestType = "Room Change";
-        } else if (requestType.equalsIgnoreCase("Make-up Class")) {
-            requestType = "Make-up Class";
-        } else {
-            throw new IllegalArgumentException("Invalid request type.");
-        }
-
-        if (requestedDate == null || requestedDate.trim().isEmpty()
-                || startTime == null || startTime.trim().isEmpty()
-                || endTime == null || endTime.trim().isEmpty()
-                || reason == null || reason.trim().isEmpty()) {
-            throw new IllegalArgumentException("Request details cannot be empty.");
-        }
-
-        requestedDate = requestedDate.trim();
-        startTime = startTime.trim();
-        endTime = endTime.trim();
-        reason = reason.trim();
-
-        int start, end;
-
-        try {
-            start = Room.convertToMinutes(startTime);
-            end = Room.convertToMinutes(endTime);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid time format.");
-        }
-
-        if (start >= end) {
-            throw new IllegalArgumentException(
-                    "Start time must be before end time.");
-        }
-
-        this.requestID = String.format("RR%04d", nextRequestID++);
+        this.makeupID = String.format("RR%04d", nextMakeUpID++);
         this.facultyID = facultyID;
-        this.roomCode = roomCode == null || roomCode.isEmpty()
-                ? null : roomCode;
+        this.roomCode = roomCode;
         this.requestType = requestType;
         this.requestedDate = requestedDate;
         this.startTime = startTime;
@@ -102,8 +40,6 @@ public class MakeUpSchedule {
         this.status = "Pending";
         this.reviewedBy = null;
         this.reviewedAt = null;
-
-        requests.add(this);
     }
 
     static {
@@ -130,8 +66,8 @@ public class MakeUpSchedule {
     }
 
     // ROOM REQUEST GETTER METHODS
-    public String getRequestID() {
-        return requestID;
+    public String getMakeUpID() {
+        return makeupID;
     }
     public String getFacultyID() {
         return facultyID;
@@ -173,7 +109,7 @@ public class MakeUpSchedule {
         requestID = requestID.trim();
 
         for (MakeUpSchedule request : requests) {
-            if (requestID.equalsIgnoreCase(request.requestID)) {
+            if (requestID.equalsIgnoreCase(request.makeupID)) {
                 return request;
             }
         }
@@ -282,7 +218,7 @@ public class MakeUpSchedule {
             for (MakeUpSchedule request : MakeUpSchedule.requests) {
                 UI.liner(String.format(
                         "  %-8s %-10s %-16s %-12s %-10s",
-                        request.getRequestID(),
+                        request.getMakeUpID(),
                         request.getFacultyID(),
                         request.getRequestType(),
                         request.getRequestedDate(),
@@ -304,7 +240,7 @@ public class MakeUpSchedule {
         }
 
         UI.header("ROOM REQUEST DETAILS");
-        UI.liner("  REQUEST ID    : " + request.getRequestID());
+        UI.liner("  REQUEST ID    : " + request.getMakeUpID());
         UI.liner("  FACULTY ID    : " + request.getFacultyID());
         UI.liner("  ROOM CODE     : "
                 + (request.getRoomCode() == null ? "N/A" : request.getRoomCode()));
@@ -522,7 +458,7 @@ public class MakeUpSchedule {
                         );
 
                         UI.print("Room request successfully created");
-                        displayMakeUpSchedule(request.getRequestID());
+                        displayMakeUpSchedule(request.getMakeUpID());
                         submit = true;
 
                     } catch (IllegalArgumentException e) {
@@ -560,7 +496,7 @@ public class MakeUpSchedule {
         }
 
         while (!submit) {
-            makeUpScheduleManage("EDIT", request.getRequestID(),
+            makeUpScheduleManage("EDIT", request.getMakeUpID(),
                     request.getFacultyID(), request.getRoomCode() == null
                             ? "N/A" : request.getRoomCode(),
                     request.getRequestType(), request.getRequestedDate(),
@@ -615,7 +551,7 @@ public class MakeUpSchedule {
                         );
 
                         UI.print("Room request successfully reviewed");
-                        displayMakeUpSchedule(request.getRequestID());
+                        displayMakeUpSchedule(request.getMakeUpID());
                         submit = true;
 
                     } catch (IllegalArgumentException | IllegalStateException e) {
@@ -655,7 +591,7 @@ public class MakeUpSchedule {
             return;
         }
 
-        displayMakeUpSchedule(request.getRequestID());
+        displayMakeUpSchedule(request.getMakeUpID());
 
         do {
             System.out.print("  Confirm Request Deletion? (Y/N) > ");

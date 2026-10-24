@@ -143,7 +143,8 @@ public class DepartmentHead extends User {
                 break;
 
             case "X":
-                User.start();
+                System.out.println("  Exiting ...");
+                System.exit(0);
                 break;
         }
     }
@@ -482,7 +483,7 @@ public class DepartmentHead extends User {
                 Curriculum.editCurriculum();
                 break;
             case 3:
-                Curriculum.deleteCurriculum();
+                Curriculum.archiveCurriculum();
                 break;
             case 4:
                 Curriculum.displayCurriculums();
@@ -607,13 +608,13 @@ public class DepartmentHead extends User {
                 Room.createRoom();
                 break;
             case 2:
-                Room.displayRooms();
-                break;
-            case 3:
                 Room.editRoom();
                 break;
-            case 4:
+            case 3:
                 Room.deleteRoom();
+                break;
+            case 4:
+                Room.displayRooms();
                 break;
             case 0:
                 return;

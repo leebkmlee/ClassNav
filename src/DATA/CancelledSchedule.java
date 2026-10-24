@@ -11,7 +11,7 @@ import java.time.format.ResolverStyle;
 import java.util.*;
 
 public class CancelledSchedule {
-
+    // FIELDS
     private static int nextCancellationID = 1;
 
     private final String cancellationID, scheduleID, affectedDate, reason;
@@ -19,6 +19,7 @@ public class CancelledSchedule {
     public static ArrayList<CancelledSchedule> cancellations = new ArrayList<>();
     public static ArrayList<CancelledSchedule> archivedCancellations = new ArrayList<>();
 
+    // CONSTRUCTOR
     public CancelledSchedule(String scheduleID, String affectedDate, String reason) {
         this.cancellationID = String.format("CAN%04d", nextCancellationID++);
         this.scheduleID = scheduleID;
@@ -43,7 +44,7 @@ public class CancelledSchedule {
                 "Science laboratory is temporarily unavailable."));
     }
 
-    // GETTERS
+    // GETTER METHODS
     public String getCancellationID() {
         return cancellationID;
     }
@@ -57,7 +58,7 @@ public class CancelledSchedule {
         return reason;
     }
 
-    // FIND EXCEPTION
+    // FIND METHODS
     public static CancelledSchedule findException(String cancellationID) {
 
         if (cancellationID == null || cancellationID.trim().isEmpty())
@@ -72,7 +73,7 @@ public class CancelledSchedule {
         return null;
     }
 
-    // DISPLAY ALL EXCEPTIONS
+    // DISPLAY METHODS
     public static void displayCancellation(String cancellationID) {
         CancelledSchedule c = findException(cancellationID);
 

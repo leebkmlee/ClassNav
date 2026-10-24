@@ -9,18 +9,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CourseRegistration {
-
+    // FIELDS
     private static int nextRegistrationID = 1;
 
     private final String registrationID;
-    private String studentID;
-    private String offeringID;
-    private String registrationDate;
-    private String status;
+    private String studentID, offeringID, registrationDate, status;
 
     public static ArrayList<CourseRegistration> registrations = new ArrayList<>();
 
-    // COURSE REGISTRATION CONSTRUCTOR
+    // CONSTRUCTOR
     public CourseRegistration(String studentID, String offeringID) {
         if (isRegistered(studentID, offeringID))
             throw new IllegalArgumentException("Student is already registered in this offering.");
@@ -30,10 +27,9 @@ public class CourseRegistration {
         this.offeringID = offeringID;
         this.registrationDate = LocalDate.now().toString();
         this.status = "Enrolled";
-
-        registrations.add(this);
     }
 
+    // DUMMY DATA
     static {
         registrations.add(new CourseRegistration("S0001", "COF001"));
         registrations.add(new CourseRegistration("S0001", "COF002"));
@@ -58,7 +54,6 @@ public class CourseRegistration {
     }
 
     // COURSE REGISTRATION GETTER METHODS
-
     public String getRegistrationID() {
         return registrationID;
     }
@@ -196,20 +191,6 @@ public class CourseRegistration {
         UI.footer();
     }
 
-    // ADD REGISTRATION
-    public static boolean addRegistration(String studentID, String offeringID) {
-
-        try {
-            new CourseRegistration(studentID, offeringID);
-            UI.print("Course registration successfully created.");
-            return true;
-
-        } catch (IllegalArgumentException e) {
-            UI.print(e.getMessage());
-            return false;
-        }
-    }
-
     // EDIT REGISTRATION
     public static boolean editRegistration(String registrationID,
                                            String studentID, String offeringID) {
@@ -273,57 +254,69 @@ public class CourseRegistration {
         return true;
     }
 
-    // MANAGE COURSE REGISTRATIONS
-
-    // CREATE REGISTRATION MENU
+    // MANAGE METHODS
     public static void createRegistration() {
 
-        String studentID = "", offeringID = "", choice;
+        String studentID = "", offeringID = "", status = "", choice;
         boolean submit = false;
 
         while (!submit) {
-            registrationManage("CREATE", "NEW", studentID, offeringID);
+            registrationManage("CREATE", "", studentID, offeringID, status);
 
             do {
                 System.out.print("  Select > ");
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[12X/]"))
+                if (!choice.matches("[13X/]"))
                     UI.print("Invalid Choice");
 
-            } while (!choice.matches("[12X/]"));
+            } while (!choice.matches("[13X/]"));
 
             switch (choice) {
                 case "1":
-                    System.out.print("   Enter Student ID > ");
-                    studentID = in.nextLine().trim();
+                    do {
+                        System.out.print("   Enter Student ID > ");
+                        studentID = in.nextLine().trim();
 
-                    if (Student.findStudent(studentID) == null) {
-                        UI.print("Student does not exist.");
-                        studentID = "";
-                    }
+                        if (Student.findStudent(studentID) == null) {
+                            UI.print("Student does not exist.");
+                            studentID = "";
+                        }
+                        else if (studentID.trim().isEmpty()) UI.print("Invalid Input");
+                    } while (Student.findStudent(studentID) == null || studentID.trim().isEmpty());
                     break;
 
                 case "2":
-                    CourseOffering.displayOfferings();
+                    do {
+                        System.out.print("   Enter Offering ID > ");
+                        offeringID = in.nextLine().trim();
 
-                    System.out.print("   Enter Offering ID > ");
-                    offeringID = in.nextLine().trim();
-
-                    if (CourseOffering.findOffering(offeringID) != null) {
-                        UI.print("Course offering does not exist.");
-                        offeringID = "";
-                    }
+                        if (CourseOffering.findOffering(offeringID) == null) {
+                            UI.print("Course offering does not exist.");
+                            offeringID = "";
+                        }
+                        else if (offeringID.trim().isEmpty()) UI.print("Invalid Input");
+                    } while(CourseOffering.findOffering(offeringID) == null || offeringID.trim().isEmpty());
                     break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Status > ");
+                        status = in.nextLine().trim();
+
+                        if (status.isEmpty()) UI.print("Invalid Input");
+                        else if (!status.matches("ENROLLED|DROPPED")) UI.print("Invalid Status");
+                    } while (status.isEmpty() || !status.matches("ENROLLED|DROPPED"));
 
                 case "/":
                     if (studentID.isEmpty() || offeringID.isEmpty()) {
                         UI.print("Details are incomplete.");
                         break;
                     }
-
-                    if (addRegistration(studentID, offeringID))
-                        submit = true;
+                    registrations.add(new CourseRegistration(studentID, offeringID));
+                    UI.print("Course registration successfully created.");
+                    displayRegistration(registrations.getLast().getRegistrationID());
+                    submit = true;
                     break;
 
                 case "X":
@@ -332,8 +325,6 @@ public class CourseRegistration {
             }
         }
     }
-
-    // EDIT REGISTRATION MENU
     public static void editRegistration() {
 
         String input, choice;
@@ -356,9 +347,10 @@ public class CourseRegistration {
 
         String studentID = r.getStudentID();
         String offeringID = r.getOfferingID();
+        String status = r.getStatus();
 
         while (!submit) {
-            registrationManage("EDIT", r.getRegistrationID(), studentID, offeringID);
+            registrationManage("EDIT", r.getRegistrationID(), studentID, offeringID, status);
 
             do {
                 System.out.print("  Select > ");
@@ -394,10 +386,37 @@ public class CourseRegistration {
 
                     break;
 
+                case "3":
+                    do {
+                        System.out.print("   Enter Status > ");
+                        status = in.nextLine().trim();
+
+                        if (status.isEmpty()) UI.print("Invalid Input");
+                        else if (!status.matches("ENROLLED|DROPPED")) UI.print("Invalid Status");
+                    } while (status.isEmpty() || !status.matches("ENROLLED|DROPPED"));
+                break;
+
                 case "/":
-                    if (editRegistration(r.getRegistrationID(), studentID, offeringID)) {
+                    submit = true;
+                    if (studentID == null || studentID.trim().isEmpty()
+                            || offeringID == null || offeringID.trim().isEmpty()) {
+                        UI.print("All registration fields are required.");
+                    }
+
+                    for (CourseRegistration existing : registrations) {
+                        if (existing != r
+                                && existing.getStudentID().equalsIgnoreCase(studentID)
+                                && existing.getOfferingID().equalsIgnoreCase(offeringID)
+                                && existing.getStatus().equalsIgnoreCase("Enrolled")) {
+                            UI.print("Student is already registered in this offering.");
+                            submit = false;
+                        }
+                    }
+
+                    if (submit) {
+                        r.studentID = studentID; r.offeringID = offeringID; r.status = status;
                         UI.print("Registration successfully edited.");
-                        submit = true;
+                        displayRegistration(r.getRegistrationID());
                     }
                     break;
 
@@ -407,8 +426,6 @@ public class CourseRegistration {
             }
         }
     }
-
-    // DELETE REGISTRATION MENU
     public static void deleteRegistration() {
 
         String input, choice;
@@ -442,15 +459,15 @@ public class CourseRegistration {
         if (choice.equals("Y"))
             deleteRegistration(r.getRegistrationID());
     }
-
-    // REGISTRATION FORM DISPLAY
     private static void registrationManage(String text, String registrationID,
-                                           String studentID, String offeringID) {
+                                           String studentID, String offeringID, String status) {
 
         UI.header(text.toUpperCase() + ": COURSE REGISTRATION");
-        UI.liner(" REGISTRATION ID : " + registrationID);
-        UI.liner(" [1] STUDENT ID   : " + studentID);
-        UI.liner(" [2] OFFERING ID  : " + offeringID);
+        UI.liner("     REGISTRATION ID : " + (registrationID.trim().isEmpty() ?
+                String.format("CR%04d", registrations.size()) : registrationID));
+        UI.liner(" [1] STUDENT ID      : " + studentID);
+        UI.liner(" [2] OFFERING ID     : " + offeringID);
+        UI.liner(" [3] STATUS          : " + status);
         UI.liner("");
         UI.option();
         UI.footer();

@@ -6,18 +6,19 @@ import UI.*;
 import static UI.UI.in;
 
 public class College {
-
-    private String collegeCode; // primary key
-    private String collegeDescription;
+    // FIELDS
+    private String collegeCode, collegeDescription;
 
     public static ArrayList<College> colleges = new ArrayList<>();
     public static ArrayList<College> archivedColleges = new ArrayList<>();
 
+    // CONSTRUCTOR
     public College(String collegeCode, String collegeDescription) {
         this.collegeCode = collegeCode.trim().toUpperCase();
         this.collegeDescription = collegeDescription.trim();
     }
 
+    // DUMMY DATA
     static {
         colleges.add(new College("CAFA", "College of Architecture and Fine Arts"));
         colleges.add(new College("CAL", "College of Arts and Letters"));
@@ -35,36 +36,12 @@ public class College {
         colleges.add(new College("CSSP", "College of Social Sciences and Philosophy"));
     }
 
-    // COLLEGE GETTER METHODS
+    // GETTER METHODS
     public String getCollegeCode() {
         return collegeCode;
     }
     public String getCollegeDescription() {
         return collegeDescription;
-    }
-
-    // FIND METHODS
-    public static College findCollege(String collegeCode) {
-        if (collegeCode == null || collegeCode.trim().isEmpty())
-            return null;
-
-        for (College c : colleges) {
-            if (collegeCode.trim().equalsIgnoreCase(c.getCollegeCode()))
-                return c;
-        }
-
-        return null;
-    }
-    public static College findCollegeDesc(String collegeDescription) {
-        if (collegeDescription == null || collegeDescription.trim().isEmpty())
-            return null;
-
-        for (College c : colleges) {
-            if (collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription()))
-                return c;
-        }
-
-        return null;
     }
 
     // COLLEGE SETTER METHODS
@@ -94,6 +71,30 @@ public class College {
         }
 
         this.collegeDescription = collegeDescription.trim();
+    }
+
+    // FIND METHODS
+    public static College findCollege(String collegeCode) {
+        if (collegeCode == null || collegeCode.trim().isEmpty())
+            return null;
+
+        for (College c : colleges) {
+            if (collegeCode.trim().equalsIgnoreCase(c.getCollegeCode()))
+                return c;
+        }
+
+        return null;
+    }
+    public static College findCollegeDesc(String collegeDescription) {
+        if (collegeDescription == null || collegeDescription.trim().isEmpty())
+            return null;
+
+        for (College c : colleges) {
+            if (collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription()))
+                return c;
+        }
+
+        return null;
     }
 
     // DISPLAY METHODS
@@ -228,9 +229,9 @@ public class College {
             System.out.print("  Enter College Code > ");
             input = in.nextLine().trim().toUpperCase();
 
-            if (input.isEmpty() || findCollege(input) != null)
+            if (input.isEmpty() || findCollege(input) == null)
                 UI.print("College does not exist");
-        } while (input.isEmpty() || findCollege(input) != null);
+        } while (input.isEmpty() || findCollege(input) == null);
 
         College c = College.findCollege(input);
 
@@ -308,9 +309,9 @@ public class College {
             System.out.print("  Enter College Code > ");
             input = in.nextLine().trim().toUpperCase();
 
-            if (input.isEmpty() || findCollege(input) != null)
+            if (input.isEmpty() || findCollege(input) == null)
                 UI.print("College does not exist");
-        } while (input.isEmpty() || findCollege(input) != null);
+        } while (input.isEmpty() || findCollege(input) == null);
 
         College c = College.findCollege(input);
 

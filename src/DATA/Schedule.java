@@ -501,13 +501,14 @@ public class Schedule {
 
             switch (choice) {
                 case "1":
-                    CourseOffering.displayOfferings();
-                    System.out.print("   Enter Offering ID > ");
-                    offeringID = in.nextLine().trim();
-                    if (CourseOffering.findOffering(offeringID) != null) {
-                        UI.print("Course offering does not exist");
-                        offeringID = "";
-                    }
+                    do {
+                        System.out.print("   Enter Offering ID > ");
+                        offeringID = in.nextLine().trim();
+                        if (CourseOffering.findOffering(offeringID) == null) {
+                            UI.print("Course offering does not exist");
+                            offeringID = "";
+                        }
+                    } while (CourseOffering.findOffering(offeringID) == null);
                     break;
 
                 case "2":

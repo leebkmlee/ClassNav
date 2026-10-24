@@ -7,15 +7,14 @@ import static UI.UI.in;
 import java.util.ArrayList;
 
 public class Course {
-
-    private String courseCode;
-    private String courseDescription;
+    // FIELDS
+    private String courseCode, courseDescription, courseType;
     private int creditUnits;
-    private String courseType; // Course classification
 
     public static ArrayList<Course> courses = new ArrayList<>();
     public static ArrayList<Course> archiveCourses = new ArrayList<>();
 
+    // CONSTRUCTOR
     public Course(String courseCode, String courseDescription, int creditUnits,
                   String courseType) {
 
@@ -31,10 +30,10 @@ public class Course {
         if (courseType == null || courseType.trim().isEmpty())
             throw new IllegalArgumentException("Course type cannot be empty.");
 
-        if (existCourseCode(courseCode))
+        if (findCourse(courseCode) != null)
             throw new IllegalArgumentException("Course code already exists.");
 
-        if (existCourseDesc(courseDescription))
+        if (findCourseDesc(courseDescription) != null)
             throw new IllegalArgumentException("Course description already exists.");
 
         this.courseCode = courseCode.trim();
@@ -43,6 +42,7 @@ public class Course {
         this.courseType = courseType.trim().toUpperCase();
     }
 
+    // DUMMY DATA
     static {
         courses.add(new Course("GE101", "Purposive Communication", 3, "GEN ED"));
         courses.add(new Course("GE102", "Mathematics in the Modern World", 3, "GEN ED"));
@@ -76,8 +76,8 @@ public class Course {
         courses.add(new Course("BIO101", "General Biology", 4, "MAJOR"));
         courses.add(new Course("CH101", "General Chemistry", 4, "MAJOR"));
     }
-    // COURSE SETTER METHODS
 
+    // SETTER METHODS
     public void setCourseCode(String courseCode) {
 
         if (courseCode == null || courseCode.trim().isEmpty())
@@ -121,8 +121,7 @@ public class Course {
         this.courseType = courseType.trim().toUpperCase();
     }
 
-    // COURSE GETTER METHODS
-
+    // GETTER METHODS
     public String getCourseCode() {
         return courseCode;
     }
@@ -136,8 +135,7 @@ public class Course {
         return courseType;
     }
 
-    // FIND USING THE OFFICIAL COURSE CODE
-
+    // FIND METHODS
     public static Course findCourse(String courseCode) {
         if (courseCode == null || courseCode.trim().isEmpty())
             return null;
@@ -149,39 +147,19 @@ public class Course {
 
         return null;
     }
-
-    // EXISTING STATIC GETTERS
-
-    public static String getCourseCode(Course c) {
-        return c == null ? null : c.getCourseCode();
-    }
-    public static String getCourseDescription(Course c) {
-        return c == null ? null : c.getCourseDescription();
-    }
-    public static int getCreditUnits(Course c) {
-        return c == null ? 0 : c.getCreditUnits();
-    }
-    public static String getCourseType(Course c) {
-        return c == null ? null : c.getCourseType();
-    }
-    public static boolean existCourseCode(String courseCode) {
-        return findCourse(courseCode) != null;
-    }
-    public static boolean existCourseDesc(String courseDescription) {
-
+    public static Course findCourseDesc(String courseDescription) {
         if (courseDescription == null || courseDescription.trim().isEmpty())
-            return false;
+            return null;
 
         for (Course c : courses) {
-            if (courseDescription.trim().equalsIgnoreCase(c.getCourseDescription()))
-                return true;
+            if (courseDescription.trim().equalsIgnoreCase(c.courseDescription))
+                return c;
         }
-
-        return false;
+        
+        return null;
     }
 
     // COURSE METHODS
-
     public static void displayCourse(String courseCode) {
 
         Course c = findCourse(courseCode);
@@ -219,7 +197,6 @@ public class Course {
     }
 
     // CHECK FACULTY COURSE ASSIGNMENT
-
     public static boolean courseLoad(String facultyID, String courseCode) {
 
         if (facultyID == null || facultyID.trim().isEmpty()
@@ -243,7 +220,6 @@ public class Course {
     }
 
     // DISPLAY SECTIONS ASSIGNED TO A COURSE AND FACULTY
-
     public static void displaySections(String courseCode, String facultyID) {
 
         Course c = findCourse(courseCode);
@@ -305,6 +281,7 @@ public class Course {
         UI.footer();
     }
 
+    // MANAGE METHODS
     public static void createCourse() {
         String courseCode = "", courseDescription = "", courseType = "", choice = "";
         int creditUnits = -1; boolean submit = false;
@@ -327,9 +304,9 @@ public class Course {
 
                         if (courseCode.isEmpty())
                             UI.print("Course Code cannot be empty");
-                        else if (Course.existCourseCode(courseCode))
+                        else if (Course.findCourse(courseCode) != null)
                             UI.print("Course Code already exists");
-                    } while (courseCode.isEmpty() || Course.existCourseCode(courseCode));
+                    } while (courseCode.isEmpty() || Course.findCourse(courseCode) != null);
                     break;
 
                 case "2":
@@ -339,9 +316,9 @@ public class Course {
 
                         if (courseDescription.isEmpty())
                             UI.print("Course Description cannot be empty");
-                        else if (Course.existCourseDesc(courseDescription))
+                        else if (Course.findCourseDesc(courseDescription) != null)
                             UI.print("Course Description already exists");
-                    } while (courseDescription.isEmpty() || Course.existCourseDesc(courseDescription));
+                    } while (courseDescription.isEmpty() || Course.findCourseDesc(courseDescription) != null);
                     break;
 
                 case "3":
@@ -397,9 +374,9 @@ public class Course {
             System.out.print("  Enter Course Code > ");
             input = in.nextLine().trim();
 
-            if (input.isEmpty() || !Course.existCourseCode(input))
+            if (input.isEmpty() || findCourse(input) != null)
                 UI.print("Course does not exist");
-        } while (input.isEmpty() || !Course.existCourseCode(input));
+        } while (input.isEmpty() || findCourse(input) != null);
 
         Course c = Course.findCourse(input);
 
@@ -408,10 +385,10 @@ public class Course {
             return;
         }
 
-        courseCode = Course.getCourseCode(c);
-        courseDescription = Course.getCourseDescription(c);
-        creditUnits = Course.getCreditUnits(c);
-        courseType = Course.getCourseType(c);
+        courseCode = c.getCourseCode();
+        courseDescription = c.getCourseDescription();
+        creditUnits = c.getCreditUnits();
+        courseType = c.getCourseType();
 
         while (!submit) {
             courseManage("EDIT", courseCode, courseDescription, creditUnits, courseType);
@@ -432,12 +409,12 @@ public class Course {
 
                         if (courseCode.isEmpty())
                             UI.print("Course Code cannot be empty");
-                        else if (Course.existCourseCode(courseCode) &&
-                                !Course.getCourseCode(c).equalsIgnoreCase(courseCode))
+                        else if (Course.findCourse(courseCode) != null &&
+                                !c.getCourseCode().equalsIgnoreCase(courseCode))
                             UI.print("Course Code already exists");
                     } while (courseCode.isEmpty() ||
-                            (Course.existCourseCode(courseCode) &&
-                                    !Course.getCourseCode(c).equalsIgnoreCase(courseCode)));
+                            (Course.findCourse(courseCode) != null &&
+                                    !c.getCourseCode().equalsIgnoreCase(courseCode)));
                     break;
 
                 case "2":
@@ -447,12 +424,12 @@ public class Course {
 
                         if (courseDescription.isEmpty())
                             UI.print("Course Description cannot be empty");
-                        else if (Course.existCourseDesc(courseDescription) &&
-                                !Course.getCourseDescription(c).equalsIgnoreCase(courseDescription))
+                        else if (Course.findCourseDesc(courseDescription) != null &&
+                                !c.getCourseDescription().equalsIgnoreCase(courseDescription))
                             UI.print("Course Description already exists");
                     } while (courseDescription.isEmpty() ||
-                            (Course.existCourseDesc(courseDescription) &&
-                                    !Course.getCourseDescription(c).equalsIgnoreCase(courseDescription)));
+                            (Course.findCourseDesc(courseDescription) != null &&
+                                    !c.getCourseDescription().equalsIgnoreCase(courseDescription)));
                     break;
 
                 case "3":
@@ -488,7 +465,7 @@ public class Course {
                     c.setCourseType(courseType);
 
                     UI.print("Course successfully edited");
-                    Course.displayCourse(Course.getCourseCode(c));
+                    Course.displayCourse(c.getCourseCode());
                     submit = true;
                     break;
 
@@ -507,9 +484,9 @@ public class Course {
             System.out.print("  Enter Course Code > ");
             input = in.nextLine().trim();
 
-            if (input.isEmpty() || !Course.existCourseCode(input))
+            if (input.isEmpty() || findCourse(input) != null)
                 UI.print("Course does not exist");
-        } while (input.isEmpty() || !Course.existCourseCode(input));
+        } while (input.isEmpty() || findCourse(input) != null);
 
         Course c = Course.findCourse(input);
 

@@ -18,6 +18,19 @@ public class Notification {
     private String endTime;
     private String message;
 
+    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
+        ArrayList<Notification> received = new ArrayList<>();
+
+        if (recipientID == null || recipientID.isBlank()) return received;
+
+        for (Notification n : notifications) {
+            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
+                received.add(n);
+            }
+        }
+        return received;
+    }
+
     public Notification(String senderID, String recipientID, String courseCode, String roomCode,
                         String buildingName, String day, String startTime, String endTime, String message) {
 
@@ -87,18 +100,6 @@ public class Notification {
             if (n != null && n.notificationID == notificationID) return n;
         }
         return null;
-    }
-    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
-        ArrayList<Notification> received = new ArrayList<>();
-
-        if (recipientID == null || recipientID.isBlank()) return received;
-
-        for (Notification n : notifications) {
-            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
-                received.add(n);
-            }
-        }
-        return received;
     }
     public static int getNotification(Notification n) {
         return n == null ? -1 : n.notificationID;

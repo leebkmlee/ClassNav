@@ -53,39 +53,44 @@ public class Signup {
 
             switch (choice) {
                 case "1":
+                    valid = false;
                     System.out.println("   Enter Full Name (Last Name/First Name/Middle Initial)");
 
                     do {
-                        System.out.print("    Last Name > ");
-                        lastName = in.nextLine().trim();
+                        do {
+                            System.out.print("    Last Name > ");
+                            lastName = in.nextLine().trim();
 
-                        if (lastName.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (lastName.isEmpty());
+                            if (lastName.isEmpty())
+                                UI.print("Invalid Input");
+                        } while (lastName.isEmpty());
 
-                    do {
-                        System.out.print("    First Name > ");
-                        firstName = in.nextLine().trim();
+                        do {
+                            System.out.print("    First Name > ");
+                            firstName = in.nextLine().trim();
 
-                        if (firstName.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (firstName.isEmpty());
+                            if (firstName.isEmpty())
+                                UI.print("Invalid Input");
+                        } while (firstName.isEmpty());
 
-                    System.out.print("    Middle Initial > ");
-                    middleInitial = in.nextLine().trim().toUpperCase();
+                        System.out.print("    Middle Initial > ");
+                        middleInitial = in.nextLine().trim().toUpperCase();
 
-                    if (middleInitial.endsWith("."))
-                        middleInitial = middleInitial.substring(0, middleInitial.length() - 1);
+                        if (middleInitial.endsWith("."))
+                            middleInitial = middleInitial.substring(0, middleInitial.length() - 1);
 
-                    userName = lastName + ", " + firstName
-                            + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+                        userName = lastName + ", " + firstName
+                                + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
 
-                    if (User.checkDuplicateName(userName)) {
-                        UI.print("Name already exists");
-                    } else {
-                        if (user.equals("[1] Full Name:")) complete++;
-                        user = "[1] Full Name: " + userName;
-                    }
+                        if (User.checkDuplicateName(userName)) {
+                            UI.print("Name already exists");
+                            firstName = ""; middleInitial = ""; lastName = "";
+                        } else {
+                            if (user.equals("[1] Full Name:")) complete++;
+                            user = "[1] Full Name: " + userName;
+                            valid = true;
+                        }
+                    } while (!valid);
                     break;
 
                 case "2":
@@ -253,9 +258,9 @@ public class Signup {
                                 System.out.print("   College Code > ");
                                 collegeCode = in.nextLine().trim().toUpperCase();
 
-                                if (College.findCollege(collegeCode) != null)
+                                if (College.findCollege(collegeCode) == null)
                                     UI.print("College code does not exist");
-                            } while (College.findCollege(collegeCode) != null);
+                            } while (College.findCollege(collegeCode) == null);
 
                             User.users.add(new DepartmentHead(
                                     lastName, firstName, middleInitial,
@@ -270,9 +275,9 @@ public class Signup {
                                 System.out.print("   College Code > ");
                                 collegeCode = in.nextLine().trim().toUpperCase();
 
-                                if (College.findCollege(collegeCode) != null)
+                                if (College.findCollege(collegeCode) == null)
                                     UI.print("College code does not exist");
-                            } while (College.findCollege(collegeCode) != null);
+                            } while (College.findCollege(collegeCode) == null);
 
                             do {
                                 System.out.print("   Employment Status > ");

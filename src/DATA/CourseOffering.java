@@ -9,20 +9,27 @@ import java.util.ArrayList;
 import static UI.UI.in;
 
 public class CourseOffering {
-
+    // FIELDS
     private static int nextOfferingID = 1;
 
-    private String offeringID;
-    private String sectionID; // FK -> Section.sectionID
-    private String courseCode;  // FK -> Course.courseCode
-    private String facultyID; // FK -> Faculty.facultyID
-    private String academicYear;
+    private String offeringID, sectionID, courseCode, facultyID, academicYear;
     private int term;
 
     public static ArrayList<CourseOffering> offerings = new ArrayList<>();
     public static ArrayList<CourseOffering> archivedOfferings = new ArrayList<>();
 
-    // COURSE OFFERING CONSTRUCTOR
+    // CONSTRUCTOR
+    public CourseOffering(String sectionID, String courseCode, String facultyID,
+                          String academicYear, int term) {
+        this.offeringID = String.format("COF%03d", nextOfferingID++);
+        this.sectionID = sectionID;
+        this.courseCode = courseCode;
+        this.facultyID = facultyID;
+        this.academicYear = academicYear;
+        this.term = term;
+    }
+
+    // DUMMY DATA
     static {
         offerings.add(new CourseOffering("SEC001", "IT101", "F0001", "2025-2026", 1));
         offerings.add(new CourseOffering("SEC001", "GE101", "F0002", "2025-2026", 1));
@@ -45,17 +52,8 @@ public class CourseOffering {
         offerings.add(new CourseOffering("SEC012", "CE101", "F0011", "2026-2027", 1));
         offerings.add(new CourseOffering("SEC013", "BIO101", "F0013", "2025-2026", 1));
     }
-    public CourseOffering(String sectionID, String courseCode, String facultyID,
-                          String academicYear, int term) {
-        this.offeringID = String.format("COF%03d", nextOfferingID++);
-        this.sectionID = sectionID;
-        this.courseCode = courseCode;
-        this.facultyID = facultyID;
-        this.academicYear = academicYear;
-        this.term = term;
-    }
 
-    // COURSE OFFERING GETTER METHODS
+    // GETTER METHODS
     public String getOfferingID() {
         return offeringID;
     }
@@ -99,7 +97,7 @@ public class CourseOffering {
         return result;
     }
 
-    // DISPLAY ONE COURSE OFFERING
+    // DISPLAY METHODS
     public static void displayOffering(String offeringID) {
 
         CourseOffering o = findOffering(offeringID);
@@ -118,8 +116,6 @@ public class CourseOffering {
         UI.liner(String.format("  TERM           : %d", o.getTerm()));
         UI.footer();
     }
-
-    // DISPLAY ALL COURSE OFFERINGS
     public static void displayOfferings() {
         UI.header("COURSE OFFERINGS");
         if (offerings.isEmpty()) UI.liner("  No Course Offerings found.");
@@ -145,8 +141,6 @@ public class CourseOffering {
 
         UI.footer();
     }
-
-    // DISPLAY ALL ARCHIVED COURSE OFFERINGS
     public static void displayArchivedOfferings() {
         UI.header("ARCHIVED COURSE OFFERINGS");
         if (archivedOfferings.isEmpty()) UI.liner("  No Archived Course Offerings found.");

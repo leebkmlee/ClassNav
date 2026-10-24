@@ -2,8 +2,12 @@
 package USER;
 
 import DATA.*;
+import FUNCTION.Notification;
 import FUNCTION.Request;
 import UI.*;
+
+import static DATA.Section.sections;
+import static FUNCTION.Notification.notifications;
 import static UI.UI.in;
 
 import java.util.ArrayList;
@@ -105,7 +109,8 @@ public class Faculty extends User {
                 break;
 
             case "X":
-                User.start();
+                System.out.println("  Exiting ...");
+                System.exit(0);
                 break;
         }
     }
@@ -120,6 +125,7 @@ public class Faculty extends User {
 
         this.collegeCode = college.getCollegeCode();
     }
+
     public void setEmploymentStatus(String employmentStatus) {
         if (employmentStatus == null || employmentStatus.trim().isEmpty()) {
             throw new IllegalArgumentException("Employment status cannot be empty.");
@@ -142,6 +148,7 @@ public class Faculty extends User {
 
         return null;
     }
+
     public static String getCollegeCode(User u) {
         if (u == null)
             return null;
@@ -149,6 +156,7 @@ public class Faculty extends User {
         Faculty f = findFaculty(u.getUserID());
         return f == null ? null : f.collegeCode;
     }
+
     public static String getEmploymentStatus(User u) {
         if (u == null)
             return null;
@@ -442,6 +450,103 @@ public class Faculty extends User {
             UI.liner("  No available rooms found.");
         }
 
+        UI.footer();
+    }
+
+    // VIEW FACULTY NOTIFICATIONS
+    public static void viewNotifications(String facultyID) {
+        Faculty faculty = Faculty.findFaculty(facultyID);
+
+        if (faculty == null) {
+            UI.print("Faculty not found");
+            return;
+        }
+
+        ArrayList<Notification> facultyNotifications =
+                Notification.getNotificationsByRecipient(faculty.getUserID());
+
+        UI.header("FACULTY NOTIFICATIONS");
+        UI.liner("  FACULTY ID   : " + faculty.getUserID());
+        UI.liner("  FACULTY NAME : " + faculty.getUserName());
+        UI.separator();
+
+        if (facultyNotifications.isEmpty()) {
+            UI.liner("  No notifications found.");
+            UI.footer();
+            return;
+        }
+
+        UI.liner(String.format("  %-5s %-8s %-22s %-20s",
+                "NO.", "ID", "SENDER", "MESSAGE"));
+        UI.separator();
+
+        for (int i = 0; i < facultyNotifications.size(); i++) {
+            Notification n = facultyNotifications.get(i);
+
+            Student student = Student.findStudent(
+                    Notification.getSenderID(n));
+
+            String senderName = student == null
+                    ? Notification.getSenderID(n)
+                    : student.getUserName();
+
+            String message = Notification.getMessage(n);
+
+            if (message == null)
+                message = "";
+
+            if (message.length() > 17)
+                message = message.substring(0, 17) + "...";
+
+            UI.liner(String.format("  [%-3d] %-8s %-22s %-20s",
+                    i + 1,
+                    String.format("%04d", Notification.getNotification(n)),
+                    senderName,
+                    message));
+        }
+
+        UI.liner("");
+        UI.liner("  [0] Back");
+        UI.footer();
+
+        String choice;
+        int selected = -1;
+
+        do {
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            try {
+                selected = Integer.parseInt(choice);
+                if (selected < 0 || selected > facultyNotifications.size()) {
+                    UI.print("Invalid selection. Choose from 0 to "
+                            + facultyNotifications.size());
+                    selected = -1;
+                }
+            } catch (NumberFormatException e) {
+                UI.print("Invalid input. Numbers only.");
+                selected = -1;
+            }
+        } while (selected == -1);
+
+        if (selected == 0) return;
+
+        Notification n = facultyNotifications.get(selected - 1);
+        Student student = Student.findStudent(
+                Notification.getSenderID(n));
+        UI.header("NOTIFICATION DETAILS");
+        UI.liner("  NOTIFICATION ID : " + String.format("%04d", Notification.getNotification(n)));
+        UI.liner("  FROM            : " + (student == null ? Notification.getSenderID(n) : student.getUserName()));
+        UI.liner("  SENDER ID       : " + Notification.getSenderID(n));
+        UI.liner("  TO              : " + Notification.getRecipientID(n));
+        UI.separator();
+        UI.liner("  COURSE CODE     : " + Notification.getCourseCode(n));
+        UI.liner("  ROOM CODE       : " + Notification.getRoomCode(n));
+        UI.liner("  BUILDING NAME   : " + Notification.getBuildingName(n));
+        UI.liner("  DAY             : " + Notification.getDay(n));
+        UI.liner("  TIME            : " + Notification.getStartTime(n) + " - " + Notification.getEndTime(n));
+        UI.separator();
+        UI.liner("  MESSAGE         : " + Notification.getMessage(n));
         UI.footer();
     }
 }

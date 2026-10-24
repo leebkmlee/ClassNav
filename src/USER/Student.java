@@ -108,21 +108,26 @@ public class Student extends User {
                 break;
 
             case "X":
-                User.start();
+                System.out.println("  Exiting ...");
+                System.exit(0);
                 break;
         }
     }
+
     public void setEnrollmentStatus(String enrollmentStatus) {
         if (enrollmentStatus == null || enrollmentStatus.isBlank())
             throw new IllegalArgumentException("Enrollment status cannot be blank");
         this.enrollmentStatus = enrollmentStatus.trim();
     }
+
     public String getEnrollmentStatus() {
         return enrollmentStatus;
     }
+
     public String getProgramCode() {
         return programCode;
     }
+
     public void setProgramCode(String programCode) {
         Program p = Program.findProgram(programCode);
 
@@ -131,6 +136,7 @@ public class Student extends User {
 
         this.programCode = Program.getProgram(p);
     }
+
     public static Student findStudent(String userID) {
         if (userID == null) return null;
 
@@ -143,6 +149,7 @@ public class Student extends User {
 
         return null;
     }
+
     public static String getEnrollmentStatus(User u) {
         if (u == null) return null;
 
@@ -151,6 +158,7 @@ public class Student extends User {
 
         return s.getEnrollmentStatus();
     }
+
     public static String getProgramCode(User u) {
         if (u == null) return null;
 
@@ -207,6 +215,7 @@ public class Student extends User {
             }
         }
     }
+
     public static void locateRoom(String roomCode) {
         Room r = Room.findRoom(roomCode);
 
@@ -238,6 +247,7 @@ public class Student extends User {
 
         UI.footer();
     }
+
     private static boolean isValidDay(String day) {
         if (day == null) return false;
 
@@ -248,6 +258,7 @@ public class Student extends User {
 
         return false;
     }
+
     private static String normalizeDay(String day) {
         if (day == null) return null;
 
@@ -258,6 +269,7 @@ public class Student extends User {
 
         return null;
     }
+
     private static boolean isValidTimeRange(String startTime, String endTime) {
         try {
             if (startTime == null || endTime == null
@@ -272,7 +284,8 @@ public class Student extends User {
             return false;
         }
     }
-    private static boolean isScheduleActiveToday(Schedule schedule) {
+
+    private static boolean isScheduleActive(Schedule schedule) {
         if (schedule == null || schedule.getEffectiveFrom() == null
                 || schedule.getEffectiveTo() == null)
             return false;
@@ -292,6 +305,18 @@ public class Student extends User {
             return false;
         }
     }
+
+    private static int getDayOrder(String day) {
+        if (day == null) return 8;
+
+        for (int i = 0; i < DAYS.length; i++) {
+            if (DAYS[i].equalsIgnoreCase(day.trim()))
+                return i + 1;
+        }
+
+        return 8;
+    }
+
     public static void displaySchedules(String studentID) {
         Student st = Student.findStudent(studentID);
 
@@ -300,7 +325,7 @@ public class Student extends User {
             return;
         }
 
-        UI.header("STUDENT SCHEDULE");
+        UI.header("STUDENT WEEKLY TIMETABLE");
         UI.liner(String.format("  STUDENT ID    : %s", st.getUserID()));
         UI.liner(String.format("  DATE          : %s", LocalDate.now()));
         UI.separator();
@@ -320,7 +345,7 @@ public class Student extends User {
                 continue;
 
             for (Schedule s : Schedule.getSchedulesByOffering(o.getOfferingID())) {
-                if (s == null || !isScheduleActiveToday(s)
+                if (s == null || !isScheduleActive(s)
                         || displayedSchedules.contains(s.getScheduleID()))
                     continue;
 
@@ -329,11 +354,37 @@ public class Student extends User {
             }
         }
 
+        schedules.sort((s1, s2) -> {
+            int dayComparison = Integer.compare(
+                    getDayOrder(s1.getDay()), getDayOrder(s2.getDay()));
+
+            if (dayComparison != 0)
+                return dayComparison;
+
+            return Integer.compare(
+                    convertToMinutes(s1.getStartTime()),
+                    convertToMinutes(s2.getStartTime()));
+        });
+
         if (schedules.isEmpty()) {
-            UI.liner("  No active schedules found for today.");
+            UI.liner("  No active schedules found for this week.");
         } else {
-            for (int i = 0; i < schedules.size(); i++) {
-                Schedule s = schedules.get(i);
+            String currentDay = "";
+
+            for (Schedule s : schedules) {
+                String day = normalizeDay(s.getDay());
+
+                if (day == null)
+                    day = s.getDay();
+
+                if (!day.equalsIgnoreCase(currentDay)) {
+                    if (!currentDay.isEmpty())
+                        UI.separator();
+
+                    UI.liner(String.format("  %s", day.toUpperCase()));
+                    UI.separator();
+                    currentDay = day;
+                }
 
                 CourseOffering o = CourseOffering.findOffering(s.getOfferingID());
                 Course c = o == null ? null : Course.findCourse(o.getCourseCode());
@@ -343,20 +394,16 @@ public class Student extends User {
                 Building b = r == null ? null
                         : Building.findBuilding(r.getBuildingCode());
 
-                UI.liner(String.format("  SCHEDULE ID   : %s", s.getScheduleID()));
+                UI.liner(String.format("  TIME          : %s - %s",
+                        s.getStartTime(), s.getEndTime()));
                 UI.liner(String.format("  COURSE        : %s",
                         c == null ? "Course not found" : c.getCourseCode()));
                 UI.liner(String.format("  SECTION       : %s",
                         section == null ? "Section not found" : Section.getYearSection(section)));
-                UI.liner(String.format("  DAY           : %s", s.getDay()));
-                UI.liner(String.format("  TIME          : %s - %s",
-                        s.getStartTime(), s.getEndTime()));
                 UI.liner(String.format("  ROOM CODE     : %s", s.getRoomCode()));
                 UI.liner(String.format("  BUILDING NAME : %s",
                         b == null ? "Building not found" : b.getBuildingName()));
-
-                if (i < schedules.size() - 1)
-                    UI.separator();
+                UI.liner("");
             }
         }
 
@@ -364,6 +411,7 @@ public class Student extends User {
     }
 
     // VIEW AVAILABLE ROOMS FORM
+
     public static void viewAvailableRooms() {
 
         LocalDate today = LocalDate.now();
@@ -405,6 +453,7 @@ public class Student extends User {
 
         UI.footer();
     }
+
     public static void viewAvailableRooms(String day, String startTime, String endTime) {
         if (!isValidDay(day) || !isValidTimeRange(startTime, endTime)) {
             UI.print("Invalid day or time range");
@@ -443,7 +492,8 @@ public class Student extends User {
                 Building building = Building.findBuilding(room.getBuildingCode());
                 UI.liner(String.format("  ROOM CODE     : %s", room.getRoomCode()));
                 UI.liner(String.format("  DESCRIPTION   : %s", room.getRoomDescription()));
-                UI.liner(String.format("  BUILDING NAME : %s", building == null ? "Building not found": building.getBuildingName()));
+                UI.liner(String.format("  BUILDING NAME : %s",
+                        building == null ? "Building not found" : building.getBuildingName()));
                 UI.separator();
             }
         }
@@ -453,17 +503,19 @@ public class Student extends User {
 
         UI.footer();
     }
+
     // INFORM FACULTY FORM
+
     public void informFaculty() {
         String roomCode = "", day = "", startTime = "", endTime = "", choice;
         boolean submit = false;
 
         while (!submit) {
             UI.header("INFORM FACULTY");
-            UI.liner("  ROOM CODE  : " + (roomCode.isEmpty() ? " " : roomCode));
-            UI.liner("  DAY        : " + (day.isEmpty() ? " " : day));
-            UI.liner("  START TIME : " + (startTime.isEmpty() ? " " : startTime));
-            UI.liner("  END TIME   : " + (endTime.isEmpty() ? " " : endTime));
+            UI.liner(" [1] ROOM CODE  : " + (roomCode.isEmpty() ? " " : roomCode));
+            UI.liner(" [2] DAY        : " + (day.isEmpty() ? " " : day));
+            UI.liner(" [3] START TIME : " + (startTime.isEmpty() ? " " : startTime));
+            UI.liner(" [4] END TIME   : " + (endTime.isEmpty() ? " " : endTime));
             UI.option();
             UI.footer();
 
@@ -547,6 +599,7 @@ public class Student extends User {
             }
         }
     }
+
     public static void informFaculty(String studentID, String buildingName,
                                      String roomCode, String day,
                                      String startTime, String endTime) {
@@ -624,7 +677,7 @@ public class Student extends User {
             UI.liner("  Room is available");
             message = "Room is available";
         } else {
-            UI.liner( "  Room is occupied or unavailable");
+            UI.liner("  Room is occupied or unavailable");
             message = "Room is occupied or unavailable";
         }
 
@@ -659,7 +712,7 @@ public class Student extends User {
                 }
 
                 Notification.notifications.add(new Notification(
-                        student.getUserID(), f.getUserName(), c.getCourseCode(), roomCode,
+                        student.getUserID(), f.getUserID(), c.getCourseCode(), roomCode,
                         buildingName, day, startTime, endTime, message));
 
                 UI.print("Successfully informed faculty");
