@@ -25,6 +25,7 @@ public class User {
     private String birthDate;
     private char sex;
     public static ArrayList<User> users = new ArrayList<>();
+    public static ArrayList<User> archiveStudent = new ArrayList<>();
 
     public User(String userID, String lastName, String firstName, String middleInitial,
                 String emailAddress, String password, String address, int postalCode,
@@ -453,6 +454,8 @@ public class User {
         for (User u : users) {
             String userType = "";
             String additionalInfo = "";
+            String address = u.getAddress();
+            if (address.length() > 35) address = address.substring(0, 35) + " ...";
 
             if (u instanceof Student) {
                 Student s = (Student) u;
@@ -847,9 +850,9 @@ public class User {
                             System.out.print("   College Code > ");
                             collegeCode = in.nextLine().trim().toUpperCase();
 
-                            if (!College.existCollegeCode(collegeCode))
+                            if (College.findCollege(collegeCode) != null)
                                 UI.print("College Code does not exist");
-                        } while (!College.existCollegeCode(collegeCode));
+                        } while (College.findCollege(collegeCode) != null);
                     }
                     break;
 
@@ -1151,9 +1154,9 @@ public class User {
                             System.out.print("   College Code > ");
                             collegeCode = in.nextLine().trim().toUpperCase();
 
-                            if (!College.existCollegeCode(collegeCode))
+                            if (College.findCollege(collegeCode) != null)
                                 UI.print("College Code does not exist");
-                        } while (!College.existCollegeCode(collegeCode));
+                        } while (College.findCollege(collegeCode) != null);
                     }
                     break;
 
@@ -1210,7 +1213,7 @@ public class User {
     public static void deleteUser() {
         String userID, choice;
 
-        UI.print("DELETE EXISTING USER");
+        UI.print("ARCHIVE EXISTING USER");
 
         do {
             System.out.print("  Enter User ID > ");
@@ -1238,11 +1241,48 @@ public class User {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
-            User.users.remove(u);
+            archiveStudent.add(u);
+            users.remove(u);
             UI.print("User successfully deleted");
         } else {
             UI.print("User deletion cancelled");
         }
+    }
+
+    public static void displayArchivedStudent(){
+        UI.header("ARCHIVED USER ");
+
+        for (User u : archiveStudent) {
+            String userType = "";
+            String additionalInfo = "";
+
+            if (u instanceof Student) {
+                Student s = (Student) u;
+                userType = "Student";
+                additionalInfo = Student.getEnrollmentStatus(s);
+            } else if (u instanceof Faculty) {
+                Faculty f = (Faculty) u;
+                userType = "Faculty";
+                additionalInfo = Faculty.getCollegeCode(f);
+            } else if (u instanceof DepartmentHead) {
+                DepartmentHead d = (DepartmentHead) u;
+                userType = "Department Head";
+                additionalInfo = d.getCollegeCode();
+            }
+
+            String user = String.format(
+                    "  %-10s %-20s %-25s %-18s %-15s",
+                    u.getUserID(),
+                    u.getLastName() + ", " + u.getFirstName(),
+                    u.getEmailAddress(),
+                    userType,
+                    additionalInfo
+            );
+
+            UI.liner(user);
+        }
+
+        UI.footer();
     }
 
     public static void userManage(String text, String userID, String lastName,

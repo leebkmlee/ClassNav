@@ -2,6 +2,8 @@
 package DATA;
 
 import UI.UI;
+
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -192,38 +194,42 @@ public class Room {
     }
 
     public static int convertToMinutes(String time) {
-        if (time == null || time.isBlank()) {
+
+        if (time == null || time.trim().isEmpty())
             return -1;
-        }
 
-        time = time.toUpperCase().replace(" ", "");
+        time = time.trim().toUpperCase(Locale.ROOT);
 
-        if (!time.matches("\\d{1,2}:\\d{2}(AM|PM)")) {
-            return -1;
-        }
+        // Handle 24-hour format (HH:mm), e.g. 20:00
+        if (time.matches("\\d{1,2}:\\d{2}")) {
+            try {
+                LocalTime parsedTime = LocalTime.parse(
+                        time, DateTimeFormatter.ofPattern("H:mm"));
 
-        try {
-            String period = time.substring(time.length() - 2);
-            String[] parts = time.substring(0, time.length() - 2).split(":");
+                return parsedTime.getHour() * 60
+                        + parsedTime.getMinute();
 
-            int hour = Integer.parseInt(parts[0]);
-            int minute = Integer.parseInt(parts[1]);
-
-            if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
+            } catch (DateTimeParseException e) {
                 return -1;
             }
+        }
 
-            if (period.equals("AM")) {
-                if (hour == 12) {
-                    hour = 0;
-                }
-            } else if (hour != 12) {
-                hour += 12;
-            }
+        // Handle 12-hour format, e.g. 8:00 AM or 08:00 PM
+        time = time.replace(" ", "");
 
-            return hour * 60 + minute;
+        if (!time.matches("\\d{1,2}:\\d{2}(AM|PM)"))
+            return -1;
 
-        } catch (NumberFormatException e) {
+        try {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("[h:mma][hh:mma]", Locale.ENGLISH);
+
+            LocalTime parsedTime = LocalTime.parse(time, formatter);
+
+            return parsedTime.getHour() * 60
+                    + parsedTime.getMinute();
+
+        } catch (DateTimeParseException e) {
             return -1;
         }
     }

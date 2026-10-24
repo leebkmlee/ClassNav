@@ -253,9 +253,9 @@ public class Signup {
                                 System.out.print("   College Code > ");
                                 collegeCode = in.nextLine().trim().toUpperCase();
 
-                                if (!College.existCollegeCode(collegeCode))
+                                if (College.findCollege(collegeCode) != null)
                                     UI.print("College code does not exist");
-                            } while (!College.existCollegeCode(collegeCode));
+                            } while (College.findCollege(collegeCode) != null);
 
                             User.users.add(new DepartmentHead(
                                     lastName, firstName, middleInitial,
@@ -270,9 +270,9 @@ public class Signup {
                                 System.out.print("   College Code > ");
                                 collegeCode = in.nextLine().trim().toUpperCase();
 
-                                if (!College.existCollegeCode(collegeCode))
+                                if (College.findCollege(collegeCode) != null)
                                     UI.print("College code does not exist");
-                            } while (!College.existCollegeCode(collegeCode));
+                            } while (College.findCollege(collegeCode) != null);
 
                             do {
                                 System.out.print("   Employment Status > ");

@@ -316,7 +316,7 @@ public class DepartmentHead extends User {
                 College.editCollege();
                 break;
             case 3:
-                College.deleteCollege();
+                College.archiveCollege();
                 break;
             case 4:
                 College.displayColleges();
@@ -394,7 +394,7 @@ public class DepartmentHead extends User {
                 CourseOffering.editCourseOffering();
                 break;
             case 3:
-                CourseOffering.deleteCourseOffering();
+                CourseOffering.archiveCourseOffering();
                 break;
             case 4:
                 CourseOffering.displayOfferings();
@@ -570,7 +570,7 @@ public class DepartmentHead extends User {
                 Program.editProgram();
                 break;
             case 3:
-                Program.deleteProgram();
+                Program.archiveProgram();
                 break;
             case 4:
                 Program.displayPrograms();
@@ -688,7 +688,7 @@ public class DepartmentHead extends User {
         switch (choice) {
             case 1: Section.createSection(); break;
             case 2: Section.editSection(); break;
-            case 3: Section.deleteSection(); break;
+            case 3: Section.archiveSection(); break;
             case 4: Section.displaySections(); break;
             case 0:
                 break;

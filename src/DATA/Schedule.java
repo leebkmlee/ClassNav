@@ -34,66 +34,6 @@ public class Schedule {
 
     public Schedule(String offeringID, String day, String startTime, String endTime,
                     String effectiveFrom, String effectiveTo, String roomCode) {
-
-        if (offeringID == null || offeringID.trim().isEmpty())
-            throw new IllegalArgumentException("Course offering ID is required.");
-
-        if (CourseOffering.findOffering(offeringID) == null)
-            throw new IllegalArgumentException("Course offering not found.");
-
-        if (roomCode == null || roomCode.trim().isEmpty())
-            throw new IllegalArgumentException("Room code is required.");
-
-        if (Room.findRoom(roomCode) == null)
-            throw new IllegalArgumentException("Room not found.");
-
-        if (day == null || day.trim().isEmpty())
-            throw new IllegalArgumentException("Day is required.");
-
-        if (startTime == null || startTime.trim().isEmpty()
-                || endTime == null || endTime.trim().isEmpty())
-            throw new IllegalArgumentException("Start and end times are required.");
-
-        if (effectiveFrom == null || effectiveFrom.trim().isEmpty()
-                || effectiveTo == null || effectiveTo.trim().isEmpty())
-            throw new IllegalArgumentException("Effective dates are required.");
-
-        offeringID = offeringID.trim();
-        roomCode = roomCode.trim();
-        day = normalizeDay(day);
-        startTime = startTime.trim();
-        endTime = endTime.trim();
-        effectiveFrom = effectiveFrom.trim();
-        effectiveTo = effectiveTo.trim();
-
-        if (day == null)
-            throw new IllegalArgumentException(
-                    "Invalid day. Use Monday through Sunday.");
-
-        int start = Room.convertToMinutes(startTime);
-        int end = Room.convertToMinutes(endTime);
-
-        if (start < 0 || end < 0 || start >= end)
-            throw new IllegalArgumentException(
-                    "Start time must be earlier than end time.");
-
-        LocalDate from = parseDate(effectiveFrom);
-        LocalDate to = parseDate(effectiveTo);
-
-        if (from == null || to == null)
-            throw new IllegalArgumentException(
-                    "Invalid effective date. Use MM/dd/yyyy.");
-
-        if (from.isAfter(to))
-            throw new IllegalArgumentException(
-                    "Effective start date must not be after effective end date.");
-
-        if (hasRoomConflict(roomCode, day, startTime, endTime,
-                effectiveFrom, effectiveTo, null)) {
-            throw new IllegalArgumentException(
-                    "Room is already scheduled during this period.");
-        }
-
         this.scheduleID = String.format("SCH%04d", nextScheduleID++);
         this.offeringID = offeringID;
         this.day = day;
@@ -105,31 +45,31 @@ public class Schedule {
     }
 
     static {
-        schedules.add(new Schedule("COF001", "Monday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM001"));
-        schedules.add(new Schedule("COF002", "Tuesday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM002"));
-        schedules.add(new Schedule("COF003", "Wednesday", "12:00 PM", "1:30 PM", "10/26/2026", "12/18/2026", "RM011"));
-        schedules.add(new Schedule("COF004", "Thursday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM004"));
-        schedules.add(new Schedule("COF005", "Friday", "4:00 PM", "5:30 PM", "10/26/2026", "12/18/2026", "RM005"));
-        schedules.add(new Schedule("COF006", "Monday", "9:45 AM", "11:15 AM", "10/26/2026", "12/18/2026", "RM002"));
-        schedules.add(new Schedule("COF007", "Tuesday", "1:00 PM", "2:30 PM", "10/26/2026", "12/18/2026", "RM004"));
-        schedules.add(new Schedule("COF008", "Wednesday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM001"));
-        schedules.add(new Schedule("COF009", "Thursday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM005"));
-        schedules.add(new Schedule("COF010", "Friday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM003"));
-        schedules.add(new Schedule("COF011", "Monday", "1:00 PM", "2:30 PM", "10/26/2026", "12/18/2026", "RM004"));
-        schedules.add(new Schedule("COF012", "Tuesday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM002"));
-        schedules.add(new Schedule("COF013", "Wednesday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM005"));
-        schedules.add(new Schedule("COF014", "Thursday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM013"));
-        schedules.add(new Schedule("COF015", "Friday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM004"));
-        schedules.add(new Schedule("COF016", "Monday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM006"));
-        schedules.add(new Schedule("COF017", "Tuesday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM007"));
-        schedules.add(new Schedule("COF018", "Wednesday", "10:00 AM", "12:00 PM", "10/26/2026", "12/18/2026", "RM008"));
-        schedules.add(new Schedule("COF019", "Thursday", "12:00 PM", "1:30 PM", "10/26/2026", "12/18/2026", "RM004"));
-        schedules.add(new Schedule("COF020", "Friday", "1:00 PM", "3:00 PM", "10/26/2026", "12/18/2026", "RM013"));
-        schedules.add(new Schedule("COF001", "Wednesday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM002"));
-        schedules.add(new Schedule("COF002", "Thursday", "10:00 AM", "11:30 AM", "10/26/2026", "12/18/2026", "RM001"));
-        schedules.add(new Schedule("COF003", "Friday", "8:00 AM", "9:30 AM", "10/26/2026", "12/18/2026", "RM012"));
-        schedules.add(new Schedule("COF004", "Monday", "2:00 PM", "3:30 PM", "10/26/2026", "12/18/2026", "RM005"));
-        schedules.add(new Schedule("COF005", "Tuesday", "4:00 PM", "5:30 PM", "10/26/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF001", "Monday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM001"));
+        schedules.add(new Schedule("COF002", "Tuesday", "10:00 AM", "11:30 AM", "10/23/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF003", "Wednesday", "12:00 PM", "1:30 PM", "10/23/2026", "12/18/2026", "RM011"));
+        schedules.add(new Schedule("COF004", "Thursday", "2:00 PM", "3:30 PM", "10/23/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF005", "Friday", "4:00 PM", "5:30 PM", "10/23/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF006", "Monday", "9:45 AM", "11:15 AM", "10/23/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF007", "Tuesday", "1:00 PM", "2:30 PM", "10/23/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF008", "Wednesday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM001"));
+        schedules.add(new Schedule("COF009", "Thursday", "10:00 AM", "11:30 AM", "10/23/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF010", "Friday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM003"));
+        schedules.add(new Schedule("COF011", "Monday", "1:00 PM", "2:30 PM", "10/23/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF012", "Tuesday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF013", "Wednesday", "2:00 PM", "3:30 PM", "10/23/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF014", "Thursday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM013"));
+        schedules.add(new Schedule("COF015", "Friday", "10:00 AM", "11:30 AM", "10/23/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF016", "Monday", "10:00 AM", "11:30 AM", "10/23/2026", "12/18/2026", "RM006"));
+        schedules.add(new Schedule("COF017", "Tuesday", "2:00 PM", "3:30 PM", "10/23/2026", "12/18/2026", "RM007"));
+        schedules.add(new Schedule("COF018", "Wednesday", "10:00 AM", "12:00 PM", "10/23/2026", "12/18/2026", "RM008"));
+        schedules.add(new Schedule("COF019", "Thursday", "12:00 PM", "1:30 PM", "10/23/2026", "12/18/2026", "RM004"));
+        schedules.add(new Schedule("COF020", "Friday", "1:00 PM", "3:00 PM", "10/23/2026", "12/18/2026", "RM013"));
+        schedules.add(new Schedule("COF001", "Wednesday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM002"));
+        schedules.add(new Schedule("COF002", "Thursday", "10:00 AM", "11:30 AM", "10/23/2026", "12/18/2026", "RM001"));
+        schedules.add(new Schedule("COF003", "Friday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM012"));
+        schedules.add(new Schedule("COF004", "Monday", "2:00 PM", "3:30 PM", "10/23/2026", "12/18/2026", "RM005"));
+        schedules.add(new Schedule("COF005", "Tuesday", "4:00 PM", "5:30 PM", "10/23/2026", "12/18/2026", "RM004"));
     }
 
     // VALIDATION HELPERS
@@ -403,6 +343,7 @@ public class Schedule {
 
         if (schedules.isEmpty()) {
             UI.liner("  No schedules found.");
+
         } else {
             for (int i = 0; i < schedules.size(); i++) {
 
@@ -563,7 +504,7 @@ public class Schedule {
                     CourseOffering.displayOfferings();
                     System.out.print("   Enter Offering ID > ");
                     offeringID = in.nextLine().trim();
-                    if (!CourseOffering.existOffering(offeringID)) {
+                    if (CourseOffering.findOffering(offeringID) != null) {
                         UI.print("Course offering does not exist");
                         offeringID = "";
                     }
@@ -677,7 +618,7 @@ public class Schedule {
                     System.out.print("   Enter Offering ID > ");
                     input = in.nextLine().trim();
 
-                    if (CourseOffering.existOffering(input))
+                    if (CourseOffering.findOffering(input) != null)
                         offeringID = input;
                     else
                         UI.print("Course offering does not exist");

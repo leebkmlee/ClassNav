@@ -115,7 +115,6 @@ public class Student extends User {
     public void setEnrollmentStatus(String enrollmentStatus) {
         if (enrollmentStatus == null || enrollmentStatus.isBlank())
             throw new IllegalArgumentException("Enrollment status cannot be blank");
-
         this.enrollmentStatus = enrollmentStatus.trim();
     }
     public String getEnrollmentStatus() {
@@ -172,6 +171,7 @@ public class Student extends User {
             UI.header("LOCATE ROOM");
             UI.liner("  ROOM CODE : " + (roomCode.isEmpty() ? " " : roomCode));
             UI.option();
+            UI.footer();
 
             do {
                 System.out.print("  Select > ");
@@ -273,8 +273,7 @@ public class Student extends User {
         }
     }
     private static boolean isScheduleActiveToday(Schedule schedule) {
-        if (schedule == null
-                || schedule.getEffectiveFrom() == null
+        if (schedule == null || schedule.getEffectiveFrom() == null
                 || schedule.getEffectiveTo() == null)
             return false;
 
@@ -302,13 +301,12 @@ public class Student extends User {
         }
 
         UI.header("STUDENT SCHEDULE");
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format("  STUDENT ID : %s", st.getUserID()));
-        System.out.printf("│%-" + innerWidth + "s│%n",
-                String.format("  DATE       : %s", LocalDate.now()));
+        UI.liner(String.format("  STUDENT ID    : %s", st.getUserID()));
+        UI.liner(String.format("  DATE          : %s", LocalDate.now()));
         UI.separator();
 
-        boolean found = false;
+        ArrayList<Schedule> schedules = new ArrayList<>();
+        ArrayList<String> displayedSchedules = new ArrayList<>();
 
         for (CourseRegistration cr :
                 CourseRegistration.getRegistrationsByStudent(st.getUserID())) {
@@ -321,55 +319,46 @@ public class Student extends User {
             if (o == null)
                 continue;
 
-            Section section = Section.findSection(o.getSectionID());
-
             for (Schedule s : Schedule.getSchedulesByOffering(o.getOfferingID())) {
-                if (s == null || !isScheduleActiveToday(s))
+                if (s == null || !isScheduleActiveToday(s)
+                        || displayedSchedules.contains(s.getScheduleID()))
                     continue;
 
-                found = true;
+                displayedSchedules.add(s.getScheduleID());
+                schedules.add(s);
+            }
+        }
 
-                // Course is now searched using its courseCode.
-                Course c = Course.findCourse(o.getCourseCode());
+        if (schedules.isEmpty()) {
+            UI.liner("  No active schedules found for today.");
+        } else {
+            for (int i = 0; i < schedules.size(); i++) {
+                Schedule s = schedules.get(i);
+
+                CourseOffering o = CourseOffering.findOffering(s.getOfferingID());
+                Course c = o == null ? null : Course.findCourse(o.getCourseCode());
+                Section section = o == null ? null : Section.findSection(o.getSectionID());
                 Room r = Room.findRoom(s.getRoomCode());
 
                 Building b = r == null ? null
                         : Building.findBuilding(r.getBuildingCode());
 
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  SCHEDULE ID   : %s", s.getScheduleID()));
+                UI.liner(String.format("  SCHEDULE ID   : %s", s.getScheduleID()));
+                UI.liner(String.format("  COURSE        : %s",
+                        c == null ? "Course not found" : c.getCourseCode()));
+                UI.liner(String.format("  SECTION       : %s",
+                        section == null ? "Section not found" : Section.getYearSection(section)));
+                UI.liner(String.format("  DAY           : %s", s.getDay()));
+                UI.liner(String.format("  TIME          : %s - %s",
+                        s.getStartTime(), s.getEndTime()));
+                UI.liner(String.format("  ROOM CODE     : %s", s.getRoomCode()));
+                UI.liner(String.format("  BUILDING NAME : %s",
+                        b == null ? "Building not found" : b.getBuildingName()));
 
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  COURSE        : %s",
-                                c == null ? "Course not found" : c.getCourseCode()));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  SECTION       : %s",
-                                section == null ? "Section not found"
-                                        : Section.getYearSection(section)));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  DAY           : %s", s.getDay()));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  TIME          : %s - %s",
-                                s.getStartTime(), s.getEndTime()));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  ROOM CODE     : %s", s.getRoomCode()));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  BUILDING NAME : %s",
-                                b == null ? "Building not found"
-                                        : b.getBuildingName()));
-
-                UI.separator();
+                if (i < schedules.size() - 1)
+                    UI.separator();
             }
         }
-
-        if (!found)
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    "  No active schedules found for today.");
 
         UI.footer();
     }
@@ -415,8 +404,6 @@ public class Student extends User {
             UI.liner("  No rooms are currently available.");
 
         UI.footer();
-
-        if (!available) return;
     }
     public static void viewAvailableRooms(String day, String startTime, String endTime) {
         if (!isValidDay(day) || !isValidTimeRange(startTime, endTime)) {
@@ -454,25 +441,15 @@ public class Student extends User {
                 found = true;
 
                 Building building = Building.findBuilding(room.getBuildingCode());
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  ROOM CODE     : %s", room.getRoomCode()));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  DESCRIPTION   : %s", room.getRoomDescription()));
-
-                System.out.printf("│%-" + innerWidth + "s│%n",
-                        String.format("  BUILDING NAME : %s",
-                                building == null ? "Building not found"
-                                        : building.getBuildingName()));
-
+                UI.liner(String.format("  ROOM CODE     : %s", room.getRoomCode()));
+                UI.liner(String.format("  DESCRIPTION   : %s", room.getRoomDescription()));
+                UI.liner(String.format("  BUILDING NAME : %s", building == null ? "Building not found": building.getBuildingName()));
                 UI.separator();
             }
         }
 
         if (!found)
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    "  No available rooms found for the selected time.");
+            UI.liner("  No available rooms found for the selected time.");
 
         UI.footer();
     }
@@ -488,6 +465,7 @@ public class Student extends User {
             UI.liner("  START TIME : " + (startTime.isEmpty() ? " " : startTime));
             UI.liner("  END TIME   : " + (endTime.isEmpty() ? " " : endTime));
             UI.option();
+            UI.footer();
 
             do {
                 System.out.print("  Select > ");
@@ -643,11 +621,10 @@ public class Student extends User {
         String choice, message;
 
         if (available) {
-            System.out.printf("│%-" + innerWidth + "s│%n", "  Room is available");
+            UI.liner("  Room is available");
             message = "Room is available";
         } else {
-            System.out.printf("│%-" + innerWidth + "s│%n",
-                    "  Room is occupied or unavailable");
+            UI.liner( "  Room is occupied or unavailable");
             message = "Room is occupied or unavailable";
         }
 

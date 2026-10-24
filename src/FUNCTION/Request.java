@@ -52,9 +52,13 @@ public class Request {
         if (time == null || time.trim().isEmpty())
             throw new IllegalArgumentException("Time cannot be empty.");
 
+        DateTimeFormatter inputFormat =
+                DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]", Locale.ENGLISH);
+
         try {
             LocalTime parsedTime = LocalTime.parse(
-                    time.trim(), DISPLAY_TIME_FORMAT);
+                    time.trim().toUpperCase(Locale.ENGLISH),
+                    inputFormat);
 
             return parsedTime.format(TIME_FORMAT);
 

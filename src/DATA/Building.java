@@ -319,7 +319,7 @@ public class Building {
         } while (Building.findBuilding(input) == null);
 
         Building b = Building.findBuilding(input);
-        Building.displayBuilding(b.getBuildingCode());
+        displayBuilding(b.getBuildingCode());
 
         do {
             System.out.print("  Confirm Building Archive? (Y/N) > ");
@@ -338,12 +338,10 @@ public class Building {
         else UI.print("Archive building cancelled");
     }
     private static void buildingManage(String text, String buildingCode, String buildingName) {
-
         UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
         UI.liner(String.format("      BUILDING CODE : %s", buildingCode));
         UI.liner(String.format("  [1] BUILDING NAME : %s", buildingName));
         UI.liner("");
-
         UI.option();
         UI.footer();
     }

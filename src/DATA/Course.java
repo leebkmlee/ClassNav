@@ -14,6 +14,7 @@ public class Course {
     private String courseType; // Course classification
 
     public static ArrayList<Course> courses = new ArrayList<>();
+    public static ArrayList<Course> archiveCourses = new ArrayList<>();
 
     public Course(String courseCode, String courseDescription, int creditUnits,
                   String courseType) {
@@ -53,7 +54,6 @@ public class Course {
         courses.add(new Course("GE108", "Art Appreciation", 3, "GEN ED"));
         courses.add(new Course("GE109", "Filipino sa Piling Larang", 3, "GEN ED"));
         courses.add(new Course("PE101", "Physical Education 1", 2, "GEN ED"));
-
         courses.add(new Course("IT101", "Introduction to Computing", 3, "MAJOR"));
         courses.add(new Course("IT102", "Computer Programming 1", 3, "MAJOR"));
         courses.add(new Course("IT103", "Object-Oriented Programming", 3, "MAJOR"));
@@ -518,7 +518,7 @@ public class Course {
             return;
         }
 
-        Course.displayCourse(c.getCourseCode());
+        displayCourse(c.getCourseCode());
 
         do {
             System.out.print("  Confirm Course Deletion? (Y/N) > ");
@@ -542,5 +542,6 @@ public class Course {
         UI.liner(String.format(" [4] COURSE TYPE         : %s", courseType));
         UI.liner("");
         UI.option();
+        UI.footer();
     }
 }

@@ -7,6 +7,7 @@ import static UI.UI.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.*;
 
 public class CancelledSchedule {
@@ -19,7 +20,7 @@ public class CancelledSchedule {
     public static ArrayList<CancelledSchedule> archivedCancellations = new ArrayList<>();
 
     public CancelledSchedule(String scheduleID, String affectedDate, String reason) {
-        this.cancellationID = String.format("EXC%04d", nextCancellationID++);
+        this.cancellationID = String.format("CAN%04d", nextCancellationID++);
         this.scheduleID = scheduleID;
         this.affectedDate = affectedDate.trim();
         this.reason = reason.trim();
@@ -57,13 +58,13 @@ public class CancelledSchedule {
     }
 
     // FIND EXCEPTION
-    public static CancelledSchedule findException(String exceptionID) {
+    public static CancelledSchedule findException(String cancellationID) {
 
-        if (exceptionID == null || exceptionID.trim().isEmpty())
+        if (cancellationID == null || cancellationID.trim().isEmpty())
             return null;
 
         for (CancelledSchedule c : cancellations) {
-            if (c.getCancellationID().equalsIgnoreCase(exceptionID.trim())) {
+            if (c.getCancellationID().equalsIgnoreCase(cancellationID.trim())) {
                 return c;
             }
         }
@@ -72,28 +73,30 @@ public class CancelledSchedule {
     }
 
     // DISPLAY ALL EXCEPTIONS
-    public static void displayCancellation(String exceptionID) {
-
-        CancelledSchedule c = findException(exceptionID);
+    public static void displayCancellation(String cancellationID) {
+        CancelledSchedule c = findException(cancellationID);
 
         if (c == null) {
             System.out.println("Exception not found.");
             return;
         }
 
+        String reason = c.getReason();
+        if (reason.length() > 42) reason = reason.substring(0, 42) + " ...";
+
         UI.header("CANCELLATION SCHEDULE DETAILS");
-        UI.liner(String.format("  CANCELLATION ID  : %s", c.cancellationID));
-        UI.liner(String.format("  SCHEDULE ID  : %s", c.scheduleID));
-        UI.liner(String.format("  AFFECTED DATE  : %s", c.affectedDate));
-        UI.liner(String.format("  REASON  : %s", c.reason));
+        UI.liner(String.format("  CANCELLATION ID  : %s", c.getCancellationID()));
+        UI.liner(String.format("  SCHEDULE ID      : %s", c.getScheduleID()));
+        UI.liner(String.format("  AFFECTED DATE    : %s", c.getAffectedDate()));
+        UI.liner(String.format("  REASON           : %s", reason));
         UI.footer();
     }
     public static void displayCancellations() {
-
         UI.header("CANCELLED SCHEDULE LIST");
 
         if (cancellations.isEmpty()) {
-            System.out.println("No schedule cancellations found.");
+            UI.liner(" No schedule cancellations found.");
+            UI.footer();
             return;
         }
 
@@ -103,23 +106,35 @@ public class CancelledSchedule {
 
         UI.footer();
     }
-    public static ArrayList<CancelledSchedule> displayCancellationsBySchedule(String scheduleID) {
+    public static void displayArchivedCancellations() {
+        UI.header("ARCHIVED CANCELLED SCHEDULE LIST");
 
-        ArrayList<CancelledSchedule> result = new ArrayList<>();
-
-        if (scheduleID == null ||
-                scheduleID.trim().isEmpty() ||
-                Schedule.findSchedule(scheduleID) == null) {
-            return result;
-        }
-
-        for (CancelledSchedule e : cancellations) {
-            if (e.getScheduleID().equalsIgnoreCase(scheduleID.trim())) {
-                result.add(e);
+        if (archivedCancellations.isEmpty()) {
+            UI.liner(" No archived schedule cancellations found.");
+        } else {
+            for (CancelledSchedule c : archivedCancellations) {
+                UI.liner(String.format("  %-12s %-12s %s", c.getCancellationID(), c.getScheduleID(), c.getAffectedDate()));
             }
         }
 
-        return result;
+        UI.footer();
+    }
+    public static void displayCancellationsBySchedule(String scheduleID) {
+        boolean gate = false;
+
+        UI.header("CANCELLED SCHEDULES LIST");
+        UI.liner("  Schedule ID: " + scheduleID);
+        UI.separator();
+
+        for (CancelledSchedule c : cancellations) {
+            if (c.getScheduleID().equalsIgnoreCase(scheduleID.trim())) {
+                UI.liner(String.format("  %-12s %s", c.getCancellationID(), c.getAffectedDate()));
+                gate = true;
+            }
+        }
+
+        if (!gate) UI.liner("  No cancelled schedules found");
+        UI.footer();
     }
 
     // MANAGE METHODS
@@ -155,27 +170,33 @@ public class CancelledSchedule {
                     break;
 
                 case "2":
-                    do {
-                        System.out.print("   Enter Affected Date (MM/DD/YYYY) > ");
-                        affectedDate = in.nextLine().trim();
+                    if (scheduleID.trim().isEmpty()) UI.print(" Enter a Schedule ID first");
+                    else {
+                        do {
+                            System.out.print("   Enter Affected Date (MM/DD/YYYY) > ");
+                            affectedDate = in.nextLine().trim();
 
-                        try {
-                            java.time.LocalDate.parse(
-                                    affectedDate,
-                                    java.time.format.DateTimeFormatter
-                                            .ofPattern("MM/dd/uuuu")
-                                            .withResolverStyle(
-                                                    java.time.format.ResolverStyle.STRICT
-                                            )
-                            );
-                        } catch (java.time.format.DateTimeParseException e) {
-                            UI.print("Invalid Date. Use MM/DD/YYYY format.");
-                            affectedDate = "";
-                        }
+                            try {
+                                java.time.LocalDate date = java.time.LocalDate.parse(affectedDate,
+                                        java.time.format.DateTimeFormatter.ofPattern("MM/dd/uuuu").withResolverStyle(
+                                                java.time.format.ResolverStyle.STRICT));
 
-                    } while (affectedDate.isEmpty());
+                                Schedule schedule = Schedule.findSchedule(scheduleID);
+                                if (schedule == null || !date.getDayOfWeek().name()
+                                        .equalsIgnoreCase(schedule.getDay())) {
+
+                                    UI.print("Invalid Date. The date must match the selected schedule's day.");
+                                    affectedDate = "";
+                                }
+
+                            } catch (java.time.format.DateTimeParseException e) {
+                                UI.print("Invalid Date. Use MM/DD/YYYY format.");
+                                affectedDate = "";
+                            }
+
+                        } while (affectedDate.isEmpty());
+                    }
                     break;
-
                 case "3":
                     do {
                         System.out.print("   Enter Reason > ");
@@ -218,9 +239,9 @@ public class CancelledSchedule {
 
         UI.header("ARCHIVE CANCELLED SCHEDULES");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
-        for (CancelledSchedule c : cancellations) {
+        for (CancelledSchedule c :  new ArrayList<>(cancellations)) {
             LocalDate affectedDate = LocalDate.parse(c.getAffectedDate(), formatter);
 
             if (LocalDate.now().isAfter(affectedDate)) {
@@ -231,20 +252,21 @@ public class CancelledSchedule {
             }
         }
 
-        if (!gate) UI.liner("No available cancellation schedules can be archived.");
+        if (!gate) UI.liner("  No available cancellation schedules can be archived.");
         UI.footer();
 
         if (gate) UI.print("Successfully archived");
     }
     private static void cancelledScheduleManage(String scheduleID, String affectedDate, String reason) {
+        String text = reason;
+        if (reason.length() > 35) text = reason.substring(0, 35) + " ...";
 
         UI.header("CREATE: SCHEDULE EXCEPTION");
         UI.liner(String.format("     EXCEPTION ID       : %s", "AUTO-GENERATED"));
         UI.liner(String.format(" [1] SCHEDULE ID        : %s", scheduleID));
         UI.liner(String.format(" [2] AFFECTED DATE      : %s", affectedDate));
-        UI.liner(String.format(" [3] REASON             : %s", reason));
+        UI.liner(String.format(" [3] REASON             : %s", text));
         UI.liner("");
-
         UI.option();
         UI.footer();
     }

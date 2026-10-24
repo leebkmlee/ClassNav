@@ -12,30 +12,9 @@ public class Program {
     private String collegeCode; // foreign key
 
     public static ArrayList<Program> programs = new ArrayList<>();
+    public static ArrayList<Program> archivePrograms = new ArrayList<>();
 
     public Program(String programCode, String programDescription, String collegeCode) {
-
-        if (programCode == null || programCode.trim().isEmpty())
-            throw new IllegalArgumentException("Program code cannot be empty.");
-
-        if (programDescription == null || programDescription.trim().isEmpty())
-            throw new IllegalArgumentException("Program description cannot be empty.");
-
-        if (collegeCode == null || collegeCode.trim().isEmpty())
-            throw new IllegalArgumentException("College code cannot be empty.");
-
-        programCode = programCode.trim();
-        programDescription = programDescription.trim();
-        collegeCode = collegeCode.trim();
-
-        if (College.findCollege(collegeCode) == null)
-            throw new IllegalArgumentException("College does not exist.");
-
-        for (Program p : programs) {
-            if (programCode.equalsIgnoreCase(p.getProgramID()))
-                throw new IllegalArgumentException("Program code already exists.");
-        }
-
         this.programCode = programCode;
         this.programDescription = programDescription;
         this.collegeCode = collegeCode;
@@ -121,19 +100,20 @@ public class Program {
         UI.liner(String.format("  PROGRAM CODE         : %s", p.getProgramID()));
 
         String description = p.getProgramDescription();
+        String progDesc = description;
+        if (progDesc.length() > 35) progDesc = progDesc.substring(0, 35) + " ...";
 
-        if (description.length() <= 40) {
-            UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", description));
-        } else {
-            UI.liner("  PROGRAM DESCRIPTION  :");
-            UI.liner("  " + description);
-        }
+        UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", progDesc));
 
         UI.liner(String.format("  COLLEGE CODE         : %s", p.getCollegeCode()));
 
-        if (c != null)
-            UI.liner(String.format("  COLLEGE DESCRIPTION  : %s",
-                    c.getCollegeDescription()));
+        if (c != null) {
+            String colDesc = c.getCollegeDescription();
+            if (colDesc.length() > 35) {
+                colDesc = colDesc.substring(0, 35) + " ...";
+            }
+            UI.liner(String.format("  COLLEGE DESCRIPTION  : %s", colDesc));
+        }
 
         UI.footer();
     }
@@ -214,10 +194,9 @@ public class Program {
 
                         if (collegeCode.isEmpty())
                             UI.print("College Code is required");
-                        else if (College.existCollegeCode(collegeCode))
-                            UI.print("College Code already exist");
-                    } while (collegeCode.isEmpty()
-                            || College.findCollege(collegeCode) != null);
+                        else if (College.findCollege(collegeCode) ==  null)
+                            UI.print("College Code does not exist");
+                    } while (collegeCode.isEmpty() || College.findCollege(collegeCode) ==  null);
                     break;
 
                 case "/":
@@ -233,7 +212,7 @@ public class Program {
 
                         Program.programs.add(p);
                         UI.print("Program successfully created");
-                        Program.displayProgram(p.getProgramID());
+                        programManage("CREATE", programCode, programDescription, collegeCode);
                         submit = true;
 
                     } catch (IllegalArgumentException e) {
@@ -404,7 +383,7 @@ public class Program {
         return false;
     }
 
-    public static void deleteProgram() {
+    public static void archiveProgram() {
         String input, choice;
 
         UI.print("DELETE EXISTING PROGRAM");
@@ -438,6 +417,7 @@ public class Program {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
+            archivePrograms.add(p);
             Program.programs.remove(p);
             UI.print("Program successfully deleted");
         }
@@ -445,13 +425,41 @@ public class Program {
 
     private static void programManage(String text, String programCode,
                                       String programDescription, String collegeCode) {
-
+        String progDesc = programDescription;
+        if (progDesc.length() > 35) progDesc = progDesc.substring(0, 35) + " ...";
         UI.header(text.toUpperCase() + ": PROGRAM INFORMATION");
         UI.liner(" [1] PROGRAM CODE        : " + programCode);
-        UI.liner(" [2] PROGRAM DESCRIPTION : " + programDescription);
+        UI.liner(" [2] PROGRAM DESCRIPTION : " + progDesc);
         UI.liner(" [3] COLLEGE CODE        : " + collegeCode);
         UI.liner("");
         UI.option();
         UI.footer();
+    }
+
+    public static void displayArchivePrograms() {
+
+        UI.header("ARCHIVED BUILDINGS");
+
+        if (archivePrograms.isEmpty()) {
+            UI.liner("  No archived buildings found.");
+        } else {
+            for (Program p : archivePrograms) {
+
+                String progDesc = p.getProgramDescription();
+                if (progDesc.length() > 35) {
+                    progDesc = progDesc.substring(0, 35) + " ...";
+                }
+
+                UI.liner(String.format(
+                        "  %-15s %-40s %-10s",
+                        p.getProgramID(),
+                        progDesc,
+                        p.getCollegeCode()
+                ));
+            }
+        }
+
+        UI.footer();
+
     }
 }
