@@ -241,7 +241,6 @@ public class Request {
         UI.liner("  DATE : " + date.format(DATE_FORMAT));
         UI.liner("  TIME : " + formatTime(convertedStart)
                 + " - " + formatTime(convertedEnd));
-        UI.separator();
 
         boolean available = false;
 
@@ -254,12 +253,12 @@ public class Request {
                     date.format(DATE_FORMAT), convertedStart, convertedEnd))
                 continue;
 
+            UI.separator();
             UI.liner("  " + room.getRoomCode() + " - " + room.getRoomDescription());
             UI.liner("  Type: " + room.getRoomType()
                     + " | Capacity: " + room.getCapacity());
             UI.liner("  Floor: " + Room.getFloorText(room.getFloorNumber()));
             UI.liner("  College: " + room.getCollegeCode());
-            UI.liner("");
 
             available = true;
         }
@@ -314,7 +313,7 @@ public class Request {
         UI.liner("  ROOM          : " + room.getRoomDescription());
         UI.liner("  ROOM COLLEGE  : " + targetCollegeCode);
         UI.liner("  ROUTED TO     : " + head.getUserName());
-        UI.separator();
+        UI.footer();
 
         do {
             System.out.print("  Enter Reason > ");
@@ -702,5 +701,60 @@ public class Request {
         } else {
             UI.print("Invalid request selection.");
         }
+    }
+
+    // VIEW REQUESTS BY FACULTY ID
+    public static void viewMyRequests(String facultyID) {
+        Faculty faculty = Faculty.findFaculty(facultyID);
+
+        if (faculty == null) {
+            UI.print("Faculty not found.");
+            return;
+        }
+
+        ArrayList<Request> facultyRequests = getRequestsByFaculty(faculty.getUserID());
+
+        UI.header("MY ROOM REQUESTS");
+        UI.liner("  FACULTY ID   : " + faculty.getUserID());
+        UI.liner("  FACULTY NAME : " + faculty.getUserName());
+        UI.liner("  TOTAL REQUESTS : " + facultyRequests.size());
+
+        if (facultyRequests.isEmpty()) {
+            UI.liner("");
+            UI.liner("       No room requests found.");
+            UI.liner("       Your submitted requests will appear here.");
+            UI.liner("");
+        } else {
+            for (Request request : facultyRequests) {
+                String status = request.getStatus() == null ? "Unknown" : request.getStatus();
+                UI.separator();
+                UI.liner("  REQUEST #" + request.getRequestID());
+                UI.liner(String.format("  %-12s : %.48s", "STATUS", status));
+                UI.liner(String.format("  %-12s : %.48s", "ROOM",
+                        request.getRoomCode() == null ? "-" : request.getRoomCode()));
+                UI.liner(String.format("  %-12s : %.48s", "DATE",
+                        request.getRequestedDate() == null ? "-" : request.getRequestedDate()));
+                UI.liner(String.format("  %-12s : %.48s", "TIME",
+                        formatTime(request.getStartTime()) + " - "
+                                + formatTime(request.getEndTime())));
+                UI.liner(String.format("  %-12s : %.48s", "REASON",
+                        request.getReason() == null || request.getReason().trim().isEmpty()
+                                ? "-" : request.getReason()));
+
+                if (request.getReviewedBy() != null && !request.getReviewedBy().trim().isEmpty()) {
+                    UI.liner("  REVIEW DETAILS");
+                    UI.liner(String.format("  %-12s : %.48s", "REVIEWED BY", request.getReviewedBy()));
+                    UI.liner(String.format("  %-12s : %.48s", "REVIEWED AT", request.getReviewedAt() == null
+                                    ? "-" : request.getReviewedAt()));
+                }
+
+                if (request.getRejectionReason() != null && !request.getRejectionReason().trim().isEmpty()) {
+                    UI.liner(String.format("  %-12s : %.48s",
+                            "REJECTION", request.getRejectionReason()));
+                }
+            }
+        }
+
+        UI.footer();
     }
 }

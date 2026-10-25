@@ -31,62 +31,56 @@ public class Student extends User {
     @Override
     public void menu() {
         String select;
-        boolean valid;
 
-        do {
-            UI.liner(" [3] View Schedule");
-            UI.liner(" [4] View Available Rooms");
-            UI.liner(" [5] Locate Room");
-            UI.liner(" [6] Inform Faculty");
-            UI.liner("");
-            UI.liner(" [X] Log out");
+        while (true) {
+            UI.header("CLASSNAV | STUDENT");
+            UI.liner("  MY ACADEMIC RECORDS");
+            UI.liner("  [1] View My Profile");
+            UI.liner("  [2] Edit My Profile");
+            UI.liner("  [3] View My Class Schedule");
+            UI.separator();
+            UI.liner("  ROOMS AND BUILDINGS");
+            UI.liner("  [4] View Available Rooms");
+            UI.liner("  [5] Locate a Room");
+            UI.separator();
+            UI.liner("  COMMUNICATION");
+            UI.liner("  [6] Inform Faculty About Room Availability");
+            UI.liner("  [7] View My Notifications");
+            UI.separator();
+            UI.liner("  [X] Log Out");
             UI.footer();
 
             System.out.print("  Select > ");
             select = in.nextLine().trim().toUpperCase();
 
-            valid = select.matches("[1-6X]");
-
-            if (!valid)
-                UI.print("Invalid Choice");
-
-        } while (!valid);
-
-        switch (select) {
-            case "1":
-                User.viewProfile(getUserID());
-                menu();
-                break;
-
-            case "2":
-                User.editUser(getUserID());
-                menu();
-                break;
-
-            case "3":
-                Student.displaySchedules(getUserID());
-                menu();
-                break;
-
-            case "4":
-                Student.viewAvailableRooms();
-                menu();
-                break;
-
-            case "5":
-                User.locateRoom();
-                menu();
-                break;
-
-            case "6":
-                informFaculty();
-                menu();
-                break;
-
-            case "X":
-                System.out.println("  Exiting ...");
-                System.exit(0);
-                break;
+            switch (select) {
+                case "1":
+                    User.viewProfile(getUserID());
+                    break;
+                case "2":
+                    User.editUser(getUserID());
+                    break;
+                case "3":
+                    Student.displaySchedules(getUserID());
+                    break;
+                case "4":
+                    User.viewAvailableRooms();
+                    break;
+                case "5":
+                    User.locateRoom();
+                    break;
+                case "6":
+                    informFaculty();
+                    break;
+                case "7":
+                    viewMyNotifications();
+                    break;
+                case "X":
+                    UI.print("You have been logged out.");
+                    return;
+                default:
+                    UI.print("Invalid Choice");
+            }
         }
     }
 
@@ -257,9 +251,7 @@ public class Student extends User {
                 UI.liner(String.format("  SECTION       : %s",
                         section == null ? "Section not found" : Section.getYearSection(section)));
                 UI.liner(String.format("  ROOM CODE     : %s", s.getRoomCode()));
-                UI.liner(String.format("  BUILDING NAME : %s",
-                        b == null ? "Building not found" : b.getBuildingName()));
-                UI.liner("");
+                UI.liner(String.format("  BUILDING NAME : %s", b == null ? "Building not found" : b.getBuildingName()));
             }
         }
 

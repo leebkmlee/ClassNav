@@ -163,4 +163,19 @@ public class UI {
             return null;
         }
     }
+    public static String fitText(String text, int width) {
+        if (text == null || width <= 0) {
+            return "";
+        }
+
+        if (text.length() > width) {
+            if (width <= 3) {
+                return text.substring(0, width);
+            }
+
+            return text.substring(0, width - 3) + "...";
+        }
+
+        return text;
+    }
 }

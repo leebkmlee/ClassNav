@@ -31,62 +31,60 @@ public class Faculty extends User {
     @Override
     public void menu() {
         String select;
-        boolean valid;
 
-        do {
-            UI.liner(" [3] View Schedule");
-            UI.liner("[4] View Available Rooms");
-            UI.liner(" [5] Locate Room");
-            UI.liner(" [6] Request Make-Up Class");
-            UI.liner("");
-            UI.liner(" [X] Log out");
+        while (true) {
+            UI.header("CLASSNAV | FACULTY");
+            UI.liner("  TEACHING INFORMATION");
+            UI.liner("  [1] View My Profile");
+            UI.liner("  [2] Edit My Profile");
+            UI.liner("  [3] View My Teaching Schedule");
+            UI.separator();
+            UI.liner("  ROOMS AND SCHEDULING");
+            UI.liner("  [4] View Available Rooms");
+            UI.liner("  [5] Locate a Room");
+            UI.liner("  [6] Submit a Room Request");
+            UI.separator();
+            UI.liner("  REQUESTS AND COMMUNICATION");
+            UI.liner("  [7] View My Requests and Status");
+            UI.liner("  [8] View My Notifications");
+            UI.separator();
+            UI.liner("  [X] Log Out");
             UI.footer();
 
             System.out.print("  Select > ");
             select = in.nextLine().trim().toUpperCase();
 
-            valid = select.matches("[1-6X]");
-
-            if (!valid)
-                UI.print("Invalid Choice");
-
-        } while (!valid);
-
-        switch (select) {
-            case "1":
-                User.viewProfile(getUserID());
-                menu();
-                break;
-
-            case "2":
-                User.editUser(getUserID());
-                menu();
-                break;
-
-            case "3":
-                Faculty.displaySchedules(getUserID());
-                menu();
-                break;
-
-            case "4":
-                Student.viewAvailableRooms();
-                menu();
-                break;
-
-            case "5":
-                User.locateRoom();
-                menu();
-                break;
-
-            case "6":
-                Request.submitRequest(getUserID());
-                menu();
-                break;
-
-            case "X":
-                System.out.println("  Exiting ...");
-                System.exit(0);
-                break;
+            switch (select) {
+                case "1":
+                    User.viewProfile(getUserID());
+                    break;
+                case "2":
+                    User.editUser(getUserID());
+                    break;
+                case "3":
+                    Faculty.displaySchedules(getUserID());
+                    break;
+                case "4":
+                    User.viewAvailableRooms();
+                    break;
+                case "5":
+                    User.locateRoom();
+                    break;
+                case "6":
+                    Request.submitRequest(getUserID());
+                    break;
+                case "7":
+                    Request.viewMyRequests(getUserID());
+                    break;
+                case "8":
+                    viewMyNotifications();
+                    break;
+                case "X":
+                    UI.print("Exiting...");
+                    return;
+                default:
+                    UI.print("Invalid Choice");
+            }
         }
     }
 
@@ -159,51 +157,35 @@ public class Faculty extends User {
                 college == null ? "College not found"
                         : college.getCollegeDescription()));
 
-        UI.separator();
-
         boolean found = false;
 
         for (CourseOffering offering : CourseOffering.getOfferingsByFaculty(f.getUserID())) {
 
-            if (offering == null)
-                continue;
+            if (offering == null) continue;
 
             Section section = Section.findSection(offering.getSectionID());
             Course course = Course.findCourse(offering.getCourseCode());
 
-            for (Schedule schedule :
-                    Schedule.getSchedulesByOffering(offering.getOfferingID())) {
+            for (Schedule schedule : Schedule.getSchedulesByOffering(offering.getOfferingID())) {
 
                 if (schedule == null)
                     continue;
 
                 found = true;
 
-                UI.liner(String.format("  SCHEDULE ID   : %s",
-                        schedule.getScheduleID()));
+                UI.separator();
 
-                UI.liner(String.format("  COURSE CODE   : %s",
-                        course == null ? "Course not found"
-                                : course.getCourseCode()));
-
-                UI.liner(String.format("  SECTION       : %s",
-                        section == null ? "Section not found"
-                                : Section.getYearSection(section)));
-
-                UI.liner(String.format("  ACADEMIC YEAR : %s",
-                        offering.getAcademicYear()));
-
-                UI.liner(String.format("  TERM          : %d",
-                        offering.getTerm()));
-
-                UI.liner(String.format("  DAY           : %s",
-                        schedule.getDay()));
-
-                UI.liner(String.format("  TIME          : %s - %s",
-                        schedule.getStartTime(), schedule.getEndTime()));
-
-                UI.liner(String.format("  EFFECTIVE     : %s - %s",
-                        schedule.getEffectiveFrom(), schedule.getEffectiveTo()));
+                UI.liner(String.format("  SCHEDULE ID   : %s", schedule.getScheduleID()));
+                UI.liner(String.format("  COURSE CODE   : %s", course == null ?
+                        "Course not found" : course.getCourseCode()));
+                UI.liner(String.format("  SECTION       : %s", section == null ?
+                        "Section not found" : Section.getYearSection(section)));
+                UI.liner(String.format("  ACADEMIC YEAR : %s", offering.getAcademicYear()));
+                UI.liner(String.format("  TERM          : %d", offering.getTerm()));
+                UI.liner(String.format("  DAY           : %s", schedule.getDay()));
+                UI.liner(String.format("  TIME          : %s - %s", schedule.getStartTime(), schedule.getEndTime()));
+                UI.liner(String.format("  EFFECTIVE     : %s - %s", schedule.getEffectiveFrom(),
+                        schedule.getEffectiveTo()));
 
                 String roomCode = schedule.getRoomCode();
                 Room room = Room.findRoom(roomCode);
@@ -212,27 +194,15 @@ public class Faculty extends User {
 
                 if (room != null) {
                     Building building = Building.findBuilding(room.getBuildingCode());
-
-                    UI.liner(String.format("  ROOM          : %s",
-                            room.getRoomDescription()));
-
-                    UI.liner(String.format("  ROOM TYPE     : %s",
-                            room.getRoomType()));
-
-                    UI.liner(String.format("  CAPACITY      : %d",
-                            room.getCapacity()));
-
-                    UI.liner(String.format("  FLOOR         : %d",
-                            room.getFloorNumber()));
-
-                    UI.liner(String.format("  BUILDING      : %s",
-                            building == null ? "Building not found"
-                                    : building.getBuildingName()));
+                    UI.liner(String.format("  ROOM          : %s", room.getRoomDescription()));
+                    UI.liner(String.format("  ROOM TYPE     : %s", room.getRoomType()));
+                    UI.liner(String.format("  CAPACITY      : %d", room.getCapacity()));
+                    UI.liner(String.format("  FLOOR         : %d", room.getFloorNumber()));
+                    UI.liner(String.format("  BUILDING      : %s", building == null ? "Building not found"
+                            : building.getBuildingName()));
                 } else {
                     UI.liner("  ROOM          : Room not found");
                 }
-
-                UI.separator();
             }
         }
 

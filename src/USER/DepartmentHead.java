@@ -22,130 +22,258 @@ public class DepartmentHead extends User {
     @Override
     public void menu() {
         String select;
-        boolean valid;
 
-        do {
-            UI.liner(" [3] View Faculty Requests");
-            UI.liner(" [4] Review Requests");
-            UI.liner(" [5] Manage Users");
-            UI.liner(" [6] Manage Programs");
-            UI.liner(" [7] Manage Sections");
-            UI.liner(" [8] Manage Rooms");
-            UI.liner(" [9] Manage Schedules");
-            UI.liner(" [10] Manage Colleges");
-            UI.liner(" [11] Manage Courses");
-            UI.liner(" [12] Manage Course Offerings");
-            UI.liner(" [13] Manage Curricula");
-            UI.liner(" [14] Manage Course Registrations");
-            UI.liner(" [15] Manage Buildings");
-            UI.liner(" [16] Manage Cancelled Schedules");
-            UI.liner(" [17] Manage Make-Up Schedules");
-            UI.liner("");
-            UI.liner(" [X] Log out");
+        while (true) {
+            UI.header("CLASSNAV | DEPARTMENT HEAD");
+            UI.liner("  OVERVIEW AND ACCOUNT");
+            UI.liner("  [1] View System Summary");
+            UI.liner("  [2] View My Profile");
+            UI.liner("  [3] Edit My Profile");
+            UI.separator();
+            UI.liner("  REQUESTS AND APPROVALS");
+            UI.liner("  [4] View Faculty Requests");
+            UI.liner("  [5] Review Pending Requests");
+            UI.separator();
+            UI.liner("  RECORD MANAGEMENT");
+            UI.liner("  [6] Academic Management");
+            UI.liner("  [7] Buildings and Rooms");
+            UI.liner("  [8] Schedules and Exceptions");
+            UI.liner("  [9] Notifications");
+            UI.liner("  [A] Archived Records");
+            UI.separator();
+            UI.liner("  [X] Log Out");
             UI.footer();
 
             System.out.print("  Select > ");
             select = in.nextLine().trim().toUpperCase();
 
-            valid = select.matches("([1-9]|1[0-7]|X)");
-
-            if (!valid)
-                UI.print("Invalid Choice");
-
-        } while (!valid);
-
-        switch (select) {
-            case "1":
-                User.viewProfile(getUserID());
-                menu();
-                break;
-
-            case "2":
-                User.editUser(getUserID());
-                menu();
-                break;
-
-            case "3":
-                Request.viewRequest(getUserID());
-                menu();
-                break;
-
-            case "4":
-                Request.viewRequests(getUserID());
-                menu();
-                break;
-
-            case "5":
-                manageUsers();
-                menu();
-                break;
-
-            case "6":
-                managePrograms();
-                menu();
-                break;
-
-            case "7":
-                manageSections();
-                menu();
-                break;
-
-            case "8":
-                manageRooms();
-                menu();
-                break;
-
-            case "9":
-                manageSchedules();
-                menu();
-                break;
-
-            case "10":
-                manageColleges();
-                menu();
-                break;
-
-            case "11":
-                manageCourses();
-                menu();
-                break;
-
-            case "12":
-                manageCourseOfferings();
-                menu();
-                break;
-
-            case "13":
-                manageCurricula();
-                menu();
-                break;
-
-            case "14":
-                manageCourseRegistrations();
-                menu();
-                break;
-
-            case "15":
-                manageBuildings();
-                menu();
-                break;
-
-            case "16":
-                manageCancelledSchedules();
-                menu();
-                break;
-
-            case "17":
-                manageMakeUpSchedules();
-                menu();
-                break;
-
-            case "X":
-                System.out.println("  Exiting ...");
-                System.exit(0);
-                break;
+            switch (select) {
+                case "1":
+                    displaySystemSummary();
+                    break;
+                case "2":
+                    User.viewProfile(getUserID());
+                    break;
+                case "3":
+                    User.editUser(getUserID());
+                    break;
+                case "4":
+                    Request.viewRequest(getUserID());
+                    break;
+                case "5":
+                    Request.viewRequests(getUserID());
+                    break;
+                case "6":
+                    academicManageMenu();
+                    break;
+                case "7":
+                    facilitiesManageMenu();
+                    break;
+                case "8":
+                    scheduleManageMenu();
+                    break;
+                case "9":
+                    notificationMenu();
+                    break;
+                case "A":
+                    archiveMenu();
+                    break;
+                case "X":
+                    UI.print("Exiting...");
+                    return;
+                default:
+                    UI.print("Invalid Choice");
+            }
         }
     }
+
+    private static void academicManageMenu() {
+        String choice;
+        do {
+            UI.header("ACADEMIC MANAGEMENT");
+            UI.liner("  [1] Manage Users");
+            UI.liner("  [2] Manage Colleges");
+            UI.liner("  [3] Manage Programs");
+            UI.liner("  [4] Manage Courses");
+            UI.liner("  [5] Manage Course Offerings");
+            UI.liner("  [6] Manage Sections");
+            UI.liner("  [7] Manage Curricula");
+            UI.liner("  [8] Manage Course Registrations");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": manageUsers(); break;
+                case "2": manageColleges(); break;
+                case "3": managePrograms(); break;
+                case "4": manageCourses(); break;
+                case "5": manageCourseOfferings(); break;
+                case "6": manageSections(); break;
+                case "7": manageCurricula(); break;
+                case "8": manageCourseRegistrations(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void facilitiesManageMenu() {
+        String choice;
+        do {
+            UI.header("BUILDINGS AND ROOMS");
+            UI.liner("  [1] Manage Buildings");
+            UI.liner("  [2] Manage Rooms");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": manageBuildings(); break;
+                case "2": manageRooms(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void scheduleManageMenu() {
+        String choice;
+        do {
+            UI.header("SCHEDULES AND EXCEPTIONS");
+            UI.liner("  [1] Manage Schedules");
+            UI.liner("  [2] Manage Cancelled Schedules");
+            UI.liner("  [3] Manage Make-up Schedules");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": manageSchedules(); break;
+                case "2": manageCancelledSchedules(); break;
+                case "3": manageMakeUpSchedules(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void notificationMenu() {
+        String choice;
+        do {
+            UI.header("NOTIFICATIONS");
+            UI.liner("  [1] View All Notifications");
+            UI.liner("  [2] Archive a Notification");
+            UI.liner("  [3] View Archived Notifications");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": Notification.displayNotifications(); break;
+                case "2": Notification.archiveNotifications(); break;
+                case "3": Notification.displayArchiveNotifications(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void archiveMenu() {
+        String choice;
+        do {
+            UI.header("ARCHIVED RECORDS");
+            UI.liner("  [1] Archived Users");
+            UI.liner("  [2] Academic Record Archives");
+            UI.liner("  [3] Building and Room Archives");
+            UI.liner("  [4] Schedule and Exception Archives");
+            UI.liner("  [5] Archived Notifications");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": User.displayArchivedUsers(); break;
+                case "2": academicArchiveMenu(); break;
+                case "3": facilitiesArchiveMenu(); break;
+                case "4": scheduleArchiveMenu(); break;
+                case "5": Notification.displayArchiveNotifications(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void academicArchiveMenu() {
+        String choice;
+        do {
+            UI.header("ACADEMIC ARCHIVES");
+            UI.liner("  [1] Colleges");
+            UI.liner("  [2] Programs");
+            UI.liner("  [3] Courses");
+            UI.liner("  [4] Course Offerings");
+            UI.liner("  [5] Sections");
+            UI.liner("  [6] Curricula");
+            UI.liner("  [7] Course Registrations");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": College.displayArchivedColleges(); break;
+                case "2": Program.displayArchivePrograms(); break;
+                case "3": Course.displayArchiveCourses(); break;
+                case "4": CourseOffering.displayArchivedOfferings(); break;
+                case "5": Section.displayArchiveSections(); break;
+                case "6": Curriculum.displayArchiveCurricula(); break;
+                case "7": CourseRegistration.displayArchiveRegistrations(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void facilitiesArchiveMenu() {
+        String choice;
+        do {
+            UI.header("FACILITY ARCHIVES");
+            UI.liner("  [1] Buildings");
+            UI.liner("  [2] Rooms");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": Building.displayArchiveBuildings(); break;
+                case "2": Room.displayArchivedRooms(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+    private static void scheduleArchiveMenu() {
+        String choice;
+        do {
+            UI.header("SCHEDULE ARCHIVES");
+            UI.liner("  [1] Schedules");
+            UI.liner("  [2] Cancelled Schedules");
+            UI.liner("  [3] Make-up Schedules");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1": Schedule.displayArchivedSchedules(); break;
+                case "2": CancelledSchedule.displayArchivedCancellations(); break;
+                case "3": MakeUpSchedule.displayArchiveMakeUpSchedules(); break;
+                case "0": break;
+                default: UI.print("Invalid Choice");
+            }
+        } while (!choice.equals("0"));
+    }
+
 
     // SETTER METHOD
     public void setCollegeCode(String collegeCode) {
@@ -170,531 +298,311 @@ public class DepartmentHead extends User {
     }
 
     // MANAGE METHODS
-    public static void manageUsers() {
-        int choice = -1; String input = "";
-
-        UI.manageUI("Users");
-
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-                choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 4) && choice != 0) UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                Signup.signUp("CREATE NEW USER");
-                break;
-            case 2:
-                editUser();
-                break;
-            case 3:
-                User.archiveUser();
-                break;
-            case 4:
-                User.displayUsers();
-                break;
-            case 0:
-                // menu
-        }
-    }
-    private static void manageBuildings() {
+    private static int getManageChoice(String manageText) {
         int choice = -1;
         String input;
 
         do {
-            UI.manageUI("Buildings");
-
+            UI.manageUI(manageText);
             System.out.print("  Select > ");
             input = in.nextLine().trim();
 
             try {
                 choice = Integer.parseInt(input);
-
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-
-            if (choice == 1)
-                Building.createBuilding();
-            else if (choice == 2)
-                Building.editBuilding();
-            else if (choice == 3)
-                Building.archiveBuilding();
-            else if (choice == 4)
-                Building.displayBuildings();
-
-        } while (choice != 0);
-    }
-    private static void manageCancelledSchedules() {
-        int choice = -1;
-        String input = "";
-
-        UI.manageUI("Cancelled Schedules");
-
-        do {
-            System.out.print("  Select > ");
-
-            try {
-                input = in.nextLine().trim();
-
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-
-                choice = Integer.parseInt(input);
-
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                CancelledSchedule.createCancelledSchedule();
-                break;
-            case 2:
-//                CancelledSchedule.editCancelledSchedule();
-                break;
-            case 3:
-                CancelledSchedule.archiveCancelledSchedule();
-                break;
-            case 4:
-                CancelledSchedule.displayCancellations();
-                break;
-            case 0:
-                // Return to previous menu
-                break;
-        }
-    }
-    private static void manageColleges() {
-        int choice = -1; String input = "";
-        UI.manageUI("College");
-
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-                choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                College.createCollege();
-                break;
-            case 2:
-                College.editCollege();
-                break;
-            case 3:
-                College.archiveCollege();
-                break;
-            case 4:
-                College.displayColleges();
-                break;
-            case 0:
-                // Return to previous menu
-                break;
-        }
-    }
-    private static void manageCourses() {
-        int choice = -1; String input = "";
-        UI.manageUI("Course");
-
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-                choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                Course.createCourse();
-                break;
-            case 2:
-                Course.editCourse();
-                break;
-            case 3:
-                Course.archiveCourse();
-                break;
-            case 4:
-                Course.displayCourses();
-                break;
-            case 0:
-                // Return to previous menu
-                break;
-        }
-    }
-    private static void manageCourseOfferings() {
-        int choice = -1; String input = "";
-        UI.manageUI("Course Offering");
-
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-                choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
-            }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                CourseOffering.createCourseOffering();
-                break;
-            case 2:
-                CourseOffering.editCourseOffering();
-                break;
-            case 3:
-                CourseOffering.archiveCourseOffering();
-                break;
-            case 4:
-                CourseOffering.displayOfferings();
-                break;
-            case 0:
-                // menu
-                break;
-        }
-    }
-    private static void manageCourseRegistrations() {
-
-        int choice = -1;
-        String input;
-
-        do {
-            UI.manageUI("Course Registration");
-            System.out.print("  Select > ");
-
-            input = in.nextLine().trim();
-
-            try {
-                choice = Integer.parseInt(input);
-
                 if (choice < 0 || choice > 4) {
-                    UI.print("Invalid Input");
+                    UI.print("Invalid Choice");
                     choice = -1;
                 }
             } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
+                UI.print("Invalid Choice");
                 choice = -1;
             }
+        } while (choice == -1);
 
-            if (choice == -1)
-                continue;
-
-            switch (choice) {
+        return choice;
+    }
+    public static void manageUsers() {
+        while (true) {
+            switch (getManageChoice("Users")) {
                 case 1:
-                    CourseRegistration.createRegistration();
+                    Signup.signUp("CREATE NEW USER");
                     break;
-
                 case 2:
-                    CourseRegistration.editRegistration();
+                    editUser();
                     break;
-
                 case 3:
-                    CourseRegistration.archiveRegistration();
+                    User.archiveUser();
                     break;
-
                 case 4:
-                    CourseRegistration.displayRegistrations();
+                    User.displayUsers();
                     break;
-
                 case 0:
                     return;
             }
+        }
+    }
+    private static void manageBuildings() {
+        while (true) {
+            switch (getManageChoice("Buildings")) {
+                case 1:
+                    Building.createBuilding();
+                    break;
+                case 2:
+                    Building.editBuilding();
+                    break;
+                case 3:
+                    Building.archiveBuilding();
+                    break;
+                case 4:
+                    Building.displayBuildings();
+                    break;
+                case 0:
+                    return;
+            }
+        }
+    }
+    private static void manageCancelledSchedules() {
+        String choice;
 
-        } while (true);
+        while (true) {
+            UI.header("MANAGE CANCELLED SCHEDULES");
+            UI.liner("  [1] Create Cancellation");
+            UI.liner("  [2] Archive Expired Cancellations");
+            UI.liner("  [3] View Cancellations");
+            UI.liner("  [0] Back");
+            UI.footer();
+            System.out.print("  Select > ");
+            choice = in.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    CancelledSchedule.createCancelledSchedule();
+                    break;
+                case "2":
+                    CancelledSchedule.archiveCancelledSchedule();
+                    break;
+                case "3":
+                    CancelledSchedule.displayCancellations();
+                    break;
+                case "0":
+                    return;
+                default:
+                    UI.print("Invalid Choice");
+            }
+        }
+    }
+    private static void manageColleges() {
+        while (true) {
+            switch (getManageChoice("Colleges")) {
+                case 1:
+                    College.createCollege();
+                    break;
+                case 2:
+                    College.editCollege();
+                    break;
+                case 3:
+                    College.archiveCollege();
+                    break;
+                case 4:
+                    College.displayColleges();
+                    break;
+                case 0:
+                    return;
+            }
+        }
+    }
+    private static void manageCourses() {
+        while (true) {
+            switch (getManageChoice("Courses")) {
+                case 1:
+                    Course.createCourse();
+                    break;
+                case 2:
+                    Course.editCourse();
+                    break;
+                case 3:
+                    Course.archiveCourse();
+                    break;
+                case 4:
+                    Course.displayCourses();
+                    break;
+                case 0:
+                    return;
+            }
+        }
+    }
+    private static void manageCourseOfferings() {
+        while (true) {
+            switch (getManageChoice("Course Offerings")) {
+                case 1:
+                    CourseOffering.createCourseOffering();
+                    break;
+                case 2:
+                    CourseOffering.editCourseOffering();
+                    break;
+                case 3:
+                    CourseOffering.archiveCourseOffering();
+                    break;
+                case 4:
+                    CourseOffering.displayOfferings();
+                    break;
+                case 0:
+                    return;
+            }
+        }
+    }
+    private static void manageCourseRegistrations() {
+        while (true) {
+            switch (getManageChoice("Course Registrations")) {
+                case 1:
+                    CourseRegistration.createRegistration();
+                    break;
+                case 2:
+                    CourseRegistration.editRegistration();
+                    break;
+                case 3:
+                    CourseRegistration.archiveRegistration();
+                    break;
+                case 4:
+                    CourseRegistration.displayRegistrations();
+                    break;
+                case 0:
+                    return;
+            }
+        }
     }
     private static void manageCurricula() {
-        int choice = -1; String input = "";
-        UI.manageUI("Curriculum");
-
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-                choice = Integer.parseInt(input);
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
+        while (true) {
+            switch (getManageChoice("Curricula")) {
+                case 1:
+                    Curriculum.createCurriculum();
+                    break;
+                case 2:
+                    Curriculum.editCurriculum();
+                    break;
+                case 3:
+                    Curriculum.archiveCurriculum();
+                    break;
+                case 4:
+                    Curriculum.displayCurricula();
+                    break;
+                case 0:
+                    return;
             }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                Curriculum.createCurriculum();
-                break;
-            case 2:
-                Curriculum.editCurriculum();
-                break;
-            case 3:
-                Curriculum.archiveCurriculum();
-                break;
-            case 4:
-                Curriculum.displayCurricula();
-                break;
-            case 0:
-                // menu
-                break;
         }
     }
     private static void manageMakeUpSchedules() {
-        int choice = -1;
-        String input = "";
+        String choice;
 
-        UI.manageUI("Room Requests");
-
-        do {
+        while (true) {
+            UI.header("MANAGE MAKE-UP SCHEDULES");
+            UI.liner("  [1] Create Make-up Schedule");
+            UI.liner("  [2] Archive Make-up Schedule");
+            UI.liner("  [3] View Make-up Schedules");
+            UI.liner("  [0] Back");
+            UI.footer();
             System.out.print("  Select > ");
+            choice = in.nextLine().trim();
 
-            try {
-                input = in.nextLine().trim();
-
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-
-                choice = Integer.parseInt(input);
-
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
+            switch (choice) {
+                case "1":
+                    MakeUpSchedule.createMakeUpSchedule();
+                    break;
+                case "2":
+                    MakeUpSchedule.archiveMakeUpSchedule();
+                    break;
+                case "3":
+                    MakeUpSchedule.displayMakeUpSchedules();
+                    break;
+                case "0":
+                    return;
+                default:
+                    UI.print("Invalid Choice");
             }
-
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1:
-                MakeUpSchedule.createMakeUpSchedule();
-                break;
-            case 2:
-                // wala na
-                break;
-            case 3:
-                MakeUpSchedule.archiveMakeUpSchedule();
-                break;
-            case 4:
-                MakeUpSchedule.displayMakeUpSchedules();
-                break;
-            case 0:
-                // Return to previous menu
-                break;
         }
     }
     private static void managePrograms() {
-        int choice = -1;
-        String input;
-
-        do {
-            UI.manageUI("Programs");
-            System.out.print("  Select > ");
-
-            input = in.nextLine().trim();
-
-            try {
-                choice = Integer.parseInt(input);
-
-                if (choice < 0 || choice > 4) {
-                    UI.print("Invalid Input");
-                    choice = -1;
-                }
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
+        while (true) {
+            switch (getManageChoice("Programs")) {
+                case 1:
+                    Program.createProgram();
+                    break;
+                case 2:
+                    Program.editProgram();
+                    break;
+                case 3:
+                    Program.archiveProgram();
+                    break;
+                case 4:
+                    Program.displayPrograms();
+                    break;
+                case 0:
+                    return;
             }
-        } while (choice == -1);
-
-        switch (choice) {
-            case 1:
-                Program.createProgram();
-                break;
-            case 2:
-                Program.editProgram();
-                break;
-            case 3:
-                Program.archiveProgram();
-                break;
-            case 4:
-                Program.displayPrograms();
-                break;
-            case 0:
-                return;
         }
     }
     private static void manageRooms() {
-        int choice = -1;
-        String input;
-
-        do {
-            UI.manageUI("Rooms");
-            System.out.print("  Select > ");
-
-            input = in.nextLine().trim();
-
-            try {
-                choice = Integer.parseInt(input);
-
-                if (choice < 0 || choice > 4) {
-                    UI.print("Invalid Input");
-                    choice = -1;
-                }
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
+        while (true) {
+            switch (getManageChoice("Rooms")) {
+                case 1:
+                    Room.createRoom();
+                    break;
+                case 2:
+                    Room.editRoom();
+                    break;
+                case 3:
+                    Room.archiveRoom();
+                    break;
+                case 4:
+                    Room.displayRooms();
+                    break;
+                case 0:
+                    return;
             }
-        } while (choice == -1);
-
-        switch (choice) {
-            case 1:
-                Room.createRoom();
-                break;
-            case 2:
-                Room.editRoom();
-                break;
-            case 3:
-                Room.archiveRoom();
-                break;
-            case 4:
-                Room.displayRooms();
-                break;
-            case 0:
-                return;
         }
     }
     private static void manageSchedules() {
-        int choice = -1;
-        String input;
-
-        do {
-            UI.manageUI("Schedule");
-            System.out.print("  Select > ");
-
-            input = in.nextLine().trim();
-
-            try {
-                choice = Integer.parseInt(input);
-
-                if (choice < 0 || choice > 4) {
-                    UI.print("Invalid Input");
-                    choice = -1;
-                }
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
+        while (true) {
+            switch (getManageChoice("Schedules")) {
+                case 1:
+                    Schedule.createSchedule();
+                    break;
+                case 2:
+                    Schedule.editSchedule();
+                    break;
+                case 3:
+                    Schedule.archiveSchedule();
+                    break;
+                case 4:
+                    Schedule.displaySchedules();
+                    break;
+                case 0:
+                    return;
             }
-        } while (choice == -1);
-
-        switch (choice) {
-            case 1:
-                Schedule.createSchedule();
-                break;
-            case 2:
-                Schedule.editSchedule();
-                break;
-            case 3:
-                Schedule.archiveSchedule();
-                break;
-            case 4:
-                Schedule.displaySchedules();
-                break;
-            case 0:
-                return;
         }
     }
     private static void manageSections() {
-        int choice = -1;
-        String input = "";
-
-        UI.manageUI("Section");
-
-        do {
-            System.out.print("  Select > ");
-            try {
-                input = in.nextLine().trim();
-
-                if (input.isEmpty()) {
-                    UI.print("Invalid Input");
-                    continue;
-                }
-
-                choice = Integer.parseInt(input);
-
-                if (!(choice >= 1 && choice <= 4) && choice != 0)
-                    UI.print("Invalid Input");
-            } catch (NumberFormatException e) {
-                UI.print("Invalid Input");
-                choice = -1;
+        while (true) {
+            switch (getManageChoice("Sections")) {
+                case 1:
+                    Section.createSection();
+                    break;
+                case 2:
+                    Section.editSection();
+                    break;
+                case 3:
+                    Section.archiveSection();
+                    break;
+                case 4:
+                    Section.displaySections();
+                    break;
+                case 0:
+                    return;
             }
-        } while (!(choice >= 1 && choice <= 4) && choice != 0);
-
-        switch (choice) {
-            case 1: Section.createSection(); break;
-            case 2: Section.editSection(); break;
-            case 3: Section.archiveSection(); break;
-            case 4: Section.displaySections(); break;
-            case 0:
-                break;
         }
     }
 
+    // EDIT USERS
     private static void editUser() {
         String userID, lastName, firstName, middleInitial, emailAddress;
         String password, address, birthDate, choice, userName;
@@ -751,7 +659,7 @@ public class DepartmentHead extends User {
                 userManage("EDIT", userID, lastName, firstName, middleInitial,
                         emailAddress, password, address, postalCode, birthDate,
                         sex, enrollmentStatus, programCode);
-            } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+            } else {
                 userManage("EDIT", userID, lastName, firstName, middleInitial,
                         emailAddress, password, address, postalCode, birthDate,
                         sex, collegeCode);
@@ -947,7 +855,7 @@ public class DepartmentHead extends User {
                                 UI.print("Program Code does not exist");
                         } while (Program.findProgram(programCode) == null);
 
-                    } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                    } else {
                         do {
                             System.out.print("   College Code > ");
                             collegeCode = in.nextLine().trim().toUpperCase();
@@ -986,7 +894,7 @@ public class DepartmentHead extends User {
                         } else if (u instanceof Faculty) {
                             Faculty f = (Faculty) u;
                             f.setCollegeCode(collegeCode);
-                        } else if (u instanceof DepartmentHead) {
+                        } else {
                             DepartmentHead dh = (DepartmentHead) u;
                             dh.setCollegeCode(collegeCode);
                         }
@@ -1006,5 +914,53 @@ public class DepartmentHead extends User {
                     break;
             }
         }
+    }
+
+    // DISPLAYS STATISTICS
+    private static void displaySystemSummary() {
+        int students = 0, facultyCount = 0, activeFaculty = 0, inactiveFaculty = 0, departmentHeads = 0;
+        int pending = 0, approved = 0, rejected = 0;
+
+        for (User user : User.users) {
+            if (user instanceof Student) {
+                students++;
+            } else if (user instanceof Faculty) {
+                facultyCount++;
+                String status = Faculty.getEmploymentStatus(user);
+                if (status != null && status.equalsIgnoreCase("ACTIVE")) activeFaculty++;
+                else inactiveFaculty++;
+            } else if (user instanceof DepartmentHead) {
+                departmentHeads++;
+            }
+        }
+
+        for (Request request : Request.requests) {
+            if (request == null || request.getStatus() == null) continue;
+            if (request.getStatus().equalsIgnoreCase("PENDING")) pending++;
+            else if (request.getStatus().equalsIgnoreCase("APPROVED")) approved++;
+            else if (request.getStatus().equalsIgnoreCase("REJECTED")) rejected++;
+        }
+
+        UI.header("SYSTEM SUMMARY");
+        UI.liner(String.format("  %-29s : %d", "Students", students));
+        UI.liner(String.format("  %-29s : %d", "Faculty", facultyCount));
+        UI.liner(String.format("  %-29s : %d", "  Active Faculty", activeFaculty));
+        UI.liner(String.format("  %-29s : %d", "  Inactive Faculty", inactiveFaculty));
+        UI.liner(String.format("  %-29s : %d", "Department Heads", departmentHeads));
+        UI.separator();
+        UI.liner(String.format("  %-29s : %d", "Buildings", Building.buildings.size()));
+        UI.liner(String.format("  %-29s : %d", "Rooms", Room.rooms.size()));
+        UI.liner(String.format("  %-29s : %d", "Colleges", College.colleges.size()));
+        UI.liner(String.format("  %-29s : %d", "Programs", Program.programs.size()));
+        UI.liner(String.format("  %-29s : %d", "Courses", Course.courses.size()));
+        UI.liner(String.format("  %-29s : %d", "Course Offerings", CourseOffering.offerings.size()));
+        UI.liner(String.format("  %-29s : %d", "Sections", Section.sections.size()));
+        UI.liner(String.format("  %-29s : %d", "Course Registrations", CourseRegistration.registrations.size()));
+        UI.liner(String.format("  %-29s : %d", "Schedules", Schedule.schedules.size()));
+        UI.separator();
+        UI.liner(String.format("  %-29s : %d", "Pending Requests", pending));
+        UI.liner(String.format("  %-29s : %d", "Approved Requests", approved));
+        UI.liner(String.format("  %-29s : %d", "Rejected Requests", rejected));
+        UI.footer();
     }
 }

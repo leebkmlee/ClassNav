@@ -174,39 +174,40 @@ public class Notification {
         UI.separator();
 
         for (Notification n : archiveNotifications) {
-            UI.liner(String.format("  %-5d %-9s %-9s %-9s %-10s %-12s",
+            UI.liner(String.format("  %-5s %-9s %-9s %-9s %-10s %-12s",
                     n.notificationID, n.senderID, n.recipientID, n.courseCode, n.roomCode, n.message));
         }
 
         UI.footer();
     }
     public static void archiveNotifications() {
-        String input; String choice;
-        UI.header("ARCHIVE NOTIFICATIONS");
+        String input, choice;
+        Notification n;
+
+        UI.header("ARCHIVE NOTIFICATION");
 
         do {
-            System.out.print("  Enter Notification Code > ");
+            System.out.print("  Enter Notification Code (X to return) > ");
             input = in.nextLine().trim();
-            if (input.isEmpty()) UI.print("Invalid Input");
-            else if (findNotification(input) != null) UI.print("Notification does not exist");
-        } while (input.isEmpty() || findNotification(input) != null);
 
-        Notification n = findNotification(input);
+            if (input.equalsIgnoreCase("X"))
+                return;
 
-        if (n == null) {
-            UI.print("Notification not found");
-            return;
-        }
+            n = findNotification(input);
+
+            if (input.isEmpty())
+                UI.print("Notification code is required.");
+            else if (n == null)
+                UI.print("Notification not found.");
+
+        } while (input.isEmpty() || n == null);
 
         displayNotification(n.getNotificationID());
 
         do {
-            System.out.print("  Confirm Notification Deletion? (Y/N) > ");
+            System.out.print("  Confirm Notification Archival? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
-
-            if (!choice.matches("[YN]")) {
-                UI.print("Invalid Input");
-            }
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
@@ -216,6 +217,5 @@ public class Notification {
         } else {
             UI.print("Archiving cancelled");
         }
-
     }
 }

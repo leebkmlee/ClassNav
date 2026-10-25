@@ -41,40 +41,35 @@ public abstract class User {
 
     public static void start() {
         String select;
-        boolean valid;
 
-        do {
+        while (true) {
             UI.startPrint("ClassNav");
             select = in.nextLine().trim().toUpperCase();
 
-            if (select.equals("X") || select.equals("1") || select.equals("2"))
-                valid = true;
-            else {
-                UI.print("Invalid Choice");
-                valid = false;
-            }
-        } while (!valid);
+            switch (select) {
+                case "1":
+                    String userID = Login.logIn();
 
-        switch (select) {
-            case "1":
-                String user = Login.logIn();
-                if (!user.equals("Ran out of attempts.")) {
-                    User u = User.findUser(user);
-                    if (u == null) {
-                        UI.print("User not found");
-                        return;
+                    if (!userID.equals("Ran out of attempts.")) {
+                        User user = User.findUser(userID);
+                        if (user != null)
+                            user.menu();
+                        else
+                            UI.print("User not found");
                     }
-                    u.menu();
-                }
-                System.out.println("   Exiting...");
-                break;
-            case "2":
-                Signup.signUp("SIGN UP");
-                User.start();
-                break;
-            case "X":
-                System.out.println("   Exiting...");
-                break;
+                    break;
+
+                case "2":
+                    Signup.signUp("SIGN UP");
+                    break;
+
+                case "X":
+                    System.out.println("   Exiting...");
+                    return;
+
+                default:
+                    UI.print("Invalid Choice");
+            }
         }
     }
     public abstract void menu();
@@ -220,17 +215,7 @@ public abstract class User {
                 "02/14/1983", 'F', "CSSP"));
     }
 
-    public static User findUser(String userID) {
-        if (userID == null) return null;
-
-        for (User u : users) {
-            if (userID.trim().equalsIgnoreCase(u.getUserID()))
-                return u;
-        }
-
-        return null;
-    }
-
+    // GETTER METHODS
     public String getUserID() {
         return userID;
     }
@@ -265,6 +250,88 @@ public abstract class User {
         return middleInitial;
     }
 
+    // SETTER METHODS
+    public void setLastName(String lastName) {
+        if (lastName == null || lastName.isBlank())
+            throw new IllegalArgumentException("Last name cannot be blank");
+
+        this.lastName = lastName.trim();
+        setUserName();
+    }
+    public void setFirstName(String firstName) {
+        if (firstName == null || firstName.isBlank())
+            throw new IllegalArgumentException("First name cannot be blank");
+
+        this.firstName = firstName.trim();
+        setUserName();
+    }
+    public void setMiddleInitial(String middleInitial) {
+        if (middleInitial == null) middleInitial = "";
+
+        middleInitial = middleInitial.trim();
+
+        if (middleInitial.length() > 1)
+            throw new IllegalArgumentException("Middle initial must be one character");
+
+        this.middleInitial = middleInitial;
+        setUserName();
+    }
+    public void setEmailAddress(String emailAddress) {
+        if (emailAddress == null || emailAddress.isBlank())
+            throw new IllegalArgumentException("Email cannot be blank");
+
+        this.emailAddress = emailAddress.trim();
+    }
+    public void setPassword(String password) {
+        if (password == null || password.isBlank())
+            throw new IllegalArgumentException("Password cannot be blank");
+
+        this.password = password;
+    }
+    public void setAddress(String address) {
+        if (address == null || address.isBlank())
+            throw new IllegalArgumentException("Address cannot be blank");
+
+        this.address = address.trim();
+    }
+    public void setPostalCode(int postalCode) {
+        if (postalCode <= 0)
+            throw new IllegalArgumentException("Postal code must be positive");
+
+        this.postalCode = postalCode;
+    }
+    public void setBirthDate(String birthDate) {
+        if (!isValidDate(birthDate))
+            throw new IllegalArgumentException("Invalid birthdate");
+
+        this.birthDate = birthDate;
+    }
+    public void setSex(char sex) {
+        sex = Character.toUpperCase(sex);
+
+        if (sex != 'M' && sex != 'F')
+            throw new IllegalArgumentException("Sex must be M or F");
+
+        this.sex = sex;
+    }
+    private void setUserName() {
+        if (middleInitial.isEmpty()) userName = lastName + ", " + firstName;
+        else userName = lastName + ", " + firstName + " " + middleInitial + ".";
+    }
+
+    // FIND METHODS
+    public static User findUser(String userID) {
+        if (userID == null) return null;
+
+        for (User u : users) {
+            if (userID.trim().equalsIgnoreCase(u.getUserID()))
+                return u;
+        }
+
+        return null;
+    }
+
+    // DISPLAY METHODS
     public static void viewProfile(String userID) {
         User u = findUser(userID);
 
@@ -351,7 +418,96 @@ public abstract class User {
 
         UI.footer();
     }
+    public static void locateRoom() {
+        String roomCode;
+        UI.print("Locate Room");
+        do {
+            System.out.print("   Room Code > ");
+            roomCode = in.nextLine().trim();
+            if (roomCode.isEmpty()) UI.print("roomCode is required");
+            else if (Room.findRoom(roomCode) == null) UI.print("roomCode does not exist");
+        } while(roomCode.isEmpty() || Room.findRoom(roomCode) == null);
 
+        Room r = Room.findRoom(roomCode);
+
+        if (r == null) {
+            UI.print("Room not found");
+            return;
+        }
+
+        Building b = Building.findBuilding(r.getBuildingCode());
+
+        if (b == null) {
+            UI.print("Building not found");
+            return;
+        }
+
+        UI.header("ROOM INFORMATION");
+        UI.liner("  ROOM DETAILS");
+        UI.separator();
+        UI.liner(String.format("  ROOM CODE         : %s", r.getRoomCode()));
+        UI.liner(String.format("  ROOM DESCRIPTION  : %s", r.getRoomDescription()));
+        UI.separator();
+        UI.liner("  ROOM LOCATION");
+        UI.separator();
+        UI.liner(String.format("  BUILDING NAME     : %s", b.getBuildingName()));
+        UI.liner(String.format("  FLOOR NUMBER      : %s", Room.getFloorText(r.getFloorNumber())));
+        UI.footer();
+    }
+    public static void viewAvailableRooms() {
+
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        String currentDate = today.format(DATE_FORMAT);
+        String currentTime = now.format(TIME_FORMAT);
+        String checkEndTime = now.plusMinutes(1).format(TIME_FORMAT);
+
+        ArrayList<Room> availableRooms = new ArrayList<>();
+
+        for (Room room : Room.rooms) {
+            if (room == null)
+                continue;
+
+            if (Room.verifyAvailability(
+                    room.getRoomCode(),
+                    currentDate,
+                    currentTime,
+                    checkEndTime)) {
+                availableRooms.add(room);
+            }
+        }
+
+        UI.header("ROOM AVAILABILITY");
+
+        UI.liner("  DATE  : " + currentDate);
+        UI.liner("  TIME  : " + currentTime);
+        UI.separator();
+
+        UI.liner("  AVAILABLE ROOMS : " + availableRooms.size());
+
+        if (availableRooms.isEmpty()) {
+            UI.liner("");
+            UI.liner("       No rooms available right now.");
+            UI.liner("       Please check again later.");
+            UI.liner("");
+        } else {
+            int count = 1;
+
+            for (Room room : availableRooms) {
+                UI.separator();
+                UI.liner(String.format("  [%02d] %s", count++, room.getRoomCode()));
+                UI.liner("       " + fitText(room.getRoomDescription(), 52));
+                UI.liner(String.format("       %-10s : %s", "TYPE", fitText(room.getRoomType(), 45)));
+                UI.liner(String.format("       %-10s : %d seats", "CAPACITY", room.getCapacity()));
+                UI.liner(String.format("       %-10s : %s", "LOCATION", Room.getFloorText(room.getFloorNumber())));
+            }
+        }
+
+        UI.footer();
+    }
+
+    // VALIDATION METHODS
     public static boolean isValidEmail(String userID, String emailAddress) {
         User u = findUser(userID);
         return u != null && emailAddress != null && emailAddress.trim().equalsIgnoreCase(u.getEmail());
@@ -408,152 +564,7 @@ public abstract class User {
         }
     }
 
-    public void setLastName(String lastName) {
-        if (lastName == null || lastName.isBlank())
-            throw new IllegalArgumentException("Last name cannot be blank");
-
-        this.lastName = lastName.trim();
-        setUserName();
-    }
-    public void setFirstName(String firstName) {
-        if (firstName == null || firstName.isBlank())
-            throw new IllegalArgumentException("First name cannot be blank");
-
-        this.firstName = firstName.trim();
-        setUserName();
-    }
-    public void setMiddleInitial(String middleInitial) {
-        if (middleInitial == null) middleInitial = "";
-
-        middleInitial = middleInitial.trim();
-
-        if (middleInitial.length() > 1)
-            throw new IllegalArgumentException("Middle initial must be one character");
-
-        this.middleInitial = middleInitial;
-        setUserName();
-    }
-    public void setEmailAddress(String emailAddress) {
-        if (emailAddress == null || emailAddress.isBlank())
-            throw new IllegalArgumentException("Email cannot be blank");
-
-        this.emailAddress = emailAddress.trim();
-    }
-    public void setPassword(String password) {
-        if (password == null || password.isBlank())
-            throw new IllegalArgumentException("Password cannot be blank");
-
-        this.password = password;
-    }
-    public void setAddress(String address) {
-        if (address == null || address.isBlank())
-            throw new IllegalArgumentException("Address cannot be blank");
-
-        this.address = address.trim();
-    }
-    public void setPostalCode(int postalCode) {
-        if (postalCode <= 0)
-            throw new IllegalArgumentException("Postal code must be positive");
-
-        this.postalCode = postalCode;
-    }
-    public void setBirthDate(String birthDate) {
-        if (!isValidDate(birthDate))
-            throw new IllegalArgumentException("Invalid birthdate");
-
-        this.birthDate = birthDate;
-    }
-    public void setSex(char sex) {
-        sex = Character.toUpperCase(sex);
-
-        if (sex != 'M' && sex != 'F')
-            throw new IllegalArgumentException("Sex must be M or F");
-
-        this.sex = sex;
-    }
-    private void setUserName() {
-        if (middleInitial.isEmpty()) userName = lastName + ", " + firstName;
-        else userName = lastName + ", " + firstName + " " + middleInitial + ".";
-    }
-
-    public static void locateRoom() {
-        String roomCode;
-        UI.print("Locate Room");
-        do {
-            System.out.print("   Room Code > ");
-            roomCode = in.nextLine().trim();
-            if (roomCode.isEmpty()) UI.print("roomCode is required");
-            else if (Room.findRoom(roomCode) == null) UI.print("roomCode does not exist");
-        } while(roomCode.isEmpty() || Room.findRoom(roomCode) == null);
-
-        Room r = Room.findRoom(roomCode);
-
-        if (r == null) {
-            UI.print("Room not found");
-            return;
-        }
-
-        Building b = Building.findBuilding(r.getBuildingCode());
-
-        if (b == null) {
-            UI.print("Building not found");
-            return;
-        }
-
-        UI.header("ROOM INFORMATION");
-        UI.liner("  ROOM DETAILS");
-        UI.separator();
-        UI.liner(String.format("  ROOM CODE         : %s", r.getRoomCode()));
-        UI.liner(String.format("  ROOM DESCRIPTION  : %s", r.getRoomDescription()));
-        UI.separator();
-        UI.liner("  ROOM LOCATION");
-        UI.separator();
-        UI.liner(String.format("  BUILDING NAME     : %s", b.getBuildingName()));
-        UI.liner(String.format("  FLOOR NUMBER      : %s", Room.getFloorText(r.getFloorNumber())));
-        UI.footer();
-    }
-    public static void viewAvailableRooms() {
-
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
-
-        String currentDate = today.format(DATE_FORMAT);
-        String currentTime = now.format(TIME_FORMAT);
-        String checkEndTime = now.plusMinutes(1).format(TIME_FORMAT);
-
-        boolean available = false;
-
-        UI.header("ROOMS AVAILABLE RIGHT NOW");
-
-        for (Room room : Room.rooms) {
-
-            if (room == null)
-                continue;
-
-            if (Room.verifyAvailability(
-                    room.getRoomCode(),
-                    currentDate,
-                    currentTime,
-                    checkEndTime)) {
-
-                UI.liner("  " + room.getRoomCode()
-                        + " - " + room.getRoomDescription());
-                UI.liner("  Type: " + room.getRoomType()
-                        + " | Capacity: " + room.getCapacity());
-                UI.liner("  Floor: "
-                        + Room.getFloorText(room.getFloorNumber()));
-                UI.liner("");
-
-                available = true;
-            }
-        }
-
-        if (!available)
-            UI.liner("  No rooms are currently available.");
-
-        UI.footer();
-    }
-
+    // MANAGE USER
     public static void editUser(String userID) {
         String lastName, firstName, middleInitial, emailAddress;
         String password, address, birthDate, choice, userName;
@@ -600,7 +611,7 @@ public abstract class User {
                 userManage("EDIT", userID, lastName, firstName, middleInitial,
                         emailAddress, password, address, postalCode, birthDate,
                         sex, enrollmentStatus, programCode);
-            } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+            } else {
                 userManage("EDIT", userID, lastName, firstName, middleInitial,
                         emailAddress, password, address, postalCode, birthDate,
                         sex, collegeCode);
@@ -905,6 +916,9 @@ public abstract class User {
             return;
         }
 
+        String location = address;
+        if (location.length() > 38) location = address.substring(0, 38) + "...";
+
         UI.header(text.toUpperCase() + ": USER INFORMATION");
         UI.liner(String.format("  USER ID                : %s", userID));
         UI.separator();
@@ -913,7 +927,7 @@ public abstract class User {
         UI.liner(String.format(" [3] MIDDLE INITIAL      : %s", middleInitial));
         UI.liner(String.format(" [4] EMAIL ADDRESS       : %s", emailAddress));
         UI.liner(String.format(" [5] PASSWORD            : %s", password));
-        UI.liner(String.format(" [6] ADDRESS             : %s", address));
+        UI.liner(String.format(" [6] ADDRESS             : %s", location));
         UI.liner(String.format(" [7] POSTAL CODE         : %s", postalCode));
         UI.liner(String.format(" [8] BIRTHDATE           : %s", birthDate));
         UI.liner(String.format(" [9] SEX                 : %s", sex));
@@ -936,6 +950,9 @@ public abstract class User {
             return;
         }
 
+        String location = address;
+        if (location.length() > 38) location = address.substring(0, 38) + "...";
+
         UI.header(text.toUpperCase() + ": USER INFORMATION");
         UI.liner(String.format("  USER ID            : %s", userID));
         UI.separator();
@@ -944,13 +961,77 @@ public abstract class User {
         UI.liner(String.format(" [3] MIDDLE INITIAL  : %s", middleInitial));
         UI.liner(String.format(" [4] EMAIL ADDRESS   : %s", emailAddress));
         UI.liner(String.format(" [5] PASSWORD        : %s", password));
-        UI.liner(String.format(" [6] ADDRESS         : %s", address));
+        UI.liner(String.format(" [6] ADDRESS         : %s", location));
         UI.liner(String.format(" [7] POSTAL CODE     : %s", postalCode));
         UI.liner(String.format(" [8] BIRTHDATE       : %s", birthDate));
         UI.liner(String.format(" [9] SEX             : %s", sex));
         UI.liner(String.format(" [10] COLLEGE CODE   : %s", collegeCode));
         UI.liner("");
         UI.option();
+        UI.footer();
+    }
+
+    public void viewMyNotifications() {
+        ArrayList<Notification> received =
+                Notification.getNotificationsByRecipient(getUserID());
+
+        UI.header("MY NOTIFICATIONS");
+        UI.liner("  USER ID  : " + getUserID());
+        UI.liner("  TOTAL    : " + received.size() + " notification(s)");
+        UI.separator();
+
+        if (received.isEmpty()) {
+            UI.liner("");
+            UI.liner("                        You're all caught up!");
+            UI.liner("                       No notifications found.");
+            UI.liner("");
+        } else {
+            int count = 1;
+            int width = UI.INNERWIDTH - 15;
+
+            for (Notification n : received) {
+                UI.liner(String.format("  [%02d] NOTIFICATION #%s",
+                        count++, n.getNotificationID()));
+                UI.liner(String.format("  %-10s : %.55s", "FROM",
+                        n.getSenderID() == null ? "-" : n.getSenderID()));
+                UI.liner(String.format("  %-10s : %.55s", "ROOM",
+                        n.getRoomCode() == null ? "-" : n.getRoomCode()));
+                UI.liner(String.format("  %-10s : %.55s", "COURSE",
+                        n.getCourseCode() == null ? "-" : n.getCourseCode()));
+                UI.liner(String.format("  %-10s : %.55s", "BUILDING",
+                        n.getBuildingName() == null ? "-" : n.getBuildingName()));
+                UI.liner(String.format("  %-10s : %.55s", "DAY / TIME",
+                        (n.getDay() == null ? "-" : n.getDay()) + " | "
+                                + (n.getStartTime() == null ? "-" : n.getStartTime())
+                                + " - "
+                                + (n.getEndTime() == null ? "-" : n.getEndTime())));
+
+                UI.separator();
+                UI.liner("  MESSAGE");
+
+                String message = n.getMessage() == null ? "-" :
+                        n.getMessage().replace('\n', ' ')
+                                .replace('\r', ' ').trim();
+
+                if (message.isEmpty())
+                    message = "-";
+
+                while (!message.isEmpty()) {
+                    int end = Math.min(message.length(), width);
+                    if (end < message.length()) {
+                        int space = message.lastIndexOf(' ', end - 1);
+                        if (space > 0)
+                            end = space;
+                    }
+
+                    UI.liner("  " + message.substring(0, end).trim());
+                    message = message.substring(end).trim();
+                }
+
+                UI.separator();
+            }
+        }
+
         UI.footer();
     }
 }
