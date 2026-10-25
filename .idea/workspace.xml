@@ -7,28 +7,23 @@
     <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="Merge remote-tracking branch 'origin/Josh-Branch' into Revision&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;src/MAIN/Main.java&#10;#&#9;src/UI/UI.java&#10;#&#9;src/USER/Admin.java&#10;#&#9;src/USER/Faculty.java&#10;#&#9;src/USER/Student.java&#10;#&#9;src/USER/User.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Building.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Curriculum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Curriculum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/MakeUpSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/MakeUpSchedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DATA/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CourseRegistration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Section.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Section.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FUNCTION/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Notification.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FUNCTION/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Signup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Signup.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MAIN/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MAIN/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/UI/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UI/UI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Student.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/User.java" afterDir="false" />
     </list>
     <list id="03568440-2b64-4424-b1eb-4dd91c54e752" name="Changes by ASUS TUF" comment="" />
     <list id="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" name="Changes by josh" comment="">
-      <change beforePath="$PROJECT_DIR$/src/DATA/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Notification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/CancelledSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CancelledSchedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/CourseOffering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CourseOffering.java" afterDir="false" />
     </list>
-    <list id="b973db62-df63-43bd-80b9-9eb620220f07" name="Changes by kylea" comment="Changes by kylea">
-      <change beforePath="$PROJECT_DIR$/src/DATA/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Room.java" afterDir="false" />
-    </list>
+    <list id="6e6583be-b474-43b0-9eb5-5a4626b72afc" name="Changes by kylea" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,97 +56,6 @@
     &quot;accountId&quot;: &quot;a8a5e9f7-5766-4728-9ab6-569488c244e5&quot;
   }
 }</component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/DATA/Room.java">
-      <ranges>
-        <range start1="48" end1="74" start2="48" end2="48" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="82" end1="88" start2="56" end2="56" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="92" end1="93" start2="60" end2="60" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="96" end1="97" start2="63" end2="63" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="100" end1="101" start2="66" end2="66" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="104" end1="105" start2="69" end2="69" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="108" end1="109" start2="72" end2="72" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="112" end1="113" start2="75" end2="75" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="116" end1="161" start2="78" end2="88" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="162" end1="182" start2="89" end2="89" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="197" end1="197" start2="104" end2="108" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="198" end1="200" start2="109" end2="116" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="201" end1="215" start2="117" end2="117" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="217" end1="220" start2="119" end2="120" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="225" end1="228" start2="125" end2="126" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="236" end1="239" start2="134" end2="135" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="251" end1="254" start2="147" end2="148" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="259" end1="263" start2="153" end2="154" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="265" end1="266" start2="156" end2="156" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="267" end1="271" start2="157" end2="158" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="277" end1="278" start2="164" end2="164" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="281" end1="282" start2="167" end2="167" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="284" end1="285" start2="169" end2="169" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="286" end1="290" start2="170" end2="171" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="292" end1="296" start2="173" end2="174" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="297" end1="305" start2="175" end2="176" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="320" end1="321" start2="191" end2="191" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="336" end1="338" start2="206" end2="207" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="388" end1="390" start2="257" end2="258" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="409" end1="410" start2="277" end2="279" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="424" end1="466" start2="293" end2="293" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="477" end1="478" start2="304" end2="304" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="480" end1="481" start2="306" end2="306" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="483" end1="484" start2="308" end2="308" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="486" end1="487" start2="310" end2="310" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="489" end1="490" start2="312" end2="312" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="492" end1="493" start2="314" end2="314" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="499" end1="500" start2="320" end2="320" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="505" end1="506" start2="325" end2="325" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="507" end1="508" start2="326" end2="326" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="515" end1="516" start2="333" end2="333" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="568" end1="569" start2="385" end2="385" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="616" end1="616" start2="432" end2="482" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="665" end1="666" start2="531" end2="532" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="668" end1="669" start2="534" end2="535" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="678" end1="679" start2="544" end2="545" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="681" end1="682" start2="547" end2="548" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="793" end1="794" start2="659" end2="659" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="809" end1="810" start2="674" end2="675" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="841" end1="842" start2="706" end2="707" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="844" end1="845" start2="709" end2="710" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="854" end1="855" start2="719" end2="720" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="857" end1="858" start2="722" end2="723" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="972" end1="973" start2="837" end2="838" changelist="b973db62-df63-43bd-80b9-9eb620220f07" />
-        <range start1="1009" end1="1061" start2="874" end2="874" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/FUNCTION/Request.java">
-      <ranges>
-        <range start1="118" end1="119" start2="118" end2="120" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="123" end1="123" start2="124" end2="126" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="128" end1="131" start2="131" end2="138" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="139" end1="139" start2="146" end2="147" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="339" end1="340" start2="347" end2="348" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="447" end1="448" start2="455" end2="455" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="480" end1="483" start2="487" end2="488" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="486" end1="507" start2="491" end2="494" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="519" end1="534" start2="506" end2="516" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/FUNCTION/Notification.java">
-      <ranges>
-        <range start1="4" end1="4" start2="4" end2="11" changelist="58af87c2-3c4c-4778-ad79-d3a1e3c2a163" />
-        <range start1="9" end1="10" start2="16" end2="17" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="20" end1="22" start2="27" end2="29" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="23" end1="24" start2="30" end2="30" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="25" end1="32" start2="31" end2="31" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="35" end1="49" start2="34" end2="35" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="60" end1="61" start2="46" end2="46" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="94" end1="95" start2="79" end2="80" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="97" end1="98" start2="82" end2="111" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="99" end1="100" start2="112" end2="157" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="101" end1="105" start2="158" end2="170" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="106" end1="114" start2="171" end2="183" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-        <range start1="115" end1="132" start2="184" end2="222" changelist="a530ca09-7b94-4941-b34c-3738feb0d1f2" />
-      </ranges>
-    </file>
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -448,7 +352,15 @@
       <option name="project" value="LOCAL" />
       <updated>1792896626851</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Merge remote-tracking branch 'origin/Josh-Branch' into Revision&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;src/MAIN/Main.java&#10;#&#9;src/UI/UI.java&#10;#&#9;src/USER/Admin.java&#10;#&#9;src/USER/Faculty.java&#10;#&#9;src/USER/Student.java&#10;#&#9;src/USER/User.java">
+      <option name="closed" value="true" />
+      <created>1792907253168</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1792907253168</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -480,11 +392,6 @@
           <url>file://$PROJECT_DIR$/src/DATA/Curriculum.java</url>
           <line>263</line>
           <option name="timeStamp" value="46" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/DATA/Room.java</url>
-          <line>741</line>
-          <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

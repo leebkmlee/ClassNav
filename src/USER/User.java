@@ -70,6 +70,7 @@ public class User {
                         UI.print("User not found");
                         return;
                     }
+                    //if (u instanceof Student && (Student) u )
                     u.menu();
                 }
                 User.start();

@@ -45,9 +45,7 @@ public class CancelledSchedule {
     }
 
     // GETTER METHODS
-    public String getCancellationID() {
-        return cancellationID;
-    }
+    public String getCancellationID() {return cancellationID;}
     public String getScheduleID() {
         return scheduleID;
     }

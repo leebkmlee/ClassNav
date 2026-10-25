@@ -49,38 +49,7 @@ public class Section {
         sections.add(new Section(4, 'C', 1, "2026-2027"));
     }
 
-    // SETTERS
-    public void setSectionID(String newSectionID) {
-
-        if (newSectionID == null || newSectionID.trim().isEmpty())
-            throw new IllegalArgumentException("Section ID is required.");
-
-        newSectionID = newSectionID.trim();
-
-        for (Section s : sections) {
-            if (s != null && s != this
-                    && newSectionID.equalsIgnoreCase(s.getSectionID())) {
-                throw new IllegalArgumentException("Section ID already exists.");
-            }
-        }
-
-        this.sectionID = newSectionID;
-    }
-    public void setYearLevel(int yearLevel) {
-        this.yearLevel = yearLevel;
-    }
-    public void setBlock(char block) {
-        this.block = Character.toUpperCase(block);
-    }
-    public void setGroup(int group) {
-        this.group = group;
-    }
-    public void setAcademicYear(String academicYear) {
-        this.academicYear = academicYear.trim();
-    }
-
     // GETTERS
-
     public String getSectionID() {
         return sectionID;
     }
@@ -96,26 +65,7 @@ public class Section {
     public String getAcademicYear() {
         return academicYear;
     }
-    public static int getNextID() {
-        return nextSectionID;
-    }
-    public static String getSection(Section s) {
-        return s == null ? null : s.getSectionID();
-    }
-    public static int getYearLevel(Section s) {
-        return s == null ? 0 : s.getYearLevel();
-    }
-    public static char getBlock(Section s) {
-        return s == null ? '\0' : s.getBlock();
-    }
-    public static int getGroup(Section s) {
-        return s == null ? 0 : s.getGroup();
-    }
-    public static String getAcademicYear(Section s) {
-        return s == null ? null : s.getAcademicYear();
-    }
     public static String getYearSection(Section s) {
-
         if (s == null)
             return "Section not found";
 
@@ -126,7 +76,6 @@ public class Section {
     }
 
     // FIND METHODS
-
     public static Section findSection(String sectionID) {
 
         if (sectionID == null || sectionID.trim().isEmpty())
@@ -140,48 +89,23 @@ public class Section {
 
         return null;
     }
-    public static boolean existSectionID(String sectionID) {
-        return findSection(sectionID) != null;
-    }
 
     // DISPLAY ALL SECTIONS
-
     public static void displaySections() {
 
         UI.header("SECTIONS");
 
-        if (sections.isEmpty()) {
-            UI.liner("  No sections found.");
-        } else {
-            int count = 0;
-
+        if (sections.isEmpty()) UI.liner("  No sections found.");
+        else {
             for (Section s : sections) {
-
-                if (s == null)
-                    continue;
-
-                if (count > 0)
-                    UI.separator();
-
-                UI.liner(String.format(
-                        "  %-12s %-15s %-15s",
-                        getSection(s),
-                        getYearSection(s),
-                        getAcademicYear(s)
-                ));
-
-                count++;
+                if (s == null) continue;
+                UI.liner(String.format("  %-12s %-15s %-15s",
+                        s.getSectionID(), getYearSection(s), s.getAcademicYear()));
             }
-
-            if (count == 0)
-                UI.liner("  No sections found.");
         }
 
         UI.footer();
     }
-
-    // DISPLAY ONE SECTION
-
     public static void displaySection(String sectionID) {
 
         Section s = findSection(sectionID);
@@ -192,18 +116,15 @@ public class Section {
         }
 
         UI.header("SECTION DETAILS");
-        UI.liner(String.format("  SECTION ID        : %s", getSection(s)));
-        UI.liner(String.format("  YEAR LEVEL        : %d", getYearLevel(s)));
-        UI.liner(String.format("  BLOCK             : %c", getBlock(s)));
+        UI.liner(String.format("  SECTION ID        : %s", s.getSectionID()));
+        UI.liner(String.format("  YEAR LEVEL        : %d", s.getYearLevel()));
+        UI.liner(String.format("  BLOCK             : %c", s.getBlock()));
         UI.liner(String.format("  GROUP             : %s",
-                getGroup(s) == 0 ? "N/A" : "G" + getGroup(s)));
+                s.getGroup() == 0 ? "N/A" : "G" + s.getGroup()));
         UI.liner(String.format("  YEAR AND SECTION  : %s", getYearSection(s)));
-        UI.liner(String.format("  ACADEMIC YEAR     : %s", getAcademicYear(s)));
+        UI.liner(String.format("  ACADEMIC YEAR     : %s", s.getAcademicYear()));
         UI.footer();
     }
-
-    // DISPLAY STUDENTS IN A SECTION
-
     public static void displayStudents(String sectionID) {
 
         Section s = findSection(sectionID);
@@ -214,7 +135,7 @@ public class Section {
         }
 
         UI.header("STUDENT LIST");
-        UI.liner(String.format("  SECTION ID     : %s", getSection(s)));
+        UI.liner(String.format("  SECTION ID     : %s", s.getSectionID()));
         UI.liner("  Students under " + getYearSection(s) + ":");
         UI.separator();
 
@@ -264,28 +185,20 @@ public class Section {
         }
         UI.footer();
     }
-
     public static void displayArchiveSections() {
 
-        UI.header("ARCHIVED BUILDINGS");
+        UI.header("ARCHIVED SECTIONS");
 
-        if (archiveSections.isEmpty()) {
-            UI.liner("  No archived buildings found.");
-        } else {
+        if (archiveSections.isEmpty()) UI.liner("  No sections found.");
+        else {
             for (Section s : archiveSections) {
-                UI.liner(String.format(
-                        "  %-15s %-10s %-10s %-10s %-15s",
-                        s.getSectionID(),
-                        s.getYearLevel(),
-                        s.getBlock(),
-                        s.getGroup(),
-                        s.getAcademicYear()
-                ));
+                if (s == null) continue;
+                UI.liner(String.format("  %-12s %-15s %-15s",
+                        s.getSectionID(), getYearSection(s), s.getAcademicYear()));
             }
         }
 
         UI.footer();
-
     }
 
     public static void createSection() {
@@ -295,10 +208,7 @@ public class Section {
         boolean submit = false;
 
         while (!submit) {
-            sectionManage("CREATE",
-
-                    String.format("SEC%03d", Section.getNextID()),
-                    yearLevel, block, group, academicYear);
+            sectionManage("CREATE", String.format("SEC%03d", sections.size()), yearLevel, block, group, academicYear);
 
             do {
                 System.out.print("  Select > ");
@@ -353,8 +263,7 @@ public class Section {
                     break;
 
                 case "4":
-                    int startYear;
-                    int endYear;
+                    int startYear;int endYear;
                     do {
                         System.out.print("   Enter Academic Year > ");
                         academicYear = in.nextLine().trim();
@@ -432,10 +341,8 @@ public class Section {
         do {
             System.out.print("  Enter Section ID > ");
             sectionID = in.nextLine().trim();
-
-            if (!Section.existSectionID(sectionID))
-                UI.print("Section does not exist");
-        } while (!Section.existSectionID(sectionID));
+            if (findSection(sectionID) == null) UI.print("Section does not exist");
+        } while (findSection(sectionID) == null);
 
         Section s = Section.findSection(sectionID);
 
@@ -444,11 +351,11 @@ public class Section {
             return;
         }
 
-        sectionID = Section.getSection(s);
-        yearLevel = Section.getYearLevel(s);
-        block = Section.getBlock(s);
-        group = Section.getGroup(s);
-        academicYear = Section.getAcademicYear(s);
+        sectionID = s.getSectionID();
+        yearLevel = s.getYearLevel();
+        block = s.getBlock();
+        group = s.getGroup();
+        academicYear = s.getAcademicYear();
 
         while (!submit) {
             sectionManage("EDIT", sectionID, yearLevel, block, group, academicYear);
@@ -540,10 +447,10 @@ public class Section {
                     }
 
                     if (gate) {
-                        s.setYearLevel(yearLevel);
-                        s.setBlock(block);
-                        s.setGroup(group);
-                        s.setAcademicYear(academicYear);
+                        s.yearLevel = yearLevel;
+                        s.block = block;
+                        s.group = group;
+                        s.academicYear = academicYear;
 
                         UI.print("Section successfully updated");
                         submit = true;
@@ -567,9 +474,9 @@ public class Section {
             System.out.print("  Enter Section ID > ");
             input = in.nextLine().trim();
 
-            if (!Section.existSectionID(input))
+            if (findSection(input) == null)
                 UI.print("Section does not exist");
-        } while (!Section.existSectionID(input));
+        } while (findSection(input) == null);
 
         Section s = Section.findSection(input);
 
@@ -578,12 +485,7 @@ public class Section {
             return;
         }
 
-        sectionManage("DELETE",
-                Section.getSection(s),
-                Section.getYearLevel(s),
-                Section.getBlock(s),
-                Section.getGroup(s),
-                Section.getAcademicYear(s));
+        sectionManage("DELETE", s.getSectionID(), s.getYearLevel(), s.getBlock(), s.getGroup(), s.getAcademicYear());
 
         do {
             System.out.print("  Confirm Section Deletion? (Y/N) > ");
@@ -619,6 +521,5 @@ public class Section {
         UI.option();
         UI.footer();
     }
-
 
 }

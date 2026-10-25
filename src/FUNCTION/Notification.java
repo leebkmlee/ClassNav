@@ -80,32 +80,32 @@ public class Notification {
     public String getNotificationID() {
         return notificationID;
     }
-    public static String getSenderID(Notification n) {
-        return n == null ? null : n.senderID;
+    public String getSenderID() {
+        return this.senderID;
     }
-    public static String getRecipientID(Notification n) {
-        return n == null ? null : n.recipientID;
+    public String getRecipientID() {
+        return this.recipientID;
     }
-    public static String getCourseCode(Notification n) {
-        return n == null ? null : n.courseCode;
+    public String getCourseCode() {
+        return this.courseCode;
     }
-    public static String getRoomCode(Notification n) {
-        return n == null ? null : n.roomCode;
+    public String getRoomCode() {
+        return this.roomCode;
     }
-    public static String getBuildingName(Notification n) {
-        return n == null ? null : n.buildingName;
+    public String getBuildingName() {
+        return this.buildingName;
     }
-    public static String getDay(Notification n) {
-        return n == null ? null : n.day;
+    public String getDay() {
+        return this.day;
     }
-    public static String getStartTime(Notification n) {
-        return n == null ? null : n.startTime;
+    public String getStartTime() {
+        return this.startTime;
     }
-    public static String getEndTime(Notification n) {
-        return n == null ? null : n.endTime;
+    public String getEndTime() {
+        return this.endTime;
     }
-    public static String getMessage(Notification n) {
-        return n == null ? null : n.message;
+    public String getMessage() {
+        return this.message;
     }
 
     public static Notification findNotification(String notificationID) {
@@ -123,11 +123,14 @@ public class Notification {
             return;
         }
 
+        String text = n.getMessage();
+        if (text.length() > 30) text = text.substring(0, 30) + "...";
+
         UI.header("BUILDING DETAILS");
         UI.liner(String.format("  NOTIFICAITON ID : %s", n.getNotificationID()));
-        UI.liner(String.format("  SENDER          : %s", Notification.getSenderID(n)));
-        UI.liner(String.format("  RECIPIENT       : %s", Notification.getRecipientID(n)));
-        UI.liner(String.format("  MESSAGE         : %s", Notification.getMessage(n)));
+        UI.liner(String.format("  SENDER          : %s", n.getSenderID()));
+        UI.liner(String.format("  RECIPIENT       : %s", n.getRecipientID()));
+        UI.liner(String.format("  MESSAGE         : %s", text));
         UI.footer();
     }
     public static void displayNotifications() {

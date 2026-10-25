@@ -26,8 +26,7 @@ public class Student extends User {
     private String programCode;
 
     private static final String[] DAYS = {
-            "Monday", "Tuesday", "Wednesday", "Thursday",
-            "Friday", "Saturday", "Sunday"
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     };
 
     public Student(String lastName, String firstName, String middleInitial, String emailAddress,

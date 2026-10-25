@@ -232,12 +232,15 @@ public class Building {
                     break;
 
                 case "/":
-                    buildings.add(new Building(buildingName));
-                    UI.print("Building successfully created");
+                    if (buildings.isEmpty()) UI.print("Details are incomplete");
+                    else {
+                        buildings.add(new Building(buildingName));
+                        UI.print("Building successfully created");
 
-                    Building b = Building.findBuildingByName(buildingName);
-                    Building.displayBuilding(b.getBuildingCode());
-                    submit = true;
+                        Building b = Building.findBuildingByName(buildingName);
+                        Building.displayBuilding(b.getBuildingCode());
+                        submit = true;
+                    }
                     break;
                 case "X":
                     submit = true;

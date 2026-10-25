@@ -183,7 +183,6 @@ public class CourseRegistration {
 
     // MANAGE METHODS
     public static void createRegistration() {
-
         String studentID = "", offeringID = "", status = "", choice;
         boolean submit = false;
 

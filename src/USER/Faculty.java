@@ -484,13 +484,13 @@ public class Faculty extends User {
             Notification n = facultyNotifications.get(i);
 
             Student student = Student.findStudent(
-                    Notification.getSenderID(n));
+                    n.getSenderID());
 
             String senderName = student == null
-                    ? Notification.getSenderID(n)
+                    ? n.getSenderID()
                     : student.getUserName();
 
-            String message = Notification.getMessage(n);
+            String message = n.getMessage();
 
             if (message == null)
                 message = "";
@@ -532,20 +532,20 @@ public class Faculty extends User {
         if (selected == 0) return;
 
         Notification n = facultyNotifications.get(selected - 1);
-        Student student = Student.findStudent(Notification.getSenderID(n));
+        Student student = Student.findStudent(n.getSenderID());
         UI.header("NOTIFICATION DETAILS");
         UI.liner("  NOTIFICATION ID : " + n.getNotificationID());
-        UI.liner("  FROM            : " + (student == null ? Notification.getSenderID(n) : student.getUserName()));
-        UI.liner("  SENDER ID       : " + Notification.getSenderID(n));
-        UI.liner("  TO              : " + Notification.getRecipientID(n));
+        UI.liner("  FROM            : " + (student == null ? n.getSenderID() : student.getUserName()));
+        UI.liner("  SENDER ID       : " + n.getSenderID());
+        UI.liner("  TO              : " + n.getRecipientID());
         UI.separator();
-        UI.liner("  COURSE CODE     : " + Notification.getCourseCode(n));
-        UI.liner("  ROOM CODE       : " + Notification.getRoomCode(n));
-        UI.liner("  BUILDING NAME   : " + Notification.getBuildingName(n));
-        UI.liner("  DAY             : " + Notification.getDay(n));
-        UI.liner("  TIME            : " + Notification.getStartTime(n) + " - " + Notification.getEndTime(n));
+        UI.liner("  COURSE CODE     : " + n.getCourseCode());
+        UI.liner("  ROOM CODE       : " + n.getRoomCode());
+        UI.liner("  BUILDING NAME   : " + n.getBuildingName());
+        UI.liner("  DAY             : " + n.getDay());
+        UI.liner("  TIME            : " + n.getStartTime() + " - " + n.getEndTime());
         UI.separator();
-        UI.liner("  MESSAGE         : " + Notification.getMessage(n));
+        UI.liner("  MESSAGE         : " + n.getMessage());
         UI.footer();
     }
 }

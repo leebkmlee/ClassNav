@@ -37,31 +37,7 @@ public class Request {
     // ROOM REQUEST CONSTRUCTOR
     public Request(String facultyID, String roomCode, String requestedDate,
                    String startTime, String endTime, String reason) {
-
-        if (facultyID == null || facultyID.trim().isEmpty())
-            throw new IllegalArgumentException("Faculty ID cannot be empty.");
-
-        if (roomCode == null || roomCode.trim().isEmpty())
-            throw new IllegalArgumentException("Room code cannot be empty.");
-
-        if (requestedDate == null || requestedDate.trim().isEmpty()
-                || startTime == null || startTime.trim().isEmpty()
-                || endTime == null || endTime.trim().isEmpty()
-                || reason == null || reason.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Request details cannot be empty.");
-        }
-
         Room room = Room.findRoom(roomCode);
-
-        if (room == null)
-            throw new IllegalArgumentException("Room does not exist.");
-
-        if (room.getCollegeCode() == null
-                || room.getCollegeCode().trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "The room has no assigned college.");
-        }
 
         LocalDate date;
 

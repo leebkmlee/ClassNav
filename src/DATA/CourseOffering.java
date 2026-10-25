@@ -13,7 +13,7 @@ public class CourseOffering {
     private static int nextOfferingID = 1;
 
     private final String offeringID;
-    private String sectionID, courseCode, facultyID, academicYear;
+    private String sectionID, courseCode, facultyID, academicYear; // FOREIGN KEY
     private int term;
 
     public static ArrayList<CourseOffering> offerings = new ArrayList<>();
