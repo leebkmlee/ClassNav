@@ -5,13 +5,11 @@ import UI.*;
 import FUNCTION.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static DATA.Room.convertToMinutes;
 import static FUNCTION.Request.TIME_FORMAT;
@@ -48,7 +46,7 @@ public class Student extends User {
             throw new IllegalArgumentException("Enrollment status cannot be blank");
 
         this.enrollmentStatus = enrollmentStatus.trim();
-        this.programCode = Program.getProgram(p);
+        this.programCode = p.getProgramCode();
     }
 
     @Override
@@ -134,7 +132,7 @@ public class Student extends User {
         if (p == null)
             throw new IllegalArgumentException("Program not found");
 
-        this.programCode = Program.getProgram(p);
+        this.programCode = p.getProgramCode();
     }
 
     public static Student findStudent(String userID) {
@@ -450,56 +448,6 @@ public class Student extends User {
 
         if (!available)
             UI.liner("  No rooms are currently available.");
-
-        UI.footer();
-    }
-
-    public static void viewAvailableRooms(String day, String startTime, String endTime) {
-        if (!isValidDay(day) || !isValidTimeRange(startTime, endTime)) {
-            UI.print("Invalid day or time range");
-            return;
-        }
-
-        day = normalizeDay(day);
-
-        LocalDate today = LocalDate.now();
-
-        if (!today.getDayOfWeek().name().equalsIgnoreCase(day.toUpperCase())) {
-            UI.print("Availability can only be checked for today's day");
-            return;
-        }
-
-        UI.header("AVAILABLE ROOMS");
-        UI.liner("  DAY        : " + day);
-        UI.liner("  START TIME : " + startTime);
-        UI.liner("  END TIME   : " + endTime);
-        UI.separator();
-
-        boolean found = false;
-
-        for (Room room : Room.rooms) {
-            if (room == null)
-                continue;
-
-            if (Room.verifyAvailability(
-                    room.getRoomCode(),
-                    today.format(DATE_FORMAT),
-                    startTime,
-                    endTime)) {
-
-                found = true;
-
-                Building building = Building.findBuilding(room.getBuildingCode());
-                UI.liner(String.format("  ROOM CODE     : %s", room.getRoomCode()));
-                UI.liner(String.format("  DESCRIPTION   : %s", room.getRoomDescription()));
-                UI.liner(String.format("  BUILDING NAME : %s",
-                        building == null ? "Building not found" : building.getBuildingName()));
-                UI.separator();
-            }
-        }
-
-        if (!found)
-            UI.liner("  No available rooms found for the selected time.");
 
         UI.footer();
     }

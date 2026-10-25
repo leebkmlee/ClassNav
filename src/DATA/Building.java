@@ -309,7 +309,7 @@ public class Building {
         String input;
         String choice;
 
-        UI.print("DELETE EXISTING BUILDING");
+        UI.print("ARCHIVE EXISTING BUILDING");
 
         do {
             System.out.print("  Enter Building Code > ");

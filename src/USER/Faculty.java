@@ -500,7 +500,7 @@ public class Faculty extends User {
 
             UI.liner(String.format("  [%-3d] %-8s %-22s %-20s",
                     i + 1,
-                    String.format("%04d", Notification.getNotification(n)),
+                    String.format("%04d", n.getNotificationID()),
                     senderName,
                     message));
         }
@@ -532,10 +532,9 @@ public class Faculty extends User {
         if (selected == 0) return;
 
         Notification n = facultyNotifications.get(selected - 1);
-        Student student = Student.findStudent(
-                Notification.getSenderID(n));
+        Student student = Student.findStudent(Notification.getSenderID(n));
         UI.header("NOTIFICATION DETAILS");
-        UI.liner("  NOTIFICATION ID : " + String.format("%04d", Notification.getNotification(n)));
+        UI.liner("  NOTIFICATION ID : " + n.getNotificationID());
         UI.liner("  FROM            : " + (student == null ? Notification.getSenderID(n) : student.getUserName()));
         UI.liner("  SENDER ID       : " + Notification.getSenderID(n));
         UI.liner("  TO              : " + Notification.getRecipientID(n));

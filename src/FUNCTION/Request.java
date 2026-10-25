@@ -116,19 +116,26 @@ public class Request {
             DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
 
     // CONVERT INPUT TIME TO INTERNAL 24-HOUR FORMAT
-    static String convertTime(String time) {
+
+    public static String convertTime(String time) {
 
         if (time == null || time.trim().isEmpty())
             throw new IllegalArgumentException("Time cannot be empty.");
+
+        String value = time.trim().toUpperCase(Locale.ENGLISH);
 
         DateTimeFormatter inputFormat =
                 DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]",
                         Locale.ENGLISH);
 
         try {
-            LocalTime parsedTime = LocalTime.parse(
-                    time.trim().toUpperCase(Locale.ENGLISH),
-                    inputFormat);
+            LocalTime parsedTime;
+
+            if (value.matches("\\d{2}:\\d{2}")) {
+                parsedTime = LocalTime.parse(value, TIME_FORMAT);
+            } else {
+                parsedTime = LocalTime.parse(value, inputFormat);
+            }
 
             return parsedTime.format(TIME_FORMAT);
 
@@ -137,6 +144,7 @@ public class Request {
                     "Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
         }
     }
+
 
     // FORMAT INTERNAL TIME FOR DISPLAY
     static String formatTime(String time) {
@@ -337,7 +345,7 @@ public class Request {
         UI.liner("  NAME       : " + f.getUserName());
         UI.liner("  COLLEGE    : "
                 + (facultyCollegeCode == null ? "Not assigned" : facultyCollegeCode));
-        UI.separator();
+        UI.footer();
 
         // ENTER FUTURE RESERVATION DATE
         do {
@@ -445,7 +453,6 @@ public class Request {
         if (!Room.verifyAvailability(roomCode, date.format(DATE_FORMAT),
                 convertedStart, convertedEnd)) {
             UI.print("The selected room is not available for that time.");
-            UI.print("Please submit a new request with another time or room.");
             return;
         }
 
@@ -478,33 +485,13 @@ public class Request {
         do {
             System.out.print("  Enter Reason > ");
             reason = in.nextLine().trim();
-
-            if (reason.isEmpty())
-                UI.print("Reason cannot be empty.");
+            if (reason.isEmpty()) UI.print("Reason cannot be empty.");
 
         } while (reason.isEmpty());
 
-        try {
-            Request request = new Request(
-                    facultyID,
-                    roomCode,
-                    date.format(DATE_FORMAT),
-                    convertedStart,
-                    convertedEnd,
-                    reason);
-
-            requests.add(request);
-
-            UI.print("Room request submitted successfully.");
-            UI.print("Request ID: " + request.getRequestID());
-            UI.print("Sent to the Department Head of " + targetCollegeCode + ".");
-
-            // Notification delivery can be connected here when the
-            // project's notification class or mechanism is available.
-
-        } catch (IllegalArgumentException e) {
-            UI.print("Unable to submit request: " + e.getMessage());
-        }
+        requests.add(new Request(facultyID, roomCode, date.format(DATE_FORMAT), convertedStart, convertedEnd, reason));
+        UI.print("Room request submitted successfully.");
+        displayRequest(findRequest(requests.getLast().getRequestID()));
     }
 
     // DISPLAY REQUEST DETAILS
@@ -517,21 +504,16 @@ public class Request {
         Room room = Room.findRoom(request.roomCode);
 
         UI.header("ROOM RESERVATION REQUEST");
-        UI.liner("  REQUEST ID     : " + request.requestID);
-        UI.liner("  FACULTY ID     : " + request.facultyID);
-        UI.liner("  FACULTY        : "
-                + (faculty == null ? "Not found" : faculty.getUserName()));
-        UI.liner("  FACULTY COLLEGE: "
-                + (faculty == null || Faculty.getCollegeCode(faculty) == null
-                ? "Not found" : Faculty.getCollegeCode(faculty)));
-        UI.liner("  ROOM CODE      : " + request.roomCode);
-        UI.liner("  ROOM           : "
-                + (room == null ? "Not found" : room.getRoomDescription()));
-        UI.liner("  ROOM COLLEGE   : " + request.targetCollegeCode);
-        UI.liner("  DATE           : " + request.requestedDate);
-        UI.liner("  TIME           : " + formatTime(request.startTime)
-                + " - " + formatTime(request.endTime));
-        UI.liner("  STATUS         : " + request.status);
+        UI.liner("  REQUEST ID       : " + request.requestID);
+        UI.liner("  FACULTY ID       : " + request.facultyID);
+        UI.liner("  FACULTY          : " + faculty.getUserName());
+        UI.liner("  FACULTY COLLEGE  : " +  Faculty.getCollegeCode(faculty));
+        UI.liner("  ROOM CODE        : " + request.roomCode);
+        UI.liner("  ROOM             : " + room.getRoomDescription());
+        UI.liner("  ROOM COLLEGE     : " + request.targetCollegeCode);
+        UI.liner("  DATE             : " + request.requestedDate);
+        UI.liner("  TIME             : " + formatTime(request.startTime) + " - " + formatTime(request.endTime));
+        UI.liner("  STATUS           : " + request.status);
         UI.separator();
         UI.liner("  REASON         : " + request.reason);
 

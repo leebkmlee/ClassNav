@@ -744,9 +744,9 @@ public class User {
                             System.out.print("   Program Code > ");
                             programCode = in.nextLine().trim().toUpperCase();
 
-                            if (!Program.existProgramCode(programCode))
+                            if (Program.findProgram(programCode) != null)
                                 UI.print("Program Code does not exist");
-                        } while (!Program.existProgramCode(programCode));
+                        } while (Program.findProgram(programCode) != null);
 
                     } else if (u instanceof Faculty || u instanceof DepartmentHead) {
                         do {
@@ -1047,9 +1047,9 @@ public class User {
                             System.out.print("   Program Code > ");
                             programCode = in.nextLine().trim().toUpperCase();
 
-                            if (!Program.existProgramCode(programCode))
+                            if (Program.findProgram(programCode) != null)
                                 UI.print("Program Code does not exist");
-                        } while (!Program.existProgramCode(programCode));
+                        } while (Program.findProgram(programCode) != null);
 
                     } else if (u instanceof Faculty || u instanceof DepartmentHead) {
                         do {

@@ -2,12 +2,19 @@
 package FUNCTION;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import DATA.Building;
+import DATA.Room;
+import UI.*;
+
+import static UI.UI.in;
 
 public class Notification {
 
     private static int nextNotificationID = 1;
 
-    private int notificationID;
+    private String notificationID;
     private String senderID;
     private String recipientID;
     private String courseCode;
@@ -18,35 +25,14 @@ public class Notification {
     private String endTime;
     private String message;
 
-    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
-        ArrayList<Notification> received = new ArrayList<>();
+    public static ArrayList<Notification> notifications = new ArrayList<>();
+    public static ArrayList<Notification> archiveNotifications = new ArrayList<>();
 
-        if (recipientID == null || recipientID.isBlank()) return received;
 
-        for (Notification n : notifications) {
-            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
-                received.add(n);
-            }
-        }
-        return received;
-    }
 
     public Notification(String senderID, String recipientID, String courseCode, String roomCode,
                         String buildingName, String day, String startTime, String endTime, String message) {
-
-        if (senderID == null || senderID.isBlank()
-                || recipientID == null || recipientID.isBlank()
-                || courseCode == null || courseCode.isBlank()
-                || roomCode == null || roomCode.isBlank()
-                || buildingName == null || buildingName.isBlank()
-                || day == null || day.isBlank()
-                || startTime == null || startTime.isBlank()
-                || endTime == null || endTime.isBlank()
-                || message == null || message.isBlank()) {
-            throw new IllegalArgumentException("Notification fields cannot be empty.");
-        }
-
-        this.notificationID = nextNotificationID++;
+        this.notificationID = String.format("N%03d", nextNotificationID++);
         this.senderID = senderID.trim();
         this.recipientID = recipientID.trim();
         this.courseCode = courseCode.trim();
@@ -58,7 +44,6 @@ public class Notification {
         this.message = message.trim();
     }
 
-    public static ArrayList<Notification> notifications = new ArrayList<>();
     static {
         notifications.add(new Notification("F0001", "S0001", "IT101", "RM001", "Pimentel Hall",
                 "Monday", "8:00 AM", "9:30 AM", "Room assigned"));
@@ -92,17 +77,8 @@ public class Notification {
                 "Friday", "1:00 PM", "3:00 PM", "Class cancelled"));
     }
 
-    public int getNotificationID() {
+    public String getNotificationID() {
         return notificationID;
-    }
-    public static Notification findNotification(int notificationID) {
-        for (Notification n : notifications) {
-            if (n != null && n.notificationID == notificationID) return n;
-        }
-        return null;
-    }
-    public static int getNotification(Notification n) {
-        return n == null ? -1 : n.notificationID;
     }
     public static String getSenderID(Notification n) {
         return n == null ? null : n.senderID;
@@ -130,5 +106,119 @@ public class Notification {
     }
     public static String getMessage(Notification n) {
         return n == null ? null : n.message;
+    }
+
+    public static Notification findNotification(String notificationID) {
+        for (Notification n : notifications) {
+            if (n != null && notificationID.equals(n.notificationID)) return n;
+        }
+        return null;
+    }
+
+    public static void displayNotification(String notificationID) {
+        Notification n = findNotification(notificationID);
+
+        if (n == null) {
+            UI.print("Notification not found");
+            return;
+        }
+
+        UI.header("BUILDING DETAILS");
+        UI.liner(String.format("  NOTIFICAITON ID : %s", n.getNotificationID()));
+        UI.liner(String.format("  SENDER          : %s", Notification.getSenderID(n)));
+        UI.liner(String.format("  RECIPIENT       : %s", Notification.getRecipientID(n)));
+        UI.liner(String.format("  MESSAGE         : %s", Notification.getMessage(n)));
+        UI.footer();
+    }
+    public static void displayNotifications() {
+
+        UI.header("NOTIFICATIONS");
+
+        if (notifications.isEmpty()) {
+            UI.liner("  No notifications found.");
+        } else {
+            for (Notification n : notifications) {
+                UI.liner(String.format("  %-12s %-12s %-12s %-12s",
+                        n.notificationID,
+                        n.senderID,
+                        n.recipientID,
+                        n.message));
+            }
+        }
+
+        UI.footer();
+    }
+    public static void displayArchiveNotifications() {
+        UI.header("ARCHIVED NOTIFICATIONS");
+
+        if (archiveNotifications.isEmpty()) {
+            UI.liner("  No archived notifications available.");
+            UI.footer();
+            return;
+        }
+
+        UI.liner(String.format("  %-5s %-9s %-9s %-9s %-10s %-12s",
+                "ID", "SENDER", "RECIPIENT", "COURSE", "ROOM", "MESSAGE"));
+
+        UI.separator();
+
+        for (Notification n : archiveNotifications) {
+            UI.liner(String.format("  %-5d %-9s %-9s %-9s %-10s %-12s",
+                    n.notificationID, n.senderID, n.recipientID, n.courseCode, n.roomCode, n.message));
+        }
+
+        UI.footer();
+    }
+
+    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
+        ArrayList<Notification> received = new ArrayList<>();
+
+        if (recipientID == null || recipientID.isBlank()) return received;
+
+        for (Notification n : notifications) {
+            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
+                received.add(n);
+            }
+        }
+        return received;
+    }
+
+    public static void archiveNotifications() {
+        String input; String choice;
+        UI.header("ARCHIVE NOTIFICATIONS");
+
+        do {
+            System.out.print("  Enter Notification Code > ");
+            input = in.nextLine().trim();
+            if (input.isEmpty()) UI.print("Invalid Input");
+            else if (findNotification(input) != null) UI.print("Notification does not exist");
+        } while (input.isEmpty() || findNotification(input) != null);
+
+        Notification n = findNotification(input);
+
+        if (n == null) {
+            UI.print("Notification not found");
+            return;
+        }
+
+        displayNotification(n.getNotificationID());
+
+        do {
+            System.out.print("  Confirm Notification Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]")) {
+                UI.print("Invalid Input");
+            }
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            archiveNotifications.add(n);
+            notifications.remove(n);
+            UI.print("Notification successfully archived");
+        } else {
+            UI.print("Archiving cancelled");
+        }
+
     }
 }

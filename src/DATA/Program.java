@@ -7,9 +7,9 @@ import static UI.UI.in;
 
 public class Program {
 
-    private String programCode; // primary key
+    private String programCode;
     private String programDescription;
-    private String collegeCode; // foreign key
+    private String collegeCode;
 
     public static ArrayList<Program> programs = new ArrayList<>();
     public static ArrayList<Program> archivePrograms = new ArrayList<>();
@@ -39,49 +39,42 @@ public class Program {
     }
 
     // PROGRAM GETTER METHODS
-    public String getProgramID() {
+    public String getProgramCode() {
         return programCode;
     }
-
     public String getProgramDescription() {
         return programDescription;
     }
-
     public String getCollegeCode() {
         return collegeCode;
     }
 
     // FIND PROGRAM BY PRIMARY KEY
     public static Program findProgram(String programCode) {
-
         if (programCode == null || programCode.trim().isEmpty())
             return null;
 
         programCode = programCode.trim();
 
         for (Program p : programs) {
-            if (programCode.equalsIgnoreCase(p.getProgramID()))
+            if (programCode.equalsIgnoreCase(p.getProgramCode()))
                 return p;
         }
 
         return null;
     }
+    public static Program findProgramDesc(String programDescription) {
+        if (programDescription == null || programDescription.trim().isEmpty())
+            return null;
 
-    // STATIC GETTER METHODS
-    public static String getProgram(Program p) {
-        return p == null ? null : p.getProgramID();
-    }
+        programDescription = programDescription.trim();
 
-    public static String getProgramDescription(Program p) {
-        return p == null ? null : p.getProgramDescription();
-    }
+        for (Program p : programs) {
+            if (programDescription.equalsIgnoreCase(p.getProgramCode()))
+                return p;
+        }
 
-    public static String getCollegeCode(Program p) {
-        return p == null ? null : p.getCollegeCode();
-    }
-
-    public static boolean existProgramCode(String programCode) {
-        return findProgram(programCode) != null;
+        return null;
     }
 
     // PROGRAM METHODS
@@ -96,52 +89,41 @@ public class Program {
 
         College c = College.findCollege(p.getCollegeCode());
 
-        UI.header("PROGRAM INFORMATION");
-        UI.liner(String.format("  PROGRAM CODE         : %s", p.getProgramID()));
-
-        String description = p.getProgramDescription();
-        String progDesc = description;
-        if (progDesc.length() > 35) progDesc = progDesc.substring(0, 35) + " ...";
-
-        UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", progDesc));
-
-        UI.liner(String.format("  COLLEGE CODE         : %s", p.getCollegeCode()));
-
-        if (c != null) {
-            String colDesc = c.getCollegeDescription();
-            if (colDesc.length() > 35) {
-                colDesc = colDesc.substring(0, 35) + " ...";
-            }
-            UI.liner(String.format("  COLLEGE DESCRIPTION  : %s", colDesc));
+        if (c == null) {
+            UI.print("College not found");
+            return;
         }
 
+        String progDesc = p.getProgramDescription();
+        if (progDesc.length() > 35) progDesc = progDesc.substring(0, 35) + " ...";
+        String colDesc = c.getCollegeDescription();
+        if (colDesc.length() > 35) colDesc = colDesc.substring(0, 35) + " ...";
+
+        UI.header("PROGRAM INFORMATION");
+        UI.liner(String.format("  PROGRAM CODE         : %s", p.getProgramCode()));
+        UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", progDesc));
+        UI.liner(String.format("  COLLEGE CODE         : %s", p.getCollegeCode()));
+        UI.liner(String.format("  COLLEGE DESCRIPTION  : %s", colDesc));
         UI.footer();
     }
     public static void displayPrograms() {
-
         UI.header("PROGRAMS");
 
         if (programs.isEmpty()) {
             UI.liner("  No programs found.");
         } else {
-            for (int i = 0; i < programs.size(); i++) {
-                Program p = programs.get(i);
-
+            for (Program p : programs) {
                 UI.liner(String.format(
                         "  %-15s %-45s",
-                        p.getProgramID(),
+                        p.getProgramCode(),
                         p.getProgramDescription()
                 ));
-
-                if (i < programs.size() - 1)
-                    UI.separator();
             }
         }
 
         UI.footer();
     }
     public static void displayArchivePrograms() {
-
         UI.header("ARCHIVED BUILDINGS");
 
         if (archivePrograms.isEmpty()) {
@@ -156,7 +138,7 @@ public class Program {
 
                 UI.liner(String.format(
                         "  %-15s %-40s %-10s",
-                        p.getProgramID(),
+                        p.getProgramCode(),
                         progDesc,
                         p.getCollegeCode()
                 ));
@@ -191,11 +173,11 @@ public class Program {
 
                         if (programCode.isEmpty())
                             UI.print("Program Code is required");
-                        else if (Program.existProgramCode(programCode))
+                        else if (Program.findProgram(programCode) != null)
                             UI.print("Program Code already exists");
 
                     } while (programCode.isEmpty()
-                            || Program.existProgramCode(programCode));
+                            || Program.findProgram(programCode) != null);
                     break;
 
                 case "2":
@@ -205,11 +187,11 @@ public class Program {
 
                         if (programDescription.isEmpty())
                             UI.print("Program Description is required");
-                        else if (programDescriptionExists(programDescription, null))
+                        else if (findProgramDesc(programDescription) != null)
                             UI.print("Program Description already exists");
 
                     } while (programDescription.isEmpty()
-                            || programDescriptionExists(programDescription, null));
+                            || findProgramDesc(programDescription) != null);
                     break;
 
                 case "3":
@@ -231,18 +213,9 @@ public class Program {
                         break;
                     }
 
-                    try {
-                        Program p = new Program(
-                                programCode, programDescription, collegeCode);
-
-                        Program.programs.add(p);
-                        UI.print("Program successfully created");
-                        programManage("CREATE", programCode, programDescription, collegeCode);
-                        submit = true;
-
-                    } catch (IllegalArgumentException e) {
-                        UI.print(e.getMessage());
-                    }
+                    Program.programs.add(new Program(programCode, programDescription, collegeCode));
+                    UI.print("Program successfully created");
+                    submit = true;
                     break;
 
                 case "X":
@@ -261,10 +234,10 @@ public class Program {
             System.out.print("  Enter Program Code > ");
             input = in.nextLine().trim();
 
-            if (!Program.existProgramCode(input))
+            if (Program.findProgram(input) != null)
                 UI.print("Program does not exist");
 
-        } while (!Program.existProgramCode(input));
+        } while (Program.findProgram(input) != null);
 
         Program p = Program.findProgram(input);
 
@@ -273,7 +246,7 @@ public class Program {
             return;
         }
 
-        String programCode = p.getProgramID();
+        String programCode = p.getProgramCode();
         String programDescription = p.getProgramDescription();
         String collegeCode = p.getCollegeCode();
 
@@ -297,13 +270,13 @@ public class Program {
 
                         if (input.isEmpty())
                             UI.print("Program Code is required");
-                        else if (Program.existProgramCode(input)
-                                && !input.equalsIgnoreCase(p.getProgramID()))
+                        else if (Program.findProgram(programCode) != null
+                                && !input.equalsIgnoreCase(p.getProgramCode()))
                             UI.print("Program Code already exists");
 
                     } while (input.isEmpty()
-                            || (Program.existProgramCode(input)
-                            && !input.equalsIgnoreCase(p.getProgramID())));
+                            || (Program.findProgram(programCode) != null
+                            && !input.equalsIgnoreCase(p.getProgramCode())));
 
                     programCode = input;
                     break;
@@ -315,11 +288,11 @@ public class Program {
 
                         if (input.isEmpty())
                             UI.print("Program Description is required");
-                        else if (programDescriptionExists(input, p))
+                        else if (findProgramDesc(programDescription) != null)
                             UI.print("Program Description already exists");
 
                     } while (input.isEmpty()
-                            || programDescriptionExists(input, p));
+                            || findProgramDesc(programDescription) != null);
 
                     programDescription = input;
                     break;
@@ -347,40 +320,10 @@ public class Program {
                         break;
                     }
 
-                    if (Program.existProgramCode(programCode)
-                            && !programCode.equalsIgnoreCase(p.getProgramID())) {
-                        UI.print("Program Code already exists");
-                        break;
-                    }
-
-                    if (programDescriptionExists(programDescription, p)) {
-                        UI.print("Program Description already exists");
-                        break;
-                    }
-
-                    if (College.findCollege(collegeCode) == null) {
-                        UI.print("College Code does not exist");
-                        break;
-                    }
-
-                    try {
-                        Program updated = new Program(
-                                programCode, programDescription, collegeCode);
-
-                        int index = Program.programs.indexOf(p);
-
-                        if (index != -1) {
-                            Program.programs.set(index, updated);
-                            UI.print("Program successfully edited");
-                            Program.displayProgram(updated.getProgramID());
-                            submit = true;
-                        } else {
-                            UI.print("Program could not be updated");
-                        }
-
-                    } catch (IllegalArgumentException e) {
-                        UI.print(e.getMessage());
-                    }
+                    Program pr = findProgram(programCode);
+                    pr.programCode = programCode; pr.programDescription = programDescription; pr.collegeCode = collegeCode;
+                    UI.print("Program successfully edited");
+                    submit = true;
                     break;
 
                 case "X":
@@ -389,24 +332,6 @@ public class Program {
             }
         }
     }
-
-    private static boolean programDescriptionExists(
-            String description, Program excludedProgram) {
-
-        if (description == null || description.trim().isEmpty())
-            return false;
-
-        for (Program p : Program.programs) {
-            if (p != excludedProgram
-                    && description.trim().equalsIgnoreCase(
-                    p.getProgramDescription())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static void archiveProgram() {
         String input, choice;
 
@@ -415,11 +340,8 @@ public class Program {
         do {
             System.out.print("  Enter Program Code > ");
             input = in.nextLine().trim();
-
-            if (!Program.existProgramCode(input))
-                UI.print("Program does not exist");
-
-        } while (!Program.existProgramCode(input));
+            if (Program.findProgram(input) != null) UI.print("Program does not exist");
+        } while (Program.findProgram(input) != null);
 
         Program p = Program.findProgram(input);
 
@@ -428,8 +350,7 @@ public class Program {
             return;
         }
 
-        programManage("DELETE", p.getProgramID(),
-                p.getProgramDescription(), p.getCollegeCode());
+        displayProgram(p.getProgramCode());
 
         do {
             System.out.print("  Confirm Program Deletion? (Y/N) > ");

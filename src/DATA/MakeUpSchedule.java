@@ -384,20 +384,20 @@ public class MakeUpSchedule {
 
         UI.print("DELETE ROOM REQUEST");
 
-        MakeUpSchedule request;
+        MakeUpSchedule r;
 
         do {
             System.out.print("  Enter Request ID > ");
             String input = in.nextLine().trim().toUpperCase();
 
-            request = findMakeUpID(input);
+            r = findMakeUpID(input);
 
-            if (request == null)
+            if (r == null)
                 UI.print("Request does not exist.");
 
-        } while (request == null);
+        } while (r == null);
 
-        displayMakeUpSchedule(request.getMakeUpID());
+        displayMakeUpSchedule(r.getMakeUpID());
 
         String choice;
 
@@ -411,8 +411,8 @@ public class MakeUpSchedule {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
-            archiveMakeUpSchedules.add(request);
-            makeUpSchedules.remove(request);
+            archiveMakeUpSchedules.add(r);
+            makeUpSchedules.remove(r);
             UI.print("Room request successfully deleted.");
         }
     }

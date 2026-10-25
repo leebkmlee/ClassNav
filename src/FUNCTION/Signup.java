@@ -308,9 +308,9 @@ public class Signup {
                                 System.out.print("   Program Code > ");
                                 programCode = in.nextLine().trim().toUpperCase();
 
-                                if (!Program.existProgramCode(programCode))
+                                if (Program.findProgram(programCode) != null)
                                     UI.print("Program code does not exist");
-                            } while (!Program.existProgramCode(programCode));
+                            } while (Program.findProgram(programCode) != null);
 
                             User.users.add(new Student(
                                     lastName, firstName, middleInitial,

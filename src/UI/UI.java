@@ -14,12 +14,29 @@ public class UI {
     public static final int INNERWIDTH = 70;
 
     public static void print(String input) {
+        if (input == null)
+            input = "null";
+
         System.out.println("\n┌" + "─".repeat(INNERWIDTH) + "┐");
-        int left = (INNERWIDTH - input.length()) / 2;
-        int right = INNERWIDTH - input.length() - left;
-        System.out.println("│" + " ".repeat(left) + input + " ".repeat(right) + "│");
+
+        if (input.length() <= INNERWIDTH) {
+            int left = (INNERWIDTH - input.length()) / 2;
+            int right = INNERWIDTH - input.length() - left;
+
+            System.out.println("│" + " ".repeat(left) + input
+                    + " ".repeat(right) + "│");
+        } else {
+            for (int i = 0; i < input.length(); i += INNERWIDTH) {
+                String line = input.substring(i,
+                        Math.min(i + INNERWIDTH, input.length()));
+
+                System.out.printf("│%-" + INNERWIDTH + "s│%n", line);
+            }
+        }
+
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
     }
+
 
     public static void print(String input1, String input2) {
         int left = (INNERWIDTH - input1.length()) / 2;

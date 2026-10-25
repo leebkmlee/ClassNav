@@ -201,7 +201,7 @@ public class Curriculum {
 
         UI.header("PROGRAM CURRICULUM");
         UI.liner("  PROGRAM CODE  : " + programCode);
-        UI.liner("  PROGRAM NAME  : " + Program.getProgramDescription(program));
+        UI.liner("  PROGRAM NAME  : " + program.getProgramDescription());
         UI.separator();
 
         if (courses.isEmpty()) {
