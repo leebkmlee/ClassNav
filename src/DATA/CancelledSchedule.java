@@ -256,7 +256,7 @@ public class CancelledSchedule {
         if (!gate) UI.liner("  No available cancellation schedules can be archived.");
         UI.footer();
 
-        if (gate) UI.print("Successfully archived");
+        if (gate) UI.print("Cancellation Schedule successfully archived");
     }
     private static void cancelledScheduleManage(String scheduleID, String affectedDate, String reason) {
         String text = reason;

@@ -138,7 +138,7 @@ public class DepartmentHead extends User {
                 break;
 
             case "17":
-                MakeUpSchedule.manageMakeUpSchedules();
+                manageMakeUpSchedules();
                 menu();
                 break;
 
@@ -200,7 +200,7 @@ public class DepartmentHead extends User {
                 User.editUser();
                 break;
             case 3:
-                User.deleteUser();
+                User.archiveUser();
                 break;
             case 4:
                 User.displayUsers();
@@ -356,7 +356,7 @@ public class DepartmentHead extends User {
                 Course.editCourse();
                 break;
             case 3:
-                Course.deleteCourse();
+                Course.archiveCourse();
                 break;
             case 4:
                 Course.displayCourses();
@@ -441,7 +441,7 @@ public class DepartmentHead extends User {
                     break;
 
                 case 3:
-                    CourseRegistration.deleteRegistration();
+                    CourseRegistration.archiveRegistration();
                     break;
 
                 case 4:
@@ -486,7 +486,7 @@ public class DepartmentHead extends User {
                 Curriculum.archiveCurriculum();
                 break;
             case 4:
-                Curriculum.displayCurriculums();
+                Curriculum.displayCurricula();
                 break;
             case 0:
                 // menu
@@ -527,10 +527,10 @@ public class DepartmentHead extends User {
                 MakeUpSchedule.createMakeUpSchedule();
                 break;
             case 2:
-                MakeUpSchedule.editMakeUpSchedule();
+                // wala na
                 break;
             case 3:
-                MakeUpSchedule.deleteMakeUpSchedule();
+                MakeUpSchedule.archiveMakeUpSchedule();
                 break;
             case 4:
                 MakeUpSchedule.displayMakeUpSchedules();
@@ -611,7 +611,7 @@ public class DepartmentHead extends User {
                 Room.editRoom();
                 break;
             case 3:
-                Room.deleteRoom();
+                Room.archiveRoom();
                 break;
             case 4:
                 Room.displayRooms();
@@ -651,7 +651,7 @@ public class DepartmentHead extends User {
                 Schedule.editSchedule();
                 break;
             case 3:
-                Schedule.deleteSchedule();
+                Schedule.archiveSchedule();
                 break;
             case 4:
                 Schedule.displaySchedules();

@@ -111,13 +111,11 @@ public class College {
 
         UI.header("COLLEGE INFORMATION");
         UI.liner(String.format("  COLLEGE CODE            : %s", c.getCollegeCode()));
+        String collegeDesc = collegeDescription;
+        if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + " ...";
 
-        if (collegeDescription.length() <= 40)
-            UI.liner(String.format("  COLLEGE DESCRIPTION     : %s", collegeDescription));
-        else {
-            UI.liner("  COLLEGE DESCRIPTION     :");
-            UI.liner("  " + collegeDescription);
-        }
+        UI.liner(String.format("  COLLEGE DESCRIPTION     : %s", collegeDesc));
+
 
         UI.footer();
     }
@@ -164,7 +162,7 @@ public class College {
 
     // MANAGE METHODS
     public static void createCollege() {
-        String collegeDescription = "", collegeCode = "", choice = "";
+        String collegeDescription = "", collegeCode = "", choice;
         boolean submit = false;
 
         while (!submit) {
@@ -220,7 +218,7 @@ public class College {
         }
     }
     public static void editCollege() {
-        String input = "", choice = "", collegeDescription, collegeCode;
+        String input, choice, collegeDescription, collegeCode;
         boolean submit = false;
 
         UI.header("EDIT EXISTING COLLEGE");
@@ -335,12 +333,14 @@ public class College {
             colleges.remove(c);
             UI.print("College successfully archived");
         }
-        else UI.print("Archive college cancelled");
+        else UI.print("Archiving cancelled");
     }
     public static void collegeManage(String text, String collegeCode, String collegeDescription) {
+        String collegeDesc = collegeDescription;
+        if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + " ...";
         UI.header(text.toUpperCase() + ": COLLEGE INFORMATION");
-        UI.liner(String.format(" [1] COLLEGE CODE         : %s", collegeCode));
-        UI.liner(String.format(" [2] COLLEGE DESCRIPTION  : %s", collegeDescription));
+        UI.liner(" [1] COLLEGE CODE         : " + collegeCode);
+        UI.liner(" [2] COLLEGE DESCRIPTION  : " + collegeDesc);
         UI.liner("");
         UI.option();
         UI.footer();

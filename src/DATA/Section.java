@@ -265,6 +265,29 @@ public class Section {
         UI.footer();
     }
 
+    public static void displayArchiveSections() {
+
+        UI.header("ARCHIVED BUILDINGS");
+
+        if (archiveSections.isEmpty()) {
+            UI.liner("  No archived buildings found.");
+        } else {
+            for (Section s : archiveSections) {
+                UI.liner(String.format(
+                        "  %-15s %-10s %-10s %-10s %-15s",
+                        s.getSectionID(),
+                        s.getYearLevel(),
+                        s.getBlock(),
+                        s.getGroup(),
+                        s.getAcademicYear()
+                ));
+            }
+        }
+
+        UI.footer();
+
+    }
+
     public static void createSection() {
         String academicYear = "", choice, input = "";
         int yearLevel = -1, group = -1;
@@ -597,26 +620,5 @@ public class Section {
         UI.footer();
     }
 
-    public static void displayArchiveSections() {
 
-        UI.header("ARCHIVED BUILDINGS");
-
-        if (archiveSections.isEmpty()) {
-            UI.liner("  No archived buildings found.");
-        } else {
-            for (Section s : archiveSections) {
-                UI.liner(String.format(
-                        "  %-15s %-10s %-10s %-10s %-15s",
-                        s.getSectionID(),
-                        s.getYearLevel(),
-                        s.getBlock(),
-                        s.getGroup(),
-                        s.getAcademicYear()
-                ));
-            }
-        }
-
-        UI.footer();
-
-    }
 }

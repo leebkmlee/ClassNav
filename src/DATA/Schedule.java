@@ -25,6 +25,7 @@ public class Schedule {
     private String roomCode;
 
     public static ArrayList<Schedule> schedules = new ArrayList<>();
+    public static ArrayList<Schedule> archiveSchedules = new ArrayList<>();
 
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("MM/dd/uuuu")
@@ -417,6 +418,38 @@ public class Schedule {
         UI.footer();
     }
 
+    public static void displayArchiveSchedules() {
+
+        UI.header("ARCHIVE CLASS SCHEDULES");
+
+        if (archiveSchedules.isEmpty()) {
+            UI.liner("  No archive schedules found.");
+
+        } else {
+            for (int i = 0; i < archiveSchedules.size(); i++) {
+
+                Schedule s = archiveSchedules.get(i);
+
+                if (s == null)
+                    continue;
+
+                UI.liner(String.format("  SCHEDULE ID : %s", s.getScheduleID()));
+                UI.liner(String.format("  OFFERING ID : %s", s.getOfferingID()));
+                UI.liner(String.format("  DAY         : %s", s.getDay()));
+                UI.liner(String.format("  TIME        : %s - %s",
+                        s.getStartTime(), s.getEndTime()));
+                UI.liner(String.format("  ROOM        : %s", s.getRoomCode()));
+                UI.liner(String.format("  EFFECTIVE   : %s - %s",
+                        s.getEffectiveFrom(), s.getEffectiveTo()));
+
+                if (i < archiveSchedules.size() - 1)
+                    UI.separator();
+            }
+        }
+
+        UI.footer();
+    }
+
     public boolean updateSchedule(String offeringID, String day, String startTime, String endTime,
                                   String effectiveFrom, String effectiveTo, String roomCode) {
         try {
@@ -675,7 +708,7 @@ public class Schedule {
             }
         }
     }
-    public static void deleteSchedule() {
+    public static void archiveSchedule() {
         String input, choice;
 
         UI.print("DELETE EXISTING SCHEDULE");
@@ -705,6 +738,7 @@ public class Schedule {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
+            archiveSchedules.add(s);
             schedules.remove(s);
             UI.print("Schedule successfully deleted");
         }
@@ -714,6 +748,7 @@ public class Schedule {
                                        String effectiveFrom, String effectiveTo, String roomCode) {
 
         UI.header(text.toUpperCase() + ": SCHEDULE INFORMATION");
+        UI.liner("     SCHEDULE ID        : " + scheduleID);
         UI.liner(" [1] OFFERING ID        : " + offeringID);
         UI.liner(" [2] DAY                : " + day);
         UI.liner(" [3] START TIME         : " + startTime);

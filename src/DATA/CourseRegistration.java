@@ -12,45 +12,43 @@ public class CourseRegistration {
     // FIELDS
     private static int nextRegistrationID = 1;
 
-    private final String registrationID;
-    private String studentID, offeringID, registrationDate, status;
+    private final String registrationID, registrationDate;
+    private String studentID, offeringID, status;
 
     public static ArrayList<CourseRegistration> registrations = new ArrayList<>();
+    public static ArrayList<CourseRegistration> archiveRegistrations = new ArrayList<>();
 
     // CONSTRUCTOR
-    public CourseRegistration(String studentID, String offeringID) {
-        if (isRegistered(studentID, offeringID))
-            throw new IllegalArgumentException("Student is already registered in this offering.");
-
+    public CourseRegistration(String studentID, String offeringID, String status) {
         this.registrationID = String.format("CR%04d", nextRegistrationID++);
         this.studentID = studentID;
         this.offeringID = offeringID;
         this.registrationDate = LocalDate.now().toString();
-        this.status = "Enrolled";
+        this.status = status;
     }
 
     // DUMMY DATA
     static {
-        registrations.add(new CourseRegistration("S0001", "COF001"));
-        registrations.add(new CourseRegistration("S0001", "COF002"));
-        registrations.add(new CourseRegistration("S0001", "COF003"));
-        registrations.add(new CourseRegistration("S0004", "COF004"));
-        registrations.add(new CourseRegistration("S0005", "COF005"));
-        registrations.add(new CourseRegistration("S0006", "COF006"));
-        registrations.add(new CourseRegistration("S0007", "COF007"));
-        registrations.add(new CourseRegistration("S0008", "COF008"));
-        registrations.add(new CourseRegistration("S0009", "COF009"));
-        registrations.add(new CourseRegistration("S0010", "COF010"));
-        registrations.add(new CourseRegistration("S0011", "COF011"));
-        registrations.add(new CourseRegistration("S0012", "COF012"));
-        registrations.add(new CourseRegistration("S0013", "COF013"));
-        registrations.add(new CourseRegistration("S0014", "COF014"));
-        registrations.add(new CourseRegistration("S0015", "COF015"));
-        registrations.add(new CourseRegistration("S0002", "COF001"));
-        registrations.add(new CourseRegistration("S0003", "COF002"));
-        registrations.add(new CourseRegistration("S0004", "COF003"));
-        registrations.add(new CourseRegistration("S0005", "COF004"));
-        registrations.add(new CourseRegistration("S0006", "COF005"));
+        registrations.add(new CourseRegistration("S0001", "COF001", "Enrolled"));
+        registrations.add(new CourseRegistration("S0001", "COF002", "Enrolled"));
+        registrations.add(new CourseRegistration("S0001", "COF003", "Enrolled"));
+        registrations.add(new CourseRegistration("S0004", "COF004", "Enrolled"));
+        registrations.add(new CourseRegistration("S0005", "COF005", "Enrolled"));
+        registrations.add(new CourseRegistration("S0006", "COF006", "Enrolled"));
+        registrations.add(new CourseRegistration("S0007", "COF007", "Enrolled"));
+        registrations.add(new CourseRegistration("S0008", "COF008", "Enrolled"));
+        registrations.add(new CourseRegistration("S0009", "COF009", "Enrolled"));
+        registrations.add(new CourseRegistration("S0010", "COF010", "Enrolled"));
+        registrations.add(new CourseRegistration("S0011", "COF011", "Enrolled"));
+        registrations.add(new CourseRegistration("S0012", "COF012", "Enrolled"));
+        registrations.add(new CourseRegistration("S0013", "COF013", "Enrolled"));
+        registrations.add(new CourseRegistration("S0014", "COF014", "Enrolled"));
+        registrations.add(new CourseRegistration("S0015", "COF015", "Enrolled"));
+        registrations.add(new CourseRegistration("S0002", "COF001", "Enrolled"));
+        registrations.add(new CourseRegistration("S0003", "COF002", "Enrolled"));
+        registrations.add(new CourseRegistration("S0004", "COF003", "Enrolled"));
+        registrations.add(new CourseRegistration("S0005", "COF004", "Enrolled"));
+        registrations.add(new CourseRegistration("S0006", "COF005", "Enrolled"));
     }
 
     // COURSE REGISTRATION GETTER METHODS
@@ -70,22 +68,6 @@ public class CourseRegistration {
         return status;
     }
 
-    // UPDATE REGISTRATION STATUS
-    public boolean setStatus(String status) {
-        if (status == null || !(status.equalsIgnoreCase("Enrolled") || status.equalsIgnoreCase("Dropped"))) {
-            UI.print("Invalid registration status.");
-            return false;
-        }
-
-        if (this.status.equalsIgnoreCase(status)) {
-            UI.print("Registration already has this status.");
-            return false;
-        }
-
-        this.status = status.substring(0, 1).toUpperCase() + status.substring(1).toLowerCase();
-        return true;
-    }
-
     // FIND REGISTRATION
     public static CourseRegistration findRegistration(String registrationID) {
         if (registrationID == null || registrationID.trim().isEmpty())
@@ -97,22 +79,6 @@ public class CourseRegistration {
         }
 
         return null;
-    }
-
-    // CHECK EXISTING ACTIVE REGISTRATION
-    public static boolean isRegistered(String studentID, String offeringID) {
-
-        if (studentID == null || offeringID == null)
-            return false;
-
-        for (CourseRegistration r : registrations) {
-            if (studentID.trim().equalsIgnoreCase(r.getStudentID())
-                    && offeringID.trim().equalsIgnoreCase(r.getOfferingID())
-                    && r.getStatus().equalsIgnoreCase("Enrolled"))
-                return true;
-        }
-
-        return false;
     }
 
     // RETRIEVE REGISTRATIONS BY STUDENT
@@ -191,67 +157,28 @@ public class CourseRegistration {
         UI.footer();
     }
 
-    // EDIT REGISTRATION
-    public static boolean editRegistration(String registrationID,
-                                           String studentID, String offeringID) {
+    public static void displayArchiveRegistrations() {
 
-        CourseRegistration r = findRegistration(registrationID);
+        UI.header("ARCHIVE COURSE REGISTRATIONS");
 
-        if (r == null) {
-            UI.print("Registration not found.");
-            return false;
-        }
+        if (archiveRegistrations.isEmpty()) {
+            UI.liner("  No course registrations found.");
+        } else {
+            for (int i = 0; i < archiveRegistrations.size(); i++) {
+                CourseRegistration r = archiveRegistrations.get(i);
 
-        if (studentID == null || studentID.trim().isEmpty()
-                || offeringID == null || offeringID.trim().isEmpty()) {
-            UI.print("All registration fields are required.");
-            return false;
-        }
+                UI.liner(String.format("  REGISTRATION ID    : %s", r.getRegistrationID()));
+                UI.liner(String.format("  STUDENT ID         : %s", r.getStudentID()));
+                UI.liner(String.format("  OFFERING ID        : %s", r.getOfferingID()));
+                UI.liner(String.format("  REGISTRATION DATE  : %s", r.getRegistrationDate()));
+                UI.liner(String.format("  STATUS             : %s", r.getStatus()));
 
-        studentID = studentID.trim();
-        offeringID = offeringID.trim();
-
-        if (Student.findStudent(studentID) == null) {
-            UI.print("Student not found.");
-            return false;
-        }
-
-        if (CourseOffering.findOffering(offeringID) == null) {
-            UI.print("Course offering not found.");
-            return false;
-        }
-
-        for (CourseRegistration existing : registrations) {
-            if (existing != r
-                    && existing.getStudentID().equalsIgnoreCase(studentID)
-                    && existing.getOfferingID().equalsIgnoreCase(offeringID)
-                    && existing.getStatus().equalsIgnoreCase("Enrolled")) {
-                UI.print("Student is already registered in this offering.");
-                return false;
+                if (i < archiveRegistrations.size() - 1)
+                    UI.separator();
             }
         }
 
-        r.studentID = studentID;
-        r.offeringID = offeringID;
-        r.status = "Enrolled";
-
-        return true;
-    }
-
-    // DELETE REGISTRATION
-    public static boolean deleteRegistration(String registrationID) {
-
-        CourseRegistration r = findRegistration(registrationID);
-
-        if (r == null) {
-            UI.print("Registration not found.");
-            return false;
-        }
-
-        registrations.remove(r);
-        UI.print("Course registration successfully deleted.");
-
-        return true;
+        UI.footer();
     }
 
     // MANAGE METHODS
@@ -309,14 +236,27 @@ public class CourseRegistration {
                     } while (status.isEmpty() || !status.matches("ENROLLED|DROPPED"));
 
                 case "/":
-                    if (studentID.isEmpty() || offeringID.isEmpty()) {
+                    boolean valid = true;
+                    if (studentID.isEmpty() || offeringID.isEmpty() || status.isEmpty()) {
                         UI.print("Details are incomplete.");
                         break;
                     }
-                    registrations.add(new CourseRegistration(studentID, offeringID));
-                    UI.print("Course registration successfully created.");
-                    displayRegistration(registrations.getLast().getRegistrationID());
-                    submit = true;
+
+                    for (CourseRegistration r : registrations) {
+                        if (studentID.trim().equalsIgnoreCase(r.getStudentID())
+                                && offeringID.trim().equalsIgnoreCase(r.getOfferingID())
+                                && r.getStatus().equalsIgnoreCase("Enrolled")) {
+                            UI.print("Student is already registered in this offering.");
+                            valid = false;
+                        }
+                    }
+
+                    if (valid) {
+                        registrations.add(new CourseRegistration(studentID, offeringID, status));
+                        UI.print("Course registration successfully created.");
+                        displayRegistration(registrations.getLast().getRegistrationID());
+                        submit = true;
+                    }
                     break;
 
                 case "X":
@@ -374,8 +314,6 @@ public class CourseRegistration {
                     break;
 
                 case "2":
-                    CourseOffering.displayOfferings();
-
                     System.out.print("   Enter Offering ID > ");
                     input = in.nextLine().trim();
 
@@ -426,8 +364,7 @@ public class CourseRegistration {
             }
         }
     }
-    public static void deleteRegistration() {
-
+    public static void archiveRegistration() {
         String input, choice;
 
         UI.print("DELETE EXISTING REGISTRATION");
@@ -456,8 +393,13 @@ public class CourseRegistration {
 
         } while (!choice.matches("[YN]"));
 
-        if (choice.equals("Y"))
-            deleteRegistration(r.getRegistrationID());
+        if (choice.equals("Y")){
+            archiveRegistrations.add(r);
+            registrations.remove(r);
+            UI.print("Registration successfully archived");
+        }
+        else UI.print("Archiving cancelled");
+
     }
     private static void registrationManage(String text, String registrationID,
                                            String studentID, String offeringID, String status) {

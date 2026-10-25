@@ -1,4 +1,3 @@
-
 package DATA;
 
 import UI.UI;
@@ -17,7 +16,7 @@ import static UI.UI.in;
 
 public class Room {
 
-    private String roomCode, roomDescription, buildingCode, roomType;
+    private String roomCode, roomDescription, buildingCode, roomType, collegeCode;
     private int floorNumber, capacity;
 
     private static final DateTimeFormatter DATE_FORMAT =
@@ -25,38 +24,44 @@ public class Room {
                     .withResolverStyle(ResolverStyle.STRICT);
 
     public static ArrayList<Room> rooms = new ArrayList<>();
+    public static ArrayList<Room> archiveRooms = new ArrayList<>();
 
     static {
-        rooms.add(new Room("RM001", "SDL 3", 3, "Computer Laboratory", 30, "BLD01"));
-        rooms.add(new Room("RM002", "Prog Lab 2", 3, "Computer Laboratory", 30, "BLD01"));
-        rooms.add(new Room("RM003", "CON 1", 2, "Computer Laboratory", 30, "BLD01"));
-        rooms.add(new Room("RM004", "ACAD 6", 1, "Classroom", 50, "BLD09"));
-        rooms.add(new Room("RM005", "ACAD 3", 1, "Classroom", 50, "BLD09"));
-        rooms.add(new Room("RM006", "AAP10", 1, "Classroom", 50, "BLD10"));
-        rooms.add(new Room("RM007", "AAP15", 2, "Classroom", 50, "BLD10"));
-        rooms.add(new Room("RM008", "Science Lab 3", 1, "Science Laboratory", 20, "BLD02"));
-        rooms.add(new Room("RM009", "Science Lab 2", 1, "Science Laboratory", 20, "BLD02"));
-        rooms.add(new Room("RM010", "Science Lab 1", 1, "Science Laboratory", 20, "BLD02"));
-        rooms.add(new Room("RM011", "Recreation Room 1", 2, "Exercise Room", 30, "BLD13"));
-        rooms.add(new Room("RM012", "Recreation Room 2", 2, "Exercise Room", 30, "BLD13"));
-        rooms.add(new Room("RM013", "Bio Lab 2", 3, "Biology Room", 20, "BLD08"));
-        rooms.add(new Room("RM014", "Bio Lab 3", 3, "Biology Room", 20, "BLD08"));
-        rooms.add(new Room("RM015", "ACAD 2", 1, "ClassRoom", 50, "BLD09"));
+        rooms.add(new Room("RM001", "SDL 3", 3, "Computer Laboratory", 30, "BLD01", "CICT"));
+        rooms.add(new Room("RM002", "Prog Lab 2", 3, "Computer Laboratory", 30, "BLD01", "CICT"));
+        rooms.add(new Room("RM003", "CON 1", 2, "Computer Laboratory", 30, "BLD01", "CICT"));
+        rooms.add(new Room("RM004", "ACAD 6", 1, "Classroom", 50, "BLD09", "CICT"));
+        rooms.add(new Room("RM005", "ACAD 3", 1, "Classroom", 50, "BLD09", "CICT"));
+        rooms.add(new Room("RM006", "AAP10", 1, "Classroom", 50, "BLD10", "CAFA"));
+        rooms.add(new Room("RM007", "AAP15", 2, "Classroom", 50, "BLD10", "CAFA"));
+        rooms.add(new Room("RM008", "Science Lab 3", 1, "Science Laboratory", 20, "BLD02", "CS"));
+        rooms.add(new Room("RM009", "Science Lab 2", 1, "Science Laboratory", 20, "BLD02", "CS"));
+        rooms.add(new Room("RM010", "Science Lab 1", 1, "Science Laboratory", 20, "BLD02", "CS"));
+        rooms.add(new Room("RM011", "Recreation Room 1", 2, "Exercise Room", 30, "BLD13", "CPTED"));
+        rooms.add(new Room("RM012", "Recreation Room 2", 2, "Exercise Room", 30, "BLD13", "CPTED"));
+        rooms.add(new Room("RM013", "Bio Lab 2", 3, "Biology Room", 20, "BLD08", "CS"));
+        rooms.add(new Room("RM014", "Bio Lab 3", 3, "Biology Room", 20, "BLD08", "CS"));
+        rooms.add(new Room("RM015", "ACAD 2", 1, "Classroom", 50, "BLD09", "CICT"));
     }
 
     public Room(String roomCode, String roomDescription, int floorNumber,
-                String roomType, int capacity, String buildingCode) {
+                String roomType, int capacity, String buildingCode, String collegeCode) {
 
         if (roomCode == null || roomCode.isBlank()
                 || roomDescription == null || roomDescription.isBlank()
                 || roomType == null || roomType.isBlank()
                 || floorNumber < 1 || capacity < 1
-                || buildingCode == null || buildingCode.isBlank()) {
+                || buildingCode == null || buildingCode.isBlank()
+                || collegeCode == null || collegeCode.isBlank()) {
             throw new IllegalArgumentException("Invalid room information.");
         }
 
         if (Building.findBuilding(buildingCode) == null) {
             throw new IllegalArgumentException("Building does not exist.");
+        }
+
+        if (College.findCollege(collegeCode) == null) {
+            throw new IllegalArgumentException("College does not exist.");
         }
 
         if (existRoomCode(roomCode)) {
@@ -73,10 +78,13 @@ public class Room {
         this.roomType = roomType;
         this.capacity = capacity;
         this.buildingCode = buildingCode;
+        this.collegeCode = collegeCode;
     }
 
-    public Room(String roomCode, String roomDescription, int floorNumber, String buildingCode) {
-        this(roomCode, roomDescription, floorNumber, "Classroom", 40, buildingCode);
+    public Room(String roomCode, String roomDescription, int floorNumber,
+                String buildingCode, String collegeCode) {
+        this(roomCode, roomDescription, floorNumber, "Classroom", 40,
+                buildingCode, collegeCode);
     }
 
     public String getRoomCode() {
@@ -101,6 +109,10 @@ public class Room {
 
     public String getBuildingCode() {
         return buildingCode;
+    }
+
+    public String getCollegeCode() {
+        return collegeCode;
     }
 
     public void setRoomCode(String roomCode) {
@@ -161,6 +173,15 @@ public class Room {
         this.buildingCode = buildingCode;
     }
 
+    public void setCollegeCode(String collegeCode) {
+        if (collegeCode == null || collegeCode.isBlank()
+                || College.findCollege(collegeCode) == null) {
+            throw new IllegalArgumentException("College does not exist.");
+        }
+
+        this.collegeCode = collegeCode;
+    }
+
     public static Room findRoom(String roomCode) {
         if (roomCode == null) {
             return null;
@@ -194,31 +215,28 @@ public class Room {
     }
 
     public static int convertToMinutes(String time) {
-
-        if (time == null || time.trim().isEmpty())
+        if (time == null || time.trim().isEmpty()) {
             return -1;
+        }
 
         time = time.trim().toUpperCase(Locale.ROOT);
 
-        // Handle 24-hour format (HH:mm), e.g. 20:00
         if (time.matches("\\d{1,2}:\\d{2}")) {
             try {
                 LocalTime parsedTime = LocalTime.parse(
                         time, DateTimeFormatter.ofPattern("H:mm"));
 
-                return parsedTime.getHour() * 60
-                        + parsedTime.getMinute();
-
+                return parsedTime.getHour() * 60 + parsedTime.getMinute();
             } catch (DateTimeParseException e) {
                 return -1;
             }
         }
 
-        // Handle 12-hour format, e.g. 8:00 AM or 08:00 PM
         time = time.replace(" ", "");
 
-        if (!time.matches("\\d{1,2}:\\d{2}(AM|PM)"))
+        if (!time.matches("\\d{1,2}:\\d{2}(AM|PM)")) {
             return -1;
+        }
 
         try {
             DateTimeFormatter formatter =
@@ -226,9 +244,7 @@ public class Room {
 
             LocalTime parsedTime = LocalTime.parse(time, formatter);
 
-            return parsedTime.getHour() * 60
-                    + parsedTime.getMinute();
-
+            return parsedTime.getHour() * 60 + parsedTime.getMinute();
         } catch (DateTimeParseException e) {
             return -1;
         }
@@ -236,7 +252,6 @@ public class Room {
 
     private static boolean overlaps(String start1, String end1,
                                     String start2, String end2) {
-
         int s1 = convertToMinutes(start1);
         int e1 = convertToMinutes(end1);
         int s2 = convertToMinutes(start2);
@@ -288,7 +303,6 @@ public class Room {
     private static boolean hasApprovedException(String scheduleID,
                                                 String requestedDate,
                                                 String exceptionType) {
-
         if (scheduleID == null || requestedDate == null || exceptionType == null) {
             return false;
         }
@@ -320,10 +334,8 @@ public class Room {
         return !date.isBefore(effectiveFrom) && !date.isAfter(effectiveTo);
     }
 
-    // Checks room availability for a specific date.
     public static boolean verifyAvailability(String roomCode, String requestedDate,
                                              String startTime, String endTime) {
-
         if (findRoom(roomCode) == null) {
             return false;
         }
@@ -349,9 +361,7 @@ public class Room {
 
         String normalizedDate = date.format(DATE_FORMAT);
 
-        // Check regular schedules using the room on the requested date.
         for (Schedule schedule : schedules) {
-
             if (schedule.getRoomCode() == null
                     || !schedule.getRoomCode().equalsIgnoreCase(roomCode.trim())) {
                 continue;
@@ -367,14 +377,11 @@ public class Room {
             }
 
             boolean cancelled = hasApprovedException(
-                    schedule.getScheduleID(), normalizedDate, "CANCELLATION"
-            );
+                    schedule.getScheduleID(), normalizedDate, "CANCELLATION");
 
             boolean roomChanged = hasApprovedException(
-                    schedule.getScheduleID(), normalizedDate, "ROOM CHANGE"
-            );
+                    schedule.getScheduleID(), normalizedDate, "ROOM CHANGE");
 
-            // An approved exception releases the original room for that date.
             if (cancelled || roomChanged) {
                 continue;
             }
@@ -385,7 +392,6 @@ public class Room {
             }
         }
 
-        // Check approved room-change cancellations occupying the replacement room.
         for (CancelledSchedule exception : CancelledSchedule.cancellations) {
             Schedule original = Schedule.findSchedule(exception.getScheduleID());
 
@@ -400,9 +406,7 @@ public class Room {
             }
         }
 
-        // Check approved make-up classes and reservations.
-        for (MakeUpSchedule makeup : MakeUpSchedule.requests) {
-
+        for (MakeUpSchedule makeup : MakeUpSchedule.makeUpSchedules) {
             if (!isApproved(makeup.getStatus())
                     || makeup.getRoomCode() == null
                     || !makeup.getRoomCode().equalsIgnoreCase(roomCode.trim())
@@ -419,10 +423,8 @@ public class Room {
         return true;
     }
 
-    // Checks recurring availability by weekday.
     public static boolean verifyAvailabilityByDay(String roomCode, String day,
                                                   String startTime, String endTime) {
-
         if (findRoom(roomCode) == null) {
             return false;
         }
@@ -435,7 +437,6 @@ public class Room {
         }
 
         for (Schedule schedule : schedules) {
-
             if (schedule.getRoomCode() == null
                     || !schedule.getRoomCode().equalsIgnoreCase(roomCode.trim())
                     || !sameDay(schedule.getDay(), day)) {
@@ -464,9 +465,7 @@ public class Room {
         }
     }
 
-    // Displays a single room.
     public static void displayRoom(String roomCode) {
-
         Room room = findRoom(roomCode);
 
         UI.header("ROOM DETAILS");
@@ -491,6 +490,9 @@ public class Room {
             UI.separator();
             UI.liner(String.format("  %-20s %-35s", "BUILDING CODE:",
                     room.getBuildingCode()));
+            UI.separator();
+            UI.liner(String.format("  %-20s %-35s", "COLLEGE CODE:",
+                    room.getCollegeCode()));
 
             Building building = Building.findBuilding(room.getBuildingCode());
 
@@ -499,14 +501,20 @@ public class Room {
                 UI.liner(String.format("  %-20s %-35s", "BUILDING:",
                         fitText(building.getBuildingName(), 35)));
             }
+
+            College college = College.findCollege(room.getCollegeCode());
+
+            if (college != null) {
+                UI.separator();
+                UI.liner(String.format("  %-20s %-35s", "COLLEGE:",
+                        fitText(college.getCollegeDescription(), 35)));
+            }
         }
 
         UI.footer();
     }
 
-    // Displays all rooms grouped by building.
     public static void displayRooms() {
-
         UI.header("ROOM LIST");
 
         if (rooms.isEmpty()) {
@@ -518,7 +526,6 @@ public class Room {
         ArrayList<String> displayedBuildings = new ArrayList<>();
 
         for (Room room : rooms) {
-
             String currentBuildingCode = room.getBuildingCode();
 
             if (currentBuildingCode == null
@@ -537,24 +544,21 @@ public class Room {
             UI.separator();
 
             for (Room buildingRoom : rooms) {
-
                 if (buildingRoom.getBuildingCode() != null
                         && buildingRoom.getBuildingCode().equalsIgnoreCase(currentBuildingCode)) {
-
                     UI.liner(String.format(
                             "  %-9s %-40s %-12s",
                             fitText(buildingRoom.getRoomCode(), 9),
                             fitText(buildingRoom.getRoomDescription(), 30),
-                            fitText(buildingRoom.getRoomType(), 12)
-                    ));
+                            fitText(buildingRoom.getRoomType(), 12)));
 
                     UI.liner(String.format(
                             "  %-9s %-40s %-12s",
                             "",
                             buildingRoom.getCapacity() + " seats",
-                            getFloorText(buildingRoom.getFloorNumber())
-                    ));
+                            getFloorText(buildingRoom.getFloorNumber())));
 
+                    UI.liner("  College: " + buildingRoom.getCollegeCode());
                     UI.separator();
                 }
             }
@@ -563,9 +567,7 @@ public class Room {
         UI.footer();
     }
 
-    // Displays rooms belonging to a specific building.
     public static void displayRooms(String buildingCode) {
-
         UI.header("ROOM LIST");
 
         if (buildingCode == null || buildingCode.isBlank()) {
@@ -591,10 +593,8 @@ public class Room {
         boolean found = false;
 
         for (Room room : rooms) {
-
             if (room.getBuildingCode() != null
                     && room.getBuildingCode().equalsIgnoreCase(buildingCode)) {
-
                 UI.liner("    " + fitText(room.getRoomCode(), 10) + "  "
                         + fitText(room.getRoomDescription(), 42));
 
@@ -602,6 +602,7 @@ public class Room {
                         + "  " + room.getCapacity() + " seats"
                         + "  " + getFloorText(room.getFloorNumber()));
 
+                UI.liner("    College: " + room.getCollegeCode());
                 UI.separator();
                 found = true;
             }
@@ -614,13 +615,8 @@ public class Room {
         UI.footer();
     }
 
-    // Limits displayed text to a fixed width.
     private static String fitText(String text, int width) {
-        if (text == null) {
-            return "";
-        }
-
-        if (width <= 0) {
+        if (text == null || width <= 0) {
             return "";
         }
 
@@ -636,130 +632,446 @@ public class Room {
     }
 
     public static void createRoom() {
-        UI.header("CREATE ROOM");
+        String roomCode = "AUTO-GENERATED";
+        String roomDescription = "";
+        String roomType = "";
+        String buildingCode = "";
+        String collegeCode = "";
+        int floorNumber = 0;
+        int capacity = 0;
+        String choice;
+        boolean submit = false;
 
-        try {
-            System.out.print("Enter room code: ");
-            String roomCode = in.nextLine();
+        while (!submit) {
+            roomManage("CREATE", roomCode, roomDescription, roomType,
+                    floorNumber, capacity, buildingCode, collegeCode);
 
-            System.out.print("Enter room description: ");
-            String roomDescription = in.nextLine();
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
 
-            System.out.print("Enter floor number: ");
-            int floorNumber = Integer.parseInt(in.nextLine());
+                if (!choice.matches("[1-7X]") && !choice.equals("/")) {
+                    UI.print("Invalid Choice");
+                }
+            } while (!choice.matches("[1-7X]") && !choice.equals("/"));
 
-            System.out.print("Enter room type: ");
-            String roomType = in.nextLine();
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Room Code > ");
+                        roomCode = in.nextLine().trim();
 
-            System.out.print("Enter capacity: ");
-            int capacity = Integer.parseInt(in.nextLine());
+                        if (roomCode.isEmpty()) {
+                            UI.print("Room code is required");
+                        } else if (Room.existRoomCode(roomCode)) {
+                            UI.print("Room code already exists");
+                        }
+                    } while (roomCode.isEmpty() || Room.existRoomCode(roomCode));
+                    break;
 
-            System.out.print("Enter building code: ");
-            String buildingCode = in.nextLine();
+                case "2":
+                    do {
+                        System.out.print("   Enter Room Description > ");
+                        roomDescription = in.nextLine().trim();
 
-            Room room = new Room(roomCode, roomDescription, floorNumber,
-                    roomType, capacity, buildingCode);
+                        if (roomDescription.isEmpty()) {
+                            UI.print("Room description is required");
+                        } else if (Room.existRoomDesc(roomDescription)) {
+                            UI.print("Room description already exists");
+                        }
+                    } while (roomDescription.isEmpty() || Room.existRoomDesc(roomDescription));
+                    break;
 
-            rooms.add(room);
-            UI.liner("  Room created successfully.");
+                case "3":
+                    do {
+                        System.out.print("   Enter Room Type > ");
+                        roomType = in.nextLine().trim();
 
-        } catch (IllegalArgumentException e) {
-            UI.liner("  Unable to create room: " + e.getMessage());
+                        if (roomType.isEmpty()) {
+                            UI.print("Room type is required");
+                        }
+                    } while (roomType.isEmpty());
+                    break;
+
+                case "4":
+                    boolean validFloor = false;
+
+                    while (!validFloor) {
+                        System.out.print("   Enter Floor Number > ");
+                        String input = in.nextLine().trim();
+
+                        try {
+                            floorNumber = Integer.parseInt(input);
+
+                            if (floorNumber < 1) {
+                                UI.print("Floor number must be at least 1");
+                            } else {
+                                validFloor = true;
+                            }
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid floor number. Numbers only");
+                        }
+                    }
+                    break;
+
+                case "5":
+                    boolean validCapacity = false;
+
+                    while (!validCapacity) {
+                        System.out.print("   Enter Capacity > ");
+                        String input = in.nextLine().trim();
+
+                        try {
+                            capacity = Integer.parseInt(input);
+
+                            if (capacity < 1) {
+                                UI.print("Capacity must be at least 1");
+                            } else {
+                                validCapacity = true;
+                            }
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid capacity. Numbers only");
+                        }
+                    }
+                    break;
+
+                case "6":
+                    do {
+                        System.out.print("   Enter Building Code > ");
+                        buildingCode = in.nextLine().trim().toUpperCase();
+
+                        if (buildingCode.isEmpty()) {
+                            UI.print("Building code is required");
+                        } else if (Building.findBuilding(buildingCode) == null) {
+                            UI.print("Building code does not exist");
+                        }
+                    } while (buildingCode.isEmpty()
+                            || Building.findBuilding(buildingCode) == null);
+                    break;
+
+                case "7":
+                    do {
+                        System.out.print("   Enter College Code > ");
+                        collegeCode = in.nextLine().trim().toUpperCase();
+
+                        if (collegeCode.isEmpty()) {
+                            UI.print("College code is required");
+                        } else if (College.findCollege(collegeCode) == null) {
+                            UI.print("College code does not exist");
+                        }
+                    } while (collegeCode.isEmpty()
+                            || College.findCollege(collegeCode) == null);
+                    break;
+
+                case "/":
+                    try {
+                        Room room = new Room(
+                                roomCode,
+                                roomDescription,
+                                floorNumber,
+                                roomType,
+                                capacity,
+                                buildingCode,
+                                collegeCode);
+
+                        rooms.add(room);
+
+                        UI.print("Room successfully created");
+                        Room.displayRoom(roomCode);
+
+                        submit = true;
+                    } catch (IllegalArgumentException e) {
+                        UI.print("Unable to create room: " + e.getMessage());
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
         }
-
-        UI.footer();
     }
 
     public static void editRoom() {
-        UI.header("EDIT ROOM");
+        String input, choice;
+        boolean submit = false;
 
-        System.out.print("Enter room code: ");
-        String roomCode = in.nextLine();
+        UI.print("EDIT EXISTING ROOM");
 
-        Room room = findRoom(roomCode);
+        Room r;
+
+        do {
+            System.out.print("  Enter Room Code > ");
+            input = in.nextLine().trim();
+
+            r = Room.findRoom(input);
+
+            if (r == null)
+                UI.print("Schedule does not exist");
+        } while (r == null);
+
+        String roomCode = r.getRoomCode();
+        String roomDescription = r.getRoomDescription();
+        String roomType = r.getRoomType();
+        int floorNumber = r.getFloorNumber();
+        int capacity = r.getCapacity();
+        String buildingCode = r.getBuildingCode();
+        String collegeCode = r.getCollegeCode();
+
+        while (!submit) {
+            roomManage("EDIT", roomCode, roomDescription, roomType,
+                    floorNumber, capacity, buildingCode, collegeCode);
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("[1-7X]") && !choice.equals("/")) {
+                    UI.print("Invalid Choice");
+                }
+            } while (!choice.matches("[1-7X]") && !choice.equals("/"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Room Code > ");
+                        roomCode = in.nextLine().trim();
+
+                        if (roomCode.isEmpty()) {
+                            UI.print("Room code is required");
+                        } else if (Room.existRoomCode(roomCode)) {
+                            UI.print("Room code already exists");
+                        }
+                    } while (roomCode.isEmpty() || Room.existRoomCode(roomCode));
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter Room Description > ");
+                        roomDescription = in.nextLine().trim();
+
+                        if (roomDescription.isEmpty()) {
+                            UI.print("Room description is required");
+                        } else if (Room.existRoomDesc(roomDescription)) {
+                            UI.print("Room description already exists");
+                        }
+                    } while (roomDescription.isEmpty() || Room.existRoomDesc(roomDescription));
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Room Type > ");
+                        roomType = in.nextLine().trim();
+
+                        if (roomType.isEmpty()) {
+                            UI.print("Room type is required");
+                        }
+                    } while (roomType.isEmpty());
+                    break;
+
+                case "4":
+                    boolean validFloor = false;
+
+                    while (!validFloor) {
+                        System.out.print("   Enter Floor Number > ");
+                        input = in.nextLine().trim();
+
+                        try {
+                            floorNumber = Integer.parseInt(input);
+
+                            if (floorNumber < 1) {
+                                UI.print("Floor number must be at least 1");
+                            } else {
+                                validFloor = true;
+                            }
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid floor number. Numbers only");
+                        }
+                    }
+                    break;
+
+                case "5":
+                    boolean validCapacity = false;
+
+                    while (!validCapacity) {
+                        System.out.print("   Enter Capacity > ");
+                        input = in.nextLine().trim();
+
+                        try {
+                            capacity = Integer.parseInt(input);
+
+                            if (capacity < 1) {
+                                UI.print("Capacity must be at least 1");
+                            } else {
+                                validCapacity = true;
+                            }
+                        } catch (NumberFormatException e) {
+                            UI.print("Invalid capacity. Numbers only");
+                        }
+                    }
+                    break;
+
+                case "6":
+                    do {
+                        System.out.print("   Enter Building Code > ");
+                        buildingCode = in.nextLine().trim().toUpperCase();
+
+                        if (buildingCode.isEmpty()) {
+                            UI.print("Building code is required");
+                        } else if (Building.findBuilding(buildingCode) == null) {
+                            UI.print("Building code does not exist");
+                        }
+                    } while (buildingCode.isEmpty()
+                            || Building.findBuilding(buildingCode) == null);
+                    break;
+
+                case "7":
+                    do {
+                        System.out.print("   Enter College Code > ");
+                        collegeCode = in.nextLine().trim().toUpperCase();
+
+                        if (collegeCode.isEmpty()) {
+                            UI.print("College code is required");
+                        } else if (College.findCollege(collegeCode) == null) {
+                            UI.print("College code does not exist");
+                        }
+                    } while (collegeCode.isEmpty()
+                            || College.findCollege(collegeCode) == null);
+                    break;
+
+                case "/":
+                    try {
+                        Room room = new Room(
+                                roomCode,
+                                roomDescription,
+                                floorNumber,
+                                roomType,
+                                capacity,
+                                buildingCode,
+                                collegeCode);
+
+                        rooms.add(room);
+
+                        UI.print("Room successfully created");
+                        Room.displayRoom(roomCode);
+
+                        submit = true;
+                    } catch (IllegalArgumentException e) {
+                        UI.print("Unable to create room: " + e.getMessage());
+                    }
+                    break;
+
+                case "X":
+                    submit = true;
+                    break;
+            }
+        }
+}
+    public static void archiveRoom() {
+        String input, choice;
+
+        UI.print("DELETE EXISTING ROOM");
+
+        do {
+            System.out.print("  Enter Room Code > ");
+            input = in.nextLine().trim();
+
+            if (input.isEmpty() || findRoom(input) == null) {
+                UI.print("Room does not exist");
+            }
+        } while (input.isEmpty() || findRoom(input) == null);
+
+        Room room = findRoom(input);
 
         if (room == null) {
-            UI.liner("  Room not found.");
-            UI.footer();
+            UI.print("Room not found");
             return;
         }
 
-        try {
-            System.out.print("Enter new room description (or press Enter to keep current): ");
-            String description = in.nextLine();
+        displayRoom(room.getRoomCode());
 
-            if (!description.isBlank()) {
-                room.setRoomDescription(description);
+        do {
+            System.out.print("  Confirm Room Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]")) {
+                UI.print("Invalid Input");
             }
+        } while (!choice.matches("[YN]"));
 
-            System.out.print("Enter new floor number (or press Enter to keep current): ");
-            String floor = in.nextLine();
-
-            if (!floor.isBlank()) {
-                room.setFloorNumber(Integer.parseInt(floor));
-            }
-
-            System.out.print("Enter new room type (or press Enter to keep current): ");
-            String type = in.nextLine();
-
-            if (!type.isBlank()) {
-                room.setRoomType(type);
-            }
-
-            System.out.print("Enter new capacity (or press Enter to keep current): ");
-            String capacity = in.nextLine();
-
-            if (!capacity.isBlank()) {
-                room.setCapacity(Integer.parseInt(capacity));
-            }
-
-            System.out.print("Enter new building code (or press Enter to keep current): ");
-            String building = in.nextLine();
-
-            if (!building.isBlank()) {
-                room.setBuildingCode(building);
-            }
-
-            UI.liner("  Room updated successfully.");
-
-        } catch (IllegalArgumentException e) {
-            UI.liner("  Unable to edit room: " + e.getMessage());
+        if (choice.equals("Y")) {
+            archiveRooms.add(room);
+            rooms.remove(room);
+            UI.print("Room successfully archived");
+        } else {
+            UI.print("Archiving cancelled");
         }
-
-        UI.footer();
     }
 
-    public static void deleteRoom() {
-        UI.header("DELETE ROOM");
+    public static void displayArchiveRooms() {
+        UI.header("ARCHIVE ROOMS");
 
-        System.out.print("Enter room code: ");
-        String roomCode = in.nextLine();
-
-        Room room = findRoom(roomCode);
-
-        if (room == null) {
-            UI.liner("  Room not found.");
+        if (archiveRooms.isEmpty()) {
+            UI.liner("  No rooms found.");
             UI.footer();
             return;
         }
 
-        rooms.remove(room);
-        UI.liner("  Room deleted successfully.");
+        ArrayList<String> displayedBuildings = new ArrayList<>();
+
+        for (Room room : archiveRooms) {
+            String currentBuildingCode = room.getBuildingCode();
+
+            if (currentBuildingCode == null
+                    || displayedBuildings.contains(currentBuildingCode.toUpperCase(Locale.ENGLISH))) {
+                continue;
+            }
+
+            displayedBuildings.add(currentBuildingCode.toUpperCase(Locale.ENGLISH));
+
+            Building building = Building.findBuilding(currentBuildingCode);
+            String buildingName = building != null
+                    ? building.getBuildingName()
+                    : "Unknown Building";
+
+            UI.liner("  " + fitText(currentBuildingCode + " - " + buildingName, 64));
+            UI.separator();
+
+            for (Room buildingRoom : archiveRooms) {
+                if (buildingRoom.getBuildingCode() != null
+                        && buildingRoom.getBuildingCode().equalsIgnoreCase(currentBuildingCode)) {
+                    UI.liner(String.format("  %-9s %-40s %-12s",
+                            fitText(buildingRoom.getRoomCode(), 9),
+                            fitText(buildingRoom.getRoomDescription(), 30),
+                            fitText(buildingRoom.getRoomType(), 12)));
+
+                    UI.liner(String.format(
+                            "  %-9s %-40s %-12s", "",
+                            buildingRoom.getCapacity() + " seats",
+                            getFloorText(buildingRoom.getFloorNumber())));
+
+                    UI.liner("  College: " + buildingRoom.getCollegeCode());
+                    UI.separator();
+                }
+            }
+        }
 
         UI.footer();
     }
 
     private static void roomManage(String text, String roomCode,
                                    String roomDescription, String roomType,
-                                   int floorNumber, int capacity, String buildingCode) {
+                                   int floorNumber, int capacity,
+                                   String buildingCode, String collegeCode) {
 
         UI.header(text.toUpperCase() + ": ROOM INFORMATION");
-        UI.liner(" [1] ROOM CODE        : " + roomCode);
-        UI.liner(" [2] ROOM DESCRIPTION : " + roomDescription);
-        UI.liner(" [3] ROOM TYPE        : " + roomType);
-        UI.liner(" [4] FLOOR NUMBER     : " + floorNumber);
-        UI.liner(" [5] CAPACITY         : " + capacity);
-        UI.liner(" [6] BUILDING CODE    : " + buildingCode);
+        UI.liner(String.format(" [1] ROOM CODE        : " + roomCode));
+        UI.liner(String.format(" [2] ROOM DESCRIPTION : " + roomDescription));
+        UI.liner(String.format(" [3] ROOM TYPE        : " + roomType));
+        UI.liner(String.format(" [4] FLOOR NUMBER     : %s", floorNumber == 0 ? "" : floorNumber));
+        UI.liner(String.format(" [5] CAPACITY         : %s", capacity == 0 ? "": capacity));
+        UI.liner(String.format(" [6] BUILDING CODE    : " + buildingCode));
+        UI.liner(String.format(" [7] COLLEGE CODE     : " + collegeCode));
         UI.liner("");
         UI.option();
         UI.footer();

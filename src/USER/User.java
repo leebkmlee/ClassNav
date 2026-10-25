@@ -468,39 +468,30 @@ public class User {
         this.sex = sex;
     }
 
-    public static void displayArchivedStudent(){
+    public static void displayArchivedUsers(){
         UI.header("ARCHIVED USER ");
 
         for (User u : archiveStudent) {
             String userType = "";
-            String additionalInfo = "";
 
             if (u instanceof Student) {
-                Student s = (Student) u;
                 userType = "Student";
-                additionalInfo = Student.getEnrollmentStatus(s);
             } else if (u instanceof Faculty) {
-                Faculty f = (Faculty) u;
                 userType = "Faculty";
-                additionalInfo = Faculty.getCollegeCode(f);
             } else if (u instanceof DepartmentHead) {
-                DepartmentHead d = (DepartmentHead) u;
                 userType = "Department Head";
-                additionalInfo = d.getCollegeCode();
             }
 
             String user = String.format(
-                    "  %-10s %-20s %-25s %-18s %-15s",
+                    "  %-10s %-20s %-25s %-5s",
                     u.getUserID(),
                     u.getLastName() + ", " + u.getFirstName(),
                     u.getEmailAddress(),
-                    userType,
-                    additionalInfo
+                    userType
             );
 
             UI.liner(user);
         }
-
         UI.footer();
     }
 
@@ -1120,7 +1111,7 @@ public class User {
             }
         }
     }
-    public static void deleteUser() {
+    public static void archiveUser() {
         String userID, choice;
 
         UI.print("ARCHIVE EXISTING USER");

@@ -117,7 +117,6 @@ public class Program {
 
         UI.footer();
     }
-
     public static void displayPrograms() {
 
         UI.header("PROGRAMS");
@@ -140,6 +139,32 @@ public class Program {
         }
 
         UI.footer();
+    }
+    public static void displayArchivePrograms() {
+
+        UI.header("ARCHIVED BUILDINGS");
+
+        if (archivePrograms.isEmpty()) {
+            UI.liner("  No archived buildings found.");
+        } else {
+            for (Program p : archivePrograms) {
+
+                String progDesc = p.getProgramDescription();
+                if (progDesc.length() > 35) {
+                    progDesc = progDesc.substring(0, 35) + " ...";
+                }
+
+                UI.liner(String.format(
+                        "  %-15s %-40s %-10s",
+                        p.getProgramID(),
+                        progDesc,
+                        p.getCollegeCode()
+                ));
+            }
+        }
+
+        UI.footer();
+
     }
 
     public static void createProgram() {
@@ -226,7 +251,6 @@ public class Program {
             }
         }
     }
-
     public static void editProgram() {
         String input, choice;
         boolean submit = false;
@@ -422,7 +446,6 @@ public class Program {
             UI.print("Program successfully deleted");
         }
     }
-
     private static void programManage(String text, String programCode,
                                       String programDescription, String collegeCode) {
         String progDesc = programDescription;
@@ -436,30 +459,5 @@ public class Program {
         UI.footer();
     }
 
-    public static void displayArchivePrograms() {
 
-        UI.header("ARCHIVED BUILDINGS");
-
-        if (archivePrograms.isEmpty()) {
-            UI.liner("  No archived buildings found.");
-        } else {
-            for (Program p : archivePrograms) {
-
-                String progDesc = p.getProgramDescription();
-                if (progDesc.length() > 35) {
-                    progDesc = progDesc.substring(0, 35) + " ...";
-                }
-
-                UI.liner(String.format(
-                        "  %-15s %-40s %-10s",
-                        p.getProgramID(),
-                        progDesc,
-                        p.getCollegeCode()
-                ));
-            }
-        }
-
-        UI.footer();
-
-    }
 }

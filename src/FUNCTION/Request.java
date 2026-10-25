@@ -1,4 +1,3 @@
-
 package FUNCTION;
 
 import DATA.*;
@@ -25,6 +24,7 @@ public class Request {
     private String requestID;
     private String facultyID;
     private String roomCode;
+    private String targetCollegeCode;
     private String requestedDate;
     private String startTime;
     private String endTime;
@@ -33,6 +33,75 @@ public class Request {
     private String reviewedBy;
     private String reviewedAt;
     private String rejectionReason;
+
+    // ROOM REQUEST CONSTRUCTOR
+    public Request(String facultyID, String roomCode, String requestedDate,
+                   String startTime, String endTime, String reason) {
+
+        if (facultyID == null || facultyID.trim().isEmpty())
+            throw new IllegalArgumentException("Faculty ID cannot be empty.");
+
+        if (roomCode == null || roomCode.trim().isEmpty())
+            throw new IllegalArgumentException("Room code cannot be empty.");
+
+        if (requestedDate == null || requestedDate.trim().isEmpty()
+                || startTime == null || startTime.trim().isEmpty()
+                || endTime == null || endTime.trim().isEmpty()
+                || reason == null || reason.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Request details cannot be empty.");
+        }
+
+        Room room = Room.findRoom(roomCode);
+
+        if (room == null)
+            throw new IllegalArgumentException("Room does not exist.");
+
+        if (room.getCollegeCode() == null
+                || room.getCollegeCode().trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "The room has no assigned college.");
+        }
+
+        LocalDate date;
+
+        try {
+            date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(
+                    "Invalid date. Use MM/dd/yyyy.");
+        }
+
+        if (date.isBefore(LocalDate.now()))
+            throw new IllegalArgumentException(
+                    "Request date cannot be in the past.");
+
+        String convertedStart = convertTime(startTime);
+        String convertedEnd = convertTime(endTime);
+
+        LocalTime parsedStart = LocalTime.parse(convertedStart, TIME_FORMAT);
+        LocalTime parsedEnd = LocalTime.parse(convertedEnd, TIME_FORMAT);
+
+        if (!parsedStart.isBefore(parsedEnd))
+            throw new IllegalArgumentException(
+                    "Start time must be before end time.");
+
+        this.requestID = String.format("RR%04d", nextRequestID++);
+        this.facultyID = facultyID.trim();
+        this.roomCode = roomCode.trim();
+
+        // Store the college responsible for this request.
+        this.targetCollegeCode = room.getCollegeCode().trim();
+
+        this.requestedDate = date.format(DATE_FORMAT);
+        this.startTime = convertedStart;
+        this.endTime = convertedEnd;
+        this.reason = reason.trim();
+        this.status = "Pending";
+        this.reviewedBy = null;
+        this.reviewedAt = null;
+        this.rejectionReason = null;
+    }
 
     static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("MM/dd/uuuu")
@@ -53,7 +122,8 @@ public class Request {
             throw new IllegalArgumentException("Time cannot be empty.");
 
         DateTimeFormatter inputFormat =
-                DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]", Locale.ENGLISH);
+                DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]",
+                        Locale.ENGLISH);
 
         try {
             LocalTime parsedTime = LocalTime.parse(
@@ -63,10 +133,9 @@ public class Request {
             return parsedTime.format(TIME_FORMAT);
 
         } catch (DateTimeParseException e) {
-            UI.print("Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
+            throw new IllegalArgumentException(
+                    "Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
         }
-
-        return time;
     }
 
     // FORMAT INTERNAL TIME FOR DISPLAY
@@ -80,7 +149,6 @@ public class Request {
                     .format(DISPLAY_TIME_FORMAT);
 
         } catch (DateTimeParseException e) {
-            // Also support existing records already stored in AM/PM format
             try {
                 return LocalTime.parse(time.trim(), DISPLAY_TIME_FORMAT)
                         .format(DISPLAY_TIME_FORMAT);
@@ -90,122 +158,127 @@ public class Request {
         }
     }
 
+    // FIND THE DEPARTMENT HEAD RESPONSIBLE FOR A COLLEGE
+    private static DepartmentHead findDepartmentHeadByCollege(String collegeCode) {
+
+        if (collegeCode == null || collegeCode.trim().isEmpty())
+            return null;
+
+        for (User user : User.users) {
+
+            if (!(user instanceof DepartmentHead))
+                continue;
+
+            DepartmentHead head = (DepartmentHead) user;
+
+            if (head.getCollegeCode() != null
+                    && head.getCollegeCode().equalsIgnoreCase(
+                    collegeCode.trim())) {
+                return head;
+            }
+        }
+
+        return null;
+    }
+
     // CHECK IF DEPARTMENT HEAD CAN ACCESS A REQUEST
-    private static boolean canReviewRequest(
-            DepartmentHead head, Request request) {
+    private static boolean canReviewRequest(DepartmentHead head, Request request) {
 
         if (head == null || request == null
                 || head.getCollegeCode() == null
-                || head.getCollegeCode().trim().isEmpty()) {
+                || head.getCollegeCode().trim().isEmpty()
+                || request.targetCollegeCode == null
+                || request.targetCollegeCode.trim().isEmpty()) {
             return false;
         }
 
-        Faculty faculty = Faculty.findFaculty(request.facultyID);
-
-        if (faculty == null)
-            return false;
-
-        String facultyCollegeCode = Faculty.getCollegeCode(faculty);
-
-        return facultyCollegeCode != null
-                && !facultyCollegeCode.trim().isEmpty()
-                && head.getCollegeCode().equalsIgnoreCase(
-                facultyCollegeCode);
+        // Access is based on the room's assigned college,
+        // not the requesting faculty member's college.
+        return head.getCollegeCode().trim().equalsIgnoreCase(
+                request.targetCollegeCode.trim());
     }
 
-    // ROOM REQUEST CONSTRUCTOR
-    public Request(String facultyID, String roomCode, String requestedDate,
-                   String startTime, String endTime, String reason) {
-
-        if (Faculty.findFaculty(facultyID) == null)
-            UI.print("Invalid faculty ID.");
-
-        if (Room.findRoom(roomCode) == null)
-            UI.print("Invalid room code.");
-
-        if (requestedDate == null || startTime == null
-                || endTime == null || reason == null
-                || requestedDate.trim().isEmpty()
-                || startTime.trim().isEmpty()
-                || endTime.trim().isEmpty()
-                || reason.trim().isEmpty()) {
-            UI.print("Request details cannot be empty.");
-        }
-
-        LocalDate date = null;
-
-        try {
-            date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
-
-            if (date.isBefore(LocalDate.now()))
-                UI.print("Request date cannot be in the past.");
-
-        } catch (DateTimeParseException e) {
-            UI.print("Invalid date. Use MM/dd/yyyy.");
-        }
-
-        String convertedStart = convertTime(startTime);
-        String convertedEnd = convertTime(endTime);
-
-        // CONVERT INTERNAL 24-HOUR TIME DIRECTLY TO MINUTES
-        LocalTime parsedStart = LocalTime.parse(convertedStart, TIME_FORMAT);
-        LocalTime parsedEnd = LocalTime.parse(convertedEnd, TIME_FORMAT);
-
-        int start = parsedStart.getHour() * 60 + parsedStart.getMinute();
-        int end = parsedEnd.getHour() * 60 + parsedEnd.getMinute();
-
-        if (start >= end)
-            throw new IllegalArgumentException(
-                    "Start time must be before end time.");
-
-        this.requestID = String.format("RR%04d", nextRequestID++);
-        this.facultyID = facultyID.trim();
-        this.roomCode = roomCode.trim();
-        this.requestedDate = date.format(DATE_FORMAT);
-        this.startTime = convertedStart;
-        this.endTime = convertedEnd;
-        this.reason = reason.trim();
-        this.status = "Pending";
-        this.reviewedBy = null;
-        this.reviewedAt = null;
-        this.rejectionReason = null;
-    }
-
+    // DUMMY DATA
     static {
-        requests.add(new Request("F0001", "RM001", "10/26/2026", "8:00 AM", "9:00 AM",
-                "Room needed for class"));
-        requests.add(new Request("F0002", "RM002", "10/27/2026", "9:00 AM", "10:00 AM",
-                "Room change due to equipment"));
-        requests.add(new Request("F0003", "RM003", "10/28/2026", "10:00 AM", "11:00 AM",
-                "Make-up session"));
-        requests.add(new Request("F0004", "RM004", "10/29/2026", "11:00 AM", "12:00 PM",
-                "Room needed for class"));
-        requests.add(new Request("F0006", "RM008", "11/02/2026", "1:00 PM", "2:00 PM",
-                "Make-up session"));
-        requests.add(new Request("F0007", "RM002", "11/03/2026", "8:00 AM", "9:00 AM",
-                "Room needed for class"));
-        requests.add(new Request("F0010", "RM010", "11/06/2026", "11:00 AM", "12:00 PM",
-                "Room needed for class"));
-        requests.add(new Request("F0011", "RM004", "11/09/2026", "9:00 AM", "10:00 AM",
-                "Room change due to equipment"));
-        requests.add(new Request("F0013", "RM013", "11/11/2026", "8:00 AM", "9:00 AM",
-                "Room needed for class"));
-        requests.add(new Request("F0014", "RM005", "11/12/2026", "9:00 AM", "10:00 AM",
-                "Room change due to equipment"));
+        requests.add(new Request("F0001", "RM001", "10/26/2026",
+                "8:00 AM", "9:00 AM", "Room needed for class"));
+
+        requests.add(new Request("F0002", "RM002", "10/27/2026",
+                "9:00 AM", "10:00 AM", "Room change due to equipment"));
+
+        requests.add(new Request("F0003", "RM003", "10/28/2026",
+                "10:00 AM", "11:00 AM", "Make-up session"));
+
+        requests.add(new Request("F0004", "RM004", "10/29/2026",
+                "11:00 AM", "12:00 PM", "Room needed for class"));
+
+        requests.add(new Request("F0006", "RM008", "11/02/2026",
+                "1:00 PM", "2:00 PM", "Make-up session"));
+
+        requests.add(new Request("F0007", "RM002", "11/03/2026",
+                "8:00 AM", "9:00 AM", "Room needed for class"));
+
+        requests.add(new Request("F0010", "RM010", "11/06/2026",
+                "11:00 AM", "12:00 PM", "Room needed for class"));
+
+        requests.add(new Request("F0011", "RM004", "11/09/2026",
+                "9:00 AM", "10:00 AM", "Room change due to equipment"));
+
+        requests.add(new Request("F0013", "RM013", "11/11/2026",
+                "8:00 AM", "9:00 AM", "Room needed for class"));
+
+        requests.add(new Request("F0014", "RM005", "11/12/2026",
+                "9:00 AM", "10:00 AM", "Room change due to equipment"));
     }
 
     // REQUEST GETTER METHODS
-    public String getRequestID() { return requestID; }
-    public String getFacultyID() { return facultyID; }
-    public String getRoomCode() { return roomCode; }
-    public String getRequestedDate() { return requestedDate; }
-    public String getStartTime() { return startTime; }
-    public String getEndTime() { return endTime; }
-    public String getReason() { return reason; }
-    public String getStatus() { return status; }
-    public String getReviewedBy() { return reviewedBy; }
-    public String getReviewedAt() { return reviewedAt; }
-    public String getRejectionReason() { return rejectionReason; }
+    public String getRequestID() {
+        return requestID;
+    }
+
+    public String getFacultyID() {
+        return facultyID;
+    }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public String getTargetCollegeCode() {
+        return targetCollegeCode;
+    }
+
+    public String getRequestedDate() {
+        return requestedDate;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getReviewedBy() {
+        return reviewedBy;
+    }
+
+    public String getReviewedAt() {
+        return reviewedAt;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
 
     // FIND REQUEST
     public static Request findRequest(String requestID) {
@@ -214,8 +287,11 @@ public class Request {
             return null;
 
         for (Request request : requests) {
-            if (request.requestID.equalsIgnoreCase(requestID.trim()))
+
+            if (request != null
+                    && request.requestID.equalsIgnoreCase(requestID.trim())) {
                 return request;
+            }
         }
 
         return null;
@@ -226,12 +302,15 @@ public class Request {
 
         ArrayList<Request> result = new ArrayList<>();
 
-        if (facultyID == null)
+        if (facultyID == null || facultyID.trim().isEmpty())
             return result;
 
         for (Request request : requests) {
-            if (request.facultyID.equalsIgnoreCase(facultyID.trim()))
+
+            if (request != null
+                    && request.facultyID.equalsIgnoreCase(facultyID.trim())) {
                 result.add(request);
+            }
         }
 
         return result;
@@ -240,93 +319,191 @@ public class Request {
     // SUBMIT ROOM REQUEST
     public static void submitRequest(String facultyID) {
 
-        Faculty faculty = Faculty.findFaculty(facultyID);
+        Faculty f = Faculty.findFaculty(facultyID);
 
-        if (faculty == null) {
+        if (f == null) {
             UI.print("Faculty not found.");
             return;
         }
 
-        String roomCode, requestedDate, startTime, endTime, reason;
+        String facultyCollegeCode = Faculty.getCollegeCode(f);
+
+        String requestedDate, startTime, endTime, roomCode, reason;
+        LocalDate date;
+        String convertedStart, convertedEnd;
 
         UI.header("REQUEST ROOM RESERVATION");
-        UI.liner("  FACULTY ID  : " + faculty.getUserID());
-        UI.liner("  NAME        : " + faculty.getUserName());
+        UI.liner("  FACULTY ID : " + f.getUserID());
+        UI.liner("  NAME       : " + f.getUserName());
+        UI.liner("  COLLEGE    : "
+                + (facultyCollegeCode == null ? "Not assigned" : facultyCollegeCode));
         UI.separator();
 
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
+        // ENTER FUTURE RESERVATION DATE
+        do {
+            System.out.print("  Enter Date (MM/dd/yyyy) > ");
+            requestedDate = in.nextLine().trim();
 
-        String currentDate = today.format(DATE_FORMAT);
-        String currentTime = now.format(TIME_FORMAT);
-        String checkEndTime = now.plusMinutes(1).format(TIME_FORMAT);
+            try {
+                date = LocalDate.parse(requestedDate, DATE_FORMAT);
 
-        UI.liner("  DATE : " + currentDate);
-        UI.liner("  TIME : " + now.format(DISPLAY_TIME_FORMAT));
-        UI.footer();
+                if (date.isBefore(LocalDate.now())) {
+                    UI.print("Request date cannot be in the past.");
+                    date = null;
+                }
 
-        // DISPLAY ROOMS AVAILABLE RIGHT NOW
+            } catch (DateTimeParseException e) {
+                UI.print("Invalid date. Use MM/dd/yyyy.");
+                date = null;
+            }
+
+        } while (date == null);
+
+        // ENTER REQUEST TIME
+        do {
+            System.out.print("  Enter Start Time (hh:mm AM/PM) > ");
+            startTime = in.nextLine().trim();
+
+            System.out.print("  Enter End Time (hh:mm AM/PM) > ");
+            endTime = in.nextLine().trim();
+
+            try {
+                convertedStart = convertTime(startTime);
+                convertedEnd = convertTime(endTime);
+
+                LocalTime start = LocalTime.parse(convertedStart, TIME_FORMAT);
+                LocalTime end = LocalTime.parse(convertedEnd, TIME_FORMAT);
+
+                if (!start.isBefore(end)) {
+                    UI.print("Start time must be before end time.");
+                    convertedStart = null;
+                }
+
+                // A request for today must still be in the future.
+                if (date.equals(LocalDate.now())
+                        && !start.isAfter(LocalTime.now())) {
+                    UI.print("The requested start time must be in the future.");
+                    convertedStart = null;
+                }
+
+            } catch (IllegalArgumentException | DateTimeParseException e) {
+                UI.print(e.getMessage() == null ? "Invalid time." : e.getMessage());
+                convertedStart = null;
+                convertedEnd = null;
+            }
+
+        } while (convertedStart == null || convertedEnd == null);
+
+        // DISPLAY ROOMS AVAILABLE FOR THE REQUESTED DATE AND TIME
+        UI.header("ROOMS AVAILABLE FOR REQUESTED TIME");
+        UI.liner("  DATE : " + date.format(DATE_FORMAT));
+        UI.liner("  TIME : " + formatTime(convertedStart)
+                + " - " + formatTime(convertedEnd));
+        UI.separator();
+
         boolean available = false;
-
-        UI.header("ROOMS AVAILABLE RIGHT NOW");
 
         for (Room room : Room.rooms) {
 
             if (room == null)
                 continue;
 
-            if (Room.verifyAvailability(
-                    room.getRoomCode(),
-                    currentDate,
-                    currentTime,
-                    checkEndTime)) {
+            if (!Room.verifyAvailability(room.getRoomCode(),
+                    date.format(DATE_FORMAT), convertedStart, convertedEnd))
+                continue;
 
-                UI.liner("  " + room.getRoomCode()
-                        + " - " + room.getRoomDescription());
-                UI.liner("  Type: " + room.getRoomType()
-                        + " | Capacity: " + room.getCapacity());
-                UI.liner("  Floor: "
-                        + Room.getFloorText(room.getFloorNumber()));
-                UI.liner("");
+            UI.liner("  " + room.getRoomCode() + " - " + room.getRoomDescription());
+            UI.liner("  Type: " + room.getRoomType()
+                    + " | Capacity: " + room.getCapacity());
+            UI.liner("  Floor: " + Room.getFloorText(room.getFloorNumber()));
+            UI.liner("  College: " + room.getCollegeCode());
+            UI.liner("");
 
-                available = true;
-            }
+            available = true;
         }
 
-        if (!available)
-            UI.liner("  No rooms are currently available.");
+        if (!available) {
+            UI.liner("  No rooms are available for this date and time.");
+            UI.footer();
+            return;
+        }
 
         UI.footer();
 
-        if (!available) return;
-
-        // ENTER RESERVATION DETAILS
-        UI.header("REQUEST ROOM RESERVATION");
-
+        // SELECT ROOM
         System.out.print("  Enter Room Code > ");
         roomCode = in.nextLine().trim();
 
-        System.out.print("  Enter Date (MM/dd/yyyy) > ");
-        requestedDate = in.nextLine().trim();
+        Room room = Room.findRoom(roomCode);
 
-        System.out.print("  Enter Start Time (hh:mm AM/PM) > ");
-        startTime = in.nextLine().trim();
+        if (room == null) {
+            UI.print("Room not found.");
+            return;
+        }
 
-        System.out.print("  Enter End Time (hh:mm AM/PM) > ");
-        endTime = in.nextLine().trim();
+        // RECHECK SELECTED ROOM AVAILABILITY
+        if (!Room.verifyAvailability(roomCode, date.format(DATE_FORMAT),
+                convertedStart, convertedEnd)) {
+            UI.print("The selected room is not available for that time.");
+            UI.print("Please submit a new request with another time or room.");
+            return;
+        }
 
-        System.out.print("  Enter Reason > ");
-        reason = in.nextLine().trim();
+        // FIND THE DEPARTMENT HEAD AFTER ROOM SELECTION
+        String targetCollegeCode = room.getCollegeCode();
+
+        if (targetCollegeCode == null || targetCollegeCode.trim().isEmpty()) {
+            UI.print("The selected room has no assigned college.");
+            UI.print("Your request cannot be submitted.");
+            return;
+        }
+
+        DepartmentHead head = findDepartmentHeadByCollege(targetCollegeCode);
+
+        if (head == null) {
+            UI.print("No department head is assigned to the room's college ("
+                    + targetCollegeCode + ").");
+            UI.print("Your request cannot be submitted.");
+            return;
+        }
+
+        // SHOW WHERE THE REQUEST WILL BE ROUTED
+        UI.header("REQUEST ROUTING");
+        UI.liner("  SELECTED ROOM : " + room.getRoomCode());
+        UI.liner("  ROOM          : " + room.getRoomDescription());
+        UI.liner("  ROOM COLLEGE  : " + targetCollegeCode);
+        UI.liner("  ROUTED TO     : " + head.getUserName());
+        UI.separator();
+
+        do {
+            System.out.print("  Enter Reason > ");
+            reason = in.nextLine().trim();
+
+            if (reason.isEmpty())
+                UI.print("Reason cannot be empty.");
+
+        } while (reason.isEmpty());
 
         try {
-            Request request = new Request(facultyID, roomCode,
-                    requestedDate, startTime, endTime, reason);
+            Request request = new Request(
+                    facultyID,
+                    roomCode,
+                    date.format(DATE_FORMAT),
+                    convertedStart,
+                    convertedEnd,
+                    reason);
+
+            requests.add(request);
 
             UI.print("Room request submitted successfully.");
             UI.print("Request ID: " + request.getRequestID());
+            UI.print("Sent to the Department Head of " + targetCollegeCode + ".");
+
+            // Notification delivery can be connected here when the
+            // project's notification class or mechanism is available.
 
         } catch (IllegalArgumentException e) {
-            UI.print(e.getMessage());
+            UI.print("Unable to submit request: " + e.getMessage());
         }
     }
 
@@ -340,27 +517,31 @@ public class Request {
         Room room = Room.findRoom(request.roomCode);
 
         UI.header("ROOM RESERVATION REQUEST");
-        UI.liner("  REQUEST ID : " + request.requestID);
-        UI.liner("  FACULTY ID : " + request.facultyID);
-        UI.liner("  FACULTY    : "
+        UI.liner("  REQUEST ID     : " + request.requestID);
+        UI.liner("  FACULTY ID     : " + request.facultyID);
+        UI.liner("  FACULTY        : "
                 + (faculty == null ? "Not found" : faculty.getUserName()));
-        UI.liner("  ROOM CODE  : " + request.roomCode);
-        UI.liner("  ROOM       : "
+        UI.liner("  FACULTY COLLEGE: "
+                + (faculty == null || Faculty.getCollegeCode(faculty) == null
+                ? "Not found" : Faculty.getCollegeCode(faculty)));
+        UI.liner("  ROOM CODE      : " + request.roomCode);
+        UI.liner("  ROOM           : "
                 + (room == null ? "Not found" : room.getRoomDescription()));
-        UI.liner("  DATE       : " + request.requestedDate);
-        UI.liner("  TIME       : " + formatTime(request.startTime)
+        UI.liner("  ROOM COLLEGE   : " + request.targetCollegeCode);
+        UI.liner("  DATE           : " + request.requestedDate);
+        UI.liner("  TIME           : " + formatTime(request.startTime)
                 + " - " + formatTime(request.endTime));
-        UI.liner("  STATUS     : " + request.status);
+        UI.liner("  STATUS         : " + request.status);
         UI.separator();
-        UI.liner("  REASON     : " + request.reason);
+        UI.liner("  REASON         : " + request.reason);
 
         if (request.reviewedBy != null) {
-            UI.liner("  REVIEWED BY: " + request.reviewedBy);
-            UI.liner("  REVIEWED AT: " + request.reviewedAt);
+            UI.liner("  REVIEWED BY    : " + request.reviewedBy);
+            UI.liner("  REVIEWED AT    : " + request.reviewedAt);
         }
 
         if (request.rejectionReason != null)
-            UI.liner("  REJECTION  : " + request.rejectionReason);
+            UI.liner("  REJECTION      : " + request.rejectionReason);
 
         UI.footer();
     }
@@ -376,10 +557,11 @@ public class Request {
             return;
         }
 
-        // ONLY INCLUDE REQUESTS FROM THE SAME COLLEGE
         ArrayList<Request> collegeRequests = new ArrayList<>();
 
+        // ONLY INCLUDE REQUESTS ROUTED TO THIS DEPARTMENT HEAD'S COLLEGE
         for (Request request : requests) {
+
             if (canReviewRequest(head, request))
                 collegeRequests.add(request);
         }
@@ -389,11 +571,8 @@ public class Request {
         UI.liner("  COLLEGE CODE    : " + head.getCollegeCode());
         UI.separator();
 
-        UI.liner("  ROOM REQUESTS");
-        UI.separator();
-
         if (collegeRequests.isEmpty()) {
-            UI.liner("  No room requests found for your college.");
+            UI.liner("  No room makeUpSchedules found for your college.");
             UI.footer();
             return;
         }
@@ -402,14 +581,15 @@ public class Request {
 
             Request request = collegeRequests.get(i);
 
-            UI.liner(String.format("  [%d] %s | %s | %s | %s",
+            UI.liner(String.format("  [%d] %s | Faculty: %s | Room: %s | %s",
                     i + 1,
                     request.requestID,
                     request.facultyID,
                     request.roomCode,
                     request.status));
 
-            UI.liner(String.format("      %s | %s - %s",
+            UI.liner(String.format("      College: %s | %s | %s - %s",
+                    request.targetCollegeCode,
                     request.requestedDate,
                     formatTime(request.startTime),
                     formatTime(request.endTime)));
@@ -436,6 +616,7 @@ public class Request {
                     UI.print("Invalid choice.");
                     choice = -1;
                 }
+
             } catch (NumberFormatException e) {
                 UI.print("Invalid choice.");
                 choice = -1;
@@ -448,9 +629,8 @@ public class Request {
 
         Request selected = collegeRequests.get(choice - 1);
 
-        // RECHECK COLLEGE ACCESS BEFORE DISPLAYING DETAILS
         if (!canReviewRequest(head, selected)) {
-            UI.print("You cannot access requests outside your college.");
+            UI.print("You cannot access makeUpSchedules outside your college.");
             return;
         }
 
@@ -465,25 +645,25 @@ public class Request {
     }
 
     // REVIEW REQUEST
+
     public static void reviewRequest(String departmentHeadID, String requestID) {
 
-        DepartmentHead head =
-                DepartmentHead.findDepartmentHead(departmentHeadID);
+        DepartmentHead head = DepartmentHead.findDepartmentHead(departmentHeadID);
 
-        Request request = findRequest(requestID);
+        Request r = findRequest(requestID);
 
-        if (head == null || request == null) {
+        if (head == null || r == null) {
             UI.print("Department head or request not found.");
             return;
         }
 
-        // SECURITY CHECK: ONLY THE SAME COLLEGE CAN REVIEW
-        if (!canReviewRequest(head, request)) {
-            UI.print("You cannot review requests outside your college.");
+        // ONLY THE DEPARTMENT HEAD OF THE ROOM'S COLLEGE CAN REVIEW
+        if (!canReviewRequest(head, r)) {
+            UI.print("You cannot review makeUpSchedules outside your college.");
             return;
         }
 
-        if (!request.status.equalsIgnoreCase("Pending")) {
+        if (!"Pending".equalsIgnoreCase(r.status)) {
             UI.print("This request has already been reviewed.");
             return;
         }
@@ -502,7 +682,6 @@ public class Request {
         String rejectionReason = null;
 
         if (decision.equals("R")) {
-
             System.out.print("  Rejection Reason > ");
             rejectionReason = in.nextLine().trim();
 
@@ -516,9 +695,19 @@ public class Request {
                 DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm a",
                         Locale.ENGLISH));
 
-        if (decision.equals("A")) {
+        // VALIDATE REVIEW DETAILS
+        if (DepartmentHead.findDepartmentHead(departmentHeadID) == null) {
+            UI.print("Invalid department head ID.");
+            return;
+        }
 
-            Room room = Room.findRoom(request.roomCode);
+        if (reviewedAt.trim().isEmpty()) {
+            UI.print("Review date and time are required.");
+            return;
+        }
+
+        if (decision.equals("A")) {
+            Room room = Room.findRoom(r.roomCode);
 
             if (room == null) {
                 UI.print("Requested room no longer exists.");
@@ -528,65 +717,57 @@ public class Request {
             LocalDate date;
 
             try {
-                date = LocalDate.parse(request.requestedDate, DATE_FORMAT);
+                date = LocalDate.parse(r.requestedDate, DATE_FORMAT);
             } catch (DateTimeParseException e) {
                 UI.print("The request contains an invalid date.");
                 return;
             }
 
-            // CHECK AVAILABILITY FOR THE REQUESTED DATE AND TIME
-            if (!Room.verifyAvailability(
-                    request.roomCode,
-                    date.format(DATE_FORMAT),
-                    request.startTime,
-                    request.endTime)) {
+            // ENSURE THE ROOM STILL BELONGS TO THE COLLEGE THAT RECEIVED THE REQUEST
+            if (room.getCollegeCode() == null
+                    || !room.getCollegeCode().equalsIgnoreCase(
+                    r.targetCollegeCode)) {
+                UI.print("The room's college ownership has changed.");
+                UI.print("The request must be reviewed by the currently responsible college.");
+                return;
+            }
+
+            // RECHECK AVAILABILITY
+            if (!Room.verifyAvailability(r.roomCode, date.format(DATE_FORMAT), r.startTime, r.endTime)) {
                 UI.print("Room is not available for the requested time.");
+                UI.print("The request remains pending.");
                 return;
             }
 
             MakeUpSchedule approved = null;
 
             try {
-                approved = new MakeUpSchedule(
-                        request.facultyID,
-                        request.roomCode,
-                        "Reservation",
-                        date.format(DATE_FORMAT),
-                        request.startTime,
-                        request.endTime,
-                        request.reason
-                );
-
-                approved.reviewRequest(departmentHeadID,
-                        "Approved", reviewedAt);
-
-                request.status = "Approved";
-                request.reviewedBy = departmentHeadID;
-                request.reviewedAt = reviewedAt;
+                MakeUpSchedule.makeUpSchedules.add(new MakeUpSchedule(r.facultyID, r.roomCode, "Reservation",
+                                date.format(DATE_FORMAT), r.startTime, r.endTime, r.reason, r.reviewedBy, r.reviewedAt));
+                r.status = "Approved";
+                r.reviewedBy = departmentHeadID.trim();
+                r.reviewedAt = reviewedAt.trim();
 
                 UI.print("Request approved successfully.");
-                UI.print("Make-up schedule record created: "
-                        + approved.getMakeUpID());
-
             } catch (IllegalArgumentException | IllegalStateException e) {
 
-                // REMOVE THE RECORD IF APPROVAL FAILS
                 if (approved != null)
-                    MakeUpSchedule.requests.remove(approved);
+                    MakeUpSchedule.makeUpSchedules.remove(approved);
 
                 UI.print("Could not approve request: " + e.getMessage());
             }
 
         } else {
-
-            request.status = "Rejected";
-            request.reviewedBy = departmentHeadID;
-            request.reviewedAt = reviewedAt;
-            request.rejectionReason = rejectionReason;
+            // UPDATE REQUEST STATUS
+            r.status = "Rejected";
+            r.reviewedBy = departmentHeadID.trim();
+            r.reviewedAt = reviewedAt.trim();
+            r.rejectionReason = rejectionReason;
 
             UI.print("Request rejected.");
         }
     }
+
 
     // VIEW REQUESTS BY DEPARTMENT HEAD'S COLLEGE
     public static void viewRequest(String departmentHeadID) {
@@ -601,8 +782,9 @@ public class Request {
 
         ArrayList<Request> collegeRequests = new ArrayList<>();
 
-        // FILTER REQUESTS USING THE FACULTY'S COLLEGE CODE
+        // FILTER BY THE COLLEGE STORED ON EACH REQUEST
         for (Request request : requests) {
+
             if (canReviewRequest(head, request))
                 collegeRequests.add(request);
         }
@@ -613,7 +795,7 @@ public class Request {
         UI.separator();
 
         if (collegeRequests.isEmpty()) {
-            UI.liner("  No room requests available for your college.");
+            UI.liner("  No room makeUpSchedules available for your college.");
             UI.footer();
             return;
         }
@@ -630,7 +812,8 @@ public class Request {
                     r.getRoomCode(),
                     r.getStatus()));
 
-            UI.liner("      " + r.getRequestedDate() + " | "
+            UI.liner("      Room College: " + r.getTargetCollegeCode()
+                    + " | " + r.getRequestedDate() + " | "
                     + formatTime(r.getStartTime()) + " - "
                     + formatTime(r.getEndTime()));
 
@@ -661,9 +844,8 @@ public class Request {
 
             Request selectedRequest = collegeRequests.get(choice - 1);
 
-            // RECHECK COLLEGE ACCESS BEFORE DISPLAYING DETAILS
             if (!canReviewRequest(head, selectedRequest)) {
-                UI.print("You cannot access requests outside your college.");
+                UI.print("You cannot access makeUpSchedules outside your college.");
                 return;
             }
 

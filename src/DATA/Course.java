@@ -195,6 +195,24 @@ public class Course {
 
         UI.footer();
     }
+    public static void displayArchiveCourses() {
+        UI.header("ARCHIVED COURSES");
+
+        if (courses.isEmpty()) {
+            UI.liner("  No courses found.");
+        } else {
+            for (Course c : courses) {
+                String course = String.format("  %-10s %-37s %-12s",
+                        c.getCourseCode(),
+                        c.getCourseDescription(),
+                        c.getCreditUnits() + " units");
+
+                UI.liner(course);
+            }
+        }
+
+        UI.footer();
+    }
 
     // CHECK FACULTY COURSE ASSIGNMENT
     public static boolean courseLoad(String facultyID, String courseCode) {
@@ -283,7 +301,7 @@ public class Course {
 
     // MANAGE METHODS
     public static void createCourse() {
-        String courseCode = "", courseDescription = "", courseType = "", choice = "";
+        String courseCode = "", courseDescription = "", courseType = "", choice;
         int creditUnits = -1; boolean submit = false;
 
         while (!submit) {
@@ -365,7 +383,7 @@ public class Course {
         }
     }
     public static void editCourse() {
-        String courseCode, courseDescription, courseType, choice = "", input;
+        String courseCode, courseDescription, courseType, choice, input;
         int creditUnits; boolean submit = false;
 
         UI.print("EDIT EXISTING COURSE");
@@ -475,7 +493,7 @@ public class Course {
             }
         }
     }
-    public static void deleteCourse() {
+    public static void archiveCourse() {
         String input, choice;
 
         UI.print("DELETE EXISTING COURSE");
@@ -506,9 +524,11 @@ public class Course {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
+            archiveCourses.add(c);
             Course.courses.remove(c);
-            UI.print("Course successfully deleted");
+            UI.print("Course successfully archived");
         }
+        else UI.print("Archiving cancelled");
     }
     private static void courseManage(String text, String courseCode, String courseDescription,
                                      int creditUnits, String courseType) {

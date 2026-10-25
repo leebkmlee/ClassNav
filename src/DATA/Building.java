@@ -337,7 +337,7 @@ public class Building {
             buildings.remove(b);
             UI.print("Building successfully archived");
         }
-        else UI.print("Archive building cancelled");
+        else UI.print("Archiving cancelled");
     }
     private static void buildingManage(String text, String buildingCode, String buildingName) {
         UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
