@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import static UI.UI.in;
 
 public class CourseOffering {
+
     // FIELDS
     private static int nextOfferingID = 1;
 

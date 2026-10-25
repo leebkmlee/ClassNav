@@ -7,19 +7,20 @@ import static UI.UI.in;
 
 public class Program {
 
-    private String programCode;
-    private String programDescription;
-    private String collegeCode;
+    // FIELDS
+    private String programCode, programDescription, collegeCode;
 
     public static ArrayList<Program> programs = new ArrayList<>();
     public static ArrayList<Program> archivePrograms = new ArrayList<>();
 
+    // CONSTRUCTOR
     public Program(String programCode, String programDescription, String collegeCode) {
         this.programCode = programCode;
         this.programDescription = programDescription;
         this.collegeCode = collegeCode;
     }
 
+    // DUMMY DATA
     static {
         programs.add(new Program("BSIT", "Bachelor of Science in Information Technology", "CICT"));
         programs.add(new Program("BLIS", "Bachelor of Library and Information Science", "CICT"));
@@ -38,7 +39,7 @@ public class Program {
         programs.add(new Program("BSPsych", "Bachelor of Science in Psychology", "CSSP"));
     }
 
-    // PROGRAM GETTER METHODS
+    // GETTER METHODS
     public String getProgramCode() {
         return programCode;
     }
@@ -49,7 +50,7 @@ public class Program {
         return collegeCode;
     }
 
-    // FIND PROGRAM BY PRIMARY KEY
+    // FIND METHODS
     public static Program findProgram(String programCode) {
         if (programCode == null || programCode.trim().isEmpty())
             return null;
@@ -77,7 +78,7 @@ public class Program {
         return null;
     }
 
-    // PROGRAM METHODS
+    // DISPLAY METHODS
     public static void displayProgram(String programCode) {
 
         Program p = findProgram(programCode);
@@ -149,6 +150,7 @@ public class Program {
 
     }
 
+    // MANAGE METHODS
     public static void createProgram() {
         String programCode = "", programDescription = "", collegeCode = "";
         String choice;

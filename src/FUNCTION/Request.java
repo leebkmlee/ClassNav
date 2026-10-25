@@ -3,72 +3,44 @@ package FUNCTION;
 import DATA.*;
 import USER.*;
 import UI.*;
+import static UI.UI.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.util.ArrayList;
-import java.util.Locale;
+import java.time.*;
+import java.time.format.*;
+import java.util.*;
 
 import static UI.UI.in;
 
 public class Request {
 
-    // ROOM REQUEST FIELDS
+    // FIELDS
     private static int nextRequestID = 1;
     public static ArrayList<Request> requests = new ArrayList<>();
 
-    private String requestID;
-    private String facultyID;
-    private String roomCode;
-    private String targetCollegeCode;
-    private String requestedDate;
-    private String startTime;
-    private String endTime;
-    private String reason;
-    private String status;
-    private String reviewedBy;
-    private String reviewedAt;
-    private String rejectionReason;
+    private final String requestID, facultyID, roomCode, targetCollegeCode, requestedDate, startTime, endTime, reason;
+    private String status, reviewedBy, reviewedAt, rejectionReason;
 
-    // ROOM REQUEST CONSTRUCTOR
+    // CONSTRUCTOR
     public Request(String facultyID, String roomCode, String requestedDate,
                    String startTime, String endTime, String reason) {
         Room room = Room.findRoom(roomCode);
 
-        LocalDate date;
+        LocalDate date = null;
 
         try {
             date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(
-                    "Invalid date. Use MM/dd/yyyy.");
+            UI.print("Invalid date. Use MM/dd/yyyy.");
         }
 
-        if (date.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException(
-                    "Request date cannot be in the past.");
-
+        assert date != null;
         String convertedStart = convertTime(startTime);
         String convertedEnd = convertTime(endTime);
-
-        LocalTime parsedStart = LocalTime.parse(convertedStart, TIME_FORMAT);
-        LocalTime parsedEnd = LocalTime.parse(convertedEnd, TIME_FORMAT);
-
-        if (!parsedStart.isBefore(parsedEnd))
-            throw new IllegalArgumentException(
-                    "Start time must be before end time.");
 
         this.requestID = String.format("RR%04d", nextRequestID++);
         this.facultyID = facultyID.trim();
         this.roomCode = roomCode.trim();
-
-        // Store the college responsible for this request.
         this.targetCollegeCode = room.getCollegeCode().trim();
-
         this.requestedDate = date.format(DATE_FORMAT);
         this.startTime = convertedStart;
         this.endTime = convertedEnd;
@@ -77,109 +49,6 @@ public class Request {
         this.reviewedBy = null;
         this.reviewedAt = null;
         this.rejectionReason = null;
-    }
-
-    static final DateTimeFormatter DATE_FORMAT =
-            DateTimeFormatter.ofPattern("MM/dd/uuuu")
-                    .withResolverStyle(ResolverStyle.STRICT);
-
-    // INTERNAL TIME FORMAT
-    public static final DateTimeFormatter TIME_FORMAT =
-            DateTimeFormatter.ofPattern("HH:mm");
-
-    // DISPLAY AND INPUT TIME FORMAT
-    static final DateTimeFormatter DISPLAY_TIME_FORMAT =
-            DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
-
-    // CONVERT INPUT TIME TO INTERNAL 24-HOUR FORMAT
-
-    public static String convertTime(String time) {
-
-        if (time == null || time.trim().isEmpty())
-            throw new IllegalArgumentException("Time cannot be empty.");
-
-        String value = time.trim().toUpperCase(Locale.ENGLISH);
-
-        DateTimeFormatter inputFormat =
-                DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]",
-                        Locale.ENGLISH);
-
-        try {
-            LocalTime parsedTime;
-
-            if (value.matches("\\d{2}:\\d{2}")) {
-                parsedTime = LocalTime.parse(value, TIME_FORMAT);
-            } else {
-                parsedTime = LocalTime.parse(value, inputFormat);
-            }
-
-            return parsedTime.format(TIME_FORMAT);
-
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(
-                    "Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
-        }
-    }
-
-
-    // FORMAT INTERNAL TIME FOR DISPLAY
-    static String formatTime(String time) {
-
-        if (time == null || time.trim().isEmpty())
-            return "";
-
-        try {
-            return LocalTime.parse(time.trim(), TIME_FORMAT)
-                    .format(DISPLAY_TIME_FORMAT);
-
-        } catch (DateTimeParseException e) {
-            try {
-                return LocalTime.parse(time.trim(), DISPLAY_TIME_FORMAT)
-                        .format(DISPLAY_TIME_FORMAT);
-            } catch (DateTimeParseException ex) {
-                return time;
-            }
-        }
-    }
-
-    // FIND THE DEPARTMENT HEAD RESPONSIBLE FOR A COLLEGE
-    private static DepartmentHead findDepartmentHeadByCollege(String collegeCode) {
-
-        if (collegeCode == null || collegeCode.trim().isEmpty())
-            return null;
-
-        for (User user : User.users) {
-
-            if (!(user instanceof DepartmentHead))
-                continue;
-
-            DepartmentHead head = (DepartmentHead) user;
-
-            if (head.getCollegeCode() != null
-                    && head.getCollegeCode().equalsIgnoreCase(
-                    collegeCode.trim())) {
-                return head;
-            }
-        }
-
-        return null;
-    }
-
-    // CHECK IF DEPARTMENT HEAD CAN ACCESS A REQUEST
-    private static boolean canReviewRequest(DepartmentHead head, Request request) {
-
-        if (head == null || request == null
-                || head.getCollegeCode() == null
-                || head.getCollegeCode().trim().isEmpty()
-                || request.targetCollegeCode == null
-                || request.targetCollegeCode.trim().isEmpty()) {
-            return false;
-        }
-
-        // Access is based on the room's assigned college,
-        // not the requesting faculty member's college.
-        return head.getCollegeCode().trim().equalsIgnoreCase(
-                request.targetCollegeCode.trim());
     }
 
     // DUMMY DATA
@@ -219,47 +88,36 @@ public class Request {
     public String getRequestID() {
         return requestID;
     }
-
     public String getFacultyID() {
         return facultyID;
     }
-
     public String getRoomCode() {
         return roomCode;
     }
-
     public String getTargetCollegeCode() {
         return targetCollegeCode;
     }
-
     public String getRequestedDate() {
         return requestedDate;
     }
-
     public String getStartTime() {
         return startTime;
     }
-
     public String getEndTime() {
         return endTime;
     }
-
     public String getReason() {
         return reason;
     }
-
     public String getStatus() {
         return status;
     }
-
     public String getReviewedBy() {
         return reviewedBy;
     }
-
     public String getReviewedAt() {
         return reviewedAt;
     }
-
     public String getRejectionReason() {
         return rejectionReason;
     }
@@ -504,6 +362,46 @@ public class Request {
         UI.footer();
     }
 
+    // FIND THE DEPARTMENT HEAD RESPONSIBLE FOR A COLLEGE
+    private static DepartmentHead findDepartmentHeadByCollege(String collegeCode) {
+
+        if (collegeCode == null || collegeCode.trim().isEmpty())
+            return null;
+
+        for (User user : User.users) {
+
+            if (!(user instanceof DepartmentHead))
+                continue;
+
+            DepartmentHead head = (DepartmentHead) user;
+
+            if (head.getCollegeCode() != null
+                    && head.getCollegeCode().equalsIgnoreCase(
+                    collegeCode.trim())) {
+                return head;
+            }
+        }
+
+        return null;
+    }
+
+    // CHECK IF DEPARTMENT HEAD CAN ACCESS A REQUEST
+    private static boolean canReviewRequest(DepartmentHead head, Request request) {
+
+        if (head == null || request == null
+                || head.getCollegeCode() == null
+                || head.getCollegeCode().trim().isEmpty()
+                || request.targetCollegeCode == null
+                || request.targetCollegeCode.trim().isEmpty()) {
+            return false;
+        }
+
+        // Access is based on the room's assigned college,
+        // not the requesting faculty member's college.
+        return head.getCollegeCode().trim().equalsIgnoreCase(
+                request.targetCollegeCode.trim());
+    }
+
     // DEPARTMENT HEAD REQUEST INBOX
     public static void viewRequests(String departmentHeadID) {
 
@@ -603,7 +501,6 @@ public class Request {
     }
 
     // REVIEW REQUEST
-
     public static void reviewRequest(String departmentHeadID, String requestID) {
 
         DepartmentHead head = DepartmentHead.findDepartmentHead(departmentHeadID);
@@ -649,9 +546,7 @@ public class Request {
             }
         }
 
-        String reviewedAt = LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm a",
-                        Locale.ENGLISH));
+        String reviewedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/uuuu hh:mm a", Locale.ENGLISH));
 
         // VALIDATE REVIEW DETAILS
         if (DepartmentHead.findDepartmentHead(departmentHeadID) == null) {
@@ -682,11 +577,8 @@ public class Request {
             }
 
             // ENSURE THE ROOM STILL BELONGS TO THE COLLEGE THAT RECEIVED THE REQUEST
-            if (room.getCollegeCode() == null
-                    || !room.getCollegeCode().equalsIgnoreCase(
-                    r.targetCollegeCode)) {
+            if (room.getCollegeCode() == null || !room.getCollegeCode().equalsIgnoreCase(r.targetCollegeCode)) {
                 UI.print("The room's college ownership has changed.");
-                UI.print("The request must be reviewed by the currently responsible college.");
                 return;
             }
 
@@ -700,23 +592,22 @@ public class Request {
             MakeUpSchedule approved = null;
 
             try {
-                MakeUpSchedule.makeUpSchedules.add(new MakeUpSchedule(r.facultyID, r.roomCode, "Reservation",
-                                date.format(DATE_FORMAT), r.startTime, r.endTime, r.reason, r.reviewedBy, r.reviewedAt));
+                approved = new MakeUpSchedule(r.facultyID, r.roomCode, "Reservation", date.format(DATE_FORMAT),
+                        r.startTime, r.endTime, r.reason, departmentHeadID.trim(), reviewedAt.trim());
+
+                MakeUpSchedule.makeUpSchedules.add(approved);
+
                 r.status = "Approved";
                 r.reviewedBy = departmentHeadID.trim();
                 r.reviewedAt = reviewedAt.trim();
 
                 UI.print("Request approved successfully.");
             } catch (IllegalArgumentException | IllegalStateException e) {
-
-                if (approved != null)
-                    MakeUpSchedule.makeUpSchedules.remove(approved);
-
+                if (approved != null) MakeUpSchedule.makeUpSchedules.remove(approved);
                 UI.print("Could not approve request: " + e.getMessage());
             }
 
         } else {
-            // UPDATE REQUEST STATUS
             r.status = "Rejected";
             r.reviewedBy = departmentHeadID.trim();
             r.reviewedAt = reviewedAt.trim();
@@ -725,7 +616,6 @@ public class Request {
             UI.print("Request rejected.");
         }
     }
-
 
     // VIEW REQUESTS BY DEPARTMENT HEAD'S COLLEGE
     public static void viewRequest(String departmentHeadID) {

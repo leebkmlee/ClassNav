@@ -1,33 +1,23 @@
 package DATA;
 
 import UI.*;
-import static UI.UI.in;
-
+import static UI.UI.*;
 import USER.*;
-import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ResolverStyle;
-import java.time.format.DateTimeParseException;
+
+import java.util.*;
+import java.time.*;
+import java.time.format.*;
 
 public class MakeUpSchedule {
 
     // ROOM REQUEST FIELDS
     private static int nextMakeUpID = 1;
+
+    private final String makeupID, facultyID, roomCode, requestType, requestedDate, startTime, endTime, reason,
+                         status, reviewedBy, reviewedAt;
+
     public static ArrayList<MakeUpSchedule> makeUpSchedules = new ArrayList<>();
     public static ArrayList<MakeUpSchedule> archiveMakeUpSchedules = new ArrayList<>();
-
-    private final String makeupID;
-    private String facultyID;
-    private String roomCode;
-    private String requestType;
-    private String requestedDate;
-    private String startTime;
-    private String endTime;
-    private String reason;
-    private String status;
-    private String reviewedBy;
-    private String reviewedAt;
 
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("MM/dd/uuuu")
@@ -92,7 +82,7 @@ public class MakeUpSchedule {
                 "Room needed for a larger class", null, null));
     }
 
-    // ROOM REQUEST GETTER METHODS
+    // GETTER METHODS
     public String getMakeUpID() { return makeupID; }
     public String getFacultyID() { return facultyID; }
     public String getRoomCode() { return roomCode; }
@@ -105,7 +95,7 @@ public class MakeUpSchedule {
     public String getReviewedBy() { return reviewedBy; }
     public String getReviewedAt() { return reviewedAt; }
 
-    // FIND ROOM REQUEST BY PRIMARY KEY
+    // FIND METHOD
     public static MakeUpSchedule findMakeUpID(String makeupID) {
 
         if (makeupID == null || makeupID.trim().isEmpty())

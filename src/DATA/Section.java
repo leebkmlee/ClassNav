@@ -1,27 +1,24 @@
-
 package DATA;
 
 import UI.*;
-import USER.User;
 import USER.Student;
-
 import java.util.ArrayList;
-
 import static UI.UI.in;
 
 public class Section {
 
+    // FIELDS
     private static int nextSectionID = 1;
 
-    private String sectionID;
-    private int yearLevel;
+    private final String sectionID;
+    private int yearLevel, group;
     private char block;
-    private int group;
     private String academicYear;
 
     public static ArrayList<Section> sections = new ArrayList<>();
     public static ArrayList<Section> archiveSections = new ArrayList<>();
 
+    // CONSTRUCTOR
     public Section(int yearLevel, char block, int group, String academicYear) {
 
         this.sectionID = String.format("SEC%03d", nextSectionID++);
@@ -31,6 +28,7 @@ public class Section {
         this.academicYear = academicYear.trim();
     }
 
+    // DUMMY DATA
     static {
         sections.add(new Section(1, 'A', 2, "2025-2026"));
         sections.add(new Section(1, 'B', 0, "2024-2025"));
@@ -49,7 +47,7 @@ public class Section {
         sections.add(new Section(4, 'C', 1, "2026-2027"));
     }
 
-    // GETTERS
+    // GETTER METHODS
     public String getSectionID() {
         return sectionID;
     }
@@ -90,7 +88,7 @@ public class Section {
         return null;
     }
 
-    // DISPLAY ALL SECTIONS
+    // DISPLAY METHODS
     public static void displaySections() {
 
         UI.header("SECTIONS");
@@ -201,6 +199,7 @@ public class Section {
         UI.footer();
     }
 
+    // MANAGE METHODS
     public static void createSection() {
         String academicYear = "", choice, input = "";
         int yearLevel = -1, group = -1;
@@ -302,9 +301,12 @@ public class Section {
                     boolean gate = true;
 
                     for (Section existing : sections) {
+                        String yearSection;
+                        if (group != 0) yearSection = yearLevel + "" + block + "-G" + group;
+                        else yearSection = yearLevel + "" + block;
+
                         if (existing != null
-                                && getYearSection(existing).equals(
-                                getYearSection(yearLevel, block, group))
+                                && getYearSection(existing).equals(yearSection)
                                 && existing.getAcademicYear().equalsIgnoreCase(academicYear)) {
                             gate = false;
                             break;
@@ -437,9 +439,12 @@ public class Section {
                     boolean gate = true;
 
                     for (Section existing : sections) {
+                        String yearSection;
+                        if (group != 0) yearSection = yearLevel + "" + block + "-G" + group;
+                        else yearSection = yearLevel + "" + block;
+
                         if (existing != null && existing != s
-                                && getYearSection(existing).equals(
-                                getYearSection(yearLevel, block, group))
+                                && getYearSection(existing).equals(yearSection)
                                 && existing.getAcademicYear().equalsIgnoreCase(academicYear)) {
                             gate = false;
                             break;
@@ -502,11 +507,6 @@ public class Section {
         } else {
             UI.print("Section deletion cancelled");
         }
-    }
-    private static String getYearSection(int yearLevel, char block, int group) {
-        if (group != 0)
-            return yearLevel + "" + block + "-G" + group;
-        return yearLevel + "" + block;
     }
     private static void sectionManage(String text, String sectionID,
                                       int yearLevel, char block, int group, String academicYear) {

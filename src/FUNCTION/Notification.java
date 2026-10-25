@@ -12,24 +12,16 @@ import static UI.UI.in;
 
 public class Notification {
 
+    // FIELDS
     private static int nextNotificationID = 1;
 
-    private String notificationID;
-    private String senderID;
-    private String recipientID;
-    private String courseCode;
-    private String roomCode;
-    private String buildingName;
-    private String day;
-    private String startTime;
-    private String endTime;
-    private String message;
+    private final String notificationID, senderID, recipientID, courseCode, roomCode, buildingName, day, startTime,
+                         endTime, message;
 
     public static ArrayList<Notification> notifications = new ArrayList<>();
     public static ArrayList<Notification> archiveNotifications = new ArrayList<>();
 
-
-
+    // CONSTRUCTOR
     public Notification(String senderID, String recipientID, String courseCode, String roomCode,
                         String buildingName, String day, String startTime, String endTime, String message) {
         this.notificationID = String.format("N%03d", nextNotificationID++);
@@ -44,6 +36,7 @@ public class Notification {
         this.message = message.trim();
     }
 
+    // DUMMY DATA
     static {
         notifications.add(new Notification("F0001", "S0001", "IT101", "RM001", "Pimentel Hall",
                 "Monday", "8:00 AM", "9:30 AM", "Room assigned"));
@@ -77,6 +70,7 @@ public class Notification {
                 "Friday", "1:00 PM", "3:00 PM", "Class cancelled"));
     }
 
+    // GETTER METHODS
     public String getNotificationID() {
         return notificationID;
     }
@@ -107,7 +101,20 @@ public class Notification {
     public String getMessage() {
         return this.message;
     }
+    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
+        ArrayList<Notification> received = new ArrayList<>();
 
+        if (recipientID == null || recipientID.isBlank()) return received;
+
+        for (Notification n : notifications) {
+            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
+                received.add(n);
+            }
+        }
+        return received;
+    }
+
+    // FIND METHOD
     public static Notification findNotification(String notificationID) {
         for (Notification n : notifications) {
             if (n != null && notificationID.equals(n.notificationID)) return n;
@@ -115,6 +122,7 @@ public class Notification {
         return null;
     }
 
+    // DISPLAY METHODS
     public static void displayNotification(String notificationID) {
         Notification n = findNotification(notificationID);
 
@@ -172,20 +180,6 @@ public class Notification {
 
         UI.footer();
     }
-
-    public static ArrayList<Notification> getNotificationsByRecipient(String recipientID) {
-        ArrayList<Notification> received = new ArrayList<>();
-
-        if (recipientID == null || recipientID.isBlank()) return received;
-
-        for (Notification n : notifications) {
-            if (n != null && recipientID.trim().equalsIgnoreCase(n.recipientID)) {
-                received.add(n);
-            }
-        }
-        return received;
-    }
-
     public static void archiveNotifications() {
         String input; String choice;
         UI.header("ARCHIVE NOTIFICATIONS");

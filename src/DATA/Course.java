@@ -7,6 +7,7 @@ import static UI.UI.in;
 import java.util.ArrayList;
 
 public class Course {
+
     // FIELDS
     private String courseCode, courseDescription, courseType;
     private int creditUnits;

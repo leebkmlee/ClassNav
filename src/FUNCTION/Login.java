@@ -1,23 +1,22 @@
-
 package FUNCTION;
 
 import UI.*;
-import USER.User;
+import USER.*;
 import static UI.UI.in;
 
 public class Login {
     public static String logIn() {
-
         int maxAttempts = 3;
 
         UI.print("PORTAL LOG-IN");
 
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-
             System.out.print("  Enter ID > ");
             String userID = in.nextLine().trim();
 
-            if (User.getUser(userID) == null) {
+            User user = User.findUser(userID);
+
+            if (user == null) {
                 UI.print("ID does not exist. Try again.");
             } else {
                 System.out.print("  Enter Email Address > ");
@@ -26,8 +25,15 @@ public class Login {
                 System.out.print("  Enter Password > ");
                 String password = in.nextLine();
 
-                if (User.verifyEmail(userID, emailAddress)
-                        && User.verifyPassword(userID, password)) {
+                if (User.isValidEmail(userID, emailAddress) && User.isValidPassword(userID, password)) {
+                    if (user instanceof Faculty) {
+                        String status = Faculty.getEmploymentStatus(user);
+
+                        if (!"ACTIVE".equalsIgnoreCase(status == null ? "" : status.trim())) {
+                            UI.print("Faculty account is inactive");
+                            return "Ran out of attempts.";
+                        }
+                    }
 
                     UI.print("LOGIN SUCCESSFUL! Welcome to ClassNav.");
                     return userID;

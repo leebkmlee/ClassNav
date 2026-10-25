@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Curriculum {
 
+    // FIELDS
     private final String programCode, courseCode;
     private String curriculumYearLevel;
     private int curriculumTerm;
@@ -13,6 +14,7 @@ public class Curriculum {
     public static ArrayList<Curriculum> curricula = new ArrayList<>();
     public static ArrayList<Curriculum> archiveCurricula = new ArrayList<>();
 
+    // CONSTRUCTOR
     public Curriculum(String programCode, String courseCode,
                       String curriculumYearLevel, int curriculumTerm) {
 
@@ -43,6 +45,7 @@ public class Curriculum {
         this.curriculumTerm = curriculumTerm;
     }
 
+    // DUMMY DATA
     static {
         curricula.add(new Curriculum("BSIT", "IT101", "1", 1));
         curricula.add(new Curriculum("BSIT", "IT102", "1", 2));
@@ -98,7 +101,7 @@ public class Curriculum {
         curricula.add(new Curriculum("BSBroad", "PE101", "1", 1));
     }
 
-    // INSTANCE GETTER METHODS
+    // GETTER METHODS
     public String getProgramCode() {
         return programCode;
     }
@@ -421,7 +424,7 @@ public class Curriculum {
                 if (choice.matches("[1-2]")) UI.print("Curriculum fields cannot be edited");
                 else if (!choice.matches("[3-4X]") && !choice.equals("/"))
                     UI.print("Invalid Input");
-            } while (!choice.matches("[3-4X]") && !choice.equals("/") && choice.matches("[1-2]"));
+            } while (!choice.matches("[3-4X]") && !choice.equals("/"));
 
             switch (choice) {
                 case "3":
@@ -516,8 +519,6 @@ public class Curriculum {
             UI.print("Curriculum entry successfully deleted");
         }
     }
-
-    // CURRICULUM FORM
     private static void curriculumManage(String text, String programCode,
                                          String courseCode, String curriculumYearLevel, int curriculumTerm) {
 

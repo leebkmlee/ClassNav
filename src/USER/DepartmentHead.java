@@ -2,16 +2,15 @@ package USER;
 import DATA.*;
 import FUNCTION.*;
 import UI.*;
-
-import static UI.UI.in;
+import static UI.UI.*;
 
 public class DepartmentHead extends User {
 
-    // DEPARTMENT HEAD FIELDS
+    // FIELDS
     private static int nextDepartmentHeadID = 1;
     private String collegeCode;
 
-    // DEPARTMENT HEAD CONSTRUCTOR
+    // CONSTRUCTOR
     public DepartmentHead(String lastName, String firstName, String middleInitial,
                           String emailAddress, String password, String address,
                           int postalCode, String birthDate, char sex, String collegeCode) {
@@ -26,7 +25,6 @@ public class DepartmentHead extends User {
         boolean valid;
 
         do {
-            super.menu();
             UI.liner(" [3] View Faculty Requests");
             UI.liner(" [4] Review Requests");
             UI.liner(" [5] Manage Users");
@@ -149,16 +147,17 @@ public class DepartmentHead extends User {
         }
     }
 
-    // DEPARTMENT HEAD SETTER METHOD
+    // SETTER METHOD
     public void setCollegeCode(String collegeCode) {
         this.collegeCode = collegeCode;
     }
 
-    // DEPARTMENT HEAD GETTER METHOD
+    // GETTER METHOD
     public String getCollegeCode() {
         return collegeCode;
     }
 
+    // FIND METHOD
     public static DepartmentHead findDepartmentHead(String departmentHeadID) {
         for (User user : User.users) {
             if (user instanceof DepartmentHead
@@ -170,7 +169,7 @@ public class DepartmentHead extends User {
         return null;
     }
 
-    // ADMIN METHODS
+    // MANAGE METHODS
     public static void manageUsers() {
         int choice = -1; String input = "";
 
@@ -197,7 +196,7 @@ public class DepartmentHead extends User {
                 Signup.signUp("CREATE NEW USER");
                 break;
             case 2:
-                User.editUser();
+                editUser();
                 break;
             case 3:
                 User.archiveUser();
@@ -454,7 +453,7 @@ public class DepartmentHead extends User {
 
         } while (true);
     }
-    public static void manageCurricula() {
+    private static void manageCurricula() {
         int choice = -1; String input = "";
         UI.manageUI("Curriculum");
 
@@ -493,7 +492,7 @@ public class DepartmentHead extends User {
                 break;
         }
     }
-    public static void manageMakeUpSchedules() {
+    private static void manageMakeUpSchedules() {
         int choice = -1;
         String input = "";
 
@@ -540,7 +539,7 @@ public class DepartmentHead extends User {
                 break;
         }
     }
-    public static void managePrograms() {
+    private static void managePrograms() {
         int choice = -1;
         String input;
 
@@ -580,7 +579,7 @@ public class DepartmentHead extends User {
                 return;
         }
     }
-    public static void manageRooms() {
+    private static void manageRooms() {
         int choice = -1;
         String input;
 
@@ -620,7 +619,7 @@ public class DepartmentHead extends User {
                 return;
         }
     }
-    public static void manageSchedules() {
+    private static void manageSchedules() {
         int choice = -1;
         String input;
 
@@ -660,7 +659,7 @@ public class DepartmentHead extends User {
                 return;
         }
     }
-    public static void manageSections() {
+    private static void manageSections() {
         int choice = -1;
         String input = "";
 
@@ -696,8 +695,316 @@ public class DepartmentHead extends User {
         }
     }
 
-    // ------------------------------------------------------------//
-    static void backUpData(){
-        //BackUp.backup;
+    private static void editUser() {
+        String userID, lastName, firstName, middleInitial, emailAddress;
+        String password, address, birthDate, choice, userName;
+        String enrollmentStatus = "", programCode = "", collegeCode = "";
+        int postalCode;
+        char sex;
+        boolean valid, submit = false;
+
+        UI.print("EDIT EXISTING USER");
+
+        do {
+            System.out.print("  Enter User ID > ");
+            userID = in.nextLine().trim().toUpperCase();
+
+            if (User.findUser(userID) == null)
+                UI.print("User does not exist");
+        } while (User.findUser(userID) == null);
+
+        User u = User.findUser(userID);
+
+        if (u == null) {
+            UI.print("User not found");
+            return;
+        }
+
+        userID = u.getUserID();
+        lastName = u.getLastName();
+        firstName = u.getFirstName();
+        middleInitial = u.getMiddleInitial();
+        emailAddress = u.getEmail();
+        password = u.getPassword();
+        address = u.getAddress();
+        postalCode = u.getPostalCode();
+        birthDate = u.getBirthDate();
+        sex = u.getSex();
+
+        if (u instanceof Student) {
+            Student s = (Student) u;
+            enrollmentStatus = s.getEnrollmentStatus();
+            programCode = s.getProgramCode();
+        } else if (u instanceof Faculty) {
+            Faculty f = (Faculty) u;
+            collegeCode = Faculty.getCollegeCode(f);
+        } else if (u instanceof DepartmentHead) {
+            DepartmentHead dh = (DepartmentHead) u;
+            collegeCode = dh.getCollegeCode();
+        } else {
+            UI.print("Invalid User Type");
+            return;
+        }
+
+        while (!submit) {
+            if (u instanceof Student) {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, enrollmentStatus, programCode);
+            } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, collegeCode);
+            }
+
+            do {
+                System.out.print("  Select > ");
+                choice = in.nextLine().trim().toUpperCase();
+
+                if (!choice.matches("([1-9]|10|X|/)"))
+                    UI.print("Invalid Input");
+            } while (!choice.matches("([1-9]|10|X|/)"));
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.print("   Enter Last Name > ");
+                        lastName = in.nextLine().trim();
+                        if (lastName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (lastName.isEmpty());
+                    break;
+
+                case "2":
+                    do {
+                        System.out.print("   Enter First Name > ");
+                        firstName = in.nextLine().trim();
+                        if (firstName.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (firstName.isEmpty());
+                    break;
+
+                case "3":
+                    do {
+                        System.out.print("   Enter Middle Initial > ");
+                        middleInitial = in.nextLine().trim();
+
+                        if (middleInitial.endsWith("."))
+                            middleInitial = middleInitial.substring(
+                                    0, middleInitial.length() - 1);
+
+                        if (!middleInitial.isEmpty()
+                                && !middleInitial.matches("[A-Za-z]"))
+                            UI.print("Enter one letter only");
+                    } while (!middleInitial.isEmpty()
+                            && !middleInitial.matches("[A-Za-z]"));
+                    break;
+
+                case "4":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Email Address > ");
+                        emailAddress = in.nextLine().trim();
+
+                        if (emailAddress.isEmpty()) {
+                            UI.print("Invalid Input");
+                        } else if (!emailAddress.endsWith("@bulsu.edu.ph")) {
+                            UI.print("Invalid Email Domain");
+                        } else if (!emailAddress.matches(
+                                "(S|F)[0-9]{4}@bulsu\\.edu\\.ph")
+                                && !emailAddress.matches(
+                                "DH[0-9]{4}@bulsu\\.edu\\.ph")) {
+                            UI.print("Invalid User");
+                        } else if (User.isDuplicateEmail(emailAddress)
+                                && !emailAddress.equalsIgnoreCase(
+                                u.getEmail())) {
+                            UI.print("Email already exists");
+                        } else {
+                            valid = true;
+                        }
+                    } while (!valid);
+                    break;
+
+                case "5":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Password > ");
+                        password = in.nextLine();
+
+                        if (password.trim().isEmpty())
+                            UI.print("Invalid Input");
+                        else if (password.length() < 8)
+                            UI.print("Password must be at least 8 characters");
+                        else if (!password.matches(".*[A-Z].*"))
+                            UI.print("Password must contain an uppercase letter");
+                        else if (!password.matches(".*[a-z].*"))
+                            UI.print("Password must contain a lowercase letter");
+                        else if (!password.matches(".*[0-9].*"))
+                            UI.print("Password must contain a number");
+                        else if (!password.matches(".*[^a-zA-Z0-9].*"))
+                            UI.print("Password must contain a special character");
+                        else if (password.contains(" "))
+                            UI.print("Password cannot contain spaces");
+                        else
+                            valid = true;
+                    } while (!valid);
+                    break;
+
+                case "6":
+                    String street, barangay, city, province;
+
+                    do {
+                        System.out.print("    Enter Street > ");
+                        street = in.nextLine().trim();
+                        if (street.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (street.isEmpty());
+
+                    do {
+                        System.out.print("    Enter Barangay > ");
+                        barangay = in.nextLine().trim();
+                        if (barangay.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (barangay.isEmpty());
+
+                    do {
+                        System.out.print("    Enter City > ");
+                        city = in.nextLine().trim();
+                        if (city.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (city.isEmpty());
+
+                    do {
+                        System.out.print("    Enter Province > ");
+                        province = in.nextLine().trim();
+                        if (province.isEmpty())
+                            UI.print("Invalid Input");
+                    } while (province.isEmpty());
+
+                    address = street + ", " + barangay + ", " + city + ", " + province;
+                    break;
+
+                case "7":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Postal Code > ");
+                        String postalInput = in.nextLine().trim();
+
+                        if (!postalInput.matches("[0-9]{4}")) {
+                            UI.print("Postal code must be 4 digits");
+                        } else {
+                            postalCode = Integer.parseInt(postalInput);
+                            valid = true;
+                        }
+                    } while (!valid);
+                    break;
+
+                case "8":
+                    valid = false;
+
+                    do {
+                        System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
+                        birthDate = in.nextLine().trim();
+
+                        if (!User.isValidBirthDate(birthDate))
+                            UI.print("Invalid birthdate");
+                        else
+                            valid = true;
+                    } while (!valid);
+                    break;
+
+                case "9":
+                    String sexInput;
+
+                    do {
+                        System.out.print("   Enter Sex (M/F) > ");
+                        sexInput = in.nextLine().trim().toUpperCase();
+
+                        if (!sexInput.matches("[MF]"))
+                            UI.print("Invalid Input");
+                    } while (!sexInput.matches("[MF]"));
+
+                    sex = sexInput.charAt(0);
+                    break;
+
+                case "10":
+                    if (u instanceof Student) {
+                        do {
+                            System.out.print("   Enrollment Status (R, IR) > ");
+                            enrollmentStatus = in.nextLine().trim().toUpperCase();
+
+                            if (!enrollmentStatus.matches("R|IR"))
+                                UI.print("Invalid Input");
+                        } while (!enrollmentStatus.matches("R|IR"));
+
+                        do {
+                            System.out.print("   Program Code > ");
+                            programCode = in.nextLine().trim().toUpperCase();
+                            if (Program.findProgram(programCode) == null)
+                                UI.print("Program Code does not exist");
+                        } while (Program.findProgram(programCode) == null);
+
+                    } else if (u instanceof Faculty || u instanceof DepartmentHead) {
+                        do {
+                            System.out.print("   College Code > ");
+                            collegeCode = in.nextLine().trim().toUpperCase();
+
+                            if (College.findCollege(collegeCode) == null)
+                                UI.print("College Code does not exist");
+                        } while (College.findCollege(collegeCode) == null);
+                    }
+                    break;
+
+                case "/":
+                    userName = lastName + ", " + firstName
+                            + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+
+                    if (isDuplicateName(userName)
+                            && !userName.equalsIgnoreCase(u.getUserName())) {
+                        UI.print("Name already exists");
+                        break;
+                    }
+
+                    u.setLastName(lastName);
+                    u.setFirstName(firstName);
+                    u.setMiddleInitial(middleInitial);
+                    u.setEmailAddress(emailAddress);
+                    u.setPassword(password);
+                    u.setAddress(address);
+                    u.setPostalCode(postalCode);
+                    u.setBirthDate(birthDate);
+                    u.setSex(sex);
+
+                    try {
+                        if (u instanceof Student) {
+                            Student s = (Student) u;
+                            s.setEnrollmentStatus(enrollmentStatus);
+                            s.setProgramCode(programCode);
+                        } else if (u instanceof Faculty) {
+                            Faculty f = (Faculty) u;
+                            f.setCollegeCode(collegeCode);
+                        } else if (u instanceof DepartmentHead) {
+                            DepartmentHead dh = (DepartmentHead) u;
+                            dh.setCollegeCode(collegeCode);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        UI.print(e.getMessage());
+                        break;
+                    }
+
+                    UI.print("User successfully edited");
+                    User.viewProfile(u.getUserID());
+                    submit = true;
+                    break;
+
+                case "X":
+                    UI.print("User edit cancelled");
+                    submit = true;
+                    break;
+            }
+        }
     }
 }

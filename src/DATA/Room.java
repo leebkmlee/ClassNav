@@ -2,30 +2,35 @@ package DATA;
 
 import UI.UI;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.time.*;
+import java.time.format.*;
+import java.util.*;
 
 import static DATA.Schedule.schedules;
-import static UI.UI.in;
+import static UI.UI.*;
 
 public class Room {
 
+    // FIELDS
     private String roomCode, roomDescription, buildingCode, roomType, collegeCode;
     private int floorNumber, capacity;
-
-    private static final DateTimeFormatter DATE_FORMAT =
-            DateTimeFormatter.ofPattern("MM/dd/uuuu")
-                    .withResolverStyle(ResolverStyle.STRICT);
 
     public static ArrayList<Room> rooms = new ArrayList<>();
     public static ArrayList<Room> archiveRooms = new ArrayList<>();
 
+    // CONSTRUCTOR
+    public Room(String roomCode, String roomDescription, int floorNumber,
+                String roomType, int capacity, String buildingCode, String collegeCode) {
+        this.roomCode = roomCode;
+        this.roomDescription = roomDescription;
+        this.floorNumber = floorNumber;
+        this.roomType = roomType;
+        this.capacity = capacity;
+        this.buildingCode = buildingCode;
+        this.collegeCode = collegeCode;
+    }
+
+    // DUMMY DATA
     static {
         rooms.add(new Room("RM001", "SDL 3", 3, "Computer Laboratory", 30, "BLD01", "CICT"));
         rooms.add(new Room("RM002", "Prog Lab 2", 3, "Computer Laboratory", 30, "BLD01", "CICT"));
@@ -44,17 +49,7 @@ public class Room {
         rooms.add(new Room("RM015", "ACAD 2", 1, "Classroom", 50, "BLD09", "CICT"));
     }
 
-    public Room(String roomCode, String roomDescription, int floorNumber,
-                String roomType, int capacity, String buildingCode, String collegeCode) {
-        this.roomCode = roomCode;
-        this.roomDescription = roomDescription;
-        this.floorNumber = floorNumber;
-        this.roomType = roomType;
-        this.capacity = capacity;
-        this.buildingCode = buildingCode;
-        this.collegeCode = collegeCode;
-    }
-
+    // GETTER METHODS
     public String getRoomCode() {
         return roomCode;
     }
@@ -89,6 +84,7 @@ public class Room {
         }
     }
 
+    // FIND METHODS
     public static Room findRoom(String roomCode) {
         if (roomCode == null) {
             return null;
@@ -103,12 +99,15 @@ public class Room {
         return null;
     }
     public static Room findRoomDesc(String roomDescription) {
-        if (roomDescription == null) {
+        if (roomDescription == null || roomDescription.trim().isEmpty()) {
             return null;
         }
 
         for (Room room : rooms) {
-            if (room.getRoomCode().equalsIgnoreCase(roomDescription.trim())) {
+            if (room != null
+                    && room.getRoomDescription() != null
+                    && room.getRoomDescription().trim()
+                    .equalsIgnoreCase(roomDescription.trim())) {
                 return room;
             }
         }
@@ -116,6 +115,7 @@ public class Room {
         return null;
     }
 
+    // HELPER METHODS
     public static int convertToMinutes(String time) {
         if (time == null || time.trim().isEmpty()) return -1;
 
@@ -145,15 +145,6 @@ public class Room {
             return -1;
         }
     }
-    private static boolean overlaps(String start1, String end1, String start2, String end2) {
-        int s1 = convertToMinutes(start1);
-        int e1 = convertToMinutes(end1);
-        int s2 = convertToMinutes(start2);
-        int e2 = convertToMinutes(end2);
-
-        if (s1 < 0 || e1 < 0 || s2 < 0 || e2 < 0) return false;
-        return s1 < e2 && s2 < e1;
-    }
     private static LocalDate parseDate(String date) {
         if (date == null || date.isBlank()) return null;
         try {
@@ -173,20 +164,6 @@ public class Room {
         String second = day2.trim().toLowerCase(Locale.ENGLISH);
         return first.equals(second) || first.startsWith(second) || second.startsWith(first);
     }
-    private static boolean hasApprovedException(String scheduleID, String requestedDate, String exceptionType) {
-        if (scheduleID == null || requestedDate == null || exceptionType == null) return false;
-
-        for (CancelledSchedule exception : CancelledSchedule.cancellations) {
-            if (exception.getScheduleID() != null
-                    && exception.getAffectedDate() != null
-                    && exception.getScheduleID().equalsIgnoreCase(scheduleID)
-                    && sameDate(exception.getAffectedDate(), requestedDate)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
     private static boolean isScheduleActiveOnDate(Schedule schedule, LocalDate date) {
         if (schedule == null || date == null) {
             return false;
@@ -202,50 +179,84 @@ public class Room {
         return !date.isBefore(effectiveFrom) && !date.isAfter(effectiveTo);
     }
     public static boolean verifyAvailability(String roomCode, String requestedDate, String startTime, String endTime) {
-        if (findRoom(roomCode) == null) return false;
-
+        Room room = findRoom(roomCode);
         LocalDate date = parseDate(requestedDate);
 
-        if (date == null) return false;
+        if (room == null || date == null) {
+            return false;
+        }
 
         int requestedStart = convertToMinutes(startTime);
         int requestedEnd = convertToMinutes(endTime);
 
-        if (requestedStart < 0 || requestedEnd < 0 || requestedStart >= requestedEnd) return false;
+        if (requestedStart < 0 || requestedEnd < 0
+                || requestedStart >= requestedEnd) {
+            return false;
+        }
 
-        String fullDay = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-
-        String shortDay = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
-
+        String fullDay = date.getDayOfWeek()
+                .getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        String shortDay = date.getDayOfWeek()
+                .getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
         String normalizedDate = date.format(DATE_FORMAT);
 
         for (Schedule schedule : schedules) {
-            if (schedule.getRoomCode() == null || !schedule.getRoomCode().equalsIgnoreCase(roomCode.trim())) continue;
-            if (!sameDay(schedule.getDay(), fullDay) && !sameDay(schedule.getDay(), shortDay)) continue;
-            if (!isScheduleActiveOnDate(schedule, date)) continue;
-            boolean cancelled = hasApprovedException(schedule.getScheduleID(), normalizedDate, "CANCELLATION");
-            boolean roomChanged = hasApprovedException(schedule.getScheduleID(), normalizedDate, "ROOM CHANGE");
-            if (cancelled || roomChanged) continue;
-            if (overlaps(startTime, endTime, schedule.getStartTime(), schedule.getEndTime())) return false;
-        }
+            if (schedule == null
+                    || schedule.getRoomCode() == null
+                    || !schedule.getRoomCode().equalsIgnoreCase(room.getRoomCode())
+                    || (!sameDay(schedule.getDay(), fullDay)
+                    && !sameDay(schedule.getDay(), shortDay))
+                    || !isScheduleActiveOnDate(schedule, date)) {
+                continue;
+            }
 
-        for (CancelledSchedule exception : CancelledSchedule.cancellations) {
-            Schedule original = Schedule.findSchedule(exception.getScheduleID());
-            if (!isScheduleActiveOnDate(original, date) || !sameDay(original.getDay(), fullDay)) continue;
-            if (overlaps(startTime, endTime, original.getStartTime(), original.getEndTime())) return false;
+            boolean cancelled = false;
+
+            for (CancelledSchedule exception : CancelledSchedule.cancellations) {
+                if (exception != null
+                        && exception.getScheduleID() != null
+                        && exception.getScheduleID()
+                        .equalsIgnoreCase(schedule.getScheduleID())
+                        && sameDate(exception.getAffectedDate(), normalizedDate)) {
+                    cancelled = true;
+                    break;
+                }
+            }
+
+            if (cancelled) {
+                continue;
+            }
+
+            int existingStart = convertToMinutes(schedule.getStartTime());
+            int existingEnd = convertToMinutes(schedule.getEndTime());
+
+            if (existingStart < 0 || existingEnd < 0
+                    || existingStart >= existingEnd) {
+                return false;
+            }
+
+            if (requestedStart < existingEnd && requestedEnd > existingStart) {
+                return false;
+            }
         }
 
         for (MakeUpSchedule makeup : MakeUpSchedule.makeUpSchedules) {
-            if (makeup.getStatus() == null
-                    || !makeup.getStatus().equalsIgnoreCase("Approved")
+            if (makeup == null
+                    || !"Approved".equalsIgnoreCase(makeup.getStatus())
                     || makeup.getRoomCode() == null
-                    || !makeup.getRoomCode().equalsIgnoreCase(roomCode.trim())
+                    || !makeup.getRoomCode().equalsIgnoreCase(room.getRoomCode())
                     || !sameDate(makeup.getRequestedDate(), normalizedDate)) {
                 continue;
             }
 
-            if (overlaps(startTime, endTime,
-                    makeup.getStartTime(), makeup.getEndTime())) {
+            int makeupStart = convertToMinutes(makeup.getStartTime());
+            int makeupEnd = convertToMinutes(makeup.getEndTime());
+
+            if (makeupStart < 0 || makeupEnd < 0 || makeupStart >= makeupEnd) {
+                return false;
+            }
+
+            if (requestedStart < makeupEnd && requestedEnd > makeupStart) {
                 return false;
             }
         }
@@ -268,6 +279,7 @@ public class Room {
         return text;
     }
 
+    // DISPLAY METHODS
     public static void displayRoom(String roomCode) {
         Room room = findRoom(roomCode);
 
@@ -468,6 +480,7 @@ public class Room {
         UI.footer();
     }
 
+    // MANAGE METHODS
     public static void createRoom() {
         String roomCode = "", roomDescription = "", roomType = "", buildingCode = "", collegeCode = "", choice;
         int floorNumber = 0, capacity = 0; boolean submit = false;

@@ -25,28 +25,13 @@ public class Signup {
 
     public static void signUp(String text) {
 
-        int complete = 0;
-        boolean submit = false, valid;
-        String userName = "", lastName = "", firstName = "", middleInitial = "";
-        String emailAddress = "", passKey = "";
-        String street = "", barangay = "", city = "", province = "", location = "";
-        String birthDay = "";
-        int postalDigit = 0;
-        char gen = '\0';
+        int complete = 0, postalDigit = 0;
+        boolean submit = false, valid; char gen = '\0';
+        String userName = "", lastName = "", firstName = "", middleInitial = "", emailAddress = "", passKey = "";
+        String street = "", barangay = "", city = "", province = "", location = "", birthDay = "";
 
         while (!submit) {
-            UI.header(text);
-
-            printUser();
-            printEmail();
-            printPassword();
-            printAddress();
-            printPostal();
-            printBDate();
-            printSex();
-
-            UI.option();
-            UI.footer();
+            printSignUp(text);
 
             System.out.print("  Select > ");
             String choice = in.nextLine().trim().toUpperCase();
@@ -82,7 +67,7 @@ public class Signup {
                         userName = lastName + ", " + firstName
                                 + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
 
-                        if (User.checkDuplicateName(userName)) {
+                        if (User.isDuplicateName(userName)) {
                             UI.print("Name already exists");
                             firstName = ""; middleInitial = ""; lastName = "";
                         } else {
@@ -105,7 +90,7 @@ public class Signup {
                         } else if (!emailAddress.matches(
                                 "(S[0-9]{4}|F[0-9]{4}|DH[0-9]{4})@bulsu\\.edu\\.ph")) {
                             UI.print("Use the appropriate BulSU account format: S0001, F0001, or DH0001");
-                        } else if (User.checkDuplicateEmail(emailAddress)) {
+                        } else if (User.isDuplicateEmail(emailAddress)) {
                             UI.print("Email already exists");
                         } else {
                             valid = true;
@@ -308,9 +293,10 @@ public class Signup {
                                 System.out.print("   Program Code > ");
                                 programCode = in.nextLine().trim().toUpperCase();
 
-                                if (Program.findProgram(programCode) != null)
-                                    UI.print("Program code does not exist");
-                            } while (Program.findProgram(programCode) != null);
+                                if (Program.findProgram(programCode) == null) {
+                                    UI.print("Program Code does not exist");
+                                }
+                            } while (Program.findProgram(programCode) == null);
 
                             User.users.add(new Student(
                                     lastName, firstName, middleInitial,
@@ -338,7 +324,6 @@ public class Signup {
             }
         }
     }
-
     public static void resetFields() {
         user = "[1] Full Name:";
         email = "[2] Email Address:";
@@ -348,26 +333,16 @@ public class Signup {
         birthDate = "[6] Birthdate:";
         sex = "[7] Sex:";
     }
-
-    static void printUser() {
+    private static void printSignUp(String text) {
+        UI.header(text);
         UI.liner(" " + user);
-    }
-    static void printEmail() {
         UI.liner(" " + email);
-    }
-    static void printPassword() {
         UI.liner(" " + password);
-    }
-    static void printAddress() {
         UI.liner(" " + address);
-    }
-    static void printPostal() {
         UI.liner(" " + postalCode);
-    }
-    static void printBDate() {
         UI.liner(" " + birthDate);
-    }
-    static void printSex() {
         UI.liner(" " + sex);
+        UI.option();
+        UI.footer();
     }
 }

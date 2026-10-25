@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CourseRegistration {
+
     // FIELDS
     private static int nextRegistrationID = 1;
 
@@ -132,7 +133,7 @@ public class CourseRegistration {
         UI.footer();
     }
 
-    // DISPLAY ALL REGISTRATIONS
+    // DISPLAY METHODS
     public static void displayRegistrations() {
 
         UI.header("COURSE REGISTRATIONS");
@@ -156,7 +157,6 @@ public class CourseRegistration {
 
         UI.footer();
     }
-
     public static void displayArchiveRegistrations() {
 
         UI.header("ARCHIVE COURSE REGISTRATIONS");
@@ -183,7 +183,10 @@ public class CourseRegistration {
 
     // MANAGE METHODS
     public static void createRegistration() {
-        String studentID = "", offeringID = "", status = "", choice;
+        String studentID = "";
+        String offeringID = "";
+        String status = "";
+        String choice;
         boolean submit = false;
 
         while (!submit) {
@@ -193,10 +196,10 @@ public class CourseRegistration {
                 System.out.print("  Select > ");
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[13X/]"))
+                if (!choice.matches("[123X/]")) {
                     UI.print("Invalid Choice");
-
-            } while (!choice.matches("[13X/]"));
+                }
+            } while (!choice.matches("[123X/]"));
 
             switch (choice) {
                 case "1":
@@ -208,8 +211,8 @@ public class CourseRegistration {
                             UI.print("Student does not exist.");
                             studentID = "";
                         }
-                        else if (studentID.trim().isEmpty()) UI.print("Invalid Input");
-                    } while (Student.findStudent(studentID) == null || studentID.trim().isEmpty());
+                    } while (studentID.isEmpty()
+                            || Student.findStudent(studentID) == null);
                     break;
 
                 case "2":
@@ -221,39 +224,50 @@ public class CourseRegistration {
                             UI.print("Course offering does not exist.");
                             offeringID = "";
                         }
-                        else if (offeringID.trim().isEmpty()) UI.print("Invalid Input");
-                    } while(CourseOffering.findOffering(offeringID) == null || offeringID.trim().isEmpty());
+                    } while (offeringID.isEmpty()
+                            || CourseOffering.findOffering(offeringID) == null);
                     break;
 
                 case "3":
                     do {
                         System.out.print("   Enter Status > ");
-                        status = in.nextLine().trim();
+                        status = in.nextLine().trim().toUpperCase();
 
-                        if (status.isEmpty()) UI.print("Invalid Input");
-                        else if (!status.matches("ENROLLED|DROPPED")) UI.print("Invalid Status");
-                    } while (status.isEmpty() || !status.matches("ENROLLED|DROPPED"));
+                        if (!status.matches("ENROLLED|DROPPED")) {
+                            UI.print("Invalid Status");
+                        }
+                    } while (!status.matches("ENROLLED|DROPPED"));
+                    break;
 
                 case "/":
-                    boolean valid = true;
-                    if (studentID.isEmpty() || offeringID.isEmpty() || status.isEmpty()) {
+                    if (studentID.isEmpty() || offeringID.isEmpty()
+                            || status.isEmpty()) {
                         UI.print("Details are incomplete.");
                         break;
                     }
 
-                    for (CourseRegistration r : registrations) {
-                        if (studentID.trim().equalsIgnoreCase(r.getStudentID())
-                                && offeringID.trim().equalsIgnoreCase(r.getOfferingID())
-                                && r.getStatus().equalsIgnoreCase("Enrolled")) {
+                    boolean valid = true;
+
+                    for (CourseRegistration registration : registrations) {
+                        if (registration != null
+                                && studentID.equalsIgnoreCase(
+                                registration.getStudentID())
+                                && offeringID.equalsIgnoreCase(
+                                registration.getOfferingID())
+                                && "ENROLLED".equalsIgnoreCase(
+                                registration.getStatus())) {
                             UI.print("Student is already registered in this offering.");
                             valid = false;
+                            break;
                         }
                     }
 
                     if (valid) {
-                        registrations.add(new CourseRegistration(studentID, offeringID, status));
+                        CourseRegistration registration =
+                                new CourseRegistration(studentID, offeringID, status);
+                        registrations.add(registration);
                         UI.print("Course registration successfully created.");
-                        displayRegistration(registrations.getLast().getRegistrationID());
+                        displayRegistration(registration.getRegistrationID());
                         submit = true;
                     }
                     break;
