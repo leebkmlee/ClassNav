@@ -60,6 +60,32 @@ public class Schedule {
         schedules.add(new Schedule("COF003", "Friday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM012"));
         schedules.add(new Schedule("COF004", "Monday", "2:00 PM", "3:30 PM", "10/23/2026", "12/18/2026", "RM005"));
         schedules.add(new Schedule("COF005", "Tuesday", "4:00 PM", "5:30 PM", "10/23/2026", "12/18/2026", "RM004"));
+
+        schedules.add(new Schedule("COF021","Monday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM006"));
+        schedules.add(new Schedule("COF022","Monday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM007"));
+        schedules.add(new Schedule("COF023","Tuesday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM008"));
+        schedules.add(new Schedule("COF024","Tuesday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM009"));
+        schedules.add(new Schedule("COF025","Wednesday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM010"));
+        schedules.add(new Schedule("COF026","Wednesday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM012"));
+        schedules.add(new Schedule("COF027","Thursday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM013"));
+        schedules.add(new Schedule("COF028","Thursday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM014"));
+        schedules.add(new Schedule("COF029","Friday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM006"));
+        schedules.add(new Schedule("COF030","Friday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM007"));
+        schedules.add(new Schedule("COF021","Tuesday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM006"));
+        schedules.add(new Schedule("COF022","Wednesday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM007"));
+        schedules.add(new Schedule("COF023","Thursday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM008"));
+        schedules.add(new Schedule("COF024","Friday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM009"));
+        schedules.add(new Schedule("COF025","Monday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM010"));
+        schedules.add(new Schedule("COF026","Tuesday","1:00 PM","2:30 PM","10/26/2026","12/18/2026","RM012"));
+        schedules.add(new Schedule("COF027","Wednesday","1:00 PM","2:30 PM","10/26/2026","12/18/2026","RM013"));
+        schedules.add(new Schedule("COF028","Thursday","1:00 PM","2:30 PM","10/26/2026","12/18/2026","RM014"));
+        schedules.add(new Schedule("COF029","Friday","1:00 PM","2:30 PM","10/26/2026","12/18/2026","RM006"));
+        schedules.add(new Schedule("COF030","Monday","1:00 PM","2:30 PM","10/26/2026","12/18/2026","RM007"));
+        schedules.add(new Schedule("COF021","Wednesday","2:00 PM","3:30 PM","10/26/2026","12/18/2026","RM001"));
+        schedules.add(new Schedule("COF022","Thursday","2:00 PM","3:30 PM","10/26/2026","12/18/2026","RM002"));
+        schedules.add(new Schedule("COF023","Friday","2:00 PM","3:30 PM","10/26/2026","12/18/2026","RM003"));
+        schedules.add(new Schedule("COF024","Monday","3:00 PM","4:30 PM","10/26/2026","12/18/2026","RM004"));
+        schedules.add(new Schedule("COF025","Tuesday","3:00 PM","4:30 PM","10/26/2026","12/18/2026","RM005"));
     }
 
     // GETTERS

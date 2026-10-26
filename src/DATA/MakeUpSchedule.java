@@ -80,6 +80,12 @@ public class MakeUpSchedule {
                 "Room Change",
                 "11/12/2026", "9:00 AM", "10:00 AM",
                 "Room needed for a larger class", null, null));
+
+        makeUpSchedules.add(new MakeUpSchedule("F0015","RM006","Reservation","11/13/2026","8:00 AM","9:00 AM","Additional lecture session",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0016","RM007","Room Change","11/16/2026","9:00 AM","10:00 AM","Original room unavailable",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0017","RM009","Make-up Class","11/17/2026","10:00 AM","11:00 AM","Replacement laboratory session",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0018","RM012","Reservation","11/18/2026","1:00 PM","2:00 PM","Additional review class",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0009","RM014","Room Change","11/19/2026","2:00 PM","3:00 PM","Scheduling conflict in original room",null,null));
     }
 
     // GETTER METHODS

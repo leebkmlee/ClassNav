@@ -68,6 +68,17 @@ public class Notification {
                 "Thursday", "8:00 AM", "9:30 AM", "Make-up class approved"));
         notifications.add(new Notification("F0003", "S0015", "TM101", "RM013", "Federizo",
                 "Friday", "1:00 PM", "3:00 PM", "Class cancelled"));
+
+        notifications.add(new Notification("F0005","S0007","IT105","RM006","Pimentel Hall","Monday","8:00 AM","9:30 AM","New class schedule assigned"));
+        notifications.add(new Notification("F0006","S0008","GE105","RM007","Pimentel Hall","Monday","9:45 AM","11:15 AM","Class schedule updated"));
+        notifications.add(new Notification("F0008","S0009","IS103","RM008","Valencia Hall","Tuesday","8:00 AM","9:30 AM","Room assigned"));
+        notifications.add(new Notification("F0009","S0010","CE102","RM009","Valencia Hall","Tuesday","9:45 AM","11:15 AM","Class schedule updated"));
+        notifications.add(new Notification("F0012","S0011","BIO102","RM010","NSTP Building","Wednesday","8:00 AM","9:30 AM","Room changed"));
+        notifications.add(new Notification("F0014","S0012","HM102","RM012","NSTP Building","Wednesday","9:45 AM","11:15 AM","New class schedule assigned"));
+        notifications.add(new Notification("F0015","S0013","NS102","RM013","Federizo","Thursday","8:00 AM","9:30 AM","Room assigned"));
+        notifications.add(new Notification("F0016","S0014","TM102","RM014","Federizo","Thursday","9:45 AM","11:15 AM","Class schedule updated"));
+        notifications.add(new Notification("F0017","S0015","CR102","RM006","Pimentel Hall","Friday","8:00 AM","9:30 AM","Room changed"));
+        notifications.add(new Notification("F0018","S0001","BL102","RM007","Pimentel Hall","Friday","9:45 AM","11:15 AM","New class schedule assigned"));
     }
 
     // GETTER METHODS

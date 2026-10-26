@@ -53,6 +53,16 @@ public class CourseOffering {
         offerings.add(new CourseOffering("SEC011", "NS101", "F0010", "2024-2025", 1));
         offerings.add(new CourseOffering("SEC012", "CE101", "F0011", "2026-2027", 1));
         offerings.add(new CourseOffering("SEC013", "BIO101", "F0013", "2025-2026", 1));
+        offerings.add(new CourseOffering("SEC014", "IT105", "F0005", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC015", "GE105", "F0006", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC016", "IS103", "F0008", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC017", "CE102", "F0009", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC018", "BIO102", "F0012", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC019", "HM102", "F0014", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC020", "NS102", "F0015", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC021", "TM102", "F0016", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC022", "CR102", "F0017", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC023", "BL102", "F0018", "2026-2027", 1));
     }
 
     // GETTER METHODS
@@ -100,7 +110,7 @@ public class CourseOffering {
     }
 
     // DISPLAY METHODS
-    public static void displayOffering(String offeringID) {
+    public static void displayOffering(String offeringID, boolean print) {
 
         CourseOffering o = findOffering(offeringID);
 
@@ -117,6 +127,7 @@ public class CourseOffering {
         UI.liner(String.format("  ACADEMIC YEAR  : %s", o.getAcademicYear()));
         UI.liner(String.format("  TERM           : %d", o.getTerm()));
         UI.footer();
+        if (print) UI.returnButton();
     }
     public static void displayOfferings() {
         UI.header("COURSE OFFERINGS");
@@ -142,8 +153,10 @@ public class CourseOffering {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchivedOfferings() {
+
         UI.header("ARCHIVED COURSE OFFERINGS");
         if (archivedOfferings.isEmpty()) UI.liner("  No Archived Course Offerings found.");
         else {
@@ -166,23 +179,21 @@ public class CourseOffering {
             }
         }
         UI.footer();
+        UI.returnButton();
     }
 
     // MANAGE METHODS
     public static void createCourseOffering() {
-        String sectionID = ""; String courseCode = ""; String facultyID = "";
-        String academicYear = ""; String choice = "";
+        String sectionID = "", courseCode = "", facultyID = "",academicYear = "", choice;
         int term = -1; boolean submit = false;
 
         while (!submit) {
-            courseOfferingManage("CREATE", "", sectionID, courseCode,
-                    facultyID, academicYear, term);
+            courseOfferingManage("CREATE", "", sectionID, courseCode, facultyID, academicYear, term);
 
             do {
                 System.out.print("  Select > ");
                 choice = in.nextLine().trim();
-                if (!choice.matches("[1-5X]") && !choice.equals("/"))
-                    UI.print("Invalid Choice");
+                if (!choice.matches("[1-5X]") && !choice.equals("/")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-5X]") && !choice.equals("/"));
 
             switch (choice) {
@@ -190,36 +201,27 @@ public class CourseOffering {
                     do {
                         System.out.print("   Enter Section ID > ");
                         sectionID = in.nextLine().trim();
-                        if (sectionID.isEmpty())
-                            UI.print("Invalid Input");
-                        else if (Section.findSection(sectionID) == null)
-                            UI.print("Section does not exist");
-                    } while (sectionID.isEmpty()
-                            || Section.findSection(sectionID) == null);
+                        if (sectionID.isEmpty()) UI.print("Invalid Input");
+                        else if (Section.findSection(sectionID) == null) UI.print("Section does not exist");
+                    } while (sectionID.isEmpty() || Section.findSection(sectionID) == null);
                     break;
 
                 case "2":
                     do {
                         System.out.print("   Enter Course Code > ");
                         courseCode = in.nextLine().trim();
-                        if (courseCode.isEmpty())
-                            UI.print("Invalid Input");
-                        else if (Course.findCourse(courseCode) == null)
-                            UI.print("Course does not exist");
-                    } while (courseCode.isEmpty()
-                            || Course.findCourse(courseCode) == null);
+                        if (courseCode.isEmpty()) UI.print("Invalid Input");
+                        else if (Course.findCourse(courseCode) == null) UI.print("Course does not exist");
+                    } while (courseCode.isEmpty() || Course.findCourse(courseCode) == null);
                     break;
 
                 case "3":
                     do {
                         System.out.print("   Enter Faculty ID > ");
                         facultyID = in.nextLine().trim();
-                        if (facultyID.isEmpty())
-                            UI.print("Invalid Input");
-                        else if (Faculty.findFaculty(facultyID) == null)
-                            UI.print("Faculty does not exist");
-                    } while (facultyID.isEmpty()
-                            || Faculty.findFaculty(facultyID) == null);
+                        if (facultyID.isEmpty()) UI.print("Invalid Input");
+                        else if (Faculty.findFaculty(facultyID) == null) UI.print("Faculty does not exist");
+                    } while (facultyID.isEmpty() || Faculty.findFaculty(facultyID) == null);
                     break;
 
                 case "4":
@@ -228,22 +230,16 @@ public class CourseOffering {
                         System.out.print("   Enter Academic Year > ");
                         academicYear = in.nextLine().trim();
 
-                        if (academicYear.trim().isEmpty()){
-                            UI.print("Academic year is required.");
-                        }
-
-                        if (!academicYear.trim().matches("\\d{4}-\\d{4}")) {
+                        if (academicYear.trim().isEmpty())UI.print("Academic year is required.");
+                        else if (!academicYear.trim().matches("\\d{4}-\\d{4}"))
                             UI.print("Academic year must use the format YYYY-YYYY.");
-                        }
 
                         String[] years = academicYear.trim().split("-");
 
                         startYear = Integer.parseInt(years[0]);
                         endYear = Integer.parseInt(years[1]);
 
-                        if (endYear != startYear + 1){
-                            UI.print("Academic year must contain consecutive years.");
-                        }
+                        if (endYear != startYear + 1) UI.print("Academic year must contain consecutive years.");
                     } while (!academicYear.matches("\\d{4}-\\d{4}") || endYear != startYear + 1);
                     break;
 
@@ -253,8 +249,7 @@ public class CourseOffering {
                         try {
                             String input = in.nextLine().trim();
                             term = Integer.parseInt(input);
-                            if (!(term >= 1 && term <= 2))
-                                UI.print("Invalid Term");
+                            if (!(term >= 1 && term <= 2)) UI.print("Invalid Term");
                         } catch (NumberFormatException e) {
                             UI.print("Invalid Term");
                             term = -1;
@@ -264,8 +259,7 @@ public class CourseOffering {
 
                 case "/":
                     boolean existing = false;
-                    if (sectionID.isEmpty() || courseCode.isEmpty()
-                            || facultyID.isEmpty() || academicYear.isEmpty()
+                    if (sectionID.isEmpty() || courseCode.isEmpty() || facultyID.isEmpty() || academicYear.isEmpty()
                             || term == -1) {
                         UI.print("Details are incomplete");
                     }
@@ -284,7 +278,7 @@ public class CourseOffering {
                             UI.print("Course Offering successfully created");
                             offerings.add(new CourseOffering(sectionID, courseCode, facultyID, academicYear, term));
                             CourseOffering o = offerings.getLast();
-                            displayOffering(o.getOfferingID());
+                            displayOffering(o.getOfferingID(), true);
                             submit = true;
                         }
                     }
@@ -297,20 +291,16 @@ public class CourseOffering {
         }
     }
     public static void editCourseOffering() {
-        String input; String choice;
-        String sectionID; String courseCode; String facultyID;
-        String academicYear; int term;
-        boolean submit = false;
+        String input, choice, sectionID, courseCode, facultyID, academicYear;
+        int term; boolean submit = false;
 
         UI.print("EDIT EXISTING COURSE OFFERING");
 
         do {
             System.out.print("  Enter Offering ID > ");
             input = in.nextLine().trim();
-            if (input.isEmpty())
-                UI.print("Invalid Input");
-            else if (findOffering(input) == null)
-                UI.print("Course offering does not exist");
+            if (input.isEmpty()) UI.print("Invalid Input");
+            else if (findOffering(input) == null) UI.print("Course offering does not exist");
         } while (input.isEmpty() || findOffering(input) == null);
 
         CourseOffering o = findOffering(input);
@@ -326,14 +316,12 @@ public class CourseOffering {
         term = o.getTerm();
 
         while (!submit) {
-            courseOfferingManage("EDIT", o.getOfferingID(), sectionID,
-                    courseCode, facultyID, academicYear, term);
+            courseOfferingManage("EDIT", o.getOfferingID(), sectionID, courseCode, facultyID, academicYear, term);
 
             do {
                 System.out.print("  Select > ");
                 choice = in.nextLine().trim();
-                if (!choice.matches("[1-5X]") && !choice.equals("/"))
-                    UI.print("Invalid Choice");
+                if (!choice.matches("[1-5X]") && !choice.equals("/")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-5X]") && !choice.equals("/"));
 
             switch (choice) {
@@ -341,36 +329,27 @@ public class CourseOffering {
                     do {
                         System.out.print("   Enter Section ID > ");
                         sectionID = in.nextLine().trim();
-                        if (sectionID.isEmpty())
-                            UI.print("Invalid Input");
-                        else if (Section.findSection(sectionID) == null)
-                            UI.print("Section does not exist");
-                    } while (sectionID.isEmpty()
-                            || Section.findSection(sectionID) == null);
+                        if (sectionID.isEmpty()) UI.print("Invalid Input");
+                        else if (Section.findSection(sectionID) == null) UI.print("Section does not exist");
+                    } while (sectionID.isEmpty() || Section.findSection(sectionID) == null);
                     break;
 
                 case "2":
                     do {
                         System.out.print("   Enter Course Code > ");
                         courseCode = in.nextLine().trim();
-                        if (courseCode.isEmpty())
-                            UI.print("Invalid Input");
-                        else if (Course.findCourse(courseCode) == null)
-                            UI.print("Course does not exist");
-                    } while (courseCode.isEmpty()
-                            || Course.findCourse(courseCode) == null);
+                        if (courseCode.isEmpty()) UI.print("Invalid Input");
+                        else if (Course.findCourse(courseCode) == null) UI.print("Course does not exist");
+                    } while (courseCode.isEmpty() || Course.findCourse(courseCode) == null);
                     break;
 
                 case "3":
                     do {
                         System.out.print("   Enter Faculty ID > ");
                         facultyID = in.nextLine().trim();
-                        if (facultyID.isEmpty())
-                            UI.print("Invalid Input");
-                        else if (Faculty.findFaculty(facultyID) == null)
-                            UI.print("Faculty does not exist");
-                    } while (facultyID.isEmpty()
-                            || Faculty.findFaculty(facultyID) == null);
+                        if (facultyID.isEmpty()) UI.print("Invalid Input");
+                        else if (Faculty.findFaculty(facultyID) == null) UI.print("Faculty does not exist");
+                    } while (facultyID.isEmpty() || Faculty.findFaculty(facultyID) == null);
                     break;
 
                 case "4":
@@ -379,22 +358,16 @@ public class CourseOffering {
                         System.out.print("   Enter Academic Year > ");
                         academicYear = in.nextLine().trim();
 
-                        if (academicYear.trim().isEmpty()){
-                            UI.print("Academic year is required.");
-                        }
-
-                        if (!academicYear.trim().matches("\\d{4}-\\d{4}")) {
+                        if (academicYear.trim().isEmpty()) UI.print("Academic year is required.");
+                        else if (!academicYear.trim().matches("\\d{4}-\\d{4}"))
                             UI.print("Academic year must use the format YYYY-YYYY.");
-                        }
 
                         String[] years = academicYear.trim().split("-");
 
                         startYear = Integer.parseInt(years[0]);
                         endYear = Integer.parseInt(years[1]);
 
-                        if (endYear != startYear + 1){
-                            UI.print("Academic year must contain consecutive years.");
-                        }
+                        if (endYear != startYear + 1) UI.print("Academic year must contain consecutive years.");
                     } while (!academicYear.matches("\\d{4}-\\d{4}") || endYear != startYear + 1);
                     break;
 
@@ -442,7 +415,7 @@ public class CourseOffering {
                             o.term = term;
 
                             UI.print("Course offering successfully edited");
-                            displayOffering(o.getOfferingID());
+                            displayOffering(o.getOfferingID(), true);
                             submit = true;
                         }
                     }
@@ -474,7 +447,7 @@ public class CourseOffering {
             return;
         }
 
-        displayOffering(o.getOfferingID());
+        displayOffering(o.getOfferingID(), false);
 
         do {
             System.out.print("  Confirm Course Offering Deletion? (Y/N) > ");
@@ -494,8 +467,8 @@ public class CourseOffering {
                                              String facultyID, String academicYear, int term) {
 
         UI.header(text.toUpperCase() + ": COURSE OFFERING INFORMATION");
-        String displayID = offeringID.trim().isEmpty() ? String.format("COF%03d", offerings.size()) : offeringID;
-        UI.liner(String.format("     OFFERING ID    : %s", displayID));
+        UI.liner(String.format("     OFFERING ID    : %s", offeringID.trim().isEmpty() ?
+                String.format("COF%03d", offerings.size() + 1) : offeringID));
         UI.liner(String.format(" [1] SECTION ID     : %s", sectionID));
         UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode));
         UI.liner(String.format(" [3] FACULTY ID     : %s", facultyID));

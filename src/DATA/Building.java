@@ -104,9 +104,9 @@ public class Building {
                 ));
             }
         }
-
         UI.footer();
 
+        UI.returnButton();
     }
     public static void displayArchiveBuildings() {
 
@@ -125,9 +125,9 @@ public class Building {
         }
 
         UI.footer();
-
+        UI.returnButton();
     }
-    public static void displayBuilding(String buildingCode) {
+    public static void displayBuilding(String buildingCode, boolean print) {
 
         Building b = findBuilding(buildingCode);
 
@@ -140,6 +140,7 @@ public class Building {
         UI.liner(String.format("  BUILDING CODE  : %s", b.getBuildingCode()));
         UI.liner(String.format("  BUILDING NAME  : %s", b.getBuildingName()));
         UI.footer();
+        if (print) UI.returnButton();
     }
     public static void displayRooms(String buildingCode) {
 
@@ -196,6 +197,7 @@ public class Building {
             UI.liner("  TOTAL ROOMS: " + count);
         }
         UI.footer();
+        UI.returnButton();
     }
 
     // MANAGE METHODS
@@ -205,10 +207,10 @@ public class Building {
         boolean submit = false;
 
         while (!submit) {
-            buildingManage("CREATE", "AUTO-GENERATED", buildingName);
+            buildingManage("CREATE", String.format("BLD%02d", buildings.size() + 1), buildingName);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim().toUpperCase();
 
                 if (!choice.matches("[1X]") && !choice.equals("/"))
@@ -219,10 +221,13 @@ public class Building {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Building Name > ");
+                        UI.select("Enter Building Name", true);
                         buildingName = in.nextLine().trim();
-
-                        if (buildingName.trim().isEmpty())
+                        if (buildingName.equalsIgnoreCase("X")) {
+                            buildingName = "";
+                            break;
+                        }
+                        else if (buildingName.trim().isEmpty())
                             UI.print("Building name is required");
                         else if (Building.findBuildingByName(buildingName) != null)
                             UI.print("Building name already exists");
@@ -238,7 +243,7 @@ public class Building {
                         UI.print("Building successfully created");
 
                         Building b = Building.findBuildingByName(buildingName);
-                        Building.displayBuilding(b.getBuildingCode());
+                        displayBuilding(b.getBuildingCode(), true);
                         submit = true;
                     }
                     break;
@@ -257,12 +262,11 @@ public class Building {
         UI.print("EDIT EXISTING BUILDING");
 
         do {
-            System.out.print("  Enter Building Code > ");
+            UI.select("Enter Building Code", false);
             input = in.nextLine().trim();
-
-            if (Building.findBuilding(input) == null)
-                UI.print("Building does not exist");
-
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Building Code is required");
+            else if (Building.findBuilding(input) == null) UI.print("Building does not exist");
         } while (Building.findBuilding(input) == null);
 
         Building b = Building.findBuilding(input);
@@ -272,7 +276,7 @@ public class Building {
             buildingManage("EDIT", b.getBuildingCode(), buildingName);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim().toUpperCase();
 
                 if (!choice.matches("[1X]") && !choice.equals("/"))
@@ -283,10 +287,13 @@ public class Building {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Building Name > ");
+                        UI.select("Enter Building Name", true);
                         buildingName = in.nextLine().trim();
-
-                        if (buildingName.isEmpty()) UI.print("Building name is required");
+                        if (buildingName.equalsIgnoreCase("X")) {
+                            buildingName = "";
+                            break;
+                        }
+                        else if (buildingName.isEmpty()) UI.print("Building name is required");
                         else if (Building.findBuildingByName(buildingName) != null && Building.findBuildingByName(buildingName) != b)
                                 UI.print("Building name already exists");
 
@@ -298,7 +305,7 @@ public class Building {
                     b.setBuildingName(buildingName);
 
                     UI.print("Building successfully edited");
-                    Building.displayBuilding(b.getBuildingCode());
+                    Building.displayBuilding(b.getBuildingCode(), true);
 
                     submit = true;
                     break;
@@ -315,19 +322,20 @@ public class Building {
         UI.print("ARCHIVE EXISTING BUILDING");
 
         do {
-            System.out.print("  Enter Building Code > ");
+            UI.select("Enter Building Code",false);
             input = in.nextLine().trim();
-
-            if (Building.findBuilding(input) == null)
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Building Code is required");
+            else if (Building.findBuilding(input) == null)
                 UI.print("Building does not exist");
 
         } while (Building.findBuilding(input) == null);
 
         Building b = Building.findBuilding(input);
-        displayBuilding(b.getBuildingCode());
+        displayBuilding(b.getBuildingCode(), false);
 
         do {
-            System.out.print("  Confirm Building Archive? (Y/N) > ");
+            UI.select("Confirm Building Archive? (Y/N)",true);
             choice = in.nextLine().trim().toUpperCase();
 
             if (!choice.matches("[YN]"))

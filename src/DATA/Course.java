@@ -18,25 +18,6 @@ public class Course {
     // CONSTRUCTOR
     public Course(String courseCode, String courseDescription, int creditUnits,
                   String courseType) {
-
-        if (courseCode == null || courseCode.trim().isEmpty())
-            throw new IllegalArgumentException("Course code cannot be empty.");
-
-        if (courseDescription == null || courseDescription.trim().isEmpty())
-            throw new IllegalArgumentException("Course description cannot be empty.");
-
-        if (creditUnits <= 0)
-            throw new IllegalArgumentException("Credit units must be greater than zero.");
-
-        if (courseType == null || courseType.trim().isEmpty())
-            throw new IllegalArgumentException("Course type cannot be empty.");
-
-        if (findCourse(courseCode) != null)
-            throw new IllegalArgumentException("Course code already exists.");
-
-        if (findCourseDesc(courseDescription) != null)
-            throw new IllegalArgumentException("Course description already exists.");
-
         this.courseCode = courseCode.trim();
         this.courseDescription = courseDescription.trim();
         this.creditUnits = creditUnits;
@@ -160,8 +141,8 @@ public class Course {
         return null;
     }
 
-    // COURSE METHODS
-    public static void displayCourse(String courseCode) {
+    // DISPLAY METHODS
+    public static void displayCourse(String courseCode, boolean print) {
 
         Course c = findCourse(courseCode);
 
@@ -176,6 +157,7 @@ public class Course {
         UI.liner(String.format("  CREDIT UNITS        : %d", c.getCreditUnits()));
         UI.liner(String.format("  COURSE TYPE         : %s", c.getCourseType()));
         UI.footer();
+        if (print) UI.returnButton();
     }
     public static void displayCourses() {
 
@@ -185,34 +167,35 @@ public class Course {
             UI.liner("  No courses found.");
         } else {
             for (Course c : courses) {
-                String course = String.format("  %-10s %-37s %-12s",
-                        c.getCourseCode(),
-                        c.getCourseDescription(),
-                        c.getCreditUnits() + " units");
-
+                String text = c.getCourseDescription();
+                if (text.length() > 40) text = text.substring(0, 40) + "...";
+                String course = String.format("  %-10s %-45s %-10s",
+                        c.getCourseCode(), text, c.getCreditUnits() + " units");
                 UI.liner(course);
             }
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchiveCourses() {
+
         UI.header("ARCHIVED COURSES");
 
-        if (courses.isEmpty()) {
+        if (archiveCourses.isEmpty()) {
             UI.liner("  No courses found.");
         } else {
-            for (Course c : courses) {
-                String course = String.format("  %-10s %-37s %-12s",
-                        c.getCourseCode(),
-                        c.getCourseDescription(),
-                        c.getCreditUnits() + " units");
-
+            for (Course c : archiveCourses) {
+                String text = c.getCourseDescription();
+                if (text.length() > 40) text = text.substring(0, 40) + "...";
+                String course = String.format("  %-10s %-45s %-10s",
+                        c.getCourseCode(), text, c.getCreditUnits() + " units");
                 UI.liner(course);
             }
         }
 
         UI.footer();
+        UI.returnButton();
     }
 
     // CHECK FACULTY COURSE ASSIGNMENT
@@ -372,7 +355,7 @@ public class Course {
                     } else {
                         Course.courses.add(new Course(courseCode, courseDescription, creditUnits, courseType));
                         UI.print("Course successfully created");
-                        Course.displayCourse(courseCode);
+                        displayCourse(courseCode, true);
                         submit = true;
                     }
                     break;
@@ -392,10 +375,9 @@ public class Course {
         do {
             System.out.print("  Enter Course Code > ");
             input = in.nextLine().trim();
-
-            if (input.isEmpty() || findCourse(input) != null)
-                UI.print("Course does not exist");
-        } while (input.isEmpty() || findCourse(input) != null);
+            if (input.isEmpty()) UI.print("Course Code is required");
+            else if (findCourse(input) == null) UI.print("Course code does not exist");
+        } while (input.isEmpty() || findCourse(input) == null);
 
         Course c = Course.findCourse(input);
 
@@ -484,7 +466,7 @@ public class Course {
                     c.setCourseType(courseType);
 
                     UI.print("Course successfully edited");
-                    Course.displayCourse(c.getCourseCode());
+                    displayCourse(c.getCourseCode(), true);
                     submit = true;
                     break;
 
@@ -502,10 +484,9 @@ public class Course {
         do {
             System.out.print("  Enter Course Code > ");
             input = in.nextLine().trim();
-
-            if (input.isEmpty() || findCourse(input) != null)
-                UI.print("Course does not exist");
-        } while (input.isEmpty() || findCourse(input) != null);
+            if (input.isEmpty()) UI.print("Course code is required");
+            else if (findCourse(input) == null) UI.print("Course does not exist");
+        } while (input.isEmpty() || findCourse(input) == null);
 
         Course c = Course.findCourse(input);
 
@@ -514,7 +495,7 @@ public class Course {
             return;
         }
 
-        displayCourse(c.getCourseCode());
+        displayCourse(c.getCourseCode(), false);
 
         do {
             System.out.print("  Confirm Course Deletion? (Y/N) > ");

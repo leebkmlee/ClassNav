@@ -55,33 +55,30 @@ public class Request {
     static {
         requests.add(new Request("F0001", "RM001", "10/26/2026",
                 "8:00 AM", "9:00 AM", "Room needed for class"));
-
         requests.add(new Request("F0002", "RM002", "10/27/2026",
                 "9:00 AM", "10:00 AM", "Room change due to equipment"));
-
         requests.add(new Request("F0003", "RM003", "10/28/2026",
                 "10:00 AM", "11:00 AM", "Make-up session"));
-
         requests.add(new Request("F0004", "RM004", "10/29/2026",
                 "11:00 AM", "12:00 PM", "Room needed for class"));
-
         requests.add(new Request("F0006", "RM008", "11/02/2026",
                 "1:00 PM", "2:00 PM", "Make-up session"));
-
         requests.add(new Request("F0007", "RM002", "11/03/2026",
                 "8:00 AM", "9:00 AM", "Room needed for class"));
-
         requests.add(new Request("F0010", "RM010", "11/06/2026",
                 "11:00 AM", "12:00 PM", "Room needed for class"));
-
         requests.add(new Request("F0011", "RM004", "11/09/2026",
                 "9:00 AM", "10:00 AM", "Room change due to equipment"));
-
         requests.add(new Request("F0013", "RM013", "11/11/2026",
                 "8:00 AM", "9:00 AM", "Room needed for class"));
-
         requests.add(new Request("F0014", "RM005", "11/12/2026",
                 "9:00 AM", "10:00 AM", "Room change due to equipment"));
+
+        requests.add(new Request("F0009","RM006","11/13/2026","8:00 AM","9:00 AM","Additional lecture session"));
+        requests.add(new Request("F0011","RM007","11/16/2026","9:00 AM","10:00 AM","Room needed for class"));
+        requests.add(new Request("F0012","RM009","11/17/2026","10:00 AM","11:00 AM","Make-up laboratory session"));
+        requests.add(new Request("F0014","RM012","11/18/2026","1:00 PM","2:00 PM","Room change due to equipment"));
+        requests.add(new Request("F0015","RM014","11/19/2026","2:00 PM","3:00 PM","Additional review class"));
     }
 
     // REQUEST GETTER METHODS

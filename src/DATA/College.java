@@ -98,7 +98,7 @@ public class College {
     }
 
     // DISPLAY METHODS
-    public static void displayCollege(String collegeCode) {
+    public static void displayCollege(String collegeCode, boolean print) {
 
         College c = findCollege(collegeCode);
 
@@ -112,12 +112,12 @@ public class College {
         UI.header("COLLEGE INFORMATION");
         UI.liner(String.format("  COLLEGE CODE            : %s", c.getCollegeCode()));
         String collegeDesc = collegeDescription;
-        if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + " ...";
+        if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + "...";
 
         UI.liner(String.format("  COLLEGE DESCRIPTION     : %s", collegeDesc));
 
-
         UI.footer();
+        if (print) UI.returnButton();
     }
     public static void displayColleges() {
         UI.header("COLLEGES");
@@ -138,8 +138,10 @@ public class College {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchivedColleges() {
+
         UI.header("ARCHIVED COLLEGES");
 
         if (archivedColleges.isEmpty()) {
@@ -158,6 +160,7 @@ public class College {
         }
 
         UI.footer();
+        UI.returnButton();
     }
 
     // MANAGE METHODS
@@ -169,7 +172,7 @@ public class College {
             collegeManage("CREATE", collegeCode, collegeDescription);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim().toUpperCase();
                 if (!choice.matches("[12X]") && !choice.equals("/"))
                     UI.print("Invalid Choice");
@@ -178,11 +181,15 @@ public class College {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter College Code > ");
+                        UI.select("Enter College Code",true);
                         collegeCode = in.nextLine().trim().toUpperCase();
+                        if (collegeCode.equalsIgnoreCase("X")) {
+                            collegeCode = "";
+                            break;
+                        }
+                        else if (collegeCode.trim().isEmpty())
+                            UI.print("College Code is required");
 
-                        if (collegeCode.isEmpty())
-                            UI.print("Invalid Input");
                         else if (findCollege(collegeCode) != null)
                             UI.print("College Code already exists");
                     } while (collegeCode.isEmpty() || findCollege(collegeCode) != null);
@@ -190,11 +197,14 @@ public class College {
 
                 case "2":
                     do {
-                        System.out.print("   Enter College Description > ");
-                        collegeDescription = in.nextLine().trim();
-
-                        if (collegeDescription.isEmpty())
-                            UI.print("Invalid Input");
+                        UI.select("Enter College Description",true);
+                        collegeDescription = in.nextLine().trim().toUpperCase();
+                        if (collegeDescription.equalsIgnoreCase("X")) {
+                            collegeDescription = "";
+                            break;
+                        }
+                        else if (collegeDescription.trim().isEmpty())
+                            UI.print("College Description is required");
                         else if (College.findCollegeDesc(collegeDescription) != null)
                             UI.print("College Description already exists");
                     } while (collegeDescription.isEmpty() || College.findCollegeDesc(collegeDescription) != null);
@@ -206,7 +216,7 @@ public class College {
                     } else {
                         College.colleges.add(new College(collegeCode, collegeDescription));
                         UI.print("College successfully created");
-                        College.displayCollege(collegeCode);
+                        displayCollege(collegeCode, true);
                         submit = true;
                     }
                     break;
@@ -221,13 +231,14 @@ public class College {
         String input, choice, collegeDescription, collegeCode;
         boolean submit = false;
 
-        UI.header("EDIT EXISTING COLLEGE");
+        UI.print("EDIT EXISTING COLLEGE");
 
         do {
-            System.out.print("  Enter College Code > ");
+            UI.select("Enter College Code",false);
             input = in.nextLine().trim().toUpperCase();
-
-            if (input.isEmpty() || findCollege(input) == null)
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("College Code is required");
+            else if (input.isEmpty() || findCollege(input) == null)
                 UI.print("College does not exist");
         } while (input.isEmpty() || findCollege(input) == null);
 
@@ -245,7 +256,7 @@ public class College {
             collegeManage("EDIT", collegeCode, collegeDescription);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim().toUpperCase();
 
                 if (!choice.matches("[12X]") && !choice.equals("/"))
@@ -255,11 +266,14 @@ public class College {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter College Code > ");
+                        UI.select("Enter College Code",true);
                         collegeCode = in.nextLine().trim().toUpperCase();
-
-                        if (collegeCode.isEmpty())
-                            UI.print("Invalid Input");
+                        if (collegeCode.equalsIgnoreCase("X")) {
+                            collegeCode = "";
+                            break;
+                        }
+                        else if (collegeCode.trim().isEmpty())
+                            UI.print("College Code is required");
                         else if (findCollege(collegeCode) != null &&
                                 !collegeCode.equalsIgnoreCase(c.getCollegeCode()))
                             UI.print("College Code already exists");
@@ -270,11 +284,14 @@ public class College {
 
                 case "2":
                     do {
-                        System.out.print("   Enter College Description > ");
-                        collegeDescription = in.nextLine().trim();
-
-                        if (collegeDescription.isEmpty())
-                            UI.print("Invalid Input");
+                        UI.select("Enter College Description",true);
+                        collegeDescription = in.nextLine().trim().toUpperCase();
+                        if (collegeDescription.equalsIgnoreCase("X")) {
+                            collegeDescription = "";
+                            break;
+                        }
+                        else if (collegeDescription.trim().isEmpty())
+                            UI.print("College Description is required");
                         else if (College.findCollegeDesc(collegeDescription) != null &&
                                 !collegeDescription.equalsIgnoreCase(c.getCollegeDescription()))
                             UI.print("College Description already exists");
@@ -288,7 +305,7 @@ public class College {
                     c.setCollegeDescription(collegeDescription);
 
                     UI.print("College successfully edited");
-                    College.displayCollege(c.getCollegeCode());
+                    College.displayCollege(c.getCollegeCode(), true);
                     submit = true;
                     break;
 
@@ -304,8 +321,14 @@ public class College {
         UI.print("ARCHIVE EXISTING COLLEGE");
 
         do {
-            System.out.print("  Enter College Code > ");
+            UI.select("Enter College Code",false);
             input = in.nextLine().trim().toUpperCase();
+            if (input.equalsIgnoreCase("X")) {
+                input = "";
+                break;
+            }
+            else if (input.trim().isEmpty())
+                UI.print("College Code is required");
 
             if (input.isEmpty() || findCollege(input) == null)
                 UI.print("College does not exist");
@@ -318,12 +341,15 @@ public class College {
             return;
         }
 
-        displayCollege(c.getCollegeCode());
+        displayCollege(c.getCollegeCode(), false);
 
         do {
-            System.out.print("  Confirm College Deletion? (Y/N) > ");
+            UI.select("Confirm College Archive? (Y/N)",true);
             choice = in.nextLine().trim().toUpperCase();
-
+            if (choice.equalsIgnoreCase("X")) {
+                choice = "";
+                break;
+            }
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
         } while (!choice.matches("[YN]"));
@@ -337,7 +363,7 @@ public class College {
     }
     public static void collegeManage(String text, String collegeCode, String collegeDescription) {
         String collegeDesc = collegeDescription;
-        if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + " ...";
+        if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + "...";
         UI.header(text.toUpperCase() + ": COLLEGE INFORMATION");
         UI.liner(" [1] COLLEGE CODE         : " + collegeCode);
         UI.liner(" [2] COLLEGE DESCRIPTION  : " + collegeDesc);

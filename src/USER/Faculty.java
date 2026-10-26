@@ -43,10 +43,11 @@ public class Faculty extends User {
             UI.liner("  [4] View Available Rooms");
             UI.liner("  [5] Locate a Room");
             UI.liner("  [6] Submit a Room Request");
+            UI.liner("  [7] Cancel a Scheduled Class in My Load");
             UI.separator();
             UI.liner("  REQUESTS AND COMMUNICATION");
-            UI.liner("  [7] View My Requests and Status");
-            UI.liner("  [8] View My Notifications");
+            UI.liner("  [8] View My Requests and Status");
+            UI.liner("  [9] View My Notifications");
             UI.separator();
             UI.liner("  [X] Log Out");
             UI.footer();
@@ -74,9 +75,12 @@ public class Faculty extends User {
                     Request.submitRequest(getUserID());
                     break;
                 case "7":
-                    Request.viewMyRequests(getUserID());
+                    CancelledSchedule.createCancelledSchedule();
                     break;
                 case "8":
+                    Request.viewMyRequests(getUserID());
+                    break;
+                case "9":
                     viewMyNotifications();
                     break;
                 case "X":

@@ -88,6 +88,14 @@ public class UI {
     public static void liner (String text){
         System.out.printf("│%-" + INNERWIDTH + "s│%n", text);
     }
+    public static void returnButton() {
+        System.out.print(" ⏎ Press ENTER to return ...");
+        in.nextLine();
+    }
+    public static void select(String text, boolean indent) {
+        if (!indent) System.out.print("  [X] Return | " + text + " > ");
+        else System.out.print("   [X] Return | " + text + " > ");
+    }
 
     // VALIDATION HELPERS
     public static final DateTimeFormatter DATE_FORMAT =

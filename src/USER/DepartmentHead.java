@@ -137,7 +137,7 @@ public class DepartmentHead extends User {
             }
         } while (!choice.equals("0"));
     }
-    private static void scheduleManageMenu() {
+    private void scheduleManageMenu() {
         String choice;
         do {
             UI.header("SCHEDULES AND EXCEPTIONS");
@@ -361,7 +361,7 @@ public class DepartmentHead extends User {
             }
         }
     }
-    private static void manageCancelledSchedules() {
+    private void manageCancelledSchedules() {
         String choice;
 
         while (true) {
@@ -376,7 +376,7 @@ public class DepartmentHead extends User {
 
             switch (choice) {
                 case "1":
-                    CancelledSchedule.createCancelledSchedule();
+                    CancelledSchedule.createCancelledSchedule(this);
                     break;
                 case "2":
                     CancelledSchedule.archiveCancelledSchedule();

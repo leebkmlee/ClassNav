@@ -1,11 +1,24 @@
 package MAIN;
+import DATA.*;
 import USER.*;
 
 class Main {
     public static void main(String[] args) {
         User.initializeUsers();
-        User u = User.findUser("DH0001");
-        u.menu();
+
+        Curriculum.editCurriculum();
+
+        Building.createBuilding();
+        Building.editBuilding();
+        Building.archiveBuilding();
+        CancelledSchedule.createCancelledSchedule();
+        CancelledSchedule.archiveCancelledSchedule();
+        College.createCollege();
+        College.editCollege();
+        College.archiveCollege();
+
+
+
     }
 }
 

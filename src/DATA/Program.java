@@ -106,6 +106,7 @@ public class Program {
         UI.liner(String.format("  COLLEGE CODE         : %s", p.getCollegeCode()));
         UI.liner(String.format("  COLLEGE DESCRIPTION  : %s", colDesc));
         UI.footer();
+        UI.returnButton();
     }
     public static void displayPrograms() {
         UI.header("PROGRAMS");
@@ -123,6 +124,7 @@ public class Program {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchivePrograms() {
         UI.header("ARCHIVED BUILDINGS");
@@ -147,7 +149,7 @@ public class Program {
         }
 
         UI.footer();
-
+        UI.returnButton();
     }
 
     // MANAGE METHODS
@@ -160,23 +162,28 @@ public class Program {
             programManage("CREATE", programCode, programDescription, collegeCode);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[1-3X/]"))
-                    UI.print("Invalid Choice");
+                if (choice.equalsIgnoreCase("X")) {
+                    choice = "";
+                    break;
+                }
+                else if (!choice.matches("[1-3X/]")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-3X/]"));
 
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Program Code > ");
+                        UI.select("Enter Program Code", true);
                         programCode = in.nextLine().trim();
 
-                        if (programCode.isEmpty())
-                            UI.print("Program Code is required");
-                        else if (Program.findProgram(programCode) != null)
-                            UI.print("Program Code already exists");
+                        if (programCode.equalsIgnoreCase("X")) {
+                            programCode = "";
+                            break;
+                        }
+                        if (programCode.isEmpty()) UI.print("Program Code is required");
+                        else if (Program.findProgram(programCode) != null) UI.print("Program Code already exists");
 
                     } while (programCode.isEmpty()
                             || Program.findProgram(programCode) != null);
