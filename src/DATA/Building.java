@@ -290,7 +290,7 @@ public class Building {
                         UI.select("Enter Building Name", true);
                         buildingName = in.nextLine().trim();
                         if (buildingName.equalsIgnoreCase("X")) {
-                            buildingName = "";
+                            buildingName = b.getBuildingName();
                             break;
                         }
                         else if (buildingName.isEmpty()) UI.print("Building name is required");
@@ -326,9 +326,7 @@ public class Building {
             input = in.nextLine().trim();
             if (input.equalsIgnoreCase("X")) return;
             else if (input.isEmpty()) UI.print("Building Code is required");
-            else if (Building.findBuilding(input) == null)
-                UI.print("Building does not exist");
-
+            else if (Building.findBuilding(input) == null) UI.print("Building does not exist");
         } while (Building.findBuilding(input) == null);
 
         Building b = Building.findBuilding(input);

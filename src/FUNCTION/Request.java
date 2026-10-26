@@ -322,6 +322,7 @@ public class Request {
         requests.add(new Request(facultyID, roomCode, date.format(DATE_FORMAT), convertedStart, convertedEnd, reason));
         UI.print("Room request submitted successfully.");
         displayRequest(findRequest(requests.getLast().getRequestID()));
+        UI.returnButton();
     }
 
     // DISPLAY REQUEST DETAILS
@@ -356,6 +357,7 @@ public class Request {
             UI.liner("  REJECTION      : " + request.rejectionReason);
 
         UI.footer();
+        UI.returnButton();
     }
 
     // FIND THE DEPARTMENT HEAD RESPONSIBLE FOR A COLLEGE
@@ -611,6 +613,7 @@ public class Request {
 
             UI.print("Request rejected.");
         }
+        UI.returnButton();
     }
 
     // VIEW REQUESTS BY DEPARTMENT HEAD'S COLLEGE
@@ -698,6 +701,7 @@ public class Request {
         } else {
             UI.print("Invalid request selection.");
         }
+        UI.returnButton();
     }
 
     // VIEW REQUESTS BY FACULTY ID
@@ -753,5 +757,6 @@ public class Request {
         }
 
         UI.footer();
+        UI.returnButton();
     }
 }

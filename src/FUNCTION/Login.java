@@ -11,8 +11,11 @@ public class Login {
         UI.print("PORTAL LOG-IN");
 
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            System.out.print("  Enter ID > ");
+            UI.select("Enter ID",false);
             String userID = in.nextLine().trim();
+            String input = userID;
+            if (userID.equalsIgnoreCase("X")) return "Back";
+            else if (userID.isEmpty())UI.print("User ID is required.");
 
             User user = User.findUser(userID);
 

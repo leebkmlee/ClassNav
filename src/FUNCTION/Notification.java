@@ -151,6 +151,7 @@ public class Notification {
         UI.liner(String.format("  RECIPIENT       : %s", n.getRecipientID()));
         UI.liner(String.format("  MESSAGE         : %s", text));
         UI.footer();
+        UI.returnButton();
     }
     public static void displayNotifications() {
 
@@ -169,6 +170,7 @@ public class Notification {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchiveNotifications() {
         UI.header("ARCHIVED NOTIFICATIONS");
@@ -190,29 +192,25 @@ public class Notification {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void archiveNotifications() {
         String input, choice;
-        Notification n;
-
         UI.header("ARCHIVE NOTIFICATION");
 
         do {
-            System.out.print("  Enter Notification Code (X to return) > ");
+            UI.select("Enter Notification Code", false);
             input = in.nextLine().trim();
+            if (input.equalsIgnoreCase("X")) return;
+            if (input.isEmpty()) UI.print("Notification code is required.");
+            else if (findNotification(input) == null) UI.print("Notification not found.");
+        } while (input.isEmpty() || findNotification(input) == null);
 
-            if (input.equalsIgnoreCase("X"))
-                return;
-
-            n = findNotification(input);
-
-            if (input.isEmpty())
-                UI.print("Notification code is required.");
-            else if (n == null)
-                UI.print("Notification not found.");
-
-        } while (input.isEmpty() || n == null);
-
+        Notification n = findNotification(input);
+        if (n == null) {
+            UI.print("Notification does not exist");
+            return;
+        }
         displayNotification(n.getNotificationID());
 
         do {

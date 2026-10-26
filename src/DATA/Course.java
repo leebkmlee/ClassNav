@@ -292,7 +292,7 @@ public class Course {
             courseManage("CREATE", courseCode, courseDescription, creditUnits, courseType);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim().toUpperCase();
                 if (!choice.matches("[1-4X]") && !choice.equals("/"))
                     UI.print("Invalid Choice");
@@ -301,11 +301,14 @@ public class Course {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Course Code > ");
+                        UI.select("Enter Course Code", true);
                         courseCode = in.nextLine().trim();
-
-                        if (courseCode.isEmpty())
-                            UI.print("Course Code cannot be empty");
+                        if (courseCode.equalsIgnoreCase("X")) {
+                            courseCode = "";
+                            break;
+                        }
+                        else if (courseCode.trim().isEmpty())
+                            UI.print("Course Code is required");
                         else if (Course.findCourse(courseCode) != null)
                             UI.print("Course Code already exists");
                     } while (courseCode.isEmpty() || Course.findCourse(courseCode) != null);
@@ -313,11 +316,14 @@ public class Course {
 
                 case "2":
                     do {
-                        System.out.print("   Enter Course Description > ");
+                        UI.select("Enter Course Description",true);
                         courseDescription = in.nextLine().trim();
-
-                        if (courseDescription.isEmpty())
-                            UI.print("Course Description cannot be empty");
+                        if (courseDescription.equalsIgnoreCase("X")) {
+                            courseDescription = "";
+                            break;
+                        }
+                        else if (courseDescription.trim().isEmpty())
+                            UI.print("Course Description is required");
                         else if (Course.findCourseDesc(courseDescription) != null)
                             UI.print("Course Description already exists");
                     } while (courseDescription.isEmpty() || Course.findCourseDesc(courseDescription) != null);
@@ -325,9 +331,12 @@ public class Course {
 
                 case "3":
                     do {
-                        System.out.print("   Enter Credit Units > ");
+                        UI.select("Enter Credit Units",true);
+                        String input = in.nextLine().trim();
+                        if (input.equalsIgnoreCase("X")) {
+                            break;
+                        }
                         try {
-                            String input = in.nextLine().trim();
                             creditUnits = Integer.parseInt(input);
                             if (creditUnits != 2 && creditUnits != 3)
                                 UI.print("Invalid Credit Units");
@@ -340,10 +349,15 @@ public class Course {
 
                 case "4":
                     do {
-                        System.out.print("   Enter Course Type (GEN ED/MAJOR) > ");
+                        UI.select("Enter Course Type (GEN ED/MAJOR)",true);
                         courseType = in.nextLine().trim().toUpperCase();
-
-                        if (!courseType.matches("GEN ED|MAJOR"))
+                        if (courseType.equalsIgnoreCase("X")) {
+                            courseType = "";
+                            break;
+                        }
+                        else if (courseDescription.trim().isEmpty())
+                            UI.print("Course Type is required");
+                        else if (!courseType.matches("GEN ED|MAJOR"))
                             UI.print("Invalid Input");
                     } while (!courseType.matches("GEN ED|MAJOR"));
                     break;
@@ -373,9 +387,10 @@ public class Course {
         UI.print("EDIT EXISTING COURSE");
 
         do {
-            System.out.print("  Enter Course Code > ");
+            UI.select("Enter Course Code",false);
             input = in.nextLine().trim();
-            if (input.isEmpty()) UI.print("Course Code is required");
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.trim().isEmpty()) UI.print("Course Code is required");
             else if (findCourse(input) == null) UI.print("Course code does not exist");
         } while (input.isEmpty() || findCourse(input) == null);
 
@@ -395,36 +410,37 @@ public class Course {
             courseManage("EDIT", courseCode, courseDescription, creditUnits, courseType);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[1-4X]") && !choice.equals("/"))
-                    UI.print("Invalid Input");
+                if (!choice.matches("[1-4X]") && !choice.equals("/")) UI.print("Invalid Input");
             } while (!choice.matches("[1-4X]") && !choice.equals("/"));
 
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Course Code > ");
+                        UI.select("Enter Course Code", true);
                         courseCode = in.nextLine().trim();
-
-                        if (courseCode.isEmpty())
-                            UI.print("Course Code cannot be empty");
-                        else if (Course.findCourse(courseCode) != null &&
-                                !c.getCourseCode().equalsIgnoreCase(courseCode))
+                        if (courseCode.equalsIgnoreCase("X")) {
+                            courseCode = c.courseCode;
+                            break;
+                        }
+                        else if (courseCode.trim().isEmpty()) UI.print("Course Code is required");
+                        else if (Course.findCourse(courseCode) != null && !c.getCourseCode().equalsIgnoreCase(courseCode))
                             UI.print("Course Code already exists");
                     } while (courseCode.isEmpty() ||
-                            (Course.findCourse(courseCode) != null &&
-                                    !c.getCourseCode().equalsIgnoreCase(courseCode)));
+                            (Course.findCourse(courseCode) != null && !c.getCourseCode().equalsIgnoreCase(courseCode)));
                     break;
 
                 case "2":
                     do {
-                        System.out.print("   Enter Course Description > ");
+                        UI.select("Enter Course Description",true);
                         courseDescription = in.nextLine().trim();
-
-                        if (courseDescription.isEmpty())
-                            UI.print("Course Description cannot be empty");
+                        if (courseDescription.equalsIgnoreCase("X")) {
+                            courseDescription = c.courseDescription;
+                            break;
+                        }
+                        else if (courseDescription.trim().isEmpty()) UI.print("Course Description is required");
                         else if (Course.findCourseDesc(courseDescription) != null &&
                                 !c.getCourseDescription().equalsIgnoreCase(courseDescription))
                             UI.print("Course Description already exists");
@@ -435,13 +451,17 @@ public class Course {
 
                 case "3":
                     do {
-                        System.out.print("   Enter Credit Units > ");
+                        UI.select("Enter Credit Units",true);
+                        input = in.nextLine().trim();
+                        if (input.equalsIgnoreCase("X")) {
+                            creditUnits = c.getCreditUnits();
+                            break;
+                        }
                         try {
                             input = in.nextLine().trim();
                             creditUnits = Integer.parseInt(input);
 
-                            if (creditUnits != 2 && creditUnits != 3)
-                                UI.print("Invalid Credit Units");
+                            if (creditUnits != 2 && creditUnits != 3) UI.print("Invalid Credit Units");
                         } catch (NumberFormatException e) {
                             UI.print("Invalid Credit Units");
                             creditUnits = -1;
@@ -451,10 +471,15 @@ public class Course {
 
                 case "4":
                     do {
-                        System.out.print("   Enter Course Type (GEN ED/MAJOR) > ");
+                        UI.select("Enter Course Type (GEN ED/MAJOR)",true);
                         courseType = in.nextLine().trim().toUpperCase();
-
-                        if (!courseType.matches("GEN ED|MAJOR"))
+                        if (courseType.equalsIgnoreCase("X")) {
+                            courseType = c.getCourseType();
+                            break;
+                        }
+                        else if (courseType.trim().isEmpty())
+                            UI.print("Course Type is required");
+                        else if (!courseType.matches("GEN ED|MAJOR"))
                             UI.print("Invalid Input");
                     } while (!courseType.matches("GEN ED|MAJOR"));
                     break;
@@ -479,12 +504,13 @@ public class Course {
     public static void archiveCourse() {
         String input, choice;
 
-        UI.print("DELETE EXISTING COURSE");
+        UI.print("ARCHIVE EXISTING COURSE");
 
         do {
-            System.out.print("  Enter Course Code > ");
+            UI.select("Enter Course Code",false);
             input = in.nextLine().trim();
-            if (input.isEmpty()) UI.print("Course code is required");
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Course Code is required");
             else if (findCourse(input) == null) UI.print("Course does not exist");
         } while (input.isEmpty() || findCourse(input) == null);
 
@@ -498,7 +524,7 @@ public class Course {
         displayCourse(c.getCourseCode(), false);
 
         do {
-            System.out.print("  Confirm Course Deletion? (Y/N) > ");
+            System.out.print("  Confirm Course Archive? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
 
             if (!choice.matches("[YN]"))

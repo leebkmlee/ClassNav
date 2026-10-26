@@ -268,8 +268,7 @@ public class Curriculum {
 
     // MANAGE CURRICULUM
     public static void createCurriculum() {
-        String programCode = ""; String courseCode = "";
-        String curriculumYearLevel = ""; String choice;
+        String programCode = "", courseCode = "", curriculumYearLevel = "", choice;
         int curriculumTerm = -1; boolean submit = false;
 
         while (!submit) {
@@ -326,21 +325,27 @@ public class Curriculum {
                 case "4":
                     do {
                         UI.select("Enter Curriculum Term (1-2)", true);
-                        try {
-                            String input = in.nextLine().trim();
-                            curriculumTerm = Integer.parseInt(input);
-                            if (!(curriculumTerm >= 1 && curriculumTerm <= 3))
+                        String input = in.nextLine().trim();
+                        if (input.equalsIgnoreCase("X")) {
+                            input = "";
+                            break;
+                        }
+                        else if (input.isEmpty()) UI.print("Curriculum Term is required");
+                        else {
+                            try {
+                                curriculumTerm = Integer.parseInt(input);
+                                if (!(curriculumTerm >= 1 && curriculumTerm <= 3)) UI.print("Invalid Curriculum Term");
+                            } catch (NumberFormatException e) {
                                 UI.print("Invalid Curriculum Term");
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid Curriculum Term");
-                            curriculumTerm = -1;
+                                curriculumTerm = -1;
+                            }
                         }
                     } while (!(curriculumTerm >= 1 && curriculumTerm <= 2));
                     break;
 
                 case "/":
-                    if (programCode.isEmpty() || courseCode.isEmpty()
-                            || curriculumYearLevel.isEmpty() || curriculumTerm == -1) {
+                    if (programCode.isEmpty() || courseCode.isEmpty() || curriculumYearLevel.isEmpty() ||
+                            curriculumTerm == -1) {
                         UI.print("Details are incomplete");
                     }
                     else if (findCurriculum(programCode, courseCode) == null) UI.print("Curriculum does not exist");
@@ -410,7 +415,7 @@ public class Curriculum {
                         UI.select("Enter Year Level", true);
                         curriculumYearLevel = in.nextLine().trim();
                         if (curriculumYearLevel.equalsIgnoreCase("X")) {
-                            curriculumYearLevel = "";
+                            curriculumYearLevel = c.curriculumYearLevel;
                             break;
                         }
                         else if (curriculumYearLevel.isEmpty()) UI.print("Invalid Input");
@@ -420,25 +425,28 @@ public class Curriculum {
                 case "4":
                     do {
                         UI.select("Enter Curriculum Term (1-2)", true);
-                        try {
-                            String inp = in.nextLine().trim();
-                            curriculumTerm = Integer.parseInt(inp);
-                            if (!(curriculumTerm >= 1 && curriculumTerm <= 3)) UI.print("Invalid Curriculum Term");
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid Curriculum Term");
-                            curriculumTerm = -1;
+                        String inp = in.nextLine().trim();
+                        if (inp.equalsIgnoreCase("X")) {
+                            curriculumTerm = c.curriculumTerm;
+                            break;
+                        }
+                        else if (inp.isEmpty()) UI.print("Curriculum Term is required");
+                        else {
+                            try {
+                                curriculumTerm = Integer.parseInt(inp);
+                                if (!(curriculumTerm >= 1 && curriculumTerm <= 3)) UI.print("Invalid Curriculum Term");
+                            } catch (NumberFormatException e) {
+                                UI.print("Invalid Curriculum Term");
+                                curriculumTerm = -1;
+                            }
                         }
                     } while (!(curriculumTerm >= 1 && curriculumTerm <= 2));
                     break;
 
                 case "/":
-                    if (curriculumYearLevel.isEmpty() || curriculumTerm == -1) {
-                        UI.print("Details are incomplete");
-                    } else {
-                        c.curriculumYearLevel = curriculumYearLevel; c.curriculumTerm = curriculumTerm;
-                        UI.print("Curriculum entry successfully edited");
-                        submit = true;
-                    }
+                    c.curriculumYearLevel = curriculumYearLevel; c.curriculumTerm = curriculumTerm;
+                    UI.print("Curriculum entry successfully edited");
+                    submit = true;
                     break;
 
                 case "X":
@@ -455,10 +463,7 @@ public class Curriculum {
         do {
             UI.select("Enter Program Code", false);
             input = in.nextLine().trim();
-            if (input.equalsIgnoreCase("X")) {
-                input = "";
-                break;
-            }
+            if (input.equalsIgnoreCase("X")) return;
             else if (input.isEmpty()) UI.print("Program Code is required");
             else if (Program.findProgram(input) == null) UI.print("Program does not exist");
         } while (input.isEmpty() || Program.findProgram(input) == null);
@@ -468,10 +473,7 @@ public class Curriculum {
         do {
             UI.select("Enter Course Code", false);
             input = in.nextLine().trim();
-            if (input.equalsIgnoreCase("X")) {
-                input = "";
-                break;
-            }
+            if (input.equalsIgnoreCase("X")) return;
             else if (input.isEmpty()) UI.print("Course Code is required");
             else if (Course.findCourse(input) == null) UI.print("Course does not exist");
             else if (findCurriculum(programCode, input) == null) UI.print("Curriculum entry does not exist");
@@ -490,8 +492,7 @@ public class Curriculum {
         do {
             System.out.print("  Confirm Curriculum Deletion? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
-            if (!choice.matches("[YN]"))
-                UI.print("Invalid Input");
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {

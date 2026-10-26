@@ -282,6 +282,7 @@ public class Schedule {
         UI.liner("  EFFECTIVE TO  : " + s.getEffectiveTo());
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displaySchedules() {
 
@@ -313,6 +314,7 @@ public class Schedule {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchivedSchedules() {
 
@@ -344,6 +346,7 @@ public class Schedule {
         }
 
         UI.footer();
+        returnButton();
     }
 
     public static void createSchedule() {
@@ -357,25 +360,25 @@ public class Schedule {
                     startTime, endTime, effectiveFrom, effectiveTo, roomCode);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 input = in.nextLine().trim().toUpperCase();
 
-                if (!input.matches("[1-7X/]"))
-                    UI.print("Invalid Choice");
+                if (!input.matches("[1-7X/]")) UI.print("Invalid Choice");
             } while (!input.matches("[1-7X/]"));
 
             switch (input) {
                 case "1":
                     do {
-                        CourseOffering.displayOfferings();
-                        System.out.print("   Enter Offering ID > ");
+                        UI.select("Enter Offering ID", true);
                         input = in.nextLine().trim();
 
-                        if (input.isEmpty())
-                            UI.print("Offering ID is required");
-                        else if (CourseOffering.findOffering(input) == null)
-                            UI.print("Course offering does not exist");
-
+                        if (input.equalsIgnoreCase("X")) {
+                            input = "";
+                            offeringID = "";
+                            break;
+                        }
+                        else if (input.isEmpty()) UI.print("Offering ID is required");
+                        else if (CourseOffering.findOffering(input) == null) UI.print("Course offering does not exist");
                     } while (input.isEmpty() || CourseOffering.findOffering(input) == null);
 
                     offeringID = input;
@@ -385,15 +388,18 @@ public class Schedule {
                     String normalizedDay;
 
                     do {
-                        System.out.print("   Enter Day > ");
+                        UI.select("Enter Day", true);
                         input = in.nextLine().trim();
 
                         normalizedDay = normalizeDay(input);
 
-                        if (input.isEmpty())
-                            UI.print("Day is required");
-                        else if (normalizedDay == null)
-                            UI.print("Invalid day. Enter a valid weekday");
+                        if (input.equalsIgnoreCase("X")) {
+                            normalizedDay = "";
+                            day = "";
+                            break;
+                        }
+                        else if (input.isEmpty()) UI.print("Day is required");
+                        else if (normalizedDay == null) UI.print("Invalid day. Enter a valid weekday");
 
                     } while (normalizedDay == null);
 
@@ -406,14 +412,19 @@ public class Schedule {
                     do {
                         validStart = true;
 
-                        System.out.print("   Enter Start Time (e.g. 8:30 AM) > ");
+                        UI.select("Enter Start Time (e.g. 8:30 AM)", true);
                         input = in.nextLine().trim();
 
                         try {
                             int start = Room.convertToMinutes(input);
                             int end = Room.convertToMinutes(endTime);
 
-                            if (input.isEmpty()) {
+                            if (input.equalsIgnoreCase("X")) {
+                                input = "";
+                                startTime = "";
+                                break;
+                            }
+                            else if (input.isEmpty()) {
                                 UI.print("Start time is required");
                                 validStart = false;
                             } else if (start < 0) {
@@ -443,14 +454,19 @@ public class Schedule {
                     do {
                         validEnd = true;
 
-                        System.out.print("   Enter End Time (e.g. 10:00 AM) > ");
+                        UI.select("Enter End Time (e.g. 10:00 AM)", true);
                         input = in.nextLine().trim();
 
                         try {
                             int start = Room.convertToMinutes(startTime);
                             int end = Room.convertToMinutes(input);
 
-                            if (input.isEmpty()) {
+                            if (input.equalsIgnoreCase("X")) {
+                                input = "";
+                                endTime = "";
+                                break;
+                            }
+                            else if (input.isEmpty()) {
                                 UI.print("End time is required");
                                 validEnd = false;
                             } else if (end < 0) {
@@ -478,12 +494,17 @@ public class Schedule {
                     LocalDate from;
 
                     do {
-                        System.out.print("   Enter Effective From (MM/dd/yyyy) > ");
+                        UI.select("Enter Effective From (MM/dd/yyyy)", true);
                         input = in.nextLine().trim();
 
                         from = parseDate(input);
 
-                        if (input.isEmpty())
+                        if (input.equalsIgnoreCase("X")) {
+                            input = "";
+                            effectiveFrom = "";
+                            break;
+                        }
+                        else if (input.isEmpty())
                             UI.print("Effective start date is required");
                         else if (from == null)
                             UI.print("Invalid date. Use MM/dd/yyyy");
@@ -491,9 +512,7 @@ public class Schedule {
                                 && from.isAfter(parseDate(effectiveTo)))
                             UI.print("Effective start date must not be after the end date");
 
-                    } while (from == null
-                            || (parseDate(effectiveTo) != null
-                            && from.isAfter(parseDate(effectiveTo))));
+                    } while (from == null || (parseDate(effectiveTo) != null && from.isAfter(parseDate(effectiveTo))));
 
                     effectiveFrom = input;
                     break;
@@ -502,12 +521,17 @@ public class Schedule {
                     LocalDate to;
 
                     do {
-                        System.out.print("   Enter Effective To (MM/dd/yyyy) > ");
+                        UI.select("Enter Effective To (MM/dd/yyyy)", false);
                         input = in.nextLine().trim();
 
                         to = parseDate(input);
 
-                        if (input.isEmpty())
+                        if (input.equalsIgnoreCase("X")) {
+                            input = "";
+                            effectiveTo = "";
+                            break;
+                        }
+                        else if (input.isEmpty())
                             UI.print("Effective end date is required");
                         else if (to == null)
                             UI.print("Invalid date. Use MM/dd/yyyy");
@@ -525,16 +549,17 @@ public class Schedule {
                 case "7":
                     do {
                         Room.displayRooms();
-                        System.out.print("   Enter Room Code > ");
+                        UI.select("Enter Room Code", false);
                         input = in.nextLine().trim();
 
-                        if (input.isEmpty())
-                            UI.print("Room code is required");
-                        else if (Room.findRoom(input) == null)
-                            UI.print("Room does not exist");
-
-                    } while (input.isEmpty()
-                            || Room.findRoom(input) == null);
+                        if (input.equalsIgnoreCase("X")) {
+                            roomCode = "";
+                            input = "";
+                            break;
+                        }
+                        else if (input.isEmpty()) UI.print("Room code is required");
+                        else if (Room.findRoom(input) == null) UI.print("Room does not exist");
+                    } while (input.isEmpty() || Room.findRoom(input) == null);
 
                     roomCode = input;
                     break;
@@ -602,17 +627,16 @@ public class Schedule {
             switch (choice) {
                 case "1":
                     do {
-                        CourseOffering.displayOfferings();
-                        System.out.print("   Enter Offering ID > ");
+                        UI.select("Enter Offering ID", true);
                         input = in.nextLine().trim();
 
-                        if (input.isEmpty())
-                            UI.print("Offering ID is required");
-                        else if (CourseOffering.findOffering(input) == null)
-                            UI.print("Course offering does not exist");
-
-                    } while (input.isEmpty()
-                            || CourseOffering.findOffering(input) == null);
+                        if (input.equalsIgnoreCase("X")) {
+                            offeringID = s.getOfferingID();
+                            break;
+                        }
+                        else if (input.isEmpty()) UI.print("Offering ID is required");
+                        else if (CourseOffering.findOffering(input) == null) UI.print("Course offering does not exist");
+                    } while (input.isEmpty() || CourseOffering.findOffering(input) == null);
 
                     offeringID = input;
                     break;
@@ -621,15 +645,17 @@ public class Schedule {
                     String normalizedDay;
 
                     do {
-                        System.out.print("   Enter Day > ");
+                        UI.select("Enter Day", false);
                         input = in.nextLine().trim();
 
                         normalizedDay = normalizeDay(input);
 
-                        if (input.isEmpty())
-                            UI.print("Day is required");
-                        else if (normalizedDay == null)
-                            UI.print("Invalid day. Enter a valid weekday");
+                        if (input.equalsIgnoreCase("X")) {
+                            day = s.getDay();
+                            break;
+                        }
+                        else if (input.isEmpty()) UI.print("Day is required");
+                        else if (normalizedDay == null) UI.print("Invalid day. Enter a valid weekday");
 
                     } while (normalizedDay == null);
 
@@ -642,14 +668,18 @@ public class Schedule {
                     do {
                         validStart = true;
 
-                        System.out.print("   Enter Start Time (e.g. 8:30 AM) > ");
+                        UI.select("Enter Start Time (e.g. 8:30 AM)", true);
                         input = in.nextLine().trim();
 
                         try {
                             int start = Room.convertToMinutes(input);
                             int end = Room.convertToMinutes(endTime);
 
-                            if (input.isEmpty()) {
+                            if (input.equalsIgnoreCase("X")) {
+                                startTime = s.getStartTime();
+                                break;
+                            }
+                            else if (input.isEmpty()) {
                                 UI.print("Start time is required");
                                 validStart = false;
                             } else if (start < 0) {
@@ -679,14 +709,18 @@ public class Schedule {
                     do {
                         validEnd = true;
 
-                        System.out.print("   Enter End Time (e.g. 10:00 AM) > ");
+                        UI.select("Enter End Time (e.g. 10:00 AM)", true);
                         input = in.nextLine().trim();
 
                         try {
                             int start = Room.convertToMinutes(startTime);
                             int end = Room.convertToMinutes(input);
 
-                            if (input.isEmpty()) {
+                            if (input.equalsIgnoreCase("X")) {
+                                endTime = s.getEndTime();
+                                break;
+                            }
+                            else if (input.isEmpty()) {
                                 UI.print("End time is required");
                                 validEnd = false;
                             } else if (end < 0) {
@@ -714,12 +748,16 @@ public class Schedule {
                     LocalDate from;
 
                     do {
-                        System.out.print("   Enter Effective From (MM/dd/yyyy) > ");
+                        UI.select("Enter Effective From (MM/dd/yyyy)", true);
                         input = in.nextLine().trim();
 
                         from = parseDate(input);
 
-                        if (input.isEmpty())
+                        if (input.equalsIgnoreCase("X")) {
+                            effectiveFrom = s.getEffectiveFrom();
+                            break;
+                        }
+                        else if (input.isEmpty())
                             UI.print("Effective start date is required");
                         else if (from == null)
                             UI.print("Invalid date. Use MM/dd/yyyy");
@@ -727,9 +765,7 @@ public class Schedule {
                                 && from.isAfter(parseDate(effectiveTo)))
                             UI.print("Effective start date must not be after the end date");
 
-                    } while (from == null
-                            || (parseDate(effectiveTo) != null
-                            && from.isAfter(parseDate(effectiveTo))));
+                    } while (from == null || (parseDate(effectiveTo) != null && from.isAfter(parseDate(effectiveTo))));
 
                     effectiveFrom = input;
                     break;
@@ -738,12 +774,16 @@ public class Schedule {
                     LocalDate to;
 
                     do {
-                        System.out.print("   Enter Effective To (MM/dd/yyyy) > ");
+                        UI.select("Enter Effective To (MM/dd/yyyy)", true);
                         input = in.nextLine().trim();
 
                         to = parseDate(input);
 
-                        if (input.isEmpty())
+                        if (input.equalsIgnoreCase("X")) {
+                            effectiveTo = s.getEffectiveTo();
+                            break;
+                        }
+                        else if (input.isEmpty())
                             UI.print("Effective end date is required");
                         else if (to == null)
                             UI.print("Invalid date. Use MM/dd/yyyy");
@@ -761,16 +801,19 @@ public class Schedule {
                 case "7":
                     do {
                         Room.displayRooms();
-                        System.out.print("   Enter Room Code > ");
+                        UI.select("Enter Room Code", true);
                         input = in.nextLine().trim();
 
-                        if (input.isEmpty())
+                        if (input.equalsIgnoreCase("X")) {
+                            roomCode = s.getRoomCode();
+                            break;
+                        }
+                        else if (input.isEmpty())
                             UI.print("Room code is required");
                         else if (Room.findRoom(input) == null)
                             UI.print("Room does not exist");
 
-                    } while (input.isEmpty()
-                            || Room.findRoom(input) == null);
+                    } while (input.isEmpty() || Room.findRoom(input) == null);
 
                     roomCode = input;
                     break;
@@ -800,17 +843,15 @@ public class Schedule {
 
         UI.print("DELETE EXISTING SCHEDULE");
 
-        Schedule s;
-
         do {
-            System.out.print("  Enter Schedule ID > ");
+            UI.select("Enter Schedule ID", false);
             input = in.nextLine().trim();
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Schedule ID is required");
+            else if (findSchedule(input) == null) UI.print("Schedule does not exist");
+        } while (findSchedule(input) == null);
 
-            s = Schedule.findSchedule(input);
-
-            if (s == null)
-                UI.print("Schedule does not exist");
-        } while (s == null);
+        Schedule s = findSchedule(input);
 
         scheduleManage("DELETE", s.getScheduleID(), s.getOfferingID(),
                 s.getDay(), s.getStartTime(), s.getEndTime(),

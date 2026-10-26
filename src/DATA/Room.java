@@ -287,6 +287,7 @@ public class Room {
             UI.liner(String.format("  COLLEGE        : %s", fitText(college.getCollegeDescription(), 50)));
         }
         UI.footer();
+        UI.returnButton();
     }
     public static void displayRooms() {
         UI.header("ROOM LIST");
@@ -347,6 +348,7 @@ public class Room {
             }
         }
         UI.footer();
+        UI.returnButton();
     }
     public static void displayRooms(String buildingCode) {
         UI.header("ROOM LIST");
@@ -402,6 +404,7 @@ public class Room {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchivedRooms() {
         UI.header("ARCHIVED ROOMS");
@@ -463,6 +466,7 @@ public class Room {
         }
 
         UI.footer();
+        UI.returnButton();
     }
 
     // MANAGE METHODS
@@ -471,53 +475,55 @@ public class Room {
         int floorNumber = 0, capacity = 0; boolean submit = false;
 
         while (!submit) {
-            roomManage("CREATE", roomCode, roomDescription, roomType,
-                    floorNumber, capacity, buildingCode, collegeCode);
+            roomManage("CREATE", roomCode, roomDescription, roomType, floorNumber, capacity,
+                    buildingCode, collegeCode);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[1-7X]") && !choice.equals("/")) {
-                    UI.print("Invalid Choice");
-                }
+                if (!choice.matches("[1-7X]") && !choice.equals("/")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-7X]") && !choice.equals("/"));
 
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Room Code > ");
+                        UI.select("Enter Room Code", true);
                         roomCode = in.nextLine().trim();
 
-                        if (roomCode.isEmpty()) {
-                            UI.print("Room code is required");
-                        } else if (findRoom(roomCode) != null) {
-                            UI.print("Room code already exists");
+                        if (roomCode.equalsIgnoreCase("X")) {
+                            roomCode = "";
+                            break;
                         }
+                        else if (roomCode.isEmpty()) UI.print("Room code is required");
+                        else if (findRoom(roomCode) != null) UI.print("Room code already exists");
                     } while (roomCode.isEmpty() || findRoom(roomCode) != null);
                     break;
 
                 case "2":
                     do {
-                        System.out.print("   Enter Room Description > ");
+                        UI.select("Enter Room Description", true);
                         roomDescription = in.nextLine().trim();
 
-                        if (roomDescription.isEmpty()) {
-                            UI.print("Room description is required");
-                        } else if (findRoomDesc(roomDescription) != null) {
-                            UI.print("Room description already exists");
+                        if (roomDescription.equalsIgnoreCase("X")) {
+                            roomDescription = "";
+                            break;
                         }
+                        else if (roomDescription.isEmpty()) UI.print("Room description is required");
+                        else if (findRoomDesc(roomDescription) != null) UI.print("Room description already exists");
                     } while (roomDescription.isEmpty() || findRoomDesc(roomDescription) != null);
                     break;
 
                 case "3":
                     do {
-                        System.out.print("   Enter Room Type > ");
+                        UI.select("Enter Room Type", true);
                         roomType = in.nextLine().trim();
 
-                        if (roomType.isEmpty()) {
-                            UI.print("Room type is required");
+                        if (roomType.equalsIgnoreCase("X")) {
+                            roomType = "";
+                            break;
                         }
+                        else if (roomType.isEmpty()) UI.print("Room type is required");
                     } while (roomType.isEmpty());
                     break;
 
@@ -525,19 +531,25 @@ public class Room {
                     boolean validFloor = false;
 
                     while (!validFloor) {
-                        System.out.print("   Enter Floor Number > ");
+                        UI.select("Enter Floor Number", true);
                         String input = in.nextLine().trim();
 
-                        try {
-                            floorNumber = Integer.parseInt(input);
+                        if (input.equalsIgnoreCase("X")) {
+                            floorNumber = 0;
+                            break;
+                        }
+                        else {
+                            try {
+                                floorNumber = Integer.parseInt(input);
 
-                            if (floorNumber < 1) {
-                                UI.print("Floor number must be at least 1");
-                            } else {
-                                validFloor = true;
+                                if (floorNumber < 1) {
+                                    UI.print("Floor number must be at least 1");
+                                } else {
+                                    validFloor = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                UI.print("Invalid floor number. Numbers only");
                             }
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid floor number. Numbers only");
                         }
                     }
                     break;
@@ -546,49 +558,56 @@ public class Room {
                     boolean validCapacity = false;
 
                     while (!validCapacity) {
-                        System.out.print("   Enter Capacity > ");
+                        UI.select("Enter Capacity", true);
                         String input = in.nextLine().trim();
 
-                        try {
-                            capacity = Integer.parseInt(input);
+                        if (input.equalsIgnoreCase("X")) {
+                            capacity = 0;
+                            break;
+                        }
+                        else {
+                            try {
+                                capacity = Integer.parseInt(input);
 
-                            if (capacity < 1) {
-                                UI.print("Capacity must be at least 1");
-                            } else {
-                                validCapacity = true;
+                                if (capacity < 1) {
+                                    UI.print("Capacity must be at least 1");
+                                } else {
+                                    validCapacity = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                UI.print("Invalid capacity. Numbers only");
                             }
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid capacity. Numbers only");
                         }
                     }
                     break;
 
                 case "6":
                     do {
-                        System.out.print("   Enter Building Code > ");
+                        UI.select("Enter Building Code", true);
                         buildingCode = in.nextLine().trim().toUpperCase();
 
-                        if (buildingCode.isEmpty()) {
-                            UI.print("Building code is required");
-                        } else if (Building.findBuilding(buildingCode) == null) {
-                            UI.print("Building code does not exist");
+                        if (buildingCode.equalsIgnoreCase("X")) {
+                            buildingCode = "";
+                            break;
                         }
-                    } while (buildingCode.isEmpty()
-                            || Building.findBuilding(buildingCode) == null);
+                        else if (buildingCode.isEmpty()) UI.print("Building code is required");
+                        else if (Building.findBuilding(buildingCode) == null)
+                            UI.print("Building code does not exist");
+                    } while (buildingCode.isEmpty() || Building.findBuilding(buildingCode) == null);
                     break;
 
                 case "7":
                     do {
-                        System.out.print("   Enter College Code > ");
+                        UI.select("Enter College Code", true);
                         collegeCode = in.nextLine().trim().toUpperCase();
 
-                        if (collegeCode.isEmpty()) {
-                            UI.print("College code is required");
-                        } else if (College.findCollege(collegeCode) == null) {
-                            UI.print("College code does not exist");
+                        if (collegeCode.equalsIgnoreCase("X")) {
+                            collegeCode = "";
+                            break;
                         }
-                    } while (collegeCode.isEmpty()
-                            || College.findCollege(collegeCode) == null);
+                        else if (collegeCode.isEmpty()) UI.print("College code is required");
+                        else if (College.findCollege(collegeCode) == null) UI.print("College code does not exist");
+                    } while (collegeCode.isEmpty() || College.findCollege(collegeCode) == null);
                     break;
 
                 case "/":
@@ -615,16 +634,16 @@ public class Room {
 
         UI.print("EDIT EXISTING ROOM");
 
-        Room r;
-
         do {
-            System.out.print("  Enter Room Code > ");
+            UI.select("Enter Room Code", false);
             input = in.nextLine().trim();
 
-            r = Room.findRoom(input);
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Room Code is required");
+            else if (findRoom(input) == null) UI.print("Room does not exist");
+        } while (input.isEmpty() || findRoom(input) == null);
 
-            if (r == null) UI.print("Room does not exist");
-        } while (r == null);
+        Room r = findRoom(input);
 
         String roomCode = r.getRoomCode();
         String roomDescription = r.getRoomDescription();
@@ -638,97 +657,135 @@ public class Room {
             roomManage("EDIT", roomCode, roomDescription, roomType, floorNumber, capacity, buildingCode, collegeCode);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[1-7X]") && !choice.equals("/")) {
-                    UI.print("Invalid Choice");
-                }
+                if (!choice.matches("[1-7X]") && !choice.equals("/")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-7X]") && !choice.equals("/"));
 
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Room Code > ");
+                        UI.select("Enter Room Code", true);
                         roomCode = in.nextLine().trim();
-                        if (roomCode.isEmpty()) UI.print("Room code is required");
+
+                        if (roomCode.equalsIgnoreCase("X")) {
+                            roomCode = r.getCollegeCode();
+                            break;
+                        }
+                        else if (roomCode.isEmpty()) UI.print("Room code is required");
                         else if (findRoom(roomCode) != null) UI.print("Room code already exists");
                     } while (roomCode.isEmpty() || findRoom(roomCode) != null);
                     break;
 
                 case "2":
                     do {
-                        System.out.print("   Enter Room Description > ");
+                        UI.select("Enter Room Description", true);
                         roomDescription = in.nextLine().trim();
-                        if (roomDescription.isEmpty()) UI.print("Room description is required");
-                        else if (findRoomDesc(roomDescription) != null) UI.print("Room description already exists");
 
+                        if (roomDescription.equalsIgnoreCase("X")) {
+                            roomDescription = r.getRoomDescription();
+                            break;
+                        }
+                        else if (roomDescription.isEmpty()) UI.print("Room description is required");
+                        else if (findRoomDesc(roomDescription) != null) UI.print("Room description already exists");
                     } while (roomDescription.isEmpty() || findRoomDesc(roomDescription) != null);
                     break;
 
                 case "3":
                     do {
-                        System.out.print("   Enter Room Type > ");
+                        UI.select("Enter Room Type", true);
                         roomType = in.nextLine().trim();
-                        if (roomType.isEmpty()) UI.print("Room type is required");
+
+                        if (roomType.equalsIgnoreCase("X")) {
+                            roomType = r.getRoomType();
+                            break;
+                        }
+                        else if (roomType.isEmpty()) UI.print("Room type is required");
                     } while (roomType.isEmpty());
                     break;
 
                 case "4":
                     boolean validFloor = false;
+
                     while (!validFloor) {
-                        System.out.print("   Enter Floor Number > ");
+                        UI.select("Enter Floor Number", true);
                         input = in.nextLine().trim();
-                        try {
-                            floorNumber = Integer.parseInt(input);
-                            if (floorNumber < 1) UI.print("Floor number must be at least 1");
-                            else validFloor = true;
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid floor number. Numbers only");
+
+                        if (input.equalsIgnoreCase("X")) {
+                            floorNumber = r.getFloorNumber();
+                            break;
+                        }
+                        else {
+                            try {
+                                floorNumber = Integer.parseInt(input);
+
+                                if (floorNumber < 1) {
+                                    UI.print("Floor number must be at least 1");
+                                } else {
+                                    validFloor = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                UI.print("Invalid floor number. Numbers only");
+                            }
                         }
                     }
                     break;
 
                 case "5":
                     boolean validCapacity = false;
+
                     while (!validCapacity) {
-                        System.out.print("   Enter Capacity > ");
+                        UI.select("Enter Capacity", true);
                         input = in.nextLine().trim();
-                        try {
-                            capacity = Integer.parseInt(input);
-                            if (capacity < 1) UI.print("Capacity must be at least 1");
-                            else validCapacity = true;
-                        } catch (NumberFormatException e) {
-                            UI.print("Invalid capacity. Numbers only");
+
+                        if (input.equalsIgnoreCase("X")) {
+                            capacity = r.getCapacity();
+                            break;
+                        }
+                        else {
+                            try {
+                                capacity = Integer.parseInt(input);
+
+                                if (capacity < 1) {
+                                    UI.print("Capacity must be at least 1");
+                                } else {
+                                    validCapacity = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                UI.print("Invalid capacity. Numbers only");
+                            }
                         }
                     }
                     break;
 
                 case "6":
                     do {
-                        System.out.print("   Enter Building Code > ");
+                        UI.select("Enter Building Code", true);
                         buildingCode = in.nextLine().trim().toUpperCase();
-                        if (buildingCode.isEmpty()) {
-                            UI.print("Building code is required");
-                        } else if (Building.findBuilding(buildingCode) == null) {
-                            UI.print("Building code does not exist");
+
+                        if (buildingCode.equalsIgnoreCase("X")) {
+                            buildingCode = r.getBuildingCode();
+                            break;
                         }
-                    } while (buildingCode.isEmpty()
-                            || Building.findBuilding(buildingCode) == null);
+                        else if (buildingCode.isEmpty()) UI.print("Building code is required");
+                        else if (Building.findBuilding(buildingCode) == null)
+                            UI.print("Building code does not exist");
+                    } while (buildingCode.isEmpty() || Building.findBuilding(buildingCode) == null);
                     break;
 
                 case "7":
                     do {
-                        System.out.print("   Enter College Code > ");
+                        UI.select("Enter College Code", true);
                         collegeCode = in.nextLine().trim().toUpperCase();
 
-                        if (collegeCode.isEmpty()) {
-                            UI.print("College code is required");
-                        } else if (College.findCollege(collegeCode) == null) {
-                            UI.print("College code does not exist");
+                        if (collegeCode.equalsIgnoreCase("X")) {
+                            collegeCode = r.getCollegeCode();
+                            break;
                         }
-                    } while (collegeCode.isEmpty()
-                            || College.findCollege(collegeCode) == null);
+                        else if (collegeCode.isEmpty()) UI.print("College code is required");
+                        else if (College.findCollege(collegeCode) == null) UI.print("College code does not exist");
+                    } while (collegeCode.isEmpty() || College.findCollege(collegeCode) == null);
                     break;
 
                 case "/":
@@ -750,12 +807,12 @@ public class Room {
         UI.print("ARCHIVE EXISTING ROOM");
 
         do {
-            System.out.print("  Enter Room Code > ");
+            UI.select("Enter Room Code", false);
             input = in.nextLine().trim();
 
-            if (input.isEmpty() || findRoom(input) == null) {
-                UI.print("Room does not exist");
-            }
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Room Code is required");
+            else if (findRoom(input) == null) UI.print("Room does not exist");
         } while (input.isEmpty() || findRoom(input) == null);
 
         Room room = findRoom(input);

@@ -296,17 +296,23 @@ public class CourseRegistration {
 
         UI.print("EDIT EXISTING REGISTRATION");
 
-        CourseRegistration r;
+
 
         do {
             System.out.print("  Enter Registration ID > ");
             input = in.nextLine().trim();
 
-            r = findRegistration(input);
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Registration ID is required");
+            else if (findRegistration(input) == null) UI.print("Registration does not exist");
+        } while (input.isEmpty() || findRegistration(input) == null);
 
-            if (r == null) UI.print("Registration does not exist.");
+        CourseRegistration r = findRegistration(input);
 
-        } while (r == null);
+        if (r == null) {
+            UI.print("Registration does not exist");
+            return;
+        }
 
         String studentID = r.getStudentID();
         String offeringID = r.getOfferingID();
@@ -327,7 +333,7 @@ public class CourseRegistration {
                         UI.select("Enter Student ID", true);
                         studentID = in.nextLine().trim();
                         if (studentID.equalsIgnoreCase("X")) {
-                            studentID = "";
+                            studentID = r.studentID;
                             break;
                         }
                         else if (studentID.isEmpty()) UI.print("Student ID is required");
@@ -343,7 +349,7 @@ public class CourseRegistration {
                         UI.select("Enter Offering ID", true);
                         offeringID = in.nextLine().trim();
                         if (offeringID.equalsIgnoreCase("X")) {
-                            offeringID = "";
+                            offeringID = r.offeringID;
                             break;
                         }
                         else if (offeringID.isEmpty()) UI.print("Offering ID is required");
@@ -359,7 +365,7 @@ public class CourseRegistration {
                         UI.select("Enter Status", true);
                         status = in.nextLine().trim().toUpperCase();
                         if (status.equalsIgnoreCase("X")) {
-                            status = "";
+                            status = r.status;
                             break;
                         }
                         else if (status.isEmpty()) UI.print("Status is required");
@@ -369,11 +375,6 @@ public class CourseRegistration {
 
                 case "/":
                     submit = true;
-                    if (studentID == null || studentID.trim().isEmpty() || offeringID == null ||
-                            offeringID.trim().isEmpty()) {
-                        UI.print("All registration fields are required.");
-                    }
-
                     for (CourseRegistration existing : registrations) {
                         if (existing != r
                                 && existing.getStudentID().equalsIgnoreCase(studentID)
@@ -402,18 +403,21 @@ public class CourseRegistration {
 
         UI.print("DELETE EXISTING REGISTRATION");
 
-        CourseRegistration r;
-
         do {
             System.out.print("  Enter Registration ID > ");
             input = in.nextLine().trim();
 
-            r = findRegistration(input);
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Registration ID is required");
+            else if (findRegistration(input) == null) UI.print("Registration does not exist.");
+        } while (input.isEmpty() || findRegistration(input) == null);
 
-            if (r == null)
-                UI.print("Registration does not exist.");
+        CourseRegistration r = findRegistration(input);
 
-        } while (r == null);
+        if (r == null) {
+            UI.print("Registration not found");
+            return;
+        }
 
         displayRegistration(r.getRegistrationID(), false);
 
@@ -421,8 +425,7 @@ public class CourseRegistration {
             System.out.print("  Confirm Registration Deletion? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
 
-            if (!choice.matches("[YN]"))
-                UI.print("Invalid Input");
+            if (!choice.matches("[YN]")) UI.print("Invalid Input");
 
         } while (!choice.matches("[YN]"));
 

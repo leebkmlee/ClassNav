@@ -5,19 +5,13 @@ import USER.*;
 class Main {
     public static void main(String[] args) {
         User.initializeUsers();
-
-        Curriculum.editCurriculum();
-
+        Building.displayBuildings();
+        Building.displayBuilding("BLD01",true);
+        Building.displayRooms("BLD01");
+        Building.displayArchiveBuildings();
         Building.createBuilding();
         Building.editBuilding();
         Building.archiveBuilding();
-        CancelledSchedule.createCancelledSchedule();
-        CancelledSchedule.archiveCancelledSchedule();
-        College.createCollege();
-        College.editCollege();
-        College.archiveCollege();
-
-
 
     }
 }

@@ -160,22 +160,17 @@ public class MakeUpSchedule {
         UI.header("ROOM REQUEST DETAILS");
         UI.liner("  REQUEST ID    : " + request.getMakeUpID());
         UI.liner("  FACULTY ID    : " + request.getFacultyID());
-        UI.liner("  ROOM CODE     : "
-                + (request.getRoomCode() == null
-                ? "N/A" : request.getRoomCode()));
+        UI.liner("  ROOM CODE     : " + request.getRoomCode());
         UI.liner("  REQUEST TYPE  : " + request.getRequestType());
         UI.liner("  DATE          : " + request.getRequestedDate());
         UI.liner("  START TIME    : " + request.getStartTime());
         UI.liner("  END TIME      : " + request.getEndTime());
         UI.liner("  REASON        : " + request.getReason());
         UI.liner("  STATUS        : " + request.getStatus());
-        UI.liner("  REVIEWED BY   : "
-                + (request.getReviewedBy() == null
-                ? "N/A" : request.getReviewedBy()));
-        UI.liner("  REVIEWED AT   : "
-                + (request.getReviewedAt() == null
-                ? "N/A" : request.getReviewedAt()));
+        UI.liner("  REVIEWED BY   : " + (request.getReviewedBy() == null ? "N/A" : request.getReviewedBy()));
+        UI.liner("  REVIEWED AT   : " + (request.getReviewedAt() == null ? "N/A" : request.getReviewedAt()));
         UI.footer();
+        UI.returnButton();
     }
     public static void displayMakeUpSchedules() {
 
@@ -196,6 +191,7 @@ public class MakeUpSchedule {
         }
 
         UI.footer();
+        UI.returnButton();
     }
     public static void displayArchiveMakeUpSchedules() {
 
@@ -204,157 +200,172 @@ public class MakeUpSchedule {
         if (archiveMakeUpSchedules.isEmpty()) {
             UI.liner("  No archived make-up schedules found.");
         } else {
-            for (MakeUpSchedule request : archiveMakeUpSchedules) {
-                UI.liner(String.format(
-                        "  %-12s %-12s %-16s %-13s %-10s",
-                        request.getMakeUpID(),
-                        request.getFacultyID(),
-                        request.getRequestType(),
-                        request.getRequestedDate(),
-                        request.getStatus()));
-                UI.separator();
+            for (int i = 0; i < archiveMakeUpSchedules.size(); i++) {
+                MakeUpSchedule request = archiveMakeUpSchedules.get(i);
+
+                UI.liner(String.format("  MAKE-UP ID      : %s", request.getMakeUpID()));
+                UI.liner(String.format("  FACULTY ID      : %s", request.getFacultyID()));
+                UI.liner(String.format("  REQUEST TYPE    : %s", request.getRequestType()));
+                UI.liner(String.format("  REQUESTED DATE  : %s", request.getRequestedDate()));
+                UI.liner(String.format("  STATUS          : %s", request.getStatus()));
+
+                if (i < archiveMakeUpSchedules.size() - 1)
+                    UI.separator();
             }
         }
 
         UI.footer();
+        UI.returnButton();
     }
 
     // CREATE ROOM REQUEST
     public static void createMakeUpSchedule() {
 
-        String facultyID = "", roomCode = "", requestType = "";
-        String requestedDate = "", startTime = "", endTime = "", reason = "";
-        String choice;
+        String facultyID = "", roomCode = "", requestType = "", requestedDate = "", startTime = "", endTime = "",
+               reason = "", choice;
         boolean submit = false;
 
         while (!submit) {
 
-            makeUpScheduleManage("CREATE", "AUTO-GENERATED",
-                    facultyID, roomCode, requestType, requestedDate,
+            makeUpScheduleManage("CREATE", "", facultyID, roomCode, requestType, requestedDate,
                     startTime, endTime, reason, "Pending");
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
-
-                if (!choice.matches("[1-7X]") && !choice.equals("/"))
-                    UI.print("Invalid choice.");
-
+                if (choice.equalsIgnoreCase("X")) return;
+                else if (!choice.matches("[1-7X]") && !choice.equals("/")) UI.print("Invalid choice.");
             } while (!choice.matches("[1-7X]") && !choice.equals("/"));
 
             switch (choice) {
-
                 case "1":
                     do {
-                        System.out.print("   Enter Faculty ID > ");
+                        UI.select("Enter Faculty ID", true);
                         facultyID = in.nextLine().trim().toUpperCase();
 
-                        if (Faculty.findFaculty(facultyID) == null)
-                            UI.print("Faculty does not exist.");
-
-                    } while (Faculty.findFaculty(facultyID) == null);
+                        if (facultyID.equalsIgnoreCase("X")) {
+                            facultyID = "";
+                            break;
+                        }
+                        else if (facultyID.isEmpty()) UI.print("Faculty ID is required");
+                        else if (Faculty.findFaculty(facultyID) == null) UI.print("Faculty does not exist.");
+                    } while (Faculty.findFaculty(facultyID) == null || facultyID.isEmpty());
                     break;
 
                 case "2":
                     do {
-                        System.out.print(
-                                "   Enter Room Code (leave blank if none) > ");
+                        UI.select("Enter Room Code", true);
                         roomCode = in.nextLine().trim().toUpperCase();
 
-                        if (!roomCode.isEmpty()
-                                && Room.findRoom(roomCode) == null)
-                            UI.print("Room does not exist.");
-
-                    } while (!roomCode.isEmpty()
-                            && Room.findRoom(roomCode) == null);
+                        if (roomCode.equalsIgnoreCase("X")) {
+                            roomCode = "";
+                            break;
+                        }
+                        else if (roomCode.isEmpty()) UI.print("Room Code is required");
+                        else if (Room.findRoom(roomCode) == null) UI.print("Room does not exist.");
+                    } while (!roomCode.isEmpty() && Room.findRoom(roomCode) == null);
                     break;
 
                 case "3":
                     do {
-                        System.out.print(
-                                "   Enter Request Type (Reservation/Room Change/Make-up Class) > ");
-                        requestType = in.nextLine().trim();
+                        UI.select("Enter Request Type (Makeup/Event/Exam/Meeting)", true);
+                        requestType = in.nextLine().trim().toUpperCase();
 
-                        if (!requestType.equalsIgnoreCase("Reservation")
-                                && !requestType.equalsIgnoreCase("Room Change")
-                                && !requestType.equalsIgnoreCase("Make-up Class"))
-                            UI.print("Invalid request type.");
-
-                    } while (!requestType.equalsIgnoreCase("Reservation")
-                            && !requestType.equalsIgnoreCase("Room Change")
-                            && !requestType.equalsIgnoreCase("Make-up Class"));
+                        if (requestType.equalsIgnoreCase("X")) {
+                            requestType = "";
+                            break;
+                        }
+                        else if (!requestType.matches("MAKEUP|EVENT|EXAM|MEETING"))
+                            UI.print("Invalid request type");
+                    } while (!requestType.matches("MAKEUP|EVENT|EXAM|MEETING"));
                     break;
 
                 case "4":
                     do {
-                        System.out.print(
-                                "   Enter Requested Date (MM/DD/YYYY) > ");
+                        UI.select("Enter Requested Date (MM/DD/YYYY)", true);
                         requestedDate = in.nextLine().trim();
 
-                        try {
-                            LocalDate date = LocalDate.parse(
-                                    requestedDate, DATE_FORMAT);
+                        if (requestedDate.equalsIgnoreCase("X")) {
+                            requestedDate = "";
+                            break;
+                        }
+                        else if (requestedDate.isEmpty()) UI.print("Requested Date is required");
+                        else {
+                            try {
+                                LocalDate date = LocalDate.parse(requestedDate, DATE_FORMAT);
 
-                            if (date.isBefore(LocalDate.now())) {
-                                UI.print("Date cannot be in the past.");
+                                if (date.isBefore(LocalDate.now())) {
+                                    UI.print("Date cannot be in the past.");
+                                    requestedDate = "";
+                                }
+                            } catch (DateTimeParseException e) {
+                                UI.print("Invalid date. Use MM/DD/YYYY format.");
                                 requestedDate = "";
                             }
-                        } catch (DateTimeParseException e) {
-                            UI.print("Invalid date. Use MM/DD/YYYY format.");
-                            requestedDate = "";
                         }
-
                     } while (requestedDate.isEmpty());
                     break;
 
                 case "5":
                     do {
-                        System.out.print("   Enter Start Time (HH:mm) > ");
+                        UI.select("Enter Start Time (HH:mm)", true);
                         startTime = in.nextLine().trim();
 
-                        try {
-                            Room.convertToMinutes(startTime);
-                        } catch (IllegalArgumentException e) {
-                            UI.print("Invalid time format.");
+                        if (startTime.equalsIgnoreCase("X")) {
                             startTime = "";
+                            break;
                         }
-
+                        else if (startTime.isEmpty()) UI.print("Start Time is required");
+                        else {
+                            try {
+                                Room.convertToMinutes(startTime);
+                            } catch (IllegalArgumentException e) {
+                                UI.print("Invalid time format.");
+                                startTime = "";
+                            }
+                        }
                     } while (startTime.isEmpty());
                     break;
 
                 case "6":
                     do {
-                        System.out.print("   Enter End Time (HH:mm) > ");
+                        UI.select("Enter End Time (HH:mm)", true);
                         endTime = in.nextLine().trim();
 
-                        try {
-                            if (Room.convertToMinutes(endTime)
-                                    <= Room.convertToMinutes(startTime)) {
-                                UI.print("End time must be after start time.");
+                        if (endTime.equalsIgnoreCase("X")) {
+                            endTime = "";
+                            break;
+                        }
+                        else if (endTime.isEmpty()) UI.print("End Time is required");
+                        else {
+                            try {
+                                if (Room.convertToMinutes(endTime) <= Room.convertToMinutes(startTime)) {
+                                    UI.print("End time must be after start time.");
+                                    endTime = "";
+                                }
+                            } catch (IllegalArgumentException e) {
+                                UI.print("Invalid time format.");
                                 endTime = "";
                             }
-                        } catch (IllegalArgumentException e) {
-                            UI.print("Invalid time format.");
-                            endTime = "";
                         }
-
                     } while (endTime.isEmpty());
                     break;
 
                 case "7":
                     do {
-                        System.out.print("   Enter Reason > ");
+                        UI.select("Enter Reason", true);
                         reason = in.nextLine().trim();
 
-                        if (reason.isEmpty())
-                            UI.print("Reason is required.");
-
+                        if (reason.equalsIgnoreCase("X")) {
+                            reason = "";
+                            break;
+                        }
+                        else if (reason.isEmpty()) UI.print("Reason is required.");
                     } while (reason.isEmpty());
                     break;
 
                 case "/":
-                    if (facultyID.isEmpty() || requestType.isEmpty()
-                            || requestedDate.isEmpty() || startTime.isEmpty()
+                    if (facultyID.isEmpty() || requestType.isEmpty() || requestedDate.isEmpty() || startTime.isEmpty()
                             || endTime.isEmpty() || reason.isEmpty()) {
                         UI.print("Details are incomplete.");
                         break;
@@ -380,18 +391,21 @@ public class MakeUpSchedule {
 
         UI.print("DELETE ROOM REQUEST");
 
-        MakeUpSchedule r;
+        String input;
 
         do {
-            System.out.print("  Enter Request ID > ");
-            String input = in.nextLine().trim().toUpperCase();
+            UI.select("Enter Request ID", false);
+            input = in.nextLine().trim().toUpperCase();
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Request ID is required");
+            else if (findMakeUpID(input) == null) UI.print("Request ID does not exist");
+        } while (input.isEmpty() || findMakeUpID(input) == null);
 
-            r = findMakeUpID(input);
-
-            if (r == null)
-                UI.print("Request does not exist.");
-
-        } while (r == null);
+        MakeUpSchedule r = findMakeUpID(input);
+        if (r == null) {
+            UI.print("Request does not exist.");
+            return;
+        }
 
         displayMakeUpSchedule(r.getMakeUpID());
 
@@ -401,9 +415,7 @@ public class MakeUpSchedule {
             System.out.print("  Confirm Request Deletion? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
 
-            if (!choice.matches("[YN]"))
-                UI.print("Invalid input.");
-
+            if (!choice.matches("[YN]")) UI.print("Invalid input.");
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {

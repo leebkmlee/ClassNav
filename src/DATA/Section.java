@@ -210,7 +210,7 @@ public class Section {
             sectionManage("CREATE", String.format("SEC%03d", sections.size()), yearLevel, block, group, academicYear);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim();
 
                 if (!choice.matches("[1-4X/]"))
@@ -220,9 +220,11 @@ public class Section {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Year Level > ");
+                        UI.select("Enter Year Level", true);
                         input = in.nextLine().trim();
-
+                        if (input.equalsIgnoreCase("X")) {
+                            break;
+                        }
                         try {
                             yearLevel = Integer.parseInt(input);
                             if (yearLevel < 1 || yearLevel > 4)
@@ -236,10 +238,15 @@ public class Section {
 
                 case "2":
                     do {
-                        System.out.print("   Block > ");
+                        UI.select("Block",true);
                         input = in.nextLine().trim().toUpperCase();
-
-                        if (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J' || (!Character.isLetter(block)))
+                        if (input.equalsIgnoreCase("X")) {
+                            input = "";
+                            break;
+                        }
+                        else if (input.trim().isEmpty())
+                            UI.print("Block is required");
+                        else if (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J' || (!Character.isLetter(block)))
                             UI.print("Invalid Input");
                     } while (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J' || !Character.isLetter(block));
 
@@ -248,8 +255,11 @@ public class Section {
 
                 case "3":
                     do {
-                        System.out.print("  Enter Group (0-2) > ");
+                        UI.select("Enter Group (0-2)", true);
                         input = in.nextLine().trim();
+                        if (input.equalsIgnoreCase("X")) {
+                            break;
+                        }
                         try {
                             group = Integer.parseInt(input);
                             if (group < 0 || group > 2)
@@ -264,15 +274,16 @@ public class Section {
                 case "4":
                     int startYear;int endYear;
                     do {
-                        System.out.print("   Enter Academic Year > ");
+                        UI.select("Enter Academic Year",true);
                         academicYear = in.nextLine().trim();
-
-                        if (academicYear.trim().isEmpty()){
+                        if (input.equalsIgnoreCase("X")) {
+                            break;
+                        }
+                        else if (academicYear.trim().isEmpty()){
                             UI.print("Academic year is required.");
                             return;
                         }
-
-                        if (!academicYear.trim().matches("\\d{4}-\\d{4}")) {
+                        else if (!academicYear.trim().matches("\\d{4}-\\d{4}")) {
                             UI.print("Academic year must use the format YYYY-YYYY.");
                             return;
                         }
@@ -341,9 +352,15 @@ public class Section {
         UI.print("EDIT EXISTING SECTION");
 
         do {
-            System.out.print("  Enter Section ID > ");
+            UI.select("Enter Section ID", false);
             sectionID = in.nextLine().trim();
-            if (findSection(sectionID) == null) UI.print("Section does not exist");
+            if (sectionID.equalsIgnoreCase("X")){
+                return;
+            }
+            else if (sectionID.isEmpty()){
+                UI.print("Section ID is required");
+            }
+            else if (findSection(sectionID) == null) UI.print("Section does not exist");
         } while (findSection(sectionID) == null);
 
         Section s = Section.findSection(sectionID);
@@ -373,8 +390,12 @@ public class Section {
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Year Level > ");
+                        UI.select("Enter Year Level", true);
                         input = in.nextLine().trim();
+                        if (input.equalsIgnoreCase("X")) {
+                            yearLevel = s.getYearLevel();
+                            break;
+                        }
 
                         try {
                             yearLevel = Integer.parseInt(input);
@@ -389,23 +410,26 @@ public class Section {
 
                 case "2":
                     do {
-                        System.out.print("   Block > ");
+                        UI.select("Block",true);
                         input = in.nextLine().trim().toUpperCase();
-
-                        if (input.length() != 1 ||
-                                input.charAt(0) < 'A' || input.charAt(0) > 'J')
-                            UI.print("Invalid Input");
-                    } while (input.length() != 1 ||
-                            input.charAt(0) < 'A' || input.charAt(0) > 'J');
+                        if (input.equalsIgnoreCase("X")) {
+                            block = s.getBlock();
+                            break;
+                        }
+                        else if (input.trim().isEmpty()) UI.print("Block is required");
+                    } while (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J');
 
                     block = input.charAt(0);
                     break;
 
                 case "3":
                     do {
-                        System.out.print("   Enter Group (0-2) > ");
+                        UI.select("Enter Group (0-2)", true);
                         input = in.nextLine().trim();
-
+                        if (input.equalsIgnoreCase("X")) {
+                            group = s.getGroup();
+                            break;
+                        }
                         try {
                             group = Integer.parseInt(input);
                             if (group < 0 || group > 2)
@@ -419,11 +443,19 @@ public class Section {
 
                 case "4":
                     do {
-                        System.out.print("   Enter Academic Year > ");
+                        UI.select("Enter Academic Year",true);
                         academicYear = in.nextLine().trim();
-
-                        if (!academicYear.matches("\\d{4}-\\d{4}"))
+                        if (input.equalsIgnoreCase("X")) {
+                            academicYear = s.getAcademicYear();
+                            break;
+                        }
+                        else if (academicYear.trim().isEmpty()){
+                            UI.print("Academic year is required.");
+                            return;
+                        }
+                        else if (!academicYear.matches("\\d{4}-\\d{4}"))
                             UI.print("Invalid Format");
+
                     } while (!academicYear.matches("\\d{4}-\\d{4}"));
                     break;
 
@@ -473,11 +505,13 @@ public class Section {
     public static void archiveSection() {
         String choice, input;
 
-        UI.print("DELETE EXISTING SECTION");
+        UI.print("ARCHIVE EXISTING SECTION");
 
         do {
-            System.out.print("  Enter Section ID > ");
+            UI.select("Enter Section ID",false);
             input = in.nextLine().trim();
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Section ID is required");
 
             if (findSection(input) == null)
                 UI.print("Section does not exist");
@@ -490,10 +524,10 @@ public class Section {
             return;
         }
 
-        sectionManage("DELETE", s.getSectionID(), s.getYearLevel(), s.getBlock(), s.getGroup(), s.getAcademicYear());
+        sectionManage("ARCHIVE", s.getSectionID(), s.getYearLevel(), s.getBlock(), s.getGroup(), s.getAcademicYear());
 
         do {
-            System.out.print("  Confirm Section Deletion? (Y/N) > ");
+            System.out.print("  Confirm Section Archive? (Y/N) > ");
             choice = in.nextLine().trim().toUpperCase();
 
             if (!choice.matches("[YN]"))
@@ -503,7 +537,7 @@ public class Section {
         if (choice.equals("Y")) {
             archiveSections.add(s);
             sections.remove(s);
-            UI.print("Section successfully deleted");
+            UI.print("Section successfully archive");
         } else {
             UI.print("Section deletion cancelled");
         }

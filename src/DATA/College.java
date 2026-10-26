@@ -238,7 +238,7 @@ public class College {
             input = in.nextLine().trim().toUpperCase();
             if (input.equalsIgnoreCase("X")) return;
             else if (input.isEmpty()) UI.print("College Code is required");
-            else if (input.isEmpty() || findCollege(input) == null)
+            else if (findCollege(input) == null)
                 UI.print("College does not exist");
         } while (input.isEmpty() || findCollege(input) == null);
 
@@ -269,7 +269,7 @@ public class College {
                         UI.select("Enter College Code",true);
                         collegeCode = in.nextLine().trim().toUpperCase();
                         if (collegeCode.equalsIgnoreCase("X")) {
-                            collegeCode = "";
+                            collegeCode = c.getCollegeCode();
                             break;
                         }
                         else if (collegeCode.trim().isEmpty())
@@ -287,7 +287,7 @@ public class College {
                         UI.select("Enter College Description",true);
                         collegeDescription = in.nextLine().trim().toUpperCase();
                         if (collegeDescription.equalsIgnoreCase("X")) {
-                            collegeDescription = "";
+                            collegeDescription = c.getCollegeDescription();
                             break;
                         }
                         else if (collegeDescription.trim().isEmpty())
@@ -323,15 +323,9 @@ public class College {
         do {
             UI.select("Enter College Code",false);
             input = in.nextLine().trim().toUpperCase();
-            if (input.equalsIgnoreCase("X")) {
-                input = "";
-                break;
-            }
-            else if (input.trim().isEmpty())
-                UI.print("College Code is required");
-
-            if (input.isEmpty() || findCollege(input) == null)
-                UI.print("College does not exist");
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("College Code is required");
+            else if (findCollege(input) == null) UI.print("College does not exist");
         } while (input.isEmpty() || findCollege(input) == null);
 
         College c = College.findCollege(input);
