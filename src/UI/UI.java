@@ -51,7 +51,6 @@ public class UI {
         System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
         System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Log in");
-        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Sign up");
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " [X] Exit");
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
         System.out.print("  Select > ");

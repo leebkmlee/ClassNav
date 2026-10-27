@@ -30,11 +30,19 @@ public class Login {
 
                 if (User.isValidEmail(userID, emailAddress) && User.isValidPassword(userID, password)) {
                     if (user instanceof Faculty) {
-                        String status = Faculty.getEmploymentStatus(user);
+                        String status = Faculty.findFaculty(userID).getEmploymentStatus();
 
                         if (!"ACTIVE".equalsIgnoreCase(status == null ? "" : status.trim())) {
                             UI.print("Faculty account is inactive");
                             return "Ran out of attempts.";
+                        }
+                    }
+                    else if (user instanceof Student) {
+                        String status = Student.findStudent(userID).getEnrollmentStatus();
+
+                        if ("LOA".equalsIgnoreCase(status == null ? "" : status.trim())) {
+                            UI.print("Student is on LOA");
+                            return "";
                         }
                     }
 

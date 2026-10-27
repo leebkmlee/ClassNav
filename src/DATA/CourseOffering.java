@@ -55,14 +55,6 @@ public class CourseOffering {
         offerings.add(new CourseOffering("SEC013", "BIO101", "F0013", "2025-2026", 1));
         offerings.add(new CourseOffering("SEC014", "IT105", "F0005", "2026-2027", 1));
         offerings.add(new CourseOffering("SEC015", "GE105", "F0006", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC016", "IS103", "F0008", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC017", "CE102", "F0009", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC018", "BIO102", "F0012", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC019", "HM102", "F0014", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC020", "NS102", "F0015", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC021", "TM102", "F0016", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC022", "CR102", "F0017", "2026-2027", 1));
-        offerings.add(new CourseOffering("SEC023", "BL102", "F0018", "2026-2027", 1));
     }
 
     // GETTER METHODS
@@ -191,8 +183,12 @@ public class CourseOffering {
             courseOfferingManage("CREATE", "", sectionID, courseCode, facultyID, academicYear, term);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select",false);
                 choice = in.nextLine().trim();
+                if(choice.equalsIgnoreCase("X")){
+                    return;
+                }
+
                 if (!choice.matches("[1-5X]") && !choice.equals("/")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-5X]") && !choice.equals("/"));
 

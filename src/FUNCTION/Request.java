@@ -165,7 +165,7 @@ public class Request {
             return;
         }
 
-        String facultyCollegeCode = Faculty.getCollegeCode(f);
+        String facultyCollegeCode = f.getCollegeCode();
 
         String requestedDate, startTime, endTime, roomCode, reason;
         LocalDate date;
@@ -321,16 +321,15 @@ public class Request {
 
         requests.add(new Request(facultyID, roomCode, date.format(DATE_FORMAT), convertedStart, convertedEnd, reason));
         UI.print("Room request submitted successfully.");
-        displayRequest(findRequest(requests.getLast().getRequestID()));
-        UI.returnButton();
+        displayRequest(requests.getLast().getRequestID(),true);
     }
 
     // DISPLAY REQUEST DETAILS
-    public static void displayRequest(Request request) {
+    public static void displayRequest(String requestID,boolean print) {
 
-        if (request == null)
-            return;
+        if (requestID == null) return;
 
+        Request request = findRequest(requestID);
         Faculty faculty = Faculty.findFaculty(request.facultyID);
         Room room = Room.findRoom(request.roomCode);
 
@@ -338,7 +337,7 @@ public class Request {
         UI.liner("  REQUEST ID       : " + request.requestID);
         UI.liner("  FACULTY ID       : " + request.facultyID);
         UI.liner("  FACULTY          : " + faculty.getUserName());
-        UI.liner("  FACULTY COLLEGE  : " +  Faculty.getCollegeCode(faculty));
+        UI.liner("  FACULTY COLLEGE  : " +  faculty.getCollegeCode());
         UI.liner("  ROOM CODE        : " + request.roomCode);
         UI.liner("  ROOM             : " + room.getRoomDescription());
         UI.liner("  ROOM COLLEGE     : " + request.targetCollegeCode);
@@ -346,7 +345,7 @@ public class Request {
         UI.liner("  TIME             : " + formatTime(request.startTime) + " - " + formatTime(request.endTime));
         UI.liner("  STATUS           : " + request.status);
         UI.separator();
-        UI.liner("  REASON         : " + request.reason);
+        UI.liner("  REASON           : " + request.reason);
 
         if (request.reviewedBy != null) {
             UI.liner("  REVIEWED BY    : " + request.reviewedBy);
@@ -357,7 +356,7 @@ public class Request {
             UI.liner("  REJECTION      : " + request.rejectionReason);
 
         UI.footer();
-        UI.returnButton();
+        if(print) UI.returnButton();
     }
 
     // FIND THE DEPARTMENT HEAD RESPONSIBLE FOR A COLLEGE
@@ -488,7 +487,7 @@ public class Request {
             return;
         }
 
-        displayRequest(selected);
+        displayRequest(selected.getRequestID(),true);
 
         if (!selected.status.equalsIgnoreCase("Pending")) {
             UI.print("This request has already been reviewed.");
@@ -696,12 +695,11 @@ public class Request {
                 return;
             }
 
-            displayRequest(selectedRequest);
+            displayRequest(selectedRequest.getRequestID(),true);
 
         } else {
             UI.print("Invalid request selection.");
         }
-        UI.returnButton();
     }
 
     // VIEW REQUESTS BY FACULTY ID

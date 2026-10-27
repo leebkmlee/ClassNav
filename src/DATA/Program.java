@@ -317,8 +317,8 @@ public class Program {
             input = in.nextLine().trim();
             if (input.equalsIgnoreCase("X")) return;
             else if (input.isEmpty()) UI.print("Program Code is required");
-            else if (findProgram(input) != null) UI.print("Program does not exist");
-        } while (input.isEmpty() || findProgram(input) != null);
+            else if (findProgram(input) == null) UI.print("Program does not exist");
+        } while (input.isEmpty() || findProgram(input) == null);
 
         Program p = Program.findProgram(input);
 

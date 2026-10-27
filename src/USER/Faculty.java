@@ -8,8 +8,6 @@ import static UI.UI.*;
 import UI.*;
 
 import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 public class Faculty extends User {
     // FACULTY FIELDS
@@ -34,6 +32,8 @@ public class Faculty extends User {
 
         while (true) {
             UI.header("CLASSNAV | FACULTY");
+            UI.liner("  [S] Search By ID");
+            UI.separator();
             UI.liner("  TEACHING INFORMATION");
             UI.liner("  [1] View My Profile");
             UI.liner("  [2] Edit My Profile");
@@ -56,41 +56,22 @@ public class Faculty extends User {
             select = in.nextLine().trim().toUpperCase();
 
             switch (select) {
-                case "1":
-                    User.viewProfile(getUserID());
-                    break;
-                case "2":
-                    User.editUser(getUserID());
-                    break;
-                case "3":
-                    Faculty.displaySchedules(getUserID());
-                    break;
-                case "4":
-                    User.viewAvailableRooms();
-                    break;
-                case "5":
-                    User.locateRoom();
-                    break;
-                case "6":
-                    Request.submitRequest(getUserID());
-                    break;
-                case "7":
-                    CancelledSchedule.createCancelledSchedule();
-                    break;
-                case "8":
-                    Request.viewMyRequests(getUserID());
-                    break;
-                case "9":
-                    viewMyNotifications();
-                    break;
-                case "X":
-                    UI.print("Exiting...");
-                    return;
-                default:
-                    UI.print("Invalid Choice");
+                case "1": User.viewProfile(getUserID(),true); break;
+                case "2": User.editUser(getUserID()); break;
+                case "3": Faculty.displaySchedules(getUserID()); break;
+                case "4": User.viewAvailableRooms(); break;
+                case "5": User.locateRoom(); break;
+                case "6": Request.submitRequest(getUserID()); break;
+                case "7": CancelledSchedule.createCancelledSchedule(); break;
+                case "8": Request.viewMyRequests(getUserID()); break;
+                case "9": viewMyNotifications(); break;
+                case "S": User.searchID(); break;
+                case "X": UI.print("You have been logged out."); return;
+                default: UI.print("Invalid Choice");
             }
         }
     }
+
 
     // SETTER METHODS
     public void setCollegeCode(String collegeCode) {
@@ -110,19 +91,11 @@ public class Faculty extends User {
     }
 
     // GETTER METHODS
-    public static String getCollegeCode(User u) {
-        if (u == null)
-            return null;
-
-        Faculty f = findFaculty(u.getUserID());
-        return f == null ? null : f.collegeCode;
+    public String getCollegeCode() {
+        return collegeCode;
     }
-    public static String getEmploymentStatus(User u) {
-        if (u == null)
-            return null;
-
-        Faculty f = findFaculty(u.getUserID());
-        return f == null ? null : f.employmentStatus;
+    public String getEmploymentStatus() {
+        return employmentStatus;
     }
 
     // FIND METHODS
@@ -210,11 +183,10 @@ public class Faculty extends User {
             }
         }
 
-        if (!found) {
-            UI.liner("  No schedules found.");
-        }
+        if (!found) UI.liner("  No schedules found.");
 
         UI.footer();
+        UI.returnButton();
     }
 
     // DISPLAY NOTIFICATIONS

@@ -24,7 +24,7 @@ public class Notification {
     // CONSTRUCTOR
     public Notification(String senderID, String recipientID, String courseCode, String roomCode,
                         String buildingName, String day, String startTime, String endTime, String message) {
-        this.notificationID = String.format("N%03d", nextNotificationID++);
+        this.notificationID = String.format("NOT%03d", nextNotificationID++);
         this.senderID = senderID.trim();
         this.recipientID = recipientID.trim();
         this.courseCode = courseCode.trim();
@@ -134,7 +134,7 @@ public class Notification {
     }
 
     // DISPLAY METHODS
-    public static void displayNotification(String notificationID) {
+    public static void displayNotification(String notificationID, boolean print) {
         Notification n = findNotification(notificationID);
 
         if (n == null) {
@@ -146,12 +146,12 @@ public class Notification {
         if (text.length() > 30) text = text.substring(0, 30) + "...";
 
         UI.header("BUILDING DETAILS");
-        UI.liner(String.format("  NOTIFICAITON ID : %s", n.getNotificationID()));
-        UI.liner(String.format("  SENDER          : %s", n.getSenderID()));
-        UI.liner(String.format("  RECIPIENT       : %s", n.getRecipientID()));
-        UI.liner(String.format("  MESSAGE         : %s", text));
+        UI.liner(String.format("  NOTIFICAITON ID  : %s", n.getNotificationID()));
+        UI.liner(String.format("  SENDER           : %s", n.getSenderID()));
+        UI.liner(String.format("  RECIPIENT        : %s", n.getRecipientID()));
+        UI.liner(String.format("  MESSAGE          : %s", text));
         UI.footer();
-        UI.returnButton();
+        if(print) UI.returnButton();
     }
     public static void displayNotifications() {
 
@@ -211,7 +211,7 @@ public class Notification {
             UI.print("Notification does not exist");
             return;
         }
-        displayNotification(n.getNotificationID());
+        displayNotification(n.getNotificationID(), false);
 
         do {
             System.out.print("  Confirm Notification Archival? (Y/N) > ");

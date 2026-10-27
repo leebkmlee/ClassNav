@@ -1,18 +1,11 @@
 package MAIN;
-import DATA.*;
+import FUNCTION.Login;
 import USER.*;
 
 class Main {
     public static void main(String[] args) {
         User.initializeUsers();
-        Building.displayBuildings();
-        Building.displayBuilding("BLD01",true);
-        Building.displayRooms("BLD01");
-        Building.displayArchiveBuildings();
-        Building.createBuilding();
-        Building.editBuilding();
-        Building.archiveBuilding();
-
+        User.start();
     }
 }
 

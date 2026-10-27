@@ -169,7 +169,7 @@ public class CancelledSchedule {
             return;
         }
         if (u instanceof Faculty
-                && !"Active".equalsIgnoreCase(Faculty.getEmploymentStatus(u))) {
+                && !"Active".equalsIgnoreCase(((Faculty) u).getEmploymentStatus())) {
             UI.print("Inactive faculty cannot cancel a schedule.");
             return;
         }

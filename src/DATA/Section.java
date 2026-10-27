@@ -13,38 +13,36 @@ public class Section {
     private final String sectionID;
     private int yearLevel, group;
     private char block;
-    private String academicYear;
 
     public static ArrayList<Section> sections = new ArrayList<>();
     public static ArrayList<Section> archiveSections = new ArrayList<>();
 
     // CONSTRUCTOR
-    public Section(int yearLevel, char block, int group, String academicYear) {
+    public Section(int yearLevel, char block, int group) {
 
         this.sectionID = String.format("SEC%03d", nextSectionID++);
         this.yearLevel = yearLevel;
         this.block = Character.toUpperCase(block);
         this.group = group;
-        this.academicYear = academicYear.trim();
     }
 
     // DUMMY DATA
     static {
-        sections.add(new Section(1, 'A', 2, "2025-2026"));
-        sections.add(new Section(1, 'B', 0, "2024-2025"));
-        sections.add(new Section(1, 'C', 1, "2026-2027"));
-        sections.add(new Section(1, 'D', 2, "2025-2026"));
-        sections.add(new Section(2, 'A', 0, "2024-2025"));
-        sections.add(new Section(2, 'B', 1, "2026-2027"));
-        sections.add(new Section(2, 'C', 2, "2025-2026"));
-        sections.add(new Section(2, 'D', 0, "2024-2025"));
-        sections.add(new Section(3, 'A', 1, "2026-2027"));
-        sections.add(new Section(3, 'B', 2, "2025-2026"));
-        sections.add(new Section(3, 'C', 0, "2024-2025"));
-        sections.add(new Section(3, 'D', 1, "2026-2027"));
-        sections.add(new Section(4, 'A', 2, "2025-2026"));
-        sections.add(new Section(4, 'B', 0, "2024-2025"));
-        sections.add(new Section(4, 'C', 1, "2026-2027"));
+        sections.add(new Section(1, 'A', 2));
+        sections.add(new Section(1, 'B', 0));
+        sections.add(new Section(1, 'C', 1));
+        sections.add(new Section(1, 'D', 2));
+        sections.add(new Section(2, 'A', 0));
+        sections.add(new Section(2, 'B', 1));
+        sections.add(new Section(2, 'C', 2));
+        sections.add(new Section(2, 'D', 0));
+        sections.add(new Section(3, 'A', 1));
+        sections.add(new Section(3, 'B', 2));
+        sections.add(new Section(3, 'C', 0));
+        sections.add(new Section(3, 'D', 1));
+        sections.add(new Section(4, 'A', 2));
+        sections.add(new Section(4, 'B', 0));
+        sections.add(new Section(4, 'C', 1));
     }
 
     // GETTER METHODS
@@ -59,9 +57,6 @@ public class Section {
     }
     public int getGroup() {
         return group;
-    }
-    public String getAcademicYear() {
-        return academicYear;
     }
     public static String getYearSection(Section s) {
         if (s == null)
@@ -97,8 +92,7 @@ public class Section {
         else {
             for (Section s : sections) {
                 if (s == null) continue;
-                UI.liner(String.format("  %-12s %-15s %-15s",
-                        s.getSectionID(), getYearSection(s), s.getAcademicYear()));
+                UI.liner(String.format("  %-12s %-15s", s.getSectionID(), getYearSection(s)));
             }
         }
 
@@ -120,8 +114,8 @@ public class Section {
         UI.liner(String.format("  GROUP             : %s",
                 s.getGroup() == 0 ? "N/A" : "G" + s.getGroup()));
         UI.liner(String.format("  YEAR AND SECTION  : %s", getYearSection(s)));
-        UI.liner(String.format("  ACADEMIC YEAR     : %s", s.getAcademicYear()));
         UI.footer();
+        UI.returnButton();
     }
     public static void displayStudents(String sectionID) {
 
@@ -191,8 +185,8 @@ public class Section {
         else {
             for (Section s : archiveSections) {
                 if (s == null) continue;
-                UI.liner(String.format("  %-12s %-15s %-15s",
-                        s.getSectionID(), getYearSection(s), s.getAcademicYear()));
+                UI.liner(String.format("  %-12s %-15s",
+                        s.getSectionID(), getYearSection(s)));
             }
         }
 
@@ -203,19 +197,18 @@ public class Section {
     public static void createSection() {
         String academicYear = "", choice, input = "";
         int yearLevel = -1, group = -1;
-        char block = 0;
-        boolean submit = false;
+        char block = 0; boolean submit = false;
 
         while (!submit) {
-            sectionManage("CREATE", String.format("SEC%03d", sections.size()), yearLevel, block, group, academicYear);
+            sectionManage("CREATE", String.format("SEC%03d", sections.size()), yearLevel, block, group);
 
             do {
                 UI.select("Select",false);
                 choice = in.nextLine().trim();
 
-                if (!choice.matches("[1-4X/]"))
+                if (!choice.matches("[1-3X/]"))
                     UI.print("Invalid Choice");
-            } while (!choice.matches("[1-4X/]"));
+            } while (!choice.matches("[1-3X/]"));
 
             switch (choice) {
                 case "1":
@@ -271,35 +264,6 @@ public class Section {
                     } while (group < 0 || group > 2);
                     break;
 
-                case "4":
-                    int startYear;int endYear;
-                    do {
-                        UI.select("Enter Academic Year",true);
-                        academicYear = in.nextLine().trim();
-                        if (input.equalsIgnoreCase("X")) {
-                            break;
-                        }
-                        else if (academicYear.trim().isEmpty()){
-                            UI.print("Academic year is required.");
-                            return;
-                        }
-                        else if (!academicYear.trim().matches("\\d{4}-\\d{4}")) {
-                            UI.print("Academic year must use the format YYYY-YYYY.");
-                            return;
-                        }
-
-                        String[] years = academicYear.trim().split("-");
-
-                        startYear = Integer.parseInt(years[0]);
-                        endYear = Integer.parseInt(years[1]);
-
-                        if (endYear != startYear + 1){
-                            UI.print("Academic year must contain consecutive years.");
-                            return;
-                        }
-                    } while (!academicYear.matches("\\d{4}-\\d{4}") || endYear != startYear + 1 || academicYear.trim().isEmpty());
-                    break;
-
                 case "/":
                     if (yearLevel < 1 || yearLevel > 4 ||
                             block < 'A' || block > 'J' ||
@@ -316,16 +280,14 @@ public class Section {
                         if (group != 0) yearSection = yearLevel + "" + block + "-G" + group;
                         else yearSection = yearLevel + "" + block;
 
-                        if (existing != null
-                                && getYearSection(existing).equals(yearSection)
-                                && existing.getAcademicYear().equalsIgnoreCase(academicYear)) {
+                        if (existing != null && getYearSection(existing).equals(yearSection)) {
                             gate = false;
                             break;
                         }
                     }
 
                     if (gate) {
-                        sections.add(new Section(yearLevel, block, group, academicYear));
+                        sections.add(new Section(yearLevel, block, group));
                         UI.print("Section successfully created");
                         submit = true;
                     } else {
@@ -345,8 +307,7 @@ public class Section {
     }
     public static void editSection() {
         String sectionID = "", academicYear = "", choice, input = "";
-        int yearLevel, group;
-        char block;
+        int yearLevel, group; char block;
         boolean submit = false;
 
         UI.print("EDIT EXISTING SECTION");
@@ -354,12 +315,8 @@ public class Section {
         do {
             UI.select("Enter Section ID", false);
             sectionID = in.nextLine().trim();
-            if (sectionID.equalsIgnoreCase("X")){
-                return;
-            }
-            else if (sectionID.isEmpty()){
-                UI.print("Section ID is required");
-            }
+            if (sectionID.equalsIgnoreCase("X"))return;
+            else if (sectionID.isEmpty())UI.print("Section ID is required");
             else if (findSection(sectionID) == null) UI.print("Section does not exist");
         } while (findSection(sectionID) == null);
 
@@ -374,18 +331,16 @@ public class Section {
         yearLevel = s.getYearLevel();
         block = s.getBlock();
         group = s.getGroup();
-        academicYear = s.getAcademicYear();
 
         while (!submit) {
-            sectionManage("EDIT", sectionID, yearLevel, block, group, academicYear);
+            sectionManage("EDIT", sectionID, yearLevel, block, group);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim();
 
-                if (!choice.matches("[1-5X/]"))
-                    UI.print("Invalid Choice");
-            } while (!choice.matches("[1-5X/]"));
+                if (!choice.matches("[1-3X/]")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-3X/]"));
 
             switch (choice) {
                 case "1":
@@ -441,24 +396,6 @@ public class Section {
                     } while (group < 0 || group > 2);
                     break;
 
-                case "4":
-                    do {
-                        UI.select("Enter Academic Year",true);
-                        academicYear = in.nextLine().trim();
-                        if (input.equalsIgnoreCase("X")) {
-                            academicYear = s.getAcademicYear();
-                            break;
-                        }
-                        else if (academicYear.trim().isEmpty()){
-                            UI.print("Academic year is required.");
-                            return;
-                        }
-                        else if (!academicYear.matches("\\d{4}-\\d{4}"))
-                            UI.print("Invalid Format");
-
-                    } while (!academicYear.matches("\\d{4}-\\d{4}"));
-                    break;
-
                 case "/":
                     if (yearLevel < 1 || yearLevel > 4 ||
                             block < 'A' || block > 'J' ||
@@ -475,9 +412,7 @@ public class Section {
                         if (group != 0) yearSection = yearLevel + "" + block + "-G" + group;
                         else yearSection = yearLevel + "" + block;
 
-                        if (existing != null && existing != s
-                                && getYearSection(existing).equals(yearSection)
-                                && existing.getAcademicYear().equalsIgnoreCase(academicYear)) {
+                        if (existing != null && existing != s && getYearSection(existing).equals(yearSection)) {
                             gate = false;
                             break;
                         }
@@ -487,7 +422,6 @@ public class Section {
                         s.yearLevel = yearLevel;
                         s.block = block;
                         s.group = group;
-                        s.academicYear = academicYear;
 
                         UI.print("Section successfully updated");
                         submit = true;
@@ -524,7 +458,7 @@ public class Section {
             return;
         }
 
-        sectionManage("ARCHIVE", s.getSectionID(), s.getYearLevel(), s.getBlock(), s.getGroup(), s.getAcademicYear());
+        sectionManage("ARCHIVE", s.getSectionID(), s.getYearLevel(), s.getBlock(), s.getGroup());
 
         do {
             System.out.print("  Confirm Section Archive? (Y/N) > ");
@@ -542,15 +476,13 @@ public class Section {
             UI.print("Section deletion cancelled");
         }
     }
-    private static void sectionManage(String text, String sectionID,
-                                      int yearLevel, char block, int group, String academicYear) {
+    private static void sectionManage(String text, String sectionID, int yearLevel, char block, int group) {
 
         UI.header(text.toUpperCase() + ": SECTION INFORMATION");
         UI.liner(String.format("     SECTION ID     : %s", sectionID));
         UI.liner(String.format(" [1] YEAR LEVEL     : %s", yearLevel == -1 ? "" : yearLevel));
         UI.liner(String.format(" [2] BLOCK          : %s", block == '\0' ? "" : block));
         UI.liner(String.format(" [3] GROUP          : %s", group == -1 ? "" : (group == 0 ? "N/A" : "G" + group)));
-        UI.liner(String.format(" [4] ACADEMIC YEAR  : %s", academicYear));
         UI.liner("");
         UI.option();
         UI.footer();

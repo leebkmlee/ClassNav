@@ -258,28 +258,28 @@ public class Schedule {
             Section section = Section.findSection(offering.getSectionID());
             Course course = Course.findCourse(offering.getCourseCode());
 
-            UI.liner("  SECTION       : "
+            UI.liner("  SECTION         : "
                     + (section == null ? "Section not found"
                     : Section.getYearSection(section)));
 
-            UI.liner("  COURSE        : "
+            UI.liner("  COURSE          : "
                     + (course == null ? "Course not found"
                     : course.getCourseCode()));
 
-            UI.liner("  FACULTY ID    : " + offering.getFacultyID());
-            UI.liner("  ACADEMIC YEAR : " + offering.getAcademicYear());
-            UI.liner("  TERM          : " + offering.getTerm());
+            UI.liner("  FACULTY ID      : " + offering.getFacultyID());
+            UI.liner("  ACADEMIC YEAR   : " + offering.getAcademicYear());
+            UI.liner("  TERM            : " + offering.getTerm());
 
         } else {
             UI.liner("  Course offering not found");
         }
 
-        UI.liner("  ROOM CODE     : " + s.getRoomCode());
-        UI.liner("  DAY           : " + s.getDay());
-        UI.liner("  START TIME    : " + s.getStartTime());
-        UI.liner("  END TIME      : " + s.getEndTime());
-        UI.liner("  EFFECTIVE FROM: " + s.getEffectiveFrom());
-        UI.liner("  EFFECTIVE TO  : " + s.getEffectiveTo());
+        UI.liner("  ROOM CODE       : " + s.getRoomCode());
+        UI.liner("  DAY             : " + s.getDay());
+        UI.liner("  START TIME      : " + s.getStartTime());
+        UI.liner("  END TIME        : " + s.getEndTime());
+        UI.liner("  EFFECTIVE FROM  : " + s.getEffectiveFrom());
+        UI.liner("  EFFECTIVE TO    : " + s.getEffectiveTo());
 
         UI.footer();
         UI.returnButton();

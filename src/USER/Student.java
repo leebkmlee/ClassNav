@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import static DATA.Room.convertToMinutes;
+import static DATA.Room.findRoom;
 import static UI.UI.*;
 
 public class Student extends User {
@@ -34,6 +35,8 @@ public class Student extends User {
 
         while (true) {
             UI.header("CLASSNAV | STUDENT");
+            UI.liner("  [S] Search By ID");
+            UI.separator();
             UI.liner("  MY ACADEMIC RECORDS");
             UI.liner("  [1] View My Profile");
             UI.liner("  [2] Edit My Profile");
@@ -54,32 +57,16 @@ public class Student extends User {
             select = in.nextLine().trim().toUpperCase();
 
             switch (select) {
-                case "1":
-                    User.viewProfile(getUserID());
-                    break;
-                case "2":
-                    User.editUser(getUserID());
-                    break;
-                case "3":
-                    Student.displaySchedules(getUserID());
-                    break;
-                case "4":
-                    User.viewAvailableRooms();
-                    break;
-                case "5":
-                    User.locateRoom();
-                    break;
-                case "6":
-                    informFaculty();
-                    break;
-                case "7":
-                    viewMyNotifications();
-                    break;
-                case "X":
-                    UI.print("You have been logged out.");
-                    return;
-                default:
-                    UI.print("Invalid Choice");
+                case "1": User.viewProfile(getUserID(),true); break;
+                case "2": User.editUser(getUserID()); break;
+                case "3": Student.displaySchedules(getUserID()); break;
+                case "4": User.viewAvailableRooms(); break;
+                case "5": User.locateRoom(); break;
+                case "6": informFaculty(); break;
+                case "7": viewMyNotifications(); break;
+                case "S": User.searchID(); break;
+                case "X": UI.print("You have been logged out."); return;
+                default: UI.print("Invalid Choice"); break;
             }
         }
     }
@@ -235,19 +222,21 @@ public class Student extends User {
                     UI.separator();
                     currentDay = day;
                 }
+                else UI.liner("");
 
                 CourseOffering o = CourseOffering.findOffering(s.getOfferingID());
                 Course c = o == null ? null : Course.findCourse(o.getCourseCode());
                 Section section = o == null ? null : Section.findSection(o.getSectionID());
                 Room r = Room.findRoom(s.getRoomCode());
 
-                Building b = r == null ? null
-                        : Building.findBuilding(r.getBuildingCode());
+                Building b = r == null ? null : Building.findBuilding(r.getBuildingCode());
 
                 UI.liner(String.format("  TIME          : %s - %s",
                         s.getStartTime(), s.getEndTime()));
                 UI.liner(String.format("  COURSE        : %s",
                         c == null ? "Course not found" : c.getCourseCode()));
+                UI.liner(String.format("  FACULTY       : %s", o == null ? "Faculty not found" :
+                        Faculty.findFaculty(o.getFacultyID()).getUserName()));
                 UI.liner(String.format("  SECTION       : %s",
                         section == null ? "Section not found" : Section.getYearSection(section)));
                 UI.liner(String.format("  ROOM CODE     : %s", s.getRoomCode()));
@@ -256,6 +245,7 @@ public class Student extends User {
         }
 
         UI.footer();
+        UI.returnButton();
     }
 
     // INFORM FACULTY FORM
@@ -265,59 +255,71 @@ public class Student extends User {
 
         while (!submit) {
             UI.header("INFORM FACULTY");
-            UI.liner(" [1] ROOM CODE  : " + (roomCode.isEmpty() ? " " : roomCode));
-            UI.liner(" [2] DAY        : " + (day.isEmpty() ? " " : day));
-            UI.liner(" [3] START TIME : " + (startTime.isEmpty() ? " " : startTime));
-            UI.liner(" [4] END TIME   : " + (endTime.isEmpty() ? " " : endTime));
+            UI.liner(" [V] VIEW AVAILABLE ROOMS ");
+            UI.separator();
+            UI.liner(" [1] ROOM CODE   : " + (roomCode.isEmpty() ? " " : roomCode));
+            UI.liner(" [2] DAY         : " + (day.isEmpty() ? " " : day));
+            UI.liner(" [3] START TIME  : " + (startTime.isEmpty() ? " " : startTime));
+            UI.liner(" [4] END TIME    : " + (endTime.isEmpty() ? " " : endTime));
+            UI.liner("");
             UI.option();
             UI.footer();
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
 
-                if (!choice.matches("[1-3X]") && !choice.equals("/"))
-                    UI.print("Invalid Choice");
-
-            } while (!choice.matches("[1-3X]") && !choice.equals("/") && !choice.equals("X"));
+                if (!choice.matches("[1-3XV]") && !choice.equals("/")) UI.print("Invalid Choice");
+            } while (!choice.matches("[1-3XV]") && !choice.equals("/") && !choice.equals("X"));
 
             switch (choice) {
                 case "1":
-                    System.out.print("  Enter Room Code > ");
-                    roomCode = in.nextLine().trim();
+                    do {
+                        UI.select("Enter Room Code", true);
+                        roomCode = in.nextLine().trim();
 
-                    if (Room.findRoom(roomCode) == null) {
-                        UI.print("Room not found");
-                        roomCode = "";
-                    }
+                        if (roomCode.equalsIgnoreCase("X")) {
+                            roomCode = "";
+                            break;
+                        }
+                        else if (roomCode.isEmpty()) UI.print("Room Code is required");
+                        else if (Room.findRoom(roomCode) == null) UI.print("Room not found");
+                    } while (roomCode.isEmpty() || findRoom(roomCode) == null);
                     break;
 
                 case "2":
                     do {
-                        System.out.print("  Enter Day > ");
+                        UI.select("Enter Day", true);
                         day = in.nextLine().trim();
 
-                        if (!isValidDay(day))
-                            UI.print("Invalid day");
-
-                    } while (!isValidDay(day));
+                        if (day.equalsIgnoreCase("X")) {
+                            day = "";
+                            break;
+                        }
+                        else if (day.isEmpty()) UI.print("Day is required");
+                        else if (!isValidDay(day)) UI.print("Invalid day");
+                    } while (!isValidDay(day) || day.isEmpty());
 
                     day = normalizeDay(day);
                     break;
 
                 case "3":
                     do {
-                        System.out.print("  Enter Start Time > ");
+                        UI.select("Enter Start Time", true);
                         startTime = in.nextLine().trim();
-
-                        System.out.print("  Enter End Time > ");
-                        endTime = in.nextLine().trim();
-
-                        if (!isValidTimeRange(startTime, endTime))
-                            UI.print("Invalid time range");
-
+                        if (startTime.equalsIgnoreCase("X")) startTime = "";
+                        else if (startTime.isEmpty()) UI.print("Start Time is required");
+                        else {
+                            UI.select("Enter End Time", true);
+                            endTime = in.nextLine().trim();
+                            if (endTime.equalsIgnoreCase("X")) endTime = "";
+                            else if (endTime.isEmpty()) UI.print("End Time is required");
+                            else if (!isValidTimeRange(startTime, endTime)) UI.print("Invalid time range");
+                        }
                     } while (!isValidTimeRange(startTime, endTime));
                     break;
+
+                case "V": viewAvailableRooms(); break;
 
                 case "/":
                     if (roomCode.isEmpty() || day.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
@@ -326,8 +328,7 @@ public class Student extends User {
                     }
 
                     Room room = Room.findRoom(roomCode);
-                    Building building = room == null ? null
-                            : Building.findBuilding(room.getBuildingCode());
+                    Building building = room == null ? null : Building.findBuilding(room.getBuildingCode());
 
                     if (room == null || building == null) {
                         UI.print("Room or building not found");
@@ -378,7 +379,7 @@ public class Student extends User {
         boolean found;
 
         do {
-            System.out.print("  Enter Course Code > ");
+            UI.select("Enter Course Code", true);
             courseCode = in.nextLine().trim();
 
             found = false;
@@ -392,16 +393,14 @@ public class Student extends User {
 
                 CourseOffering o = CourseOffering.findOffering(cr.getOfferingID());
 
-                if (o != null && o.getCourseCode() != null
-                        && o.getCourseCode().equalsIgnoreCase(courseCode)) {
+                if (o != null && o.getCourseCode() != null && o.getCourseCode().equalsIgnoreCase(courseCode)) {
                     selectedOffering = o;
                     found = true;
                     break;
                 }
             }
 
-            if (!found)
-                UI.print("Course not found in your registered offerings");
+            if (!found) UI.print("Course not found in your registered offerings");
 
         } while (!found);
 
@@ -424,16 +423,15 @@ public class Student extends User {
             message = "Room is occupied or unavailable";
         }
 
-        UI.liner("Inform Faculty?");
+        UI.liner("  Inform Faculty?");
+        UI.liner("");
         UI.option();
+        UI.footer();
 
         do {
-            System.out.print("  Select > ");
+            UI.select("Select", false);
             choice = in.nextLine().trim().toUpperCase();
-
-            if (!choice.equals("/") && !choice.equals("X"))
-                UI.print("Invalid Input");
-
+            if (!choice.equals("/") && !choice.equals("X")) UI.print("Invalid Input");
         } while (!choice.equals("/") && !choice.equals("X"));
 
         switch (choice) {

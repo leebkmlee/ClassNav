@@ -26,83 +26,131 @@ public class DepartmentHead extends User {
         String select;
 
         while (true) {
-            UI.header("CLASSNAV | DEPARTMENT HEAD");
-            UI.liner("  OVERVIEW AND ACCOUNT");
-            UI.liner("  [1] View System Summary");
-            UI.liner("  [2] View My Profile");
-            UI.liner("  [3] Edit My Profile");
-            UI.separator();
-            UI.liner("  REQUESTS AND APPROVALS");
-            UI.liner("  [4] View Faculty Requests");
-            UI.liner("  [5] Review Pending Requests");
-            UI.separator();
-            UI.liner("  RECORD MANAGEMENT");
-            UI.liner("  [6] Academic Management");
-            UI.liner("  [7] Buildings and Rooms");
-            UI.liner("  [8] Schedules and Exceptions");
-            UI.liner("  [9] Notifications");
-            UI.liner("  [A] Archived Records");
-            UI.separator();
-            UI.liner("  [X] Log Out");
-            UI.footer();
+            header("CLASSNAV | DEPARTMENT HEAD");
+            liner("  [S] Search By ID");
+            separator();
+            liner("  OVERVIEW AND ACCOUNT");
+            liner("  [1] View System Summary");
+            liner("  [2] View My Profile");
+            liner("  [3] Edit My Profile");
+            separator();
+            liner("  REQUESTS AND APPROVALS");
+            liner("  [4] View Faculty Requests");
+            liner("  [5] Review Pending Requests");
+            separator();
+            liner("  RECORD MANAGEMENT");
+            liner("  [6] Academic Management");
+            liner("  [7] Buildings and Rooms");
+            liner("  [8] Schedules and Exceptions");
+            liner("  [9] Notifications");
+            liner("  [A] Archived Records");
+            separator();
+            liner("  [X] Log Out");
+            footer();
 
             System.out.print("  Select > ");
             select = in.nextLine().trim().toUpperCase();
 
             switch (select) {
-                case "1":
-                    displaySystemSummary();
-                    break;
-                case "2":
-                    User.viewProfile(getUserID());
-                    break;
-                case "3":
-                    User.editUser(getUserID());
-                    break;
-                case "4":
-                    Request.viewRequest(getUserID());
-                    break;
-                case "5":
-                    Request.viewRequests(getUserID());
-                    break;
-                case "6":
-                    academicManageMenu();
-                    break;
-                case "7":
-                    facilitiesManageMenu();
-                    break;
-                case "8":
-                    scheduleManageMenu();
-                    break;
-                case "9":
-                    notificationMenu();
-                    break;
-                case "A":
-                    archiveMenu();
-                    break;
-                case "X":
-                    UI.print("Exiting...");
-                    return;
-                default:
-                    UI.print("Invalid Choice");
+                case "1": displaySystemSummary(); break;
+                case "2": User.viewProfile(getUserID(), true);break;
+                case "3": User.editUser(getUserID()); break;
+                case "4": Request.viewRequest(getUserID()); break;
+                case "5": Request.viewRequests(getUserID()); break;
+                case "6": academicManageMenu(); break;
+                case "7": facilitiesManageMenu(); break;
+                case "8": scheduleManageMenu(); break;
+                case "9": notificationMenu(); break;
+                case "A": archiveMenu(); break;
+                case "S": User.searchID(); break;
+                case "X": print("You have been logged out."); return;
+                default: print("Invalid Choice");
             }
         }
+    }
+    public static void displayArchivedUsers(){
+        header("ARCHIVED USER ");
+
+        for (User u : archiveStudent) {
+            String userType = "";
+
+            if (u instanceof Student) {
+                userType = "Student";
+            } else if (u instanceof Faculty) {
+                userType = "Faculty";
+            } else if (u instanceof DepartmentHead) {
+                userType = "Department Head";
+            }
+
+            String user = String.format(
+                    "  %-10s %-20s %-25s %-5s",
+                    u.getUserID(),
+                    u.getLastName() + ", " + u.getFirstName(),
+                    u.getEmail(),
+                    userType
+            );
+
+            liner(user);
+        }
+        footer();
+        returnButton();
+    }
+    public static void displayUsers() {
+        header("USER LIST");
+
+        for (int i = 0; i < users.size(); i++) {
+            User u = users.get(i);
+            String userType = "", special = "";
+            String address = u.getAddress();
+            String username = u.getUserName();
+            if (address.length() > 23) address = address.substring(0, 19) + "...";
+            if (username.length() > 23) username = username.substring(0, 19) + "...";
+
+            switch (u) {
+                case Student s -> {
+                    userType = "Student";
+                    special = s.getEnrollmentStatus();
+                }
+                case Faculty f -> {
+                    userType = "Faculty";
+                    special = f.getCollegeCode();
+                }
+                case DepartmentHead d -> {
+                    userType = "Department Head";
+                    special = d.getCollegeCode();
+                }
+                default -> {
+                }
+            }
+
+            String firstRow = String.format( " %-20s %-24s %-16s %-5s",
+                    u.getUserID(), username, userType, special);
+            String secondRow = String.format(" %-20s %-24s %-16s %-5s",
+                    u.getEmail(), address, u.getBirthDate(), u.getSex());
+            liner(firstRow);
+            liner(secondRow);
+
+            if(i < users.size() - 1){ separator();}
+            else{ footer(); }
+        }
+
+        returnButton();
     }
 
     private static void academicManageMenu() {
         String choice;
         do {
-            UI.header("ACADEMIC MANAGEMENT");
-            UI.liner("  [1] Manage Users");
-            UI.liner("  [2] Manage Colleges");
-            UI.liner("  [3] Manage Programs");
-            UI.liner("  [4] Manage Courses");
-            UI.liner("  [5] Manage Course Offerings");
-            UI.liner("  [6] Manage Sections");
-            UI.liner("  [7] Manage Curricula");
-            UI.liner("  [8] Manage Course Registrations");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("ACADEMIC MANAGEMENT");
+            liner("  [1] Manage Users");
+            liner("  [2] Manage Colleges");
+            liner("  [3] Manage Programs");
+            liner("  [4] Manage Courses");
+            liner("  [5] Manage Course Offerings");
+            liner("  [6] Manage Sections");
+            liner("  [7] Manage Curricula");
+            liner("  [8] Manage Course Registrations");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -116,18 +164,18 @@ public class DepartmentHead extends User {
                 case "7": manageCurricula(); break;
                 case "8": manageCourseRegistrations(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
     private static void facilitiesManageMenu() {
         String choice;
         do {
-            UI.header("BUILDINGS AND ROOMS");
-            UI.liner("  [1] Manage Buildings");
-            UI.liner("  [2] Manage Rooms");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("BUILDINGS AND ROOMS");
+            liner("  [1] Manage Buildings");
+            liner("  [2] Manage Rooms");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -135,19 +183,19 @@ public class DepartmentHead extends User {
                 case "1": manageBuildings(); break;
                 case "2": manageRooms(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
     private void scheduleManageMenu() {
         String choice;
         do {
-            UI.header("SCHEDULES AND EXCEPTIONS");
-            UI.liner("  [1] Manage Schedules");
-            UI.liner("  [2] Manage Cancelled Schedules");
-            UI.liner("  [3] Manage Make-up Schedules");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("SCHEDULES AND EXCEPTIONS");
+            liner("  [1] Manage Schedules");
+            liner("  [2] Manage Cancelled Schedules");
+            liner("  [3] Manage Make-up Schedules");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -156,19 +204,19 @@ public class DepartmentHead extends User {
                 case "2": manageCancelledSchedules(); break;
                 case "3": manageMakeUpSchedules(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
     private static void notificationMenu() {
         String choice;
         do {
-            UI.header("NOTIFICATIONS");
-            UI.liner("  [1] View All Notifications");
-            UI.liner("  [2] Archive a Notification");
-            UI.liner("  [3] View Archived Notifications");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("NOTIFICATIONS");
+            liner("  [1] View All Notifications");
+            liner("  [2] Archive a Notification");
+            liner("  [3] View Archived Notifications");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -177,48 +225,86 @@ public class DepartmentHead extends User {
                 case "2": Notification.archiveNotifications(); break;
                 case "3": Notification.displayArchiveNotifications(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
+    }
+    public static void archiveUser() {
+        String userID, choice;
+
+        print("ARCHIVE EXISTING USER");
+
+        do {
+            System.out.print("  Enter User ID > ");
+            userID = in.nextLine().trim();
+
+            if (findUser(userID) == null)
+                print("User does not exist");
+        } while (findUser(userID) == null);
+
+        User u = User.findUser(userID);
+
+        if (u == null) {
+            print("User not found");
+            return;
+        }
+
+        User.viewProfile(userID, false);
+
+        do {
+            System.out.print("  Confirm User Deletion? (Y/N) > ");
+            choice = in.nextLine().trim().toUpperCase();
+
+            if (!choice.matches("[YN]"))
+                print("Invalid Input");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            archiveStudent.add(u);
+            users.remove(u);
+            print("User successfully deleted");
+        } else {
+            print("User deletion cancelled");
+        }
     }
     private static void archiveMenu() {
         String choice;
         do {
-            UI.header("ARCHIVED RECORDS");
-            UI.liner("  [1] Archived Users");
-            UI.liner("  [2] Academic Record Archives");
-            UI.liner("  [3] Building and Room Archives");
-            UI.liner("  [4] Schedule and Exception Archives");
-            UI.liner("  [5] Archived Notifications");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("ARCHIVED RECORDS");
+            liner("  [1] Archived Users");
+            liner("  [2] Academic Record Archives");
+            liner("  [3] Building and Room Archives");
+            liner("  [4] Schedule and Exception Archives");
+            liner("  [5] Archived Notifications");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
             switch (choice) {
-                case "1": User.displayArchivedUsers(); break;
+                case "1": DepartmentHead.displayArchivedUsers(); break;
                 case "2": academicArchiveMenu(); break;
                 case "3": facilitiesArchiveMenu(); break;
                 case "4": scheduleArchiveMenu(); break;
                 case "5": Notification.displayArchiveNotifications(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
     private static void academicArchiveMenu() {
         String choice;
         do {
-            UI.header("ACADEMIC ARCHIVES");
-            UI.liner("  [1] Colleges");
-            UI.liner("  [2] Programs");
-            UI.liner("  [3] Courses");
-            UI.liner("  [4] Course Offerings");
-            UI.liner("  [5] Sections");
-            UI.liner("  [6] Curricula");
-            UI.liner("  [7] Course Registrations");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("ACADEMIC ARCHIVES");
+            liner("  [1] Colleges");
+            liner("  [2] Programs");
+            liner("  [3] Courses");
+            liner("  [4] Course Offerings");
+            liner("  [5] Sections");
+            liner("  [6] Curricula");
+            liner("  [7] Course Registrations");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -231,18 +317,18 @@ public class DepartmentHead extends User {
                 case "6": Curriculum.displayArchiveCurricula(); break;
                 case "7": CourseRegistration.displayArchiveRegistrations(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
     private static void facilitiesArchiveMenu() {
         String choice;
         do {
-            UI.header("FACILITY ARCHIVES");
-            UI.liner("  [1] Buildings");
-            UI.liner("  [2] Rooms");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("FACILITY ARCHIVES");
+            liner("  [1] Buildings");
+            liner("  [2] Rooms");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -250,19 +336,19 @@ public class DepartmentHead extends User {
                 case "1": Building.displayArchiveBuildings(); break;
                 case "2": Room.displayArchivedRooms(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
     private static void scheduleArchiveMenu() {
         String choice;
         do {
-            UI.header("SCHEDULE ARCHIVES");
-            UI.liner("  [1] Schedules");
-            UI.liner("  [2] Cancelled Schedules");
-            UI.liner("  [3] Make-up Schedules");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("SCHEDULE ARCHIVES");
+            liner("  [1] Schedules");
+            liner("  [2] Cancelled Schedules");
+            liner("  [3] Make-up Schedules");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -271,7 +357,7 @@ public class DepartmentHead extends User {
                 case "2": CancelledSchedule.displayArchivedCancellations(); break;
                 case "3": MakeUpSchedule.displayArchiveMakeUpSchedules(); break;
                 case "0": break;
-                default: UI.print("Invalid Choice");
+                default: print("Invalid Choice");
             }
         } while (!choice.equals("0"));
     }
@@ -305,18 +391,18 @@ public class DepartmentHead extends User {
         String input;
 
         do {
-            UI.manageUI(manageText);
+            manageUI(manageText);
             System.out.print("  Select > ");
             input = in.nextLine().trim();
 
             try {
                 choice = Integer.parseInt(input);
                 if (choice < 0 || choice > 4) {
-                    UI.print("Invalid Choice");
+                    print("Invalid Choice");
                     choice = -1;
                 }
             } catch (NumberFormatException e) {
-                UI.print("Invalid Choice");
+                print("Invalid Choice");
                 choice = -1;
             }
         } while (choice == -1);
@@ -333,10 +419,10 @@ public class DepartmentHead extends User {
                     editUser();
                     break;
                 case 3:
-                    User.archiveUser();
+                    archiveUser();
                     break;
                 case 4:
-                    User.displayUsers();
+                    displayUsers();
                     break;
                 case 0:
                     return;
@@ -367,12 +453,12 @@ public class DepartmentHead extends User {
         String choice;
 
         while (true) {
-            UI.header("MANAGE CANCELLED SCHEDULES");
-            UI.liner("  [1] Create Cancellation");
-            UI.liner("  [2] Archive Expired Cancellations");
-            UI.liner("  [3] View Cancellations");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("MANAGE CANCELLED SCHEDULES");
+            liner("  [1] Create Cancellation");
+            liner("  [2] Archive Expired Cancellations");
+            liner("  [3] View Cancellations");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -389,7 +475,7 @@ public class DepartmentHead extends User {
                 case "0":
                     return;
                 default:
-                    UI.print("Invalid Choice");
+                    print("Invalid Choice");
             }
         }
     }
@@ -497,12 +583,12 @@ public class DepartmentHead extends User {
         String choice;
 
         while (true) {
-            UI.header("MANAGE MAKE-UP SCHEDULES");
-            UI.liner("  [1] Create Make-up Schedule");
-            UI.liner("  [2] Archive Make-up Schedule");
-            UI.liner("  [3] View Make-up Schedules");
-            UI.liner("  [0] Back");
-            UI.footer();
+            header("MANAGE MAKE-UP SCHEDULES");
+            liner("  [1] Create Make-up Schedule");
+            liner("  [2] Archive Make-up Schedule");
+            liner("  [3] View Make-up Schedules");
+            liner("  [0] Back");
+            footer();
             System.out.print("  Select > ");
             choice = in.nextLine().trim();
 
@@ -519,7 +605,7 @@ public class DepartmentHead extends User {
                 case "0":
                     return;
                 default:
-                    UI.print("Invalid Choice");
+                    print("Invalid Choice");
             }
         }
     }
@@ -606,27 +692,25 @@ public class DepartmentHead extends User {
 
     // EDIT USERS
     private static void editUser() {
-        String userID, lastName, firstName, middleInitial, emailAddress;
-        String password, address, birthDate, choice, userName;
-        String enrollmentStatus = "", programCode = "", collegeCode = "";
-        int postalCode;
-        char sex;
-        boolean valid, submit = false;
+        String userID, lastName, firstName, middleInitial, emailAddress, password, address, birthDate, choice, userName;
+        String enrollmentStatus = "", programCode = "", collegeCode = ""; String employmentStatus = "";
+        int postalCode; char sex; boolean valid, submit = false;
 
-        UI.print("EDIT EXISTING USER");
+        print("EDIT EXISTING USER");
 
         do {
-            System.out.print("  Enter User ID > ");
+            select("Enter User ID", false);
             userID = in.nextLine().trim().toUpperCase();
 
-            if (User.findUser(userID) == null)
-                UI.print("User does not exist");
+            if (userID.equalsIgnoreCase("X")) return;
+            else if (userID.isEmpty()) print("User ID is required");
+            else if (User.findUser(userID) == null) print("User does not exist");
         } while (User.findUser(userID) == null);
 
         User u = User.findUser(userID);
 
         if (u == null) {
-            UI.print("User not found");
+            print("User not found");
             return;
         }
 
@@ -641,57 +725,83 @@ public class DepartmentHead extends User {
         birthDate = u.getBirthDate();
         sex = u.getSex();
 
-        if (u instanceof Student) {
-            Student s = (Student) u;
-            enrollmentStatus = s.getEnrollmentStatus();
-            programCode = s.getProgramCode();
-        } else if (u instanceof Faculty) {
-            Faculty f = (Faculty) u;
-            collegeCode = Faculty.getCollegeCode(f);
-        } else if (u instanceof DepartmentHead) {
-            DepartmentHead dh = (DepartmentHead) u;
-            collegeCode = dh.getCollegeCode();
-        } else {
-            UI.print("Invalid User Type");
-            return;
+        switch (u) {
+            case Student s -> {
+                enrollmentStatus = s.getEnrollmentStatus();
+                programCode = s.getProgramCode();
+            }
+            case Faculty f -> collegeCode = f.getCollegeCode();
+            case DepartmentHead dh -> collegeCode = dh.getCollegeCode();
+            default -> {
+                print("Invalid User Type");
+                return;
+            }
         }
 
         while (!submit) {
             if (u instanceof Student) {
                 userManage("EDIT", userID, lastName, firstName, middleInitial,
                         emailAddress, password, address, postalCode, birthDate,
-                        sex, enrollmentStatus, programCode);
-            } else {
+                        sex, enrollmentStatus, programCode, true);
+
+                do {
+                    select("Select", false);
+                    choice = in.nextLine().trim().toUpperCase();
+                    if (choice.equalsIgnoreCase("X")) return;
+                    else if (!choice.matches("([1-9]|10|X|/)") || choice.isEmpty()) print("Invalid Input");
+                } while (!choice.matches("([1-9]|10|X|/)"));
+
+            }
+            else if (u instanceof Faculty) {
                 userManage("EDIT", userID, lastName, firstName, middleInitial,
                         emailAddress, password, address, postalCode, birthDate,
-                        sex, collegeCode);
+                        sex, collegeCode, employmentStatus, true);
+
+                do {
+                    UI.select("Select", false);
+                    choice = in.nextLine().trim().toUpperCase();
+                    if (choice.equalsIgnoreCase("X")) return;
+                    else if (!choice.matches("([1-9]|10|X|/)") || choice.isEmpty()) UI.print("Invalid Input");
+                } while (!choice.matches("([1-9]|10|X|/)"));
             }
+            else {
+                userManage("EDIT", userID, lastName, firstName, middleInitial,
+                        emailAddress, password, address, postalCode, birthDate,
+                        sex, collegeCode, true);
 
-            do {
-                System.out.print("  Select > ");
-                choice = in.nextLine().trim().toUpperCase();
-
-                if (!choice.matches("([1-9]|10|X|/)"))
-                    UI.print("Invalid Input");
-            } while (!choice.matches("([1-9]|10|X|/)"));
+                do {
+                    select("Select", false);
+                    choice = in.nextLine().trim().toUpperCase();
+                    if (choice.equalsIgnoreCase("X")) return;
+                    else if (!choice.matches("([1-9]|X|/)") || choice.isEmpty()) print("Invalid Input");
+                } while (!choice.matches("([1-9]|X|/)"));
+            }
 
             switch (choice) {
                 case "1":
                     do {
-                        System.out.print("   Enter Last Name > ");
+                        select("Enter Last Name", true);
                         lastName = in.nextLine().trim();
-                        if (lastName.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (lastName.isEmpty());
+                        if (lastName.equalsIgnoreCase("X")) {
+                            lastName = u.getLastName();
+                            break;
+                        }
+                        else if (lastName.isEmpty()) print("Last Name is required");
+                        else if (!lastName.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                    } while (lastName.isEmpty() || !lastName.matches("^[a-zA-Z]+$"));
                     break;
 
                 case "2":
                     do {
-                        System.out.print("   Enter First Name > ");
+                        select("Enter First Name", true);
                         firstName = in.nextLine().trim();
-                        if (firstName.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (firstName.isEmpty());
+                        if (firstName.equalsIgnoreCase("X")) {
+                            firstName = u.getFirstName();
+                            break;
+                        }
+                        else if (firstName.isEmpty()) print("First Name is required");
+                        else if (!firstName.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                    } while (firstName.isEmpty() || !firstName.matches("^[a-zA-Z]+$"));
                     break;
 
                 case "3":
@@ -699,182 +809,189 @@ public class DepartmentHead extends User {
                         System.out.print("   Enter Middle Initial > ");
                         middleInitial = in.nextLine().trim();
 
+                        if (middleInitial.equalsIgnoreCase("X")) {
+                            middleInitial = u.getMiddleInitial();
+                            break;
+                        }
                         if (middleInitial.endsWith("."))
-                            middleInitial = middleInitial.substring(
-                                    0, middleInitial.length() - 1);
+                            middleInitial = middleInitial.replace(".", "");
 
-                        if (!middleInitial.isEmpty()
-                                && !middleInitial.matches("[A-Za-z]"))
-                            UI.print("Enter one letter only");
-                    } while (!middleInitial.isEmpty()
-                            && !middleInitial.matches("[A-Za-z]"));
+                        if (middleInitial.length() > 2) print("Enter up to two letters only");
+                        else if (!middleInitial.matches("^[a-zA-Z]+$"))
+                            UI.print("Special characters are not allowed");
+                    } while (middleInitial.length() > 2 || !middleInitial.matches("^[a-zA-Z]+$"));
                     break;
 
                 case "4":
                     valid = false;
 
                     do {
-                        System.out.print("   Enter Email Address > ");
-                        emailAddress = in.nextLine().trim();
+                        select("Enter Password", true);
+                        password = in.nextLine();
 
-                        if (emailAddress.isEmpty()) {
-                            UI.print("Invalid Input");
-                        } else if (!emailAddress.endsWith("@bulsu.edu.ph")) {
-                            UI.print("Invalid Email Domain");
-                        } else if (!emailAddress.matches(
-                                "(S|F)[0-9]{4}@bulsu\\.edu\\.ph")
-                                && !emailAddress.matches(
-                                "DH[0-9]{4}@bulsu\\.edu\\.ph")) {
-                            UI.print("Invalid User");
-                        } else if (User.isDuplicateEmail(emailAddress)
-                                && !emailAddress.equalsIgnoreCase(
-                                u.getEmail())) {
-                            UI.print("Email already exists");
-                        } else {
-                            valid = true;
+                        if (password.equalsIgnoreCase("X")) {
+                            password = u.getPassword();
+                            break;
                         }
+                        else if (password.trim().isEmpty())
+                            print("Password is required");
+                        else if (password.length() < 8)
+                            print("Password must be at least 8 characters");
+                        else if (!password.matches(".*[A-Z].*"))
+                            print("Password must contain an uppercase letter");
+                        else if (!password.matches(".*[a-z].*"))
+                            print("Password must contain a lowercase letter");
+                        else if (!password.matches(".*[0-9].*"))
+                            print("Password must contain a number");
+                        else if (!password.matches(".*[^a-zA-Z0-9].*"))
+                            print("Password must contain a special character");
+                        else if (password.contains(" "))
+                            print("Password cannot contain spaces");
+                        else
+                            valid = true;
                     } while (!valid);
                     break;
 
                 case "5":
-                    valid = false;
-
-                    do {
-                        System.out.print("   Enter Password > ");
-                        password = in.nextLine();
-
-                        if (password.trim().isEmpty())
-                            UI.print("Invalid Input");
-                        else if (password.length() < 8)
-                            UI.print("Password must be at least 8 characters");
-                        else if (!password.matches(".*[A-Z].*"))
-                            UI.print("Password must contain an uppercase letter");
-                        else if (!password.matches(".*[a-z].*"))
-                            UI.print("Password must contain a lowercase letter");
-                        else if (!password.matches(".*[0-9].*"))
-                            UI.print("Password must contain a number");
-                        else if (!password.matches(".*[^a-zA-Z0-9].*"))
-                            UI.print("Password must contain a special character");
-                        else if (password.contains(" "))
-                            UI.print("Password cannot contain spaces");
-                        else
-                            valid = true;
-                    } while (!valid);
-                    break;
-
-                case "6":
                     String street, barangay, city, province;
 
                     do {
-                        System.out.print("    Enter Street > ");
+                        select(" Enter Street", true);
                         street = in.nextLine().trim();
-                        if (street.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (street.isEmpty());
+                        if (street.equalsIgnoreCase("X")) return;
+                        else if (street.isEmpty()) print("Street is required");
+                        else if (!street.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                    } while (street.isEmpty() || !street.matches("^[a-zA-Z]+$"));
 
                     do {
-                        System.out.print("    Enter Barangay > ");
+                        select(" Enter Barangay", true);
                         barangay = in.nextLine().trim();
-                        if (barangay.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (barangay.isEmpty());
+                        if (barangay.equalsIgnoreCase("X")) return;
+                        else if (barangay.isEmpty()) print("Barangay is required");
+                        else if (!barangay.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                    } while (barangay.isEmpty() || !barangay.matches("^[a-zA-Z]+$"));
 
                     do {
-                        System.out.print("    Enter City > ");
+                        select(" Enter City", true);
                         city = in.nextLine().trim();
-                        if (city.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (city.isEmpty());
+                        if (city.equalsIgnoreCase("X")) return;
+                        else if (city.isEmpty()) print("City is required");
+                        else if (!city.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                    } while (city.isEmpty() || !city.matches("^[a-zA-Z]+$"));
 
                     do {
-                        System.out.print("    Enter Province > ");
+                        select(" Enter Province", true);
                         province = in.nextLine().trim();
-                        if (province.isEmpty())
-                            UI.print("Invalid Input");
-                    } while (province.isEmpty());
+                        if (province.equalsIgnoreCase("X")) return;
+                        else if (province.isEmpty()) print("Province is required");
+                        else if (!province.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                    } while (province.isEmpty() || !province.matches("^[a-zA-Z]+$"));
 
                     address = street + ", " + barangay + ", " + city + ", " + province;
                     break;
 
-                case "7":
-                    valid = false;
-
+                case "6":
+                    String postalInput;
                     do {
-                        System.out.print("   Enter Postal Code > ");
-                        String postalInput = in.nextLine().trim();
+                        select(" Enter Postal Code", true);
+                        postalInput = in.nextLine().trim();
 
-                        if (!postalInput.matches("[0-9]{4}")) {
-                            UI.print("Postal code must be 4 digits");
-                        } else {
-                            postalCode = Integer.parseInt(postalInput);
-                            valid = true;
+                        if (postalInput.equalsIgnoreCase("X")) {
+                            postalCode = u.getPostalCode();
+                            break;
                         }
-                    } while (!valid);
+                        else if (!postalInput.matches("[0-9]{4}")) print("Postal code must be 4 digits");
+                        else postalCode = Integer.parseInt(postalInput);
+                    } while (!postalInput.matches("[0-9]{4}"));
+                    break;
+
+                case "7":
+                    do {
+                        select(" Enter Birthdate (MM/DD/YYYY)", true);
+                        birthDate = in.nextLine().trim();
+
+                        if (birthDate.equalsIgnoreCase("X")) {
+                            birthDate = u.getBirthDate();
+                            break;
+                        }
+                        else if (!isValidBirthDate(birthDate)) print("Invalid birthdate");
+                    } while (!isValidBirthDate(birthDate));
                     break;
 
                 case "8":
-                    valid = false;
-
-                    do {
-                        System.out.print("   Enter Birthdate (MM/DD/YYYY) > ");
-                        birthDate = in.nextLine().trim();
-
-                        if (!User.isValidBirthDate(birthDate))
-                            UI.print("Invalid birthdate");
-                        else
-                            valid = true;
-                    } while (!valid);
-                    break;
-
-                case "9":
                     String sexInput;
 
                     do {
-                        System.out.print("   Enter Sex (M/F) > ");
+                        select(" Enter Sex (M/F)", true);
                         sexInput = in.nextLine().trim().toUpperCase();
 
-                        if (!sexInput.matches("[MF]"))
-                            UI.print("Invalid Input");
+                        if (sexInput.equalsIgnoreCase("X")) {
+                            sexInput = String.valueOf(u.getSex());
+                            break;
+                        }
+                        else if (sexInput.isEmpty()) print("Sex is required");
+                        else if (!sexInput.matches("[MF]")) print("Invalid Input");
                     } while (!sexInput.matches("[MF]"));
 
                     sex = sexInput.charAt(0);
                     break;
 
-                case "10":
+                case "9":
                     if (u instanceof Student) {
                         do {
-                            System.out.print("   Enrollment Status (R, IR) > ");
+                            select("Enrollment Status (R/IR/LOA)", true);
                             enrollmentStatus = in.nextLine().trim().toUpperCase();
 
-                            if (!enrollmentStatus.matches("R|IR"))
-                                UI.print("Invalid Input");
-                        } while (!enrollmentStatus.matches("R|IR"));
-
-                        do {
-                            System.out.print("   Program Code > ");
-                            programCode = in.nextLine().trim().toUpperCase();
-                            if (Program.findProgram(programCode) == null)
-                                UI.print("Program Code does not exist");
-                        } while (Program.findProgram(programCode) == null);
+                            if (enrollmentStatus.equalsIgnoreCase("X")) {
+                                enrollmentStatus = ((Student) u).getEnrollmentStatus();
+                                break;
+                            }
+                            else if (enrollmentStatus.isEmpty()) print("Enrollment Status is required");
+                            else if (!enrollmentStatus.matches("^[a-zA-Z]+$"))
+                                UI.print("Special characters are not allowed");
+                            else if (!enrollmentStatus.matches("R|IR|LOA")) print("Invalid Input");
+                        } while (!enrollmentStatus.matches("R|IR|LOA") || enrollmentStatus.isEmpty() ||
+                                !enrollmentStatus.matches("^[a-zA-Z]+$"));
 
                     } else {
                         do {
-                            System.out.print("   College Code > ");
+                            select("College Code", true);
                             collegeCode = in.nextLine().trim().toUpperCase();
 
-                            if (College.findCollege(collegeCode) == null)
-                                UI.print("College Code does not exist");
-                        } while (College.findCollege(collegeCode) == null);
+                            if (collegeCode.equalsIgnoreCase("X")) {
+                                if (u instanceof Faculty) collegeCode = ((Faculty) u).getCollegeCode();
+                                else collegeCode = ((DepartmentHead) u).getCollegeCode();
+                                break;
+                            }
+                            else if (collegeCode.isEmpty()) UI.print("College Code is required");
+                            else if (College.findCollege(collegeCode) == null) print("College Code does not exist");
+                            else if (!collegeCode.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
+                        } while (College.findCollege(collegeCode) == null || !collegeCode.matches("^[a-zA-Z]+$"));
                     }
                     break;
 
-                case "/":
-                    userName = lastName + ", " + firstName
-                            + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+                case "10":
+                    do {
+                        select("Employment Status", true);
+                        employmentStatus = in.nextLine().trim().toUpperCase();
+                        if (employmentStatus.equalsIgnoreCase("X")) {
+                            employmentStatus = ((Faculty) u).getEmploymentStatus();
+                            break;
+                        }
+                        else if (employmentStatus.isEmpty()) UI.print("Employment Status is required");
+                        else if (!employmentStatus.matches("^[a-zA-Z]+$"))
+                            UI.print("Special characters are not allowed");
+                        else if (!employmentStatus.matches("ACTIVE|INACTIVE"))
+                            UI.print("Invalid Employment Status");
+                    } while (!employmentStatus.matches("ACTIVE|INACTIVE") && employmentStatus.isEmpty() ||
+                            !employmentStatus.matches("^[a-zA-Z]+$"));
+                    break;
 
-                    if (isDuplicateName(userName)
-                            && !userName.equalsIgnoreCase(u.getUserName())) {
-                        UI.print("Name already exists");
+                case "/":
+                    userName = lastName + ", " + firstName + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
+
+                    if (isDuplicateName(userName) && !userName.equalsIgnoreCase(u.getUserName())) {
+                        print("Name already exists");
                         break;
                     }
 
@@ -889,29 +1006,27 @@ public class DepartmentHead extends User {
                     u.setSex(sex);
 
                     try {
-                        if (u instanceof Student) {
-                            Student s = (Student) u;
+                        if (u instanceof Student s) {
                             s.setEnrollmentStatus(enrollmentStatus);
                             s.setProgramCode(programCode);
-                        } else if (u instanceof Faculty) {
-                            Faculty f = (Faculty) u;
+                        } else if (u instanceof Faculty f) {
                             f.setCollegeCode(collegeCode);
                         } else {
                             DepartmentHead dh = (DepartmentHead) u;
                             dh.setCollegeCode(collegeCode);
                         }
                     } catch (IllegalArgumentException e) {
-                        UI.print(e.getMessage());
+                        print(e.getMessage());
                         break;
                     }
 
-                    UI.print("User successfully edited");
-                    User.viewProfile(u.getUserID());
+                    print("User successfully edited");
+                    User.viewProfile(u.getUserID(), true);
                     submit = true;
                     break;
 
                 case "X":
-                    UI.print("User edit cancelled");
+                    print("User edit cancelled");
                     submit = true;
                     break;
             }
@@ -928,7 +1043,7 @@ public class DepartmentHead extends User {
                 students++;
             } else if (user instanceof Faculty) {
                 facultyCount++;
-                String status = Faculty.getEmploymentStatus(user);
+                String status = ((Faculty) user).getEmploymentStatus();
                 if (status != null && status.equalsIgnoreCase("ACTIVE")) activeFaculty++;
                 else inactiveFaculty++;
             } else if (user instanceof DepartmentHead) {
@@ -943,27 +1058,27 @@ public class DepartmentHead extends User {
             else if (request.getStatus().equalsIgnoreCase("REJECTED")) rejected++;
         }
 
-        UI.header("SYSTEM SUMMARY");
-        UI.liner(String.format("  %-29s : %d", "Students", students));
-        UI.liner(String.format("  %-29s : %d", "Faculty", facultyCount));
-        UI.liner(String.format("  %-29s : %d", "  Active Faculty", activeFaculty));
-        UI.liner(String.format("  %-29s : %d", "  Inactive Faculty", inactiveFaculty));
-        UI.liner(String.format("  %-29s : %d", "Department Heads", departmentHeads));
-        UI.separator();
-        UI.liner(String.format("  %-29s : %d", "Buildings", Building.buildings.size()));
-        UI.liner(String.format("  %-29s : %d", "Rooms", Room.rooms.size()));
-        UI.liner(String.format("  %-29s : %d", "Colleges", College.colleges.size()));
-        UI.liner(String.format("  %-29s : %d", "Programs", Program.programs.size()));
-        UI.liner(String.format("  %-29s : %d", "Courses", Course.courses.size()));
-        UI.liner(String.format("  %-29s : %d", "Course Offerings", CourseOffering.offerings.size()));
-        UI.liner(String.format("  %-29s : %d", "Sections", Section.sections.size()));
-        UI.liner(String.format("  %-29s : %d", "Course Registrations", CourseRegistration.registrations.size()));
-        UI.liner(String.format("  %-29s : %d", "Schedules", Schedule.schedules.size()));
-        UI.separator();
-        UI.liner(String.format("  %-29s : %d", "Pending Requests", pending));
-        UI.liner(String.format("  %-29s : %d", "Approved Requests", approved));
-        UI.liner(String.format("  %-29s : %d", "Rejected Requests", rejected));
-        UI.footer();
+        header("SYSTEM SUMMARY");
+        liner(String.format("  %-29s : %d", "Students", students));
+        liner(String.format("  %-29s : %d", "Faculty", facultyCount));
+        liner(String.format("  %-29s : %d", "  Active Faculty", activeFaculty));
+        liner(String.format("  %-29s : %d", "  Inactive Faculty", inactiveFaculty));
+        liner(String.format("  %-29s : %d", "Department Heads", departmentHeads));
+        separator();
+        liner(String.format("  %-29s : %d", "Buildings", Building.buildings.size()));
+        liner(String.format("  %-29s : %d", "Rooms", Room.rooms.size()));
+        liner(String.format("  %-29s : %d", "Colleges", College.colleges.size()));
+        liner(String.format("  %-29s : %d", "Programs", Program.programs.size()));
+        liner(String.format("  %-29s : %d", "Courses", Course.courses.size()));
+        liner(String.format("  %-29s : %d", "Course Offerings", CourseOffering.offerings.size()));
+        liner(String.format("  %-29s : %d", "Sections", Section.sections.size()));
+        liner(String.format("  %-29s : %d", "Course Registrations", CourseRegistration.registrations.size()));
+        liner(String.format("  %-29s : %d", "Schedules", Schedule.schedules.size()));
+        separator();
+        liner(String.format("  %-29s : %d", "Pending Requests", pending));
+        liner(String.format("  %-29s : %d", "Approved Requests", approved));
+        liner(String.format("  %-29s : %d", "Rejected Requests", rejected));
+        footer();
     }
 
     private static void createUser() {
@@ -997,15 +1112,14 @@ public class DepartmentHead extends User {
                             lastName = in.nextLine().trim();
 
                             if (lastName.isEmpty())
-                                UI.print("Invalid Input");
+                                print("Invalid Input");
                         } while (lastName.isEmpty());
 
                         do {
                             System.out.print("    First Name > ");
                             firstName = in.nextLine().trim();
 
-                            if (firstName.isEmpty())
-                                UI.print("Invalid Input");
+                            if (firstName.isEmpty()) print("Invalid Input");
                         } while (firstName.isEmpty());
 
                         System.out.print("    Middle Initial > ");
@@ -1018,7 +1132,7 @@ public class DepartmentHead extends User {
                                 + (middleInitial.isEmpty() ? "" : " " + middleInitial + ".");
 
                         if (User.isDuplicateName(userName)) {
-                            UI.print("Name already exists");
+                            print("Name already exists");
                             firstName = "";
                             middleInitial = "";
                             lastName = "";
@@ -1038,12 +1152,12 @@ public class DepartmentHead extends User {
                         emailAddress = in.nextLine().trim();
 
                         if (emailAddress.isEmpty()) {
-                            UI.print("Invalid Input");
+                            print("Invalid Input");
                         } else if (!emailAddress.matches(
                                 "(S[0-9]{4}|F[0-9]{4}|DH[0-9]{4})@bulsu\\.edu\\.ph")) {
-                            UI.print("Use the appropriate BulSU account format: S0001, F0001, or DH0001");
+                            print("Use the appropriate BulSU account format: S0001, F0001, or DH0001");
                         } else if (User.isDuplicateEmail(emailAddress)) {
-                            UI.print("Email already exists");
+                            print("Email already exists");
                         } else {
                             valid = true;
                         }
@@ -1061,19 +1175,19 @@ public class DepartmentHead extends User {
                         passKey = in.nextLine();
 
                         if (passKey.trim().isEmpty())
-                            UI.print("Invalid Input");
+                            print("Invalid Input");
                         else if (passKey.length() < 8)
-                            UI.print("Password must be at least 8 characters");
+                            print("Password must be at least 8 characters");
                         else if (!passKey.matches(".*[A-Z].*"))
-                            UI.print("Password must contain an uppercase letter");
+                            print("Password must contain an uppercase letter");
                         else if (!passKey.matches(".*[a-z].*"))
-                            UI.print("Password must contain a lowercase letter");
+                            print("Password must contain a lowercase letter");
                         else if (!passKey.matches(".*[0-9].*"))
-                            UI.print("Password must contain a number");
+                            print("Password must contain a number");
                         else if (!passKey.matches(".*[^a-zA-Z0-9].*"))
-                            UI.print("Password must contain a special character");
+                            print("Password must contain a special character");
                         else if (passKey.matches(".*\\s+.*"))
-                            UI.print("Password cannot contain whitespace");
+                            print("Password cannot contain whitespace");
                         else
                             valid = true;
                     } while (!valid);
@@ -1088,25 +1202,25 @@ public class DepartmentHead extends User {
                     do {
                         System.out.print("    Enter Street > ");
                         street = in.nextLine().trim();
-                        if (street.isEmpty()) UI.print("Invalid Input");
+                        if (street.isEmpty()) print("Invalid Input");
                     } while (street.isEmpty());
 
                     do {
                         System.out.print("    Enter Barangay > ");
                         barangay = in.nextLine().trim();
-                        if (barangay.isEmpty()) UI.print("Invalid Input");
+                        if (barangay.isEmpty()) print("Invalid Input");
                     } while (barangay.isEmpty());
 
                     do {
                         System.out.print("    Enter City > ");
                         city = in.nextLine().trim();
-                        if (city.isEmpty()) UI.print("Invalid Input");
+                        if (city.isEmpty()) print("Invalid Input");
                     } while (city.isEmpty());
 
                     do {
                         System.out.print("    Enter Province > ");
                         province = in.nextLine().trim();
-                        if (province.isEmpty()) UI.print("Invalid Input");
+                        if (province.isEmpty()) print("Invalid Input");
                     } while (province.isEmpty());
 
                     location = street + ", " + barangay + ", " + city + ", " + province;
@@ -1123,7 +1237,7 @@ public class DepartmentHead extends User {
                         String postalInput = in.nextLine().trim();
 
                         if (!postalInput.matches("[0-9]{4}")) {
-                            UI.print("Postal code must contain exactly 4 digits");
+                            print("Postal code must contain exactly 4 digits");
                         } else {
                             postalDigit = Integer.parseInt(postalInput);
                             valid = true;
@@ -1149,12 +1263,12 @@ public class DepartmentHead extends User {
                             LocalDate date = LocalDate.parse(birthDay, formatter);
 
                             if (date.isAfter(LocalDate.now())) {
-                                UI.print("Birthdate cannot be in the future");
+                                print("Birthdate cannot be in the future");
                             } else {
                                 valid = true;
                             }
                         } catch (DateTimeParseException e) {
-                            UI.print("Invalid birthdate. Use a valid MM/DD/YYYY date");
+                            print("Invalid birthdate. Use a valid MM/DD/YYYY date");
                         }
                     } while (!valid);
 
@@ -1170,7 +1284,7 @@ public class DepartmentHead extends User {
                         sexInput = in.nextLine().trim().toUpperCase();
 
                         if (!sexInput.matches("[MF]"))
-                            UI.print("Invalid Input");
+                            print("Invalid Input");
                     } while (!sexInput.matches("[MF]"));
 
                     gen = sexInput.charAt(0);
@@ -1181,7 +1295,7 @@ public class DepartmentHead extends User {
 
                 case "/":
                     if (complete != 7) {
-                        UI.print("Incomplete Details!");
+                        print("Incomplete Details!");
                         break;
                     }
 
@@ -1196,7 +1310,7 @@ public class DepartmentHead extends User {
                                 collegeCode = in.nextLine().trim().toUpperCase();
 
                                 if (College.findCollege(collegeCode) == null)
-                                    UI.print("College code does not exist");
+                                    print("College code does not exist");
                             } while (College.findCollege(collegeCode) == null);
 
                             User.users.add(new DepartmentHead(
@@ -1212,7 +1326,7 @@ public class DepartmentHead extends User {
                                 collegeCode = in.nextLine().trim().toUpperCase();
 
                                 if (College.findCollege(collegeCode) == null)
-                                    UI.print("College code does not exist");
+                                    print("College code does not exist");
                             } while (College.findCollege(collegeCode) == null);
 
                             do {
@@ -1220,7 +1334,7 @@ public class DepartmentHead extends User {
                                 employmentStatus = in.nextLine().trim().toUpperCase();
 
                                 if (!employmentStatus.matches("[A-Z ]+"))
-                                    UI.print("Invalid employment status");
+                                    print("Invalid employment status");
                             } while (!employmentStatus.matches("[A-Z ]+"));
 
                             User.users.add(new Faculty(
@@ -1237,7 +1351,7 @@ public class DepartmentHead extends User {
                                 enrollmentStatus = in.nextLine().trim().toUpperCase();
 
                                 if (!enrollmentStatus.matches("R|IR"))
-                                    UI.print("Enter R or IR");
+                                    print("Enter R or IR");
                             } while (!enrollmentStatus.matches("R|IR"));
 
                             do {
@@ -1245,7 +1359,7 @@ public class DepartmentHead extends User {
                                 programCode = in.nextLine().trim().toUpperCase();
 
                                 if (Program.findProgram(programCode) == null)
-                                    UI.print("Program Code does not exist");
+                                    print("Program Code does not exist");
                             } while (Program.findProgram(programCode) == null);
 
                             User.users.add(new Student(
@@ -1255,10 +1369,10 @@ public class DepartmentHead extends User {
                                     enrollmentStatus, programCode));
                         }
 
-                        UI.print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
+                        print("SIGN UP SUCCESSFUL! Welcome to ClassNav.");
                         submit = true;
                     } catch (IllegalArgumentException e) {
-                        UI.print("Unable to create account: " + e.getMessage());
+                        print("Unable to create account: " + e.getMessage());
                     }
                     break;
 
@@ -1267,7 +1381,7 @@ public class DepartmentHead extends User {
                     break;
 
                 default:
-                    UI.print("Invalid Choice");
+                    print("Invalid Choice");
                     break;
             }
         }
@@ -1277,15 +1391,15 @@ public class DepartmentHead extends User {
                                     String password, String address, String postalCode,
                                     String birthDate, String sex) {
 
-        UI.header(text);
-        UI.liner(" " + user);
-        UI.liner(" " + email);
-        UI.liner(" " + password);
-        UI.liner(" " + address);
-        UI.liner(" " + postalCode);
-        UI.liner(" " + birthDate);
-        UI.liner(" " + sex);
-        UI.option();
-        UI.footer();
+        header(text);
+        liner(" " + user);
+        liner(" " + email);
+        liner(" " + password);
+        liner(" " + address);
+        liner(" " + postalCode);
+        liner(" " + birthDate);
+        liner(" " + sex);
+        option();
+        footer();
     }
 }

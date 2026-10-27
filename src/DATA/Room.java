@@ -265,7 +265,7 @@ public class Room {
     }
 
     // DISPLAY METHODS
-    public static void displayRoom(String roomCode) {
+    public static void displayRoom(String roomCode,boolean print) {
         Room room = findRoom(roomCode);
 
         UI.header("ROOM DETAILS");
@@ -287,7 +287,7 @@ public class Room {
             UI.liner(String.format("  COLLEGE        : %s", fitText(college.getCollegeDescription(), 50)));
         }
         UI.footer();
-        UI.returnButton();
+        if(print) UI.returnButton();
     }
     public static void displayRooms() {
         UI.header("ROOM LIST");
@@ -617,7 +617,7 @@ public class Room {
                         rooms.add(new Room(roomCode, roomDescription, floorNumber, roomType, capacity,
                                 buildingCode, collegeCode));
                         UI.print("Room successfully created");
-                        Room.displayRoom(roomCode);
+                        Room.displayRoom(roomCode, true);
                         submit = true;
                     }
                     break;
@@ -822,7 +822,7 @@ public class Room {
             return;
         }
 
-        displayRoom(room.getRoomCode());
+        displayRoom(room.getRoomCode(), false);
 
         do {
             System.out.print("  Confirm Room Deletion? (Y/N) > ");

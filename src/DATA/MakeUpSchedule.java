@@ -28,7 +28,7 @@ public class MakeUpSchedule {
                           String requestedDate, String startTime, String endTime,
                           String reason, String reviewedBy, String reviewedAt) {
         LocalDate date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
-        this.makeupID = String.format("RR%04d", nextMakeUpID++);
+        this.makeupID = String.format("MS%04d", nextMakeUpID++);
         this.facultyID = facultyID.trim().toUpperCase();
         this.roomCode = roomCode == null || roomCode.trim().isEmpty() ? null : roomCode.trim().toUpperCase();
         this.requestType = requestType.trim();
