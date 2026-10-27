@@ -985,4 +985,46 @@ public abstract class User {
             else UI.print("ID unrecognized");
         } while (inputID.isEmpty());
     }
+
+    public static void editPassword(String userID) {
+        UI.header("EDIT PASSWORD");
+        String password; boolean valid = false; String input;
+
+        User u = findUser(userID);
+
+        do {
+            UI.select("Enter Password", true);
+            password = in.nextLine();
+
+            if (password.equalsIgnoreCase("X")) {
+                password = u.getPassword();
+                break;
+            }
+            else if (password.trim().isEmpty())
+                print("Password is required");
+            else if (password.length() < 8)
+                print("Password must be at least 8 characters");
+            else if (!password.matches(".*[A-Z].*"))
+                print("Password must contain an uppercase letter");
+            else if (!password.matches(".*[a-z].*"))
+                print("Password must contain a lowercase letter");
+            else if (!password.matches(".*[0-9].*"))
+                print("Password must contain a number");
+            else if (!password.matches(".*[^a-zA-Z0-9].*"))
+                print("Password must contain a special character");
+            else if (password.contains(" "))
+                print("Password cannot contain spaces");
+            else
+                valid = true;
+        } while (!valid);
+
+        do {
+            UI.select("Confirm Password", true);
+            input = in.nextLine();
+            if (!input.equals(password)) UI.print("Password Mismatch");
+        } while (!input.equals(password));
+
+        u.setPassword(password);
+        UI.print("Password changed successfully");
+    }
 }

@@ -35,11 +35,9 @@ public class Student extends User {
 
         while (true) {
             UI.header("CLASSNAV | STUDENT");
-            UI.liner("  [S] Search By ID");
-            UI.separator();
             UI.liner("  MY ACADEMIC RECORDS");
             UI.liner("  [1] View My Profile");
-            UI.liner("  [2] Edit My Profile");
+            UI.liner("  [2] Edit Password");
             UI.liner("  [3] View My Class Schedule");
             UI.separator();
             UI.liner("  ROOMS AND BUILDINGS");
@@ -58,13 +56,12 @@ public class Student extends User {
 
             switch (select) {
                 case "1": User.viewProfile(getUserID(),true); break;
-                case "2": User.editUser(getUserID()); break;
+                case "2": User.editPassword(getUserID()); break;
                 case "3": Student.displaySchedules(getUserID()); break;
                 case "4": User.viewAvailableRooms(); break;
                 case "5": User.locateRoom(); break;
                 case "6": informFaculty(); break;
                 case "7": viewMyNotifications(); break;
-                case "S": User.searchID(); break;
                 case "X": UI.print("You have been logged out."); return;
                 default: UI.print("Invalid Choice"); break;
             }

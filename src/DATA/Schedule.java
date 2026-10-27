@@ -250,8 +250,8 @@ public class Schedule {
         CourseOffering offering = CourseOffering.findOffering(s.getOfferingID());
 
         UI.header("SCHEDULE DETAILS");
-        UI.liner("  SCHEDULE ID   : " + s.getScheduleID());
-        UI.liner("  OFFERING ID   : " + s.getOfferingID());
+        UI.liner("  SCHEDULE ID     : " + s.getScheduleID());
+        UI.liner("  OFFERING ID     : " + s.getOfferingID());
 
         if (offering != null) {
 

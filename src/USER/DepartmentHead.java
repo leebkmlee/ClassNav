@@ -54,7 +54,7 @@ public class DepartmentHead extends User {
             switch (select) {
                 case "1": displaySystemSummary(); break;
                 case "2": User.viewProfile(getUserID(), true);break;
-                case "3": User.editUser(getUserID()); break;
+                case "3": editUser(getUserID()); break;
                 case "4": Request.viewRequest(getUserID()); break;
                 case "5": Request.viewRequests(getUserID()); break;
                 case "6": academicManageMenu(); break;

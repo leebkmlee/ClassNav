@@ -14,7 +14,7 @@ public class Login {
             UI.select("Enter ID",false);
             String userID = in.nextLine().trim();
             String input = userID;
-            if (userID.equalsIgnoreCase("X")) return "Back";
+            if (userID.equalsIgnoreCase("X")) return "Ran out of attempts.";
             else if (userID.isEmpty())UI.print("User ID is required.");
 
             User user = User.findUser(userID);
