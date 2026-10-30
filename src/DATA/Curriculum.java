@@ -96,7 +96,8 @@ public class Curriculum {
         curriculumID = curriculumID.trim();
 
         for (Curriculum c : curricula) {
-            if (curriculumID.equalsIgnoreCase(c.getCurriculumID()))
+            if (c != null && c.getCurriculumID() != null
+                    && curriculumID.equalsIgnoreCase(c.getCurriculumID()))
                 return c;
         }
 
@@ -112,7 +113,8 @@ public class Curriculum {
         courseCode = courseCode.trim();
 
         for (Curriculum c : curricula) {
-            if (programCode.equalsIgnoreCase(c.getProgramCode())
+            if (c != null && c.getProgramCode() != null && c.getCourseCode() != null
+                    && programCode.equalsIgnoreCase(c.getProgramCode())
                     && courseCode.equalsIgnoreCase(c.getCourseCode()))
                 return c;
         }
@@ -134,7 +136,8 @@ public class Curriculum {
             return result;
 
         for (Curriculum c : curricula) {
-            if (programCode.equalsIgnoreCase(c.getProgramCode())) {
+            if (c != null && c.getProgramCode() != null
+                    && programCode.equalsIgnoreCase(c.getProgramCode())) {
                 Course course = Course.findCourse(c.getCourseCode());
 
                 if (course != null && !result.contains(course))
@@ -159,7 +162,8 @@ public class Curriculum {
             return result;
 
         for (Curriculum c : curricula) {
-            if (courseCode.equalsIgnoreCase(c.getCourseCode())) {
+            if (c != null && c.getCourseCode() != null
+                    && courseCode.equalsIgnoreCase(c.getCourseCode())) {
                 Program program = Program.findProgram(c.getProgramCode());
 
                 if (program != null && !result.contains(program))
@@ -172,49 +176,37 @@ public class Curriculum {
 
     // DISPLAY COURSES INCLUDED IN A PROGRAM
     public static void displayCourses(String programCode) {
-
         if (programCode == null || programCode.isBlank()) {
             UI.print("Program code cannot be empty");
             return;
         }
-
         programCode = programCode.trim();
-
         Program program = Program.findProgram(programCode);
-
         if (program == null) {
             UI.print("Program not found");
             return;
         }
 
         ArrayList<Course> courses = getCoursesByProgram(programCode);
-
-        UI.header("PROGRAM CURRICULUM");
-        UI.liner("  PROGRAM CODE  : " + programCode);
-        UI.liner("  PROGRAM NAME  : " + program.getProgramDescription());
-        UI.separator();
-
-        if (courses.isEmpty()) {
-            UI.liner("  No courses found in this curriculum.");
-        } else {
-            for (Course c : courses) {
-                Curriculum entry = findCurriculumByProgramCourse(programCode, c.getCourseCode());
-
-                if (entry == null)
-                    continue;
-
-                UI.liner(String.format("  %-12s %-35s",
-                        c.getCourseCode(), c.getCourseDescription()));
-
-                UI.liner(String.format("  YEAR LEVEL: %s  TERM: %d",
-                        entry.getCurriculumYear(),
-                        entry.getCurriculumTerm()));
-
-                UI.separator();
-            }
+        UI.header("PROGRAM CURRICULUM", true);
+        UI.liner("  PROGRAM CODE: " + programCode + " | PROGRAM NAME: " + program.getProgramDescription(), true);
+        UI.liner(String.format("  %-14s %-120s %-16s %-12s %-12s",
+                "COURSE CODE", "COURSE DESCRIPTION", "YEAR LEVEL", "TERM", "CREDIT UNITS"), true);
+        UI.separator(true);
+        int count = 0;
+        for (Course c : courses) {
+            Curriculum entry = findCurriculumByProgramCourse(programCode, c.getCourseCode());
+            if (entry == null) continue;
+            UI.liner(String.format("  %-14s %-120s %-16s %-12s %-12s",
+                    c.getCourseCode(), UI.fitText(c.getCourseDescription(), 120),
+                    entry.getCurriculumYear(), entry.getCurriculumTerm(), c.getCreditUnits()), true);
+            count++;
         }
-
-        UI.footer();
+        if (count == 0) UI.liner("  No courses found in this curriculum.", true);
+        UI.separator(true);
+        UI.liner("  TOTAL COURSES: " + count, true);
+        UI.footer(true);
+        UI.returnButton();
     }
 
     // DISPLAY METHODS
@@ -225,55 +217,63 @@ public class Curriculum {
             return;
         }
 
-        UI.header("CURRICULUM");
-        UI.liner(String.format("  CURRICULUM ID  : %s", c.getCurriculumID()));
-        UI.liner(String.format("  PROGRAM CODE   : %s", c.getProgramCode()));
-        UI.liner(String.format("  COURSE CODE    : %s", c.getCourseCode()));
-        UI.liner(String.format("  YEAR LEVEL     : %s", c.getCurriculumYear()));
-        UI.liner(String.format("  TERM           : %d", c.getCurriculumTerm()));
-        UI.footer();
+        UI.header("CURRICULUM", false);
+        UI.liner(String.format("  CURRICULUM ID  : %s", c.getCurriculumID()), false);
+        UI.liner(String.format("  PROGRAM CODE   : %s", c.getProgramCode()), false);
+        UI.liner(String.format("  COURSE CODE    : %s", c.getCourseCode()), false);
+        UI.liner(String.format("  YEAR LEVEL     : %s", c.getCurriculumYear()), false);
+        UI.liner(String.format("  TERM           : %d", c.getCurriculumTerm()), false);
+        UI.footer(false);
         if(print) UI.returnButton();
     }
     public static void displayCurricula() {
-
-        UI.header("CURRICULUM LIST");
-
-        if (curricula.isEmpty()) {
-            UI.liner("  No curriculum entries found.");
-        } else {
-            for (int i = 0; i < curricula.size(); i++) {
-                Curriculum c = curricula.get(i);
-                UI.liner(String.format("  CURRICULUM ID : %s", c.getCurriculumID()));
-                UI.liner(String.format("  PROGRAM CODE  : %s", c.getProgramCode()));
-                UI.liner(String.format("  COURSE CODE   : %s", c.getCourseCode()));
-                UI.liner(String.format("  YEAR LEVEL    : %s", c.getCurriculumYear()));
-                UI.liner(String.format("  TERM          : %d", c.getCurriculumTerm()));
-                if (i < curricula.size() - 1) UI.separator();
+        UI.header("CURRICULUM LIST", true);
+        if (curricula.isEmpty()) UI.liner("  No curriculum entries found.", true);
+        else {
+            String format = "  %-16s %-14s %-14s %-12s %-8s %-42s %-66s";
+            UI.liner(String.format(format, "CURRICULUM ID", "PROGRAM CODE", "COURSE CODE", "YEAR LEVEL",
+                    "TERM", "PROGRAM NAME", "COURSE DESCRIPTION"), true);
+            UI.separator(true);
+            int count = 0;
+            for (Curriculum curriculum : curricula) {
+                if (curriculum == null) continue;
+                Program program = Program.findProgram(curriculum.getProgramCode());
+                Course course = Course.findCourse(curriculum.getCourseCode());
+                UI.liner(String.format(format, curriculum.getCurriculumID(), curriculum.getProgramCode(),
+                        curriculum.getCourseCode(), curriculum.getCurriculumYear(), curriculum.getCurriculumTerm(),
+                        UI.fitText(program == null ? "Program unavailable" : program.getProgramDescription(), 42),
+                        UI.fitText(course == null ? "Course unavailable" : course.getCourseDescription(), 66)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL CURRICULUM RECORDS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchiveCurricula() {
-
-        UI.header("ARCHIVED CURRICULUM LIST");
-
-        if (archiveCurricula.isEmpty()) {
-            UI.liner("  No curriculum entries found.");
-        } else {
-            for (int i = 0; i < archiveCurricula.size(); i++) {
-                Curriculum c = archiveCurricula.get(i);
-                UI.liner(String.format("  CURRICULUM ID : %s", c.getCurriculumID()));
-                UI.liner(String.format("  PROGRAM CODE  : %s", c.getProgramCode()));
-                UI.liner(String.format("  COURSE CODE   : %s", c.getCourseCode()));
-                UI.liner(String.format("  YEAR LEVEL    : %s", c.getCurriculumYear()));
-                UI.liner(String.format("  TERM          : %d", c.getCurriculumTerm()));
-                if (i < archiveCurricula.size() - 1) UI.separator();
+        UI.header("ARCHIVED CURRICULUM LIST", true);
+        if (archiveCurricula.isEmpty()) UI.liner("  No archived curriculum entries found.", true);
+        else {
+            String format = "  %-16s %-14s %-14s %-12s %-8s %-42s %-66s";
+            UI.liner(String.format(format, "CURRICULUM ID", "PROGRAM CODE", "COURSE CODE", "YEAR LEVEL",
+                    "TERM", "PROGRAM NAME", "COURSE DESCRIPTION"), true);
+            UI.separator(true);
+            int count = 0;
+            for (Curriculum curriculum : archiveCurricula) {
+                if (curriculum == null) continue;
+                Program program = Program.findProgram(curriculum.getProgramCode());
+                Course course = Course.findCourse(curriculum.getCourseCode());
+                UI.liner(String.format(format, curriculum.getCurriculumID(), curriculum.getProgramCode(),
+                        curriculum.getCourseCode(), curriculum.getCurriculumYear(), curriculum.getCurriculumTerm(),
+                        UI.fitText(program == null ? "Program archived" : program.getProgramDescription(), 42),
+                        UI.fitText(course == null ? "Course archived" : course.getCourseDescription(), 66)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED CURRICULUM RECORDS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -397,7 +397,7 @@ public class Curriculum {
                     curriculumYearLevel, curriculumTerm);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim();
                 if (choice.matches("[1-2]")) UI.print("Program Code, and Course Code cannot be edited");
                 else if (!choice.matches("[3-4X]") && !choice.equals("/")) UI.print("Invalid Input");
@@ -469,8 +469,9 @@ public class Curriculum {
         displayCurriculum(c.getCurriculumID(),false);
 
         do {
-            System.out.print("  Confirm Curriculum Deletion? (Y/N) > ");
+            UI.select("Confirm Curriculum Deletion? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
             if (!choice.matches("[YN]")) UI.print("Invalid Input");
         } while (!choice.matches("[YN]"));
 
@@ -484,16 +485,15 @@ public class Curriculum {
     private static void curriculumManage(String text, String curriculumID, String programCode,
                                          String courseCode, String curriculumYearLevel, int curriculumTerm) {
 
-        UI.header(text.toUpperCase() + ": CURRICULUM INFORMATION");
+        UI.header(text.toUpperCase() + ": CURRICULUM INFORMATION", false);
         UI.liner(String.format("     CURRICULUM ID  : %s", curriculumID.isEmpty() ?
-                String.format("CUR%04d", curricula.size() + 1) : curriculumID));
-        UI.liner(String.format(" [1] PROGRAM CODE   : %s", programCode));
-        UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode));
-        UI.liner(String.format(" [3] YEAR LEVEL     : %s", curriculumYearLevel));
-        UI.liner(String.format(" [4] TERM           : %s", curriculumTerm == -1 ? "" : curriculumTerm));
-        UI.liner("");
+                String.format("CUR%04d", curricula.size() + 1) : curriculumID), false);
+        UI.liner(String.format(" [1] PROGRAM CODE   : %s", programCode), false);
+        UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode), false);
+        UI.liner(String.format(" [3] YEAR LEVEL     : %s", curriculumYearLevel), false);
+        UI.liner(String.format(" [4] TERM           : %s", curriculumTerm == -1 ? "" : curriculumTerm), false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
-
 }

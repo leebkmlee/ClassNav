@@ -3,6 +3,7 @@ package DATA;
 
 import java.util.ArrayList;
 import UI.*;
+import USER.*;
 import static UI.UI.in;
 
 public class Program {
@@ -58,7 +59,8 @@ public class Program {
         programCode = programCode.trim();
 
         for (Program p : programs) {
-            if (programCode.equalsIgnoreCase(p.getProgramCode()))
+            if (p != null && p.getProgramCode() != null
+                    && programCode.equalsIgnoreCase(p.getProgramCode()))
                 return p;
         }
 
@@ -71,7 +73,8 @@ public class Program {
         programDescription = programDescription.trim();
 
         for (Program p : programs) {
-            if (programDescription.equalsIgnoreCase(p.getProgramCode()))
+            if (p != null && p.getProgramDescription() != null
+                    && programDescription.equalsIgnoreCase(p.getProgramDescription()))
                 return p;
         }
 
@@ -100,44 +103,50 @@ public class Program {
         String colDesc = c.getCollegeDescription();
         if (colDesc.length() > 40) colDesc = colDesc.substring(0, 40) + "...";
 
-        UI.header("PROGRAM INFORMATION");
-        UI.liner(String.format("  PROGRAM CODE         : %s", p.getProgramCode()));
-        UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", progDesc));
-        UI.liner(String.format("  COLLEGE CODE         : %s", p.getCollegeCode()));
-        UI.liner(String.format("  COLLEGE DESCRIPTION  : %s", colDesc));
-        UI.footer();
+        UI.header("PROGRAM INFORMATION", false);
+        UI.liner(String.format("  PROGRAM CODE         : %s", p.getProgramCode()), false);
+        UI.liner(String.format("  PROGRAM DESCRIPTION  : %s", progDesc), false);
+        UI.liner(String.format("  COLLEGE CODE         : %s", p.getCollegeCode()), false);
+        UI.liner(String.format("  COLLEGE DESCRIPTION  : %s", colDesc), false);
+        UI.footer(false);
         UI.returnButton();
     }
     public static void displayPrograms() {
-        UI.header("PROGRAMS");
-
-        if (programs.isEmpty()) {
-            UI.liner("  No programs found.");
-        } else {
+        UI.header("PROGRAMS", true);
+        if (programs.isEmpty()) UI.liner("  No programs found.", true);
+        else {
+            UI.liner(String.format("  %-14s %-148s %-14s", "PROGRAM CODE", "PROGRAM DESCRIPTION", "COLLEGE CODE"), true);
+            UI.separator(true);
+            int count = 0;
             for (Program p : programs) {
-                String progDesc = p.getProgramDescription();
-                if (progDesc.length() > 51) progDesc = progDesc.substring(0, 51) + "...";
-                UI.liner(String.format("  %-10s %-55s", p.getProgramCode(), progDesc));
+                if (p == null) continue;
+                UI.liner(String.format("  %-14s %-148s %-14s", p.getProgramCode(),
+                        UI.fitText(p.getProgramDescription(), 148), p.getCollegeCode()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL PROGRAMS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchivePrograms() {
-        UI.header("ARCHIVED BUILDINGS");
-
-        if (archivePrograms.isEmpty()) {
-            UI.liner("  No archived buildings found.");
-        } else {
+        UI.header("ARCHIVED PROGRAMS", true);
+        if (archivePrograms.isEmpty()) UI.liner("  No archived programs found.", true);
+        else {
+            UI.liner(String.format("  %-14s %-148s %-14s", "PROGRAM CODE", "PROGRAM DESCRIPTION", "COLLEGE CODE"), true);
+            UI.separator(true);
+            int count = 0;
             for (Program p : archivePrograms) {
-                String progDesc = p.getProgramDescription();
-                if (progDesc.length() > 44) progDesc = progDesc.substring(0, 44) + "...";
-                UI.liner(String.format("  %-10s %-48s %-8s", p.getProgramCode(), progDesc, p.getCollegeCode()));
+                if (p == null) continue;
+                UI.liner(String.format("  %-14s %-148s %-14s", p.getProgramCode(),
+                        UI.fitText(p.getProgramDescription(), 148), p.getCollegeCode()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED PROGRAMS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -327,11 +336,27 @@ public class Program {
             return;
         }
 
+        for (User user : User.users) {
+            if (user instanceof Student student && student.getProgramCode() != null
+                    && student.getProgramCode().equalsIgnoreCase(p.getProgramCode())) {
+                UI.print("Reassign or archive the students using this program first.");
+                return;
+            }
+        }
+        for (Curriculum curriculum : Curriculum.curricula) {
+            if (curriculum != null && curriculum.getProgramCode() != null
+                    && curriculum.getProgramCode().equalsIgnoreCase(p.getProgramCode())) {
+                UI.print("Archive the active curriculum records for this program first.");
+                return;
+            }
+        }
+
         displayProgram(p.getProgramCode());
 
         do {
-            System.out.print("  Confirm Program Deletion? (Y/N) > ");
+            UI.select("Confirm Program Deletion? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
@@ -349,14 +374,13 @@ public class Program {
                                       String programDescription, String collegeCode) {
         String progDesc = programDescription;
         if (progDesc.length() > 35) progDesc = progDesc.substring(0, 35) + "...";
-        UI.header(text.toUpperCase() + ": PROGRAM INFORMATION");
-        UI.liner(" [1] PROGRAM CODE         : " + programCode);
-        UI.liner(" [2] PROGRAM DESCRIPTION  : " + progDesc);
-        UI.liner(" [3] COLLEGE CODE         : " + collegeCode);
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": PROGRAM INFORMATION", false);
+        UI.liner(" [1] PROGRAM CODE         : " + programCode, false);
+        UI.liner(" [2] PROGRAM DESCRIPTION  : " + progDesc, false);
+        UI.liner(" [3] COLLEGE CODE         : " + collegeCode, false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
-
 
 }

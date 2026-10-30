@@ -86,7 +86,8 @@ public class CourseRegistration {
             return null;
 
         for (CourseRegistration r : registrations) {
-            if (registrationID.trim().equalsIgnoreCase(r.getRegistrationID()))
+            if (r != null && r.getRegistrationID() != null
+                    && registrationID.trim().equalsIgnoreCase(r.getRegistrationID()))
                 return r;
         }
 
@@ -101,7 +102,8 @@ public class CourseRegistration {
             return result;
 
         for (CourseRegistration r : registrations) {
-            if (studentID.trim().equalsIgnoreCase(r.getStudentID())
+            if (r != null && r.getStudentID() != null && r.getStatus() != null
+                    && studentID.trim().equalsIgnoreCase(r.getStudentID())
                     && r.getStatus().equalsIgnoreCase("Enrolled"))
                 result.add(r);
         }
@@ -117,7 +119,8 @@ public class CourseRegistration {
             return result;
 
         for (CourseRegistration r : registrations) {
-            if (offeringID.trim().equalsIgnoreCase(r.getOfferingID())
+            if (r != null && r.getOfferingID() != null && r.getStatus() != null
+                    && offeringID.trim().equalsIgnoreCase(r.getOfferingID())
                     && r.getStatus().equalsIgnoreCase("Enrolled"))
                 result.add(r);
         }
@@ -135,59 +138,73 @@ public class CourseRegistration {
             return;
         }
 
-        UI.header("COURSE REGISTRATION DETAILS");
-        UI.liner(String.format("  REGISTRATION ID    : %s", r.getRegistrationID()));
-        UI.liner(String.format("  STUDENT ID         : %s", r.getStudentID()));
-        UI.liner(String.format("  OFFERING ID        : %s", r.getOfferingID()));
-        UI.liner(String.format("  REGISTRATION DATE  : %s", r.getRegistrationDate()));
-        UI.liner(String.format("  STATUS             : %s", r.getStatus()));
-        UI.footer();
+        UI.header("COURSE REGISTRATION DETAILS", false);
+        UI.liner(String.format("  REGISTRATION ID    : %s", r.getRegistrationID()), false);
+        UI.liner(String.format("  STUDENT ID         : %s", r.getStudentID()), false);
+        UI.liner(String.format("  OFFERING ID        : %s", r.getOfferingID()), false);
+        UI.liner(String.format("  REGISTRATION DATE  : %s", r.getRegistrationDate()), false);
+        UI.liner(String.format("  STATUS             : %s", r.getStatus()), false);
+        UI.footer(false);
         if (print) UI.returnButton();
     }
     public static void displayRegistrations() {
-
-        UI.header("COURSE REGISTRATIONS");
-
-        if (registrations.isEmpty()) {
-            UI.liner("  No course registrations found.");
-        } else {
-            for (int i = 0; i < registrations.size(); i++) {
-                CourseRegistration r = registrations.get(i);
-
-                UI.liner(String.format("  REGISTRATION ID    : %s", r.getRegistrationID()));
-                UI.liner(String.format("  STUDENT ID         : %s", r.getStudentID()));
-                UI.liner(String.format("  OFFERING ID        : %s", r.getOfferingID()));
-                UI.liner(String.format("  REGISTRATION DATE  : %s", r.getRegistrationDate()));
-                UI.liner(String.format("  STATUS             : %s", r.getStatus()));
-
-                if (i < registrations.size() - 1) UI.separator();
+        UI.header("COURSE REGISTRATIONS", true);
+        if (registrations.isEmpty()) UI.liner("  No course registrations found.", true);
+        else {
+            String format = "  %-18s %-14s %-38s %-16s %-14s %-20s %-22s %-16s %-12s";
+            UI.liner(String.format(format, "REGISTRATION ID", "STUDENT ID", "STUDENT NAME", "OFFERING ID",
+                    "COURSE", "SECTION", "FACULTY", "DATE", "STATUS"), true);
+            UI.separator(true);
+            int count = 0;
+            for (CourseRegistration registration : registrations) {
+                if (registration == null) continue;
+                Student student = Student.findStudent(registration.getStudentID());
+                CourseOffering offering = CourseOffering.findOffering(registration.getOfferingID());
+                Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
+                Section section = offering == null ? null : Section.findSection(offering.getSectionID());
+                Faculty faculty = offering == null ? null : Faculty.findFaculty(offering.getFacultyID());
+                UI.liner(String.format(format, registration.getRegistrationID(), registration.getStudentID(),
+                        UI.fitText(student == null ? "Student unavailable" : student.getUserName(), 38),
+                        registration.getOfferingID(), course == null ? "-" : course.getCourseCode(),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 20),
+                        UI.fitText(faculty == null ? "-" : faculty.getUserName(), 22),
+                        registration.getRegistrationDate(), registration.getStatus()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL REGISTRATIONS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchiveRegistrations() {
-
-        UI.header("ARCHIVED COURSE REGISTRATIONS");
-
-        if (archiveRegistrations.isEmpty()) {
-            UI.liner("  No course registrations found.");
-        } else {
-            for (int i = 0; i < archiveRegistrations.size(); i++) {
-                CourseRegistration r = archiveRegistrations.get(i);
-
-                UI.liner(String.format("  REGISTRATION ID    : %s", r.getRegistrationID()));
-                UI.liner(String.format("  STUDENT ID         : %s", r.getStudentID()));
-                UI.liner(String.format("  OFFERING ID        : %s", r.getOfferingID()));
-                UI.liner(String.format("  REGISTRATION DATE  : %s", r.getRegistrationDate()));
-                UI.liner(String.format("  STATUS             : %s", r.getStatus()));
-
-                if (i < archiveRegistrations.size() - 1) UI.separator();
+        UI.header("ARCHIVED COURSE REGISTRATIONS", true);
+        if (archiveRegistrations.isEmpty()) UI.liner("  No archived course registrations found.", true);
+        else {
+            String format = "  %-18s %-14s %-38s %-16s %-14s %-20s %-22s %-16s %-12s";
+            UI.liner(String.format(format, "REGISTRATION ID", "STUDENT ID", "STUDENT NAME", "OFFERING ID",
+                    "COURSE", "SECTION", "FACULTY", "DATE", "STATUS"), true);
+            UI.separator(true);
+            int count = 0;
+            for (CourseRegistration registration : archiveRegistrations) {
+                if (registration == null) continue;
+                Student student = Student.findStudent(registration.getStudentID());
+                CourseOffering offering = CourseOffering.findOffering(registration.getOfferingID());
+                Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
+                Section section = offering == null ? null : Section.findSection(offering.getSectionID());
+                Faculty faculty = offering == null ? null : Faculty.findFaculty(offering.getFacultyID());
+                UI.liner(String.format(format, registration.getRegistrationID(), registration.getStudentID(),
+                        UI.fitText(student == null ? "Student archived" : student.getUserName(), 38),
+                        registration.getOfferingID(), course == null ? "-" : course.getCourseCode(),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 20),
+                        UI.fitText(faculty == null ? "-" : faculty.getUserName(), 22),
+                        registration.getRegistrationDate(), registration.getStatus()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED REGISTRATIONS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -296,10 +313,8 @@ public class CourseRegistration {
 
         UI.print("EDIT EXISTING REGISTRATION");
 
-
-
         do {
-            System.out.print("  Enter Registration ID > ");
+            UI.select("Enter Registration ID", false);
             input = in.nextLine().trim();
 
             if (input.equalsIgnoreCase("X")) return;
@@ -376,7 +391,9 @@ public class CourseRegistration {
                 case "/":
                     submit = true;
                     for (CourseRegistration existing : registrations) {
-                        if (existing != r
+                        if (existing != null && existing != r
+                                && existing.getStudentID() != null && existing.getOfferingID() != null
+                                && existing.getStatus() != null
                                 && existing.getStudentID().equalsIgnoreCase(studentID)
                                 && existing.getOfferingID().equalsIgnoreCase(offeringID)
                                 && existing.getStatus().equalsIgnoreCase("Enrolled")) {
@@ -404,7 +421,7 @@ public class CourseRegistration {
         UI.print("DELETE EXISTING REGISTRATION");
 
         do {
-            System.out.print("  Enter Registration ID > ");
+            UI.select("Enter Registration ID", false);
             input = in.nextLine().trim();
 
             if (input.equalsIgnoreCase("X")) return;
@@ -422,8 +439,9 @@ public class CourseRegistration {
         displayRegistration(r.getRegistrationID(), false);
 
         do {
-            System.out.print("  Confirm Registration Deletion? (Y/N) > ");
+            UI.select("Confirm Registration Deletion? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]")) UI.print("Invalid Input");
 
@@ -440,14 +458,14 @@ public class CourseRegistration {
     private static void registrationManage(String text, String registrationID,
                                            String studentID, String offeringID, String status) {
 
-        UI.header(text.toUpperCase() + ": COURSE REGISTRATION");
+        UI.header(text.toUpperCase() + ": COURSE REGISTRATION", false);
         UI.liner("     REGISTRATION ID : " + (registrationID.trim().isEmpty() ?
-                String.format("CR%04d", registrations.size() + 1) : registrationID));
-        UI.liner(" [1] STUDENT ID      : " + studentID);
-        UI.liner(" [2] OFFERING ID     : " + offeringID);
-        UI.liner(" [3] STATUS          : " + status);
-        UI.liner("");
+                String.format("CR%04d", registrations.size() + 1) : registrationID), false);
+        UI.liner(" [1] STUDENT ID      : " + studentID, false);
+        UI.liner(" [2] OFFERING ID     : " + offeringID, false);
+        UI.liner(" [3] STATUS          : " + status, false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }

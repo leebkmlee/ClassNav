@@ -31,9 +31,11 @@ public class CancelledSchedule {
     public CancelledSchedule(String scheduleID, String affectedDate, String reason,
                              String cancelledByUserID) {
         this.cancellationID = String.format("CAN%04d", nextCancellationID++);
-        this.scheduleID = scheduleID;
-        this.affectedDate = affectedDate.trim();
-        this.reason = reason.trim();
+        this.scheduleID = scheduleID == null ? "" : scheduleID.trim();
+        this.affectedDate = affectedDate == null ? "" : affectedDate.trim();
+        this.reason = reason == null ? "" : reason.trim();
+        if (this.scheduleID.isEmpty() || this.affectedDate.isEmpty() || this.reason.isEmpty())
+            UI.print("Cancellation record contains incomplete details.");
         this.cancelledByUserID = cancelledByUserID == null || cancelledByUserID.trim().isEmpty()
                 ? null : cancelledByUserID.trim().toUpperCase();
     }
@@ -77,7 +79,8 @@ public class CancelledSchedule {
             return null;
 
         for (CancelledSchedule c : cancellations) {
-            if (c.getCancellationID().equalsIgnoreCase(cancellationID.trim())) {
+            if (c != null && c.getCancellationID() != null
+                    && c.getCancellationID().equalsIgnoreCase(cancellationID.trim())) {
                 return c;
             }
         }
@@ -90,69 +93,95 @@ public class CancelledSchedule {
         CancelledSchedule c = findException(cancellationID);
 
         if (c == null) {
-            System.out.println("Exception not found.");
+            UI.print("Exception not found.");
             return;
         }
 
-        String reason = c.getReason();
-        if (reason.length() > 42) reason = reason.substring(0, 42) + "...";
+        String reason = c.getReason() == null || c.getReason().isBlank() ? "-" : c.getReason();
 
-        UI.header("CANCELLATION SCHEDULE DETAILS");
-        UI.liner(String.format("  CANCELLATION ID  : %s", c.getCancellationID()));
-        UI.liner(String.format("  SCHEDULE ID      : %s", c.getScheduleID()));
-        UI.liner(String.format("  AFFECTED DATE    : %s", c.getAffectedDate()));
-        UI.liner(String.format("  REASON           : %s", reason));
+        UI.header("CANCELLATION SCHEDULE DETAILS", false);
+        UI.liner(String.format("  CANCELLATION ID  : %s", c.getCancellationID()), false);
+        UI.liner(String.format("  SCHEDULE ID      : %s", c.getScheduleID()), false);
+        UI.liner(String.format("  AFFECTED DATE    : %s", c.getAffectedDate()), false);
+        UI.liner(String.format("  REASON           : %s", reason), false);
         if (c.getCancelledByUserID() != null)
-            UI.liner(String.format("  CANCELLED BY     : %s", c.getCancelledByUserID()));
-        UI.footer();
+            UI.liner(String.format("  CANCELLED BY     : %s", c.getCancelledByUserID()), false);
+        UI.footer(false);
         UI.returnButton();
     }
     public static void displayCancellations() {
-        UI.header("CANCELLED SCHEDULE LIST");
+        UI.header("CANCELLED SCHEDULES", true);
 
         if (cancellations.isEmpty()) {
-            UI.liner(" No schedule cancellations found.");
-            UI.footer();
-            return;
+            UI.liner("  No schedule cancellations found.", true);
+        } else {
+            UI.liner(String.format("  %-14s %-14s %-16s %-131s",
+                    "CANCELLATION", "SCHEDULE ID", "AFFECTED DATE", "REASON"), true);
+            UI.separator(true);
+
+            int count = 0;
+            for (CancelledSchedule cancellation : cancellations) {
+                if (cancellation == null) continue;
+                UI.liner(String.format("  %-14s %-14s %-16s %-131s",
+                        cancellation.getCancellationID(), cancellation.getScheduleID(),
+                        cancellation.getAffectedDate(), cancellation.getReason()), true);
+                count++;
+            }
+            UI.separator(true);
+            UI.liner("  TOTAL CANCELLATIONS: " + count, true);
         }
 
-        for (CancelledSchedule c : cancellations) {
-            UI.liner(String.format("  %-12s %-12s %s", c.getCancellationID(), c.getScheduleID(), c.getAffectedDate()));
-        }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchivedCancellations() {
-        UI.header("ARCHIVED CANCELLED SCHEDULE LIST");
+        UI.header("ARCHIVED SCHEDULE CANCELLATIONS", true);
 
         if (archivedCancellations.isEmpty()) {
-            UI.liner(" No archived schedule cancellations found.");
+            UI.liner("  No archived schedule cancellations found.", true);
         } else {
-            for (CancelledSchedule c : archivedCancellations) {
-                UI.liner(String.format("  %-12s %-12s %s", c.getCancellationID(), c.getScheduleID(), c.getAffectedDate()));
+            UI.liner(String.format("  %-14s %-14s %-16s %-131s",
+                    "CANCELLATION", "SCHEDULE ID", "AFFECTED DATE", "REASON"), true);
+            UI.separator(true);
+
+            int count = 0;
+            for (CancelledSchedule cancellation : archivedCancellations) {
+                if (cancellation == null) continue;
+                UI.liner(String.format("  %-14s %-14s %-16s %-131s",
+                        cancellation.getCancellationID(), cancellation.getScheduleID(),
+                        cancellation.getAffectedDate(), cancellation.getReason()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED CANCELLATIONS: " + count, true);
         }
 
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayCancellationsBySchedule(String scheduleID) {
-        boolean gate = false;
-
-        UI.header("CANCELLED SCHEDULES LIST");
-        UI.liner("  Schedule ID: " + scheduleID);
-        UI.separator();
-
-        for (CancelledSchedule c : cancellations) {
-            if (c.getScheduleID().equalsIgnoreCase(scheduleID.trim())) {
-                UI.liner(String.format("  %-12s %s", c.getCancellationID(), c.getAffectedDate()));
-                gate = true;
-            }
+        if (scheduleID == null || scheduleID.trim().isEmpty()) {
+            UI.print("Schedule ID is required.");
+            return;
         }
 
-        if (!gate) UI.liner("  No cancelled schedules found");
-        UI.footer();
+        UI.header("CANCELLED SCHEDULES LIST", true);
+        UI.liner("  SCHEDULE ID: " + scheduleID.trim(), true);
+        UI.liner(String.format("  %-16s %-18s %-142s", "CANCELLATION ID", "AFFECTED DATE", "REASON"), true);
+        UI.separator(true);
+        int count = 0;
+        for (CancelledSchedule c : cancellations) {
+            if (c != null && c.getScheduleID() != null
+                    && c.getScheduleID().equalsIgnoreCase(scheduleID.trim())) {
+                UI.liner(String.format("  %-16s %-18s %-142s", c.getCancellationID(),
+                        c.getAffectedDate(), UI.fitText(c.getReason(), 142)), true);
+                count++;
+            }
+        }
+        if (count == 0) UI.liner("  No cancelled schedules found.", true);
+        UI.separator(true);
+        UI.liner("  TOTAL CANCELLATIONS: " + count, true);
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -176,65 +205,54 @@ public class CancelledSchedule {
 
         ArrayList<Schedule> availableSchedules = new ArrayList<>();
         if (u instanceof Faculty) {
-            Faculty faculty = (Faculty) u;
-            for (CourseOffering offering : CourseOffering.getOfferingsByFaculty(faculty.getUserID())) {
-                if (offering == null)
-                    continue;
-                availableSchedules.addAll(Schedule.getSchedulesByOffering(offering.getOfferingID()));
+            for (CourseOffering offering : CourseOffering.getOfferingsByFaculty(u.getUserID())) {
+                if (offering != null)
+                    availableSchedules.addAll(Schedule.getSchedulesByOffering(offering.getOfferingID()));
             }
         } else {
             availableSchedules.addAll(Schedule.schedules);
         }
 
         if (availableSchedules.isEmpty()) {
-            UI.header("CANCEL SCHEDULE OCCURRENCE");
-            UI.liner("  No active schedules are available.");
-            UI.footer();
+            UI.print("No active schedules are available to cancel.");
             return;
         }
 
-        UI.header("CANCEL SCHEDULE OCCURRENCE");
-        UI.liner("  USER ID   : " + u.getUserID());
-        UI.liner("  USER NAME : " + u.getUserName());
+        UI.header("CANCEL SCHEDULE OCCURRENCE", true);
+        UI.liner("  USER ID: " + u.getUserID() + " | USER NAME: " + u.getUserName(), true);
         UI.liner(u instanceof Faculty
                 ? "  Select a schedule from your own teaching load."
-                : "  Select the schedule occurrence to cancel.");
-        UI.separator();
-
+                : "  Select the schedule occurrence to cancel.", true);
+        UI.separator(true);
+        String format = "  %-12s %-12s %-12s %-20s %-12s %-20s %-12s %-71s";
+        UI.liner(String.format(format, "SCHEDULE", "OFFERING", "COURSE", "SECTION", "DAY",
+                "TIME", "ROOM", "EFFECTIVE PERIOD"), true);
+        UI.separator(true);
         for (Schedule schedule : availableSchedules) {
-            if (schedule == null)
-                continue;
-
+            if (schedule == null) continue;
             CourseOffering offering = CourseOffering.findOffering(schedule.getOfferingID());
             Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
             Section section = offering == null ? null : Section.findSection(offering.getSectionID());
-
-            UI.liner(String.format("  %-10s | %-8s | %-12s", schedule.getScheduleID(),
-                    course == null ? "Course" : course.getCourseCode(),
-                    section == null ? "Section" : Section.getYearSection(section)));
-            UI.liner(String.format("             %s | %s - %s", schedule.getDay(),
-                    schedule.getStartTime(), schedule.getEndTime()));
-            UI.liner(String.format("             ROOM: %s | ACTIVE: %s - %s", schedule.getRoomCode(),
-                    schedule.getEffectiveFrom(), schedule.getEffectiveTo()));
-            UI.separator();
+            UI.liner(String.format(format, schedule.getScheduleID(), schedule.getOfferingID(),
+                    course == null ? "-" : course.getCourseCode(),
+                    UI.fitText(section == null ? "-" : Section.getYearSection(section), 20),
+                    schedule.getDay(), UI.fitText(schedule.getStartTime() + " - " + schedule.getEndTime(), 20),
+                    schedule.getRoomCode(), UI.fitText(schedule.getEffectiveFrom() + " - "
+                            + schedule.getEffectiveTo(), 71)), true);
         }
-        UI.liner("  [X] Cancel operation");
-        UI.footer();
+        UI.footer(true);
 
         Schedule selected = null;
         while (selected == null) {
-            System.out.print("  Enter Schedule ID > ");
+            UI.select("Enter Schedule ID", false);
             String scheduleID = in.nextLine().trim();
-            if (scheduleID.equalsIgnoreCase("X"))
-                return;
-
+            if (scheduleID.equalsIgnoreCase("X")) return;
             for (Schedule schedule : availableSchedules) {
                 if (schedule != null && schedule.getScheduleID().equalsIgnoreCase(scheduleID)) {
                     selected = schedule;
                     break;
                 }
             }
-
             if (selected == null)
                 UI.print(u instanceof Faculty
                         ? "Schedule not found in your teaching load. Choose one of the listed IDs."
@@ -243,22 +261,16 @@ public class CancelledSchedule {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu")
                 .withResolverStyle(ResolverStyle.STRICT);
-        DateTimeFormatter storedFormatter = DateTimeFormatter.ofPattern("M/d/uuuu")
-                .withResolverStyle(ResolverStyle.STRICT);
         LocalDate affectedDate = null;
         String dateText = "";
-
         while (affectedDate == null) {
-            System.out.print("  Enter Affected Date (MM/DD/YYYY) > ");
+            UI.select("Enter Affected Date (MM/dd/yyyy)", false);
             dateText = in.nextLine().trim();
-            if (dateText.equalsIgnoreCase("X"))
-                return;
-
+            if (dateText.equalsIgnoreCase("X")) return;
             try {
                 affectedDate = LocalDate.parse(dateText, formatter);
                 LocalDate effectiveFrom = LocalDate.parse(selected.getEffectiveFrom(), formatter);
                 LocalDate effectiveTo = LocalDate.parse(selected.getEffectiveTo(), formatter);
-
                 if (affectedDate.isBefore(LocalDate.now())) {
                     UI.print("A past schedule occurrence cannot be cancelled.");
                     affectedDate = null;
@@ -271,27 +283,23 @@ public class CancelledSchedule {
                     String actualDay = affectedDate.getDayOfWeek()
                             .getDisplayName(java.time.format.TextStyle.SHORT, Locale.ENGLISH)
                             .toLowerCase(Locale.ENGLISH);
-                    if (scheduledDay.length() > 3)
-                        scheduledDay = scheduledDay.substring(0, 3);
-
+                    if (scheduledDay.length() > 3) scheduledDay = scheduledDay.substring(0, 3);
                     if (!scheduledDay.equals(actualDay)) {
                         UI.print("The date does not match the schedule's day (" + selected.getDay() + ").");
                         affectedDate = null;
                     } else if (affectedDate.equals(LocalDate.now())
-                            && Room.convertToMinutes(selected.getStartTime()) >= 0
                             && LocalTime.now().getHour() * 60 + LocalTime.now().getMinute()
                             >= Room.convertToMinutes(selected.getStartTime())) {
                         UI.print("This class has already started or passed today.");
                         affectedDate = null;
                     }
                 }
-
                 if (affectedDate != null) {
                     dateText = affectedDate.format(formatter);
                     for (CancelledSchedule existing : cancellations) {
-                        if (existing != null
-                                && existing.getScheduleID().equalsIgnoreCase(selected.getScheduleID())
-                                && LocalDate.parse(existing.getAffectedDate(), storedFormatter).equals(affectedDate)) {
+                        if (existing != null && existing.getScheduleID().equalsIgnoreCase(selected.getScheduleID())
+                                && UI.parseDate(existing.getAffectedDate()) != null
+                                && UI.parseDate(existing.getAffectedDate()).equals(affectedDate)) {
                             UI.print("This schedule occurrence has already been cancelled.");
                             affectedDate = null;
                             break;
@@ -299,9 +307,9 @@ public class CancelledSchedule {
                     }
                     if (affectedDate != null) {
                         for (CancelledSchedule existing : archivedCancellations) {
-                            if (existing != null
-                                    && existing.getScheduleID().equalsIgnoreCase(selected.getScheduleID())
-                                    && LocalDate.parse(existing.getAffectedDate(), storedFormatter).equals(affectedDate)) {
+                            if (existing != null && existing.getScheduleID().equalsIgnoreCase(selected.getScheduleID())
+                                    && UI.parseDate(existing.getAffectedDate()) != null
+                                    && UI.parseDate(existing.getAffectedDate()).equals(affectedDate)) {
                                 UI.print("A cancellation record already exists for this schedule and date.");
                                 affectedDate = null;
                                 break;
@@ -310,57 +318,59 @@ public class CancelledSchedule {
                     }
                 }
             } catch (DateTimeParseException e) {
-                UI.print("Invalid date or schedule effective date. Use MM/DD/YYYY.");
+                UI.print("Invalid date or schedule effective date. Use MM/dd/yyyy.");
                 affectedDate = null;
             }
         }
 
         String reason = "";
         while (reason.isEmpty()) {
-            System.out.print("  Enter Cancellation Reason > ");
+            UI.select("Enter Cancellation Reason", false);
             reason = in.nextLine().trim();
-            if (reason.equalsIgnoreCase("X"))
-                return;
-            if (reason.isEmpty())
-                UI.print("Reason is required.");
+            if (reason.equalsIgnoreCase("X")) return;
+            if (reason.isEmpty()) UI.print("Reason is required.");
         }
 
         CancelledSchedule cancellation = new CancelledSchedule(
                 selected.getScheduleID(), dateText, reason, u.getUserID());
         cancellations.add(cancellation);
-
-        UI.header("SCHEDULE CANCELLATION CONFIRMED");
-        UI.liner("  CANCELLATION ID : " + cancellation.getCancellationID());
-        UI.liner("  SCHEDULE ID     : " + cancellation.getScheduleID());
-        UI.liner("  AFFECTED DATE   : " + cancellation.getAffectedDate());
-        UI.liner("  CANCELLED BY    : " + cancellation.getCancelledByUserID());
-        UI.liner("  REASON          : " + cancellation.getReason());
-        UI.footer();
+        UI.header("SCHEDULE CANCELLATION CONFIRMED", false);
+        UI.liner("  CANCELLATION ID : " + cancellation.getCancellationID(), false);
+        UI.liner("  SCHEDULE ID     : " + cancellation.getScheduleID(), false);
+        UI.liner("  AFFECTED DATE   : " + cancellation.getAffectedDate(), false);
+        UI.liner("  CANCELLED BY    : " + cancellation.getCancelledByUserID(), false);
+        UI.liner("  REASON          : " + cancellation.getReason(), false);
+        UI.footer(false);
     }
 
     public static void archiveCancelledSchedule() {
-        boolean gate = false;
-
-        UI.header("ARCHIVE CANCELLED SCHEDULES");
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/uuuu").withResolverStyle(ResolverStyle.STRICT);
-
-        for (CancelledSchedule c :  new ArrayList<>(cancellations)) {
-            LocalDate affectedDate = LocalDate.parse(c.getAffectedDate(), formatter);
-
-            if (LocalDate.now().isAfter(affectedDate)) {
-                archivedCancellations.add(c);
-                cancellations.remove(c);
-                UI.liner(String.format("  %-12s %-11s %s", c.getCancellationID(), c.getScheduleID(), c.getAffectedDate()));
-                gate = true;
+        ArrayList<CancelledSchedule> moved = new ArrayList<>();
+        for (CancelledSchedule cancellation : new ArrayList<>(cancellations)) {
+            LocalDate affectedDate = UI.parseDate(cancellation.getAffectedDate());
+            if (affectedDate != null && LocalDate.now().isAfter(affectedDate)) {
+                archivedCancellations.add(cancellation);
+                cancellations.remove(cancellation);
+                moved.add(cancellation);
             }
         }
 
-        if (!gate) UI.liner("  No available cancellation schedules can be archived.");
-        UI.footer();
-
-        if (gate) UI.print("Cancellation Schedule successfully archived");
+        UI.header("ARCHIVE CANCELLED SCHEDULES", true);
+        if (moved.isEmpty()) {
+            UI.liner("  No available cancellation schedules can be archived.", true);
+        } else {
+            String format = "  %-14s %-14s %-16s %-108s %-22s";
+            UI.liner(String.format(format, "CANCELLATION", "SCHEDULE", "AFFECTED DATE", "REASON", "CANCELLED BY"), true);
+            UI.separator(true);
+            for (CancelledSchedule cancellation : moved) {
+                UI.liner(String.format(format, cancellation.getCancellationID(), cancellation.getScheduleID(),
+                        cancellation.getAffectedDate(), cancellation.getReason(),
+                        cancellation.getCancelledByUserID() == null ? "-" : cancellation.getCancelledByUserID()), true);
+            }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED: " + moved.size(), true);
+        }
+        UI.footer(true);
+        if (!moved.isEmpty()) UI.print("Cancellation schedules successfully archived.");
         UI.returnButton();
     }
-
 }

@@ -13,8 +13,9 @@ public class MakeUpSchedule {
     // ROOM REQUEST FIELDS
     private static int nextMakeUpID = 1;
 
-    private final String makeupID, facultyID, roomCode, requestType, requestedDate, startTime, endTime, reason,
-                         status, reviewedBy, reviewedAt;
+    private final String makeupID, facultyID, offeringID, requestID, roomCode, requestType, requestedDate,
+            startTime, endTime, reason, status, reviewedBy, reviewedAt;
+    private final boolean valid;
 
     public static ArrayList<MakeUpSchedule> makeUpSchedules = new ArrayList<>();
     public static ArrayList<MakeUpSchedule> archiveMakeUpSchedules = new ArrayList<>();
@@ -27,18 +28,74 @@ public class MakeUpSchedule {
     public MakeUpSchedule(String facultyID, String roomCode, String requestType,
                           String requestedDate, String startTime, String endTime,
                           String reason, String reviewedBy, String reviewedAt) {
-        LocalDate date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
+        this(facultyID, roomCode, requestType, requestedDate, startTime, endTime,
+                reason, reviewedBy, reviewedAt, "", "");
+    }
+
+    public MakeUpSchedule(String facultyID, String roomCode, String requestType,
+                          String requestedDate, String startTime, String endTime,
+                          String reason, String reviewedBy, String reviewedAt,
+                          String offeringID, String requestID) {
+        Faculty faculty = Faculty.findFaculty(facultyID);
+        CourseOffering offering = offeringID == null || offeringID.trim().isEmpty()
+                ? null : CourseOffering.findOffering(offeringID);
+        Room room = Room.findRoom(roomCode);
+        LocalDate date = null;
+        String convertedStart = UI.convertTime(startTime);
+        String convertedEnd = UI.convertTime(endTime);
+
+        try {
+            if (requestedDate != null && !requestedDate.trim().isEmpty())
+                date = LocalDate.parse(requestedDate.trim(), DATE_FORMAT);
+        } catch (DateTimeParseException e) {
+            UI.print("Invalid make-up schedule date. Use MM/dd/yyyy.");
+        }
+
+        boolean offeringValid = offeringID == null || offeringID.trim().isEmpty()
+                || (offering != null && offering.getFacultyID() != null
+                && offering.getFacultyID().equalsIgnoreCase(facultyID)
+                && Course.findCourse(offering.getCourseCode()) != null
+                && Section.findSection(offering.getSectionID()) != null);
+        boolean detailsValid = faculty != null && room != null && date != null && offeringValid
+                && requestType != null && !requestType.trim().isEmpty()
+                && reason != null && !reason.trim().isEmpty()
+                && !convertedStart.isEmpty() && !convertedEnd.isEmpty();
+        if (detailsValid) {
+            try {
+                detailsValid = LocalTime.parse(convertedStart, TIME_FORMAT)
+                        .isBefore(LocalTime.parse(convertedEnd, TIME_FORMAT));
+            } catch (DateTimeParseException e) {
+                detailsValid = false;
+            }
+        }
+
         this.makeupID = String.format("MS%04d", nextMakeUpID++);
-        this.facultyID = facultyID.trim().toUpperCase();
-        this.roomCode = roomCode == null || roomCode.trim().isEmpty() ? null : roomCode.trim().toUpperCase();
-        this.requestType = requestType.trim();
-        this.requestedDate = date.format(DATE_FORMAT);
-        this.startTime = startTime.trim();
-        this.endTime = endTime.trim();
-        this.reason = reason.trim();
-        this.status = "Approved";
-        this.reviewedBy = reviewedBy != null ? reviewedBy.trim() : null;
-        this.reviewedAt = reviewedAt != null ? reviewedAt.trim() : null;
+        this.facultyID = faculty == null ? safeText(facultyID) : faculty.getUserID();
+        this.offeringID = offering == null ? "" : offering.getOfferingID();
+        this.requestID = safeNullableText(requestID);
+        this.roomCode = room == null ? safeText(roomCode) : room.getRoomCode();
+        this.requestType = safeText(requestType);
+        this.requestedDate = date == null ? "" : date.format(DATE_FORMAT);
+        this.startTime = convertedStart == null ? "" : convertedStart;
+        this.endTime = convertedEnd == null ? "" : convertedEnd;
+        this.reason = safeText(reason);
+        this.reviewedBy = safeNullableText(reviewedBy);
+        this.reviewedAt = safeNullableText(reviewedAt);
+        this.valid = detailsValid;
+        this.status = valid ? "Approved" : "Invalid";
+        if (!valid) UI.print("Make-up schedule was not created because one or more details are invalid.");
+    }
+
+    private static String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private static String safeNullableText(String value) {
+        return value == null || value.trim().isEmpty() ? null : value.trim();
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     // SAMPLE ROOM REQUESTS
@@ -82,15 +139,17 @@ public class MakeUpSchedule {
                 "Room needed for a larger class", null, null));
 
         makeUpSchedules.add(new MakeUpSchedule("F0015","RM006","Reservation","11/13/2026","8:00 AM","9:00 AM","Additional lecture session",null,null));
-        makeUpSchedules.add(new MakeUpSchedule("F0016","RM007","Room Change","11/16/2026","9:00 AM","10:00 AM","Original room unavailable",null,null));
-        makeUpSchedules.add(new MakeUpSchedule("F0017","RM009","Make-up Class","11/17/2026","10:00 AM","11:00 AM","Replacement laboratory session",null,null));
-        makeUpSchedules.add(new MakeUpSchedule("F0018","RM012","Reservation","11/18/2026","1:00 PM","2:00 PM","Additional review class",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0012","RM007","Room Change","11/16/2026","9:00 AM","10:00 AM","Original room unavailable",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0013","RM009","Make-up Class","11/17/2026","10:00 AM","11:00 AM","Replacement laboratory session",null,null));
+        makeUpSchedules.add(new MakeUpSchedule("F0014","RM012","Reservation","11/18/2026","1:00 PM","2:00 PM","Additional review class",null,null));
         makeUpSchedules.add(new MakeUpSchedule("F0009","RM014","Room Change","11/19/2026","2:00 PM","3:00 PM","Scheduling conflict in original room",null,null));
     }
 
     // GETTER METHODS
     public String getMakeUpID() { return makeupID; }
     public String getFacultyID() { return facultyID; }
+    public String getOfferingID() { return offeringID; }
+    public String getRequestID() { return requestID; }
     public String getRoomCode() { return roomCode; }
     public String getRequestType() { return requestType; }
     public String getRequestedDate() { return requestedDate; }
@@ -157,64 +216,79 @@ public class MakeUpSchedule {
             return;
         }
 
-        UI.header("ROOM REQUEST DETAILS");
-        UI.liner("  REQUEST ID    : " + request.getMakeUpID());
-        UI.liner("  FACULTY ID    : " + request.getFacultyID());
-        UI.liner("  ROOM CODE     : " + request.getRoomCode());
-        UI.liner("  REQUEST TYPE  : " + request.getRequestType());
-        UI.liner("  DATE          : " + request.getRequestedDate());
-        UI.liner("  START TIME    : " + request.getStartTime());
-        UI.liner("  END TIME      : " + request.getEndTime());
-        UI.liner("  REASON        : " + request.getReason());
-        UI.liner("  STATUS        : " + request.getStatus());
-        UI.liner("  REVIEWED BY   : " + (request.getReviewedBy() == null ? "N/A" : request.getReviewedBy()));
-        UI.liner("  REVIEWED AT   : " + (request.getReviewedAt() == null ? "N/A" : request.getReviewedAt()));
-        UI.footer();
+        UI.header("ROOM REQUEST DETAILS", false);
+        UI.liner("  REQUEST ID    : " + request.getMakeUpID(), false);
+        UI.liner("  FACULTY ID    : " + request.getFacultyID(), false);
+        UI.liner("  ROOM CODE     : " + request.getRoomCode(), false);
+        UI.liner("  REQUEST TYPE  : " + request.getRequestType(), false);
+        UI.liner("  DATE          : " + request.getRequestedDate(), false);
+        UI.liner("  START TIME    : " + request.getStartTime(), false);
+        UI.liner("  END TIME      : " + request.getEndTime(), false);
+        UI.liner("  REASON        : " + request.getReason(), false);
+        UI.liner("  STATUS        : " + request.getStatus(), false);
+        UI.liner("  REVIEWED BY   : " + (request.getReviewedBy() == null ? "N/A" : request.getReviewedBy()), false);
+        UI.liner("  REVIEWED AT   : " + (request.getReviewedAt() == null ? "N/A" : request.getReviewedAt()), false);
+        UI.footer(false);
         UI.returnButton();
     }
     public static void displayMakeUpSchedules() {
-
-        UI.header("ROOM REQUESTS");
-
-        if (makeUpSchedules.isEmpty()) {
-            UI.liner("  No room makeUpSchedules found.");
-        } else {
-            for (MakeUpSchedule request : makeUpSchedules) {
-                UI.liner(String.format(
-                        "  %-12s %-12s %-16s %-13s %-10s",
-                        request.getMakeUpID(),
-                        request.getFacultyID(),
-                        request.getRequestType(),
-                        request.getRequestedDate(),
-                        request.getStatus()));
+        UI.header("MAKE-UP SCHEDULES", true);
+        if (makeUpSchedules.isEmpty()) UI.liner("  No make-up schedules found.", true);
+        else {
+            String format = "  %-10s %-10s %-12s %-10s %-10s %-16s %-8s %-10s %-18s %-10s %-54s";
+            UI.liner(String.format(format, "MAKE-UP ID", "REQUEST ID", "OFFERING ID", "FACULTY ID", "COURSE",
+                    "SECTION", "ROOM", "DATE", "TIME", "STATUS", "REASON"), true);
+            UI.separator(true);
+            int count = 0;
+            for (MakeUpSchedule schedule : makeUpSchedules) {
+                if (schedule == null) continue;
+                CourseOffering offering = CourseOffering.findOffering(schedule.getOfferingID());
+                Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
+                Section section = offering == null ? null : Section.findSection(offering.getSectionID());
+                UI.liner(String.format(format, schedule.getMakeUpID(),
+                        UI.fitText(schedule.getRequestID() == null ? "-" : schedule.getRequestID(), 12),
+                        UI.fitText(schedule.getOfferingID(), 14), schedule.getFacultyID(),
+                        UI.fitText(course == null ? "-" : course.getCourseCode(), 14),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 18),
+                        schedule.getRoomCode(), schedule.getRequestedDate(),
+                        UI.fitText(UI.formatTime(schedule.getStartTime()) + " - " + UI.formatTime(schedule.getEndTime()), 20),
+                        schedule.getStatus(), schedule.getReason()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL MAKE-UP SCHEDULES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchiveMakeUpSchedules() {
-
-        UI.header("ARCHIVE MAKE-UP SCHEDULE");
-
-        if (archiveMakeUpSchedules.isEmpty()) {
-            UI.liner("  No archived make-up schedules found.");
-        } else {
-            for (int i = 0; i < archiveMakeUpSchedules.size(); i++) {
-                MakeUpSchedule request = archiveMakeUpSchedules.get(i);
-
-                UI.liner(String.format("  MAKE-UP ID      : %s", request.getMakeUpID()));
-                UI.liner(String.format("  FACULTY ID      : %s", request.getFacultyID()));
-                UI.liner(String.format("  REQUEST TYPE    : %s", request.getRequestType()));
-                UI.liner(String.format("  REQUESTED DATE  : %s", request.getRequestedDate()));
-                UI.liner(String.format("  STATUS          : %s", request.getStatus()));
-
-                if (i < archiveMakeUpSchedules.size() - 1)
-                    UI.separator();
+        UI.header("ARCHIVED MAKE-UP SCHEDULES", true);
+        if (archiveMakeUpSchedules.isEmpty()) UI.liner("  No archived make-up schedules found.", true);
+        else {
+            String format = "  %-10s %-10s %-12s %-10s %-10s %-16s %-8s %-10s %-18s %-10s %-54s";
+            UI.liner(String.format(format, "MAKE-UP ID", "REQUEST ID", "OFFERING ID", "FACULTY ID", "COURSE",
+                    "SECTION", "ROOM", "DATE", "TIME", "STATUS", "REASON"), true);
+            UI.separator(true);
+            int count = 0;
+            for (MakeUpSchedule schedule : archiveMakeUpSchedules) {
+                if (schedule == null) continue;
+                CourseOffering offering = CourseOffering.findOffering(schedule.getOfferingID());
+                Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
+                Section section = offering == null ? null : Section.findSection(offering.getSectionID());
+                UI.liner(String.format(format, schedule.getMakeUpID(),
+                        UI.fitText(schedule.getRequestID() == null ? "-" : schedule.getRequestID(), 12),
+                        UI.fitText(schedule.getOfferingID(), 14), schedule.getFacultyID(),
+                        UI.fitText(course == null ? "-" : course.getCourseCode(), 14),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 18),
+                        schedule.getRoomCode(), schedule.getRequestedDate(),
+                        UI.fitText(UI.formatTime(schedule.getStartTime()) + " - " + UI.formatTime(schedule.getEndTime()), 20),
+                        schedule.getStatus(), schedule.getReason()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED MAKE-UP SCHEDULES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -222,7 +296,7 @@ public class MakeUpSchedule {
     public static void createMakeUpSchedule() {
 
         String facultyID = "", roomCode = "", requestType = "", requestedDate = "", startTime = "", endTime = "",
-               reason = "", choice;
+                reason = "", choice;
         boolean submit = false;
 
         while (!submit) {
@@ -412,8 +486,9 @@ public class MakeUpSchedule {
         String choice;
 
         do {
-            System.out.print("  Confirm Request Deletion? (Y/N) > ");
+            UI.select("Confirm Request Deletion? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]")) UI.print("Invalid input.");
         } while (!choice.matches("[YN]"));
@@ -425,20 +500,20 @@ public class MakeUpSchedule {
         }
     }
     private static void makeUpScheduleManage(String text, String requestID, String facultyID, String roomCode,
-            String requestType, String requestedDate, String startTime, String endTime, String reason, String status) {
-        UI.header(text.toUpperCase() + ": ROOM REQUEST INFORMATION");
-        UI.liner(String.format("     REQUEST ID      : %s", requestID));
-        UI.liner(String.format(" [1] FACULTY ID      : %s", facultyID));
-        UI.liner(String.format(" [2] ROOM CODE       : %s", roomCode));
-        UI.liner(String.format(" [3] REQUEST TYPE    : %s", requestType));
-        UI.liner(String.format(" [4] REQUESTED DATE  : %s", requestedDate));
-        UI.liner(String.format(" [5] START TIME      : %s", startTime));
-        UI.liner(String.format(" [6] END TIME        : %s", endTime));
-        UI.liner(String.format(" [7] REASON          : %s", reason));
-        UI.liner(String.format("     STATUS          : %s", status));
-        UI.liner("");
+                                             String requestType, String requestedDate, String startTime, String endTime, String reason, String status) {
+        UI.header(text.toUpperCase() + ": ROOM REQUEST INFORMATION", false);
+        UI.liner(String.format("     REQUEST ID      : %s", requestID), false);
+        UI.liner(String.format(" [1] FACULTY ID      : %s", facultyID), false);
+        UI.liner(String.format(" [2] ROOM CODE       : %s", roomCode), false);
+        UI.liner(String.format(" [3] REQUEST TYPE    : %s", requestType), false);
+        UI.liner(String.format(" [4] REQUESTED DATE  : %s", requestedDate), false);
+        UI.liner(String.format(" [5] START TIME      : %s", startTime), false);
+        UI.liner(String.format(" [6] END TIME        : %s", endTime), false);
+        UI.liner(String.format(" [7] REASON          : %s", reason), false);
+        UI.liner(String.format("     STATUS          : %s", status), false);
+        UI.liner("", false);
 
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }

@@ -14,6 +14,7 @@ public class Building {
 
     public static ArrayList<Building> buildings = new ArrayList<>();
     public static ArrayList<Building> archiveBuildings = new ArrayList<>();
+    private static ArrayList<Room> buildingArchivedRooms = new ArrayList<>();
 
     // CONSTRUCTOR
     public Building(String buildingName) {
@@ -51,13 +52,17 @@ public class Building {
     // SETTERS METHOD
     public void setBuildingName(String buildingName) {
 
-        if (buildingName == null || buildingName.trim().isEmpty())
-            throw new IllegalArgumentException("Building name is required");
+        if (buildingName == null || buildingName.trim().isEmpty()) {
+            UI.print("Building name is required.");
+            return;
+        }
 
         Building existing = findBuildingByName(buildingName);
 
-        if (existing != null && existing != this)
-            throw new IllegalArgumentException("Building name already exists");
+        if (existing != null && existing != this) {
+            UI.print("Building name already exists.");
+            return;
+        }
 
         this.buildingName = buildingName.trim();
     }
@@ -69,7 +74,8 @@ public class Building {
             return null;
 
         for (Building b : buildings) {
-            if (buildingCode.equalsIgnoreCase(b.getBuildingCode()))
+            if (b != null && b.getBuildingCode() != null
+                    && buildingCode.trim().equalsIgnoreCase(b.getBuildingCode()))
                 return b;
         }
 
@@ -81,7 +87,8 @@ public class Building {
             return null;
 
         for (Building b : buildings) {
-            if (buildingName.trim().equalsIgnoreCase(b.getBuildingName()))
+            if (b != null && b.getBuildingName() != null
+                    && buildingName.trim().equalsIgnoreCase(b.getBuildingName()))
                 return b;
         }
 
@@ -90,41 +97,41 @@ public class Building {
 
     // DISPLAY METHODS
     public static void displayBuildings() {
-
-        UI.header("BUILDINGS");
-
-        if (buildings.isEmpty()) {
-            UI.liner("  No buildings found.");
-        } else {
+        UI.header("BUILDINGS", true);
+        if (buildings.isEmpty()) UI.liner("  No buildings found.", true);
+        else {
+            UI.liner(String.format("  %-18s %-159s", "BUILDING CODE", "BUILDING NAME"), true);
+            UI.separator(true);
+            int count = 0;
             for (Building b : buildings) {
-                UI.liner(String.format(
-                        "  %-15s %-30s",
-                        b.getBuildingCode(),
-                        b.getBuildingName()
-                ));
+                if (b == null) continue;
+                UI.liner(String.format("  %-18s %-159s", b.getBuildingCode(),
+                        UI.fitText(b.getBuildingName(), 159)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL BUILDINGS: " + count, true);
         }
-        UI.footer();
-
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchiveBuildings() {
-
-        UI.header("ARCHIVED BUILDINGS");
-
-        if (archiveBuildings.isEmpty()) {
-            UI.liner("  No archived buildings found.");
-        } else {
+        UI.header("ARCHIVED BUILDINGS", true);
+        if (archiveBuildings.isEmpty()) UI.liner("  No archived buildings found.", true);
+        else {
+            UI.liner(String.format("  %-18s %-159s", "BUILDING CODE", "BUILDING NAME"), true);
+            UI.separator(true);
+            int count = 0;
             for (Building b : archiveBuildings) {
-                UI.liner(String.format(
-                        "  %-15s %-30s",
-                        b.getBuildingCode(),
-                        b.getBuildingName()
-                ));
+                if (b == null) continue;
+                UI.liner(String.format("  %-18s %-159s", b.getBuildingCode(),
+                        UI.fitText(b.getBuildingName(), 159)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED BUILDINGS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayBuilding(String buildingCode, boolean print) {
@@ -136,67 +143,38 @@ public class Building {
             return;
         }
 
-        UI.header("BUILDING DETAILS");
-        UI.liner(String.format("  BUILDING CODE  : %s", b.getBuildingCode()));
-        UI.liner(String.format("  BUILDING NAME  : %s", b.getBuildingName()));
-        UI.footer();
+        UI.header("BUILDING DETAILS", false);
+        UI.liner(String.format("  BUILDING CODE  : %s", b.getBuildingCode()), false);
+        UI.liner(String.format("  BUILDING NAME  : %s", b.getBuildingName()), false);
+        UI.footer(false);
         if (print) UI.returnButton();
     }
     public static void displayRooms(String buildingCode) {
-
         Building b = findBuilding(buildingCode);
-
         if (b == null) {
             UI.print("Building not found");
             return;
         }
 
-        UI.header("ROOM LIST");
-        UI.liner(String.format("  BUILDING CODE  : %s", b.getBuildingCode()));
-        UI.liner("  Rooms under " + b.getBuildingName() + ":");
-        UI.separator();
+        UI.header("ROOM LIST", true);
+        UI.liner("  BUILDING CODE: " + b.getBuildingCode()
+                + " | BUILDING: " + b.getBuildingName(), true);
+        UI.liner(String.format("  %-12s %-102s %-15s %-15s %-12s %-17s",
+                "ROOM CODE", "ROOM DESCRIPTION", "FLOOR", "ROOM TYPE", "CAPACITY", "COLLEGE"), true);
+        UI.separator(true);
 
         int count = 0;
-
         for (Room r : rooms) {
-
-            if (b.getBuildingCode().equalsIgnoreCase(r.getBuildingCode())) {
-
-                int floor = r.getFloorNumber();
-                String floorText;
-
-                if (floor < 1) {
-                    floorText = "Invalid Floor";
-                } else if (floor % 100 >= 11 && floor % 100 <= 13) {
-                    floorText = floor + "th Floor";
-                } else if (floor % 10 == 1) {
-                    floorText = floor + "st Floor";
-                } else if (floor % 10 == 2) {
-                    floorText = floor + "nd Floor";
-                } else if (floor % 10 == 3) {
-                    floorText = floor + "rd Floor";
-                } else {
-                    floorText = floor + "th Floor";
-                }
-
-                UI.liner(String.format(
-                        "  %-15s %-35s %s",
-                        r.getRoomCode(),
-                        r.getRoomDescription(),
-                        floorText
-                ));
-
-                count++;
-            }
+            if (r == null || !b.getBuildingCode().equalsIgnoreCase(r.getBuildingCode())) continue;
+            UI.liner(String.format("  %-12s %-102s %-15s %-15s %-12s %-17s",
+                    r.getRoomCode(), UI.fitText(r.getRoomDescription(), 102),
+                    UI.fitText(Room.getFloorText(r.getFloorNumber()), 15),
+                    UI.fitText(r.getRoomType(), 15), r.getCapacity(), r.getCollegeCode()), true);
+            count++;
         }
-
-        if (count == 0)
-            UI.liner("  No rooms registered under this building.");
-        else {
-            UI.liner("");
-            UI.liner("  TOTAL ROOMS: " + count);
-        }
-        UI.footer();
+        UI.separator(true);
+        UI.liner("  TOTAL ROOMS: " + count, true);
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -237,7 +215,7 @@ public class Building {
                     break;
 
                 case "/":
-                    if (buildings.isEmpty()) UI.print("Details are incomplete");
+                    if (buildingName == null || buildingName.isEmpty()) UI.print("Building name is required.");
                     else {
                         buildings.add(new Building(buildingName));
                         UI.print("Building successfully created");
@@ -295,7 +273,7 @@ public class Building {
                         }
                         else if (buildingName.isEmpty()) UI.print("Building name is required");
                         else if (Building.findBuildingByName(buildingName) != null && Building.findBuildingByName(buildingName) != b)
-                                UI.print("Building name already exists");
+                            UI.print("Building name already exists");
 
                     } while (buildingName.isEmpty()
                             || (Building.findBuildingByName(buildingName) != null
@@ -330,11 +308,21 @@ public class Building {
         } while (Building.findBuilding(input) == null);
 
         Building b = Building.findBuilding(input);
+        for (Room room : Room.rooms) {
+            if (room != null && room.getBuildingCode().equalsIgnoreCase(b.getBuildingCode())
+                    && Room.hasUpcomingUse(room.getRoomCode())) {
+                UI.print("Building cannot be archived while one of its rooms has an active schedule,");
+                UI.print("an approved future make-up class, or a pending future room request.");
+                return;
+            }
+        }
+
         displayBuilding(b.getBuildingCode(), false);
 
         do {
             UI.select("Confirm Building Archive? (Y/N)",true);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
@@ -342,18 +330,69 @@ public class Building {
         } while (!choice.matches("[YN]"));
 
         if (choice.equals("Y")) {
+            for (Room room : new ArrayList<>(Room.rooms)) {
+                if (room != null && room.getBuildingCode().equalsIgnoreCase(b.getBuildingCode())) {
+                    Room.rooms.remove(room);
+                    if (!Room.archiveRooms.contains(room)) Room.archiveRooms.add(room);
+                    if (!buildingArchivedRooms.contains(room)) buildingArchivedRooms.add(room);
+                }
+            }
             archiveBuildings.add(b);
             buildings.remove(b);
-            UI.print("Building successfully archived");
-        }
-        else UI.print("Archiving cancelled");
+            UI.print("Building and its rooms successfully archived.");
+        } else UI.print("Archiving cancelled");
     }
+
+    public static void restoreBuilding() {
+        String input, choice;
+        UI.print("RESTORE ARCHIVED BUILDING");
+
+        do {
+            UI.select("Enter Building Code", false);
+            input = in.nextLine().trim();
+            if (input.equalsIgnoreCase("X")) return;
+            if (input.isEmpty()) UI.print("Building code is required.");
+            else if (findArchivedBuilding(input) == null) UI.print("Archived building does not exist.");
+        } while (input.isEmpty() || findArchivedBuilding(input) == null);
+
+        Building building = findArchivedBuilding(input);
+        if (building == null) return;
+
+        do {
+            UI.select("Confirm Building Restoration? (Y/N)", false);
+            choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
+            if (!choice.matches("[YN]")) UI.print("Enter Y or N.");
+        } while (!choice.matches("[YN]"));
+
+        if (choice.equals("Y")) {
+            archiveBuildings.remove(building);
+            buildings.add(building);
+            for (Room room : new ArrayList<>(buildingArchivedRooms)) {
+                if (room != null && room.getBuildingCode().equalsIgnoreCase(building.getBuildingCode())) {
+                    Room.archiveRooms.remove(room);
+                    if (!Room.rooms.contains(room)) Room.rooms.add(room);
+                    buildingArchivedRooms.remove(room);
+                }
+            }
+            UI.print("Building and its archived rooms successfully restored.");
+        } else UI.print("Building restoration cancelled.");
+    }
+
+    private static Building findArchivedBuilding(String buildingCode) {
+        if (buildingCode == null || buildingCode.trim().isEmpty()) return null;
+        for (Building building : archiveBuildings) {
+            if (building != null && building.getBuildingCode().equalsIgnoreCase(buildingCode.trim())) return building;
+        }
+        return null;
+    }
+
     private static void buildingManage(String text, String buildingCode, String buildingName) {
-        UI.header(text.toUpperCase() + ": BUILDING INFORMATION");
-        UI.liner(String.format("      BUILDING CODE : %s", buildingCode));
-        UI.liner(String.format("  [1] BUILDING NAME : %s", buildingName));
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": BUILDING INFORMATION", false);
+        UI.liner(String.format("      BUILDING CODE : %s", buildingCode), false);
+        UI.liner(String.format("  [1] BUILDING NAME : %s", buildingName), false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }

@@ -35,6 +35,14 @@ public class UI {
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
     }
     public static void print(String input1, String input2) {
+        if (input1 == null) input1 = "null";
+        if (input2 == null) input2 = "null";
+
+        if (input1.length() > INNERWIDTH || input2.length() > INNERWIDTH) {
+            print(input1 + " | " + input2);
+            return;
+        }
+
         int left = (INNERWIDTH - input1.length()) / 2;
         int right = INNERWIDTH - input1.length() - left;
         int attemptLeft = (INNERWIDTH - input2.length()) / 2;
@@ -46,6 +54,7 @@ public class UI {
     }
     public static void startPrint(String title) {
         System.out.println("\n┌" + "─".repeat(INNERWIDTH) + "┐");
+        title = fitText(title, INNERWIDTH);
         int left = (INNERWIDTH - title.length()) / 2;
         int right = INNERWIDTH - title.length() - left;
         System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
@@ -55,28 +64,33 @@ public class UI {
         System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
         System.out.print("  Select > ");
     }
-    public static void header (String title) {
-        System.out.println("\n┌" + "─".repeat(INNERWIDTH) + "┐");
-        int left = (INNERWIDTH - title.length()) / 2;
-        int right = INNERWIDTH - title.length() - left;
+    public static void header (String title, boolean isExtended) {
+        int width = isExtended ? TABLEWIDTH : INNERWIDTH;
+        title = fitText(title, width);
+
+        System.out.println("\n┌" + "─".repeat(width) + "┐");
+        int left = (width - title.length()) / 2;
+        int right = width - title.length() - left;
         System.out.println("│" + " ".repeat(left) + title + " ".repeat(right) + "│");
-        System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
+        System.out.println("├" + "─".repeat(width) + "┤");
     }
-    public static void footer () {
-        System.out.println("└" + "─".repeat(INNERWIDTH) + "┘");
+    public static void footer (boolean isExtended) {
+        int width = isExtended ? TABLEWIDTH : INNERWIDTH;
+        System.out.println("└" + "─".repeat(width) + "┘");
     }
-    public static void separator() {
-        System.out.println("├" + "─".repeat(INNERWIDTH) + "┤");
+    public static void separator(boolean isExtended) {
+        int width = isExtended ? TABLEWIDTH : INNERWIDTH;
+        System.out.println("├" + "─".repeat(width) + "┤");
     }
     public static void manageUI(String manageText) {
-        UI.header("MANAGE " + manageText.toUpperCase());
+        UI.header("MANAGE " + manageText.toUpperCase(), false);
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " [1] Create New " + manageText);
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " [2] Update Existing " + manageText);
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " [3] Delete Existing " + manageText);
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " [4] View All " + manageText);
         System.out.printf("│%-" + INNERWIDTH + "s│%n", " ");
-        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [0] Back");
-        UI.footer();
+        System.out.printf("│%-" + INNERWIDTH + "s│%n", " [X] Back");
+        UI.footer(false);
     }
     public static void option() {
         String options = "[/] Submit     [X] Return";
@@ -84,8 +98,25 @@ public class UI {
         int right = INNERWIDTH - options.length() - left;
         System.out.println("│" + " ".repeat(left) + options + " ".repeat(right) + "│");
     }
-    public static void liner (String text){
-        System.out.printf("│%-" + INNERWIDTH + "s│%n", text);
+    public static void liner (String text, boolean isExtended){
+        int width = isExtended ? TABLEWIDTH : INNERWIDTH;
+        if (text == null) text = "null";
+
+        String[] lines = text.split("\\R", -1);
+        for (String line : lines) {
+            if (line.isEmpty()) {
+                System.out.printf("│%-" + width + "s│%n", "");
+                continue;
+            }
+            while (line.length() > width) {
+                int end = width;
+                int space = line.lastIndexOf(' ', end);
+                if (space > 0) end = space;
+                System.out.printf("│%-" + width + "s│%n", line.substring(0, end));
+                line = line.substring(end).stripLeading();
+            }
+            System.out.printf("│%-" + width + "s│%n", line);
+        }
     }
     public static void returnButton() {
         System.out.print(" ⏎ Press ENTER to return ...");
@@ -101,6 +132,7 @@ public class UI {
             DateTimeFormatter.ofPattern("MM/dd/uuuu").withResolverStyle(ResolverStyle.STRICT);
     public static Scanner in = new Scanner (System.in);
     public static final int INNERWIDTH = 70;
+    public static final int TABLEWIDTH = 180;
     public static final String[] DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     public static String normalizeDay(String day) {
         if (day == null) return null;
@@ -115,30 +147,26 @@ public class UI {
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     public static final DateTimeFormatter DISPLAY_TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
     public static String convertTime(String time) {
-
-        if (time == null || time.trim().isEmpty())
-            throw new IllegalArgumentException("Time cannot be empty.");
+        if (time == null || time.trim().isEmpty()) {
+            UI.print("Time is required.");
+            return "";
+        }
 
         String value = time.trim().toUpperCase(Locale.ENGLISH);
-
-        DateTimeFormatter inputFormat =
-                DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]",
-                        Locale.ENGLISH);
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("[h:mm a][hh:mm a]",
+                Locale.ENGLISH);
 
         try {
             LocalTime parsedTime;
-
-            if (value.matches("\\d{2}:\\d{2}")) {
+            if (value.matches("\\d{2}:\\d{2}"))
                 parsedTime = LocalTime.parse(value, TIME_FORMAT);
-            } else {
+            else
                 parsedTime = LocalTime.parse(value, inputFormat);
-            }
 
             return parsedTime.format(TIME_FORMAT);
-
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(
-                    "Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
+            UI.print("Invalid time. Use hh:mm AM/PM, such as 02:30 PM.");
+            return "";
         }
     }
     public static String formatTime(String time) {

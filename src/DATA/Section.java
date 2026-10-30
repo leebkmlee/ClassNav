@@ -85,18 +85,42 @@ public class Section {
 
     // DISPLAY METHODS
     public static void displaySections() {
-
-        UI.header("SECTIONS");
-
-        if (sections.isEmpty()) UI.liner("  No sections found.");
+        UI.header("SECTIONS", true);
+        if (sections.isEmpty()) UI.liner("  No sections found.", true);
         else {
-            for (Section s : sections) {
-                if (s == null) continue;
-                UI.liner(String.format("  %-12s %-15s", s.getSectionID(), getYearSection(s)));
+            String format = "  %-14s %-22s %-12s %-10s %-10s %-20s %-59s %-24s";
+            UI.liner(String.format(format, "SECTION ID", "YEAR / SECTION", "YEAR LEVEL", "BLOCK", "GROUP",
+                    "OFFERINGS", "COURSE CODES", "STUDENTS"), true);
+            UI.separator(true);
+            int count = 0;
+            for (Section section : sections) {
+                if (section == null) continue;
+                ArrayList<String> offeringIDs = new ArrayList<>(), courseCodes = new ArrayList<>(), studentIDs = new ArrayList<>();
+                for (CourseOffering offering : CourseOffering.offerings) {
+                    if (offering == null || offering.getSectionID() == null
+                            || !offering.getSectionID().equalsIgnoreCase(section.getSectionID())) continue;
+                    offeringIDs.add(offering.getOfferingID());
+                    if (offering.getCourseCode() != null && !courseCodes.contains(offering.getCourseCode()))
+                        courseCodes.add(offering.getCourseCode());
+                    for (CourseRegistration registration : CourseRegistration.getRegistrationsByOffering(offering.getOfferingID())) {
+                        if (registration != null && registration.getStudentID() != null
+                                && !studentIDs.contains(registration.getStudentID())) studentIDs.add(registration.getStudentID());
+                    }
+                }
+                String offeringText = String.join(", ", offeringIDs);
+                String courseText = String.join(", ", courseCodes);
+                UI.liner(String.format(format, section.getSectionID(), UI.fitText(getYearSection(section), 22),
+                        section.getYearLevel(), section.getBlock(), section.getGroup() == 0 ? "N/A" : "G" + section.getGroup(),
+                        UI.fitText(offeringText.isEmpty() ? "-" : offeringText, 20),
+                        UI.fitText(courseText.isEmpty() ? "-" : courseText, 59),
+                        studentIDs.size()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL SECTIONS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
+        UI.returnButton();
     }
     public static void displaySection(String sectionID) {
 
@@ -107,206 +131,180 @@ public class Section {
             return;
         }
 
-        UI.header("SECTION DETAILS");
-        UI.liner(String.format("  SECTION ID        : %s", s.getSectionID()));
-        UI.liner(String.format("  YEAR LEVEL        : %d", s.getYearLevel()));
-        UI.liner(String.format("  BLOCK             : %c", s.getBlock()));
+        UI.header("SECTION DETAILS", false);
+        UI.liner(String.format("  SECTION ID        : %s", s.getSectionID()), false);
+        UI.liner(String.format("  YEAR LEVEL        : %d", s.getYearLevel()), false);
+        UI.liner(String.format("  BLOCK             : %c", s.getBlock()), false);
         UI.liner(String.format("  GROUP             : %s",
-                s.getGroup() == 0 ? "N/A" : "G" + s.getGroup()));
-        UI.liner(String.format("  YEAR AND SECTION  : %s", getYearSection(s)));
-        UI.footer();
+                s.getGroup() == 0 ? "N/A" : "G" + s.getGroup()), false);
+        UI.liner(String.format("  YEAR AND SECTION  : %s", getYearSection(s)), false);
+        UI.footer(false);
         UI.returnButton();
     }
     public static void displayStudents(String sectionID) {
-
         Section s = findSection(sectionID);
-
         if (s == null) {
             UI.print("Section not found");
             return;
         }
 
-        UI.header("STUDENT LIST");
-        UI.liner(String.format("  SECTION ID     : %s", s.getSectionID()));
-        UI.liner("  Students under " + getYearSection(s) + ":");
-        UI.separator();
+        UI.header("STUDENT LIST", true);
+        UI.liner("  SECTION ID: " + s.getSectionID() + " | SECTION: " + getYearSection(s), true);
+        UI.liner(String.format("  %-14s %-42s %-82s %-18s %-18s",
+                "STUDENT ID", "STUDENT NAME", "EMAIL ADDRESS", "PROGRAM", "STATUS"), true);
+        UI.separator(true);
 
         ArrayList<String> displayedStudents = new ArrayList<>();
         int count = 0;
-
         for (CourseOffering offering : CourseOffering.offerings) {
-
-            if (offering == null
-                    || offering.getSectionID() == null
-                    || !offering.getSectionID().equalsIgnoreCase(s.getSectionID()))
-                continue;
-
-            for (CourseRegistration registration :
-                    CourseRegistration.getRegistrationsByOffering(offering.getOfferingID())) {
-
-                if (registration == null)
-                    continue;
-
-                String studentID = registration.getStudentID();
-
-                if (studentID == null
-                        || displayedStudents.contains(studentID.toUpperCase()))
-                    continue;
-
-                Student student = Student.findStudent(studentID);
-
-                if (student != null) {
-                    UI.liner(String.format(
-                            "  %-12s %-25s %-25s",
-                            student.getUserID(),
-                            student.getUserName(),
-                            student.getEmail()
-                    ));
-
-                    displayedStudents.add(studentID.toUpperCase());
-                    count++;
-                }
+            if (offering == null || offering.getSectionID() == null
+                    || !offering.getSectionID().equalsIgnoreCase(s.getSectionID())) continue;
+            for (CourseRegistration registration : CourseRegistration.getRegistrationsByOffering(offering.getOfferingID())) {
+                if (registration == null || registration.getStudentID() == null
+                        || displayedStudents.contains(registration.getStudentID().toUpperCase())) continue;
+                Student student = Student.findStudent(registration.getStudentID());
+                if (student == null) continue;
+                UI.liner(String.format("  %-14s %-42s %-82s %-18s %-18s",
+                        student.getUserID(), UI.fitText(student.getUserName(), 42),
+                        UI.fitText(student.getEmail(), 82), student.getProgramCode(),
+                        student.getEnrollmentStatus()), true);
+                displayedStudents.add(registration.getStudentID().toUpperCase());
+                count++;
             }
         }
-
-        if (count == 0)
-            UI.liner("  No students registered in this section.");
-        else {
-            UI.liner("");
-            UI.liner("  TOTAL STUDENTS: " + count);
-        }
-        UI.footer();
+        if (count == 0) UI.liner("  No students registered in this section.", true);
+        UI.separator(true);
+        UI.liner("  TOTAL STUDENTS: " + count, true);
+        UI.footer(true);
+        UI.returnButton();
     }
     public static void displayArchiveSections() {
-
-        UI.header("ARCHIVED SECTIONS");
-
-        if (archiveSections.isEmpty()) UI.liner("  No sections found.");
+        UI.header("ARCHIVED SECTIONS", true);
+        if (archiveSections.isEmpty()) UI.liner("  No archived sections found.", true);
         else {
-            for (Section s : archiveSections) {
-                if (s == null) continue;
-                UI.liner(String.format("  %-12s %-15s",
-                        s.getSectionID(), getYearSection(s)));
+            String format = "  %-14s %-22s %-12s %-10s %-10s %-20s %-59s %-24s";
+            UI.liner(String.format(format, "SECTION ID", "YEAR / SECTION", "YEAR LEVEL", "BLOCK", "GROUP",
+                    "OFFERINGS", "COURSE CODES", "STUDENTS"), true);
+            UI.separator(true);
+            int count = 0;
+            for (Section section : archiveSections) {
+                if (section == null) continue;
+                ArrayList<String> offeringIDs = new ArrayList<>(), courseCodes = new ArrayList<>(), studentIDs = new ArrayList<>();
+                for (CourseOffering offering : CourseOffering.offerings) {
+                    if (offering == null || offering.getSectionID() == null
+                            || !offering.getSectionID().equalsIgnoreCase(section.getSectionID())) continue;
+                    offeringIDs.add(offering.getOfferingID());
+                    if (offering.getCourseCode() != null && !courseCodes.contains(offering.getCourseCode()))
+                        courseCodes.add(offering.getCourseCode());
+                    for (CourseRegistration registration : CourseRegistration.getRegistrationsByOffering(offering.getOfferingID())) {
+                        if (registration != null && registration.getStudentID() != null
+                                && !studentIDs.contains(registration.getStudentID())) studentIDs.add(registration.getStudentID());
+                    }
+                }
+                UI.liner(String.format(format, section.getSectionID(), UI.fitText(getYearSection(section), 22),
+                        section.getYearLevel(), section.getBlock(), section.getGroup() == 0 ? "N/A" : "G" + section.getGroup(),
+                        UI.fitText(String.join(", ", offeringIDs), 20),
+                        UI.fitText(String.join(", ", courseCodes), 59), studentIDs.size()), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED SECTIONS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
+        UI.returnButton();
     }
 
     // MANAGE METHODS
     public static void createSection() {
-        String academicYear = "", choice, input = "";
+        String choice, input;
         int yearLevel = -1, group = -1;
-        char block = 0; boolean submit = false;
+        char block = 0;
+        boolean submit = false;
 
         while (!submit) {
-            sectionManage("CREATE", String.format("SEC%03d", sections.size()), yearLevel, block, group);
+            sectionManage("CREATE", String.format("SEC%03d", nextSectionID), yearLevel, block, group);
 
             do {
-                UI.select("Select",false);
-                choice = in.nextLine().trim();
-
-                if (!choice.matches("[1-3X/]"))
-                    UI.print("Invalid Choice");
+                UI.select("Select", false);
+                choice = in.nextLine().trim().toUpperCase();
+                if (!choice.matches("[1-3X/]")) UI.print("Invalid Choice");
             } while (!choice.matches("[1-3X/]"));
 
             switch (choice) {
                 case "1":
                     do {
-                        UI.select("Enter Year Level", true);
+                        UI.select("Enter Year Level (1-4)", true);
                         input = in.nextLine().trim();
-                        if (input.equalsIgnoreCase("X")) {
-                            break;
-                        }
+                        if (input.equalsIgnoreCase("X")) break;
                         try {
                             yearLevel = Integer.parseInt(input);
-                            if (yearLevel < 1 || yearLevel > 4)
-                                UI.print("Invalid Input");
+                            if (yearLevel < 1 || yearLevel > 4) UI.print("Year level must be from 1 to 4.");
                         } catch (NumberFormatException e) {
                             yearLevel = -1;
-                            UI.print("Invalid Input");
+                            UI.print("Enter a valid whole number.");
                         }
                     } while (yearLevel < 1 || yearLevel > 4);
                     break;
 
                 case "2":
                     do {
-                        UI.select("Block",true);
+                        UI.select("Enter Block (A-J)", true);
                         input = in.nextLine().trim().toUpperCase();
-                        if (input.equalsIgnoreCase("X")) {
-                            input = "";
-                            break;
-                        }
-                        else if (input.trim().isEmpty())
-                            UI.print("Block is required");
-                        else if (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J' || (!Character.isLetter(block)))
-                            UI.print("Invalid Input");
-                    } while (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J' || !Character.isLetter(block));
-
-                    block = input.charAt(0);
+                        if (input.equalsIgnoreCase("X")) break;
+                        if (!input.matches("[A-J]")) UI.print("Block must be one letter from A to J.");
+                    } while (!input.matches("[A-J]") && !input.equalsIgnoreCase("X"));
+                    if (input.matches("[A-J]")) block = input.charAt(0);
                     break;
 
                 case "3":
                     do {
                         UI.select("Enter Group (0-2)", true);
                         input = in.nextLine().trim();
-                        if (input.equalsIgnoreCase("X")) {
-                            break;
-                        }
+                        if (input.equalsIgnoreCase("X")) break;
                         try {
                             group = Integer.parseInt(input);
-                            if (group < 0 || group > 2)
-                                UI.print("Invalid Input");
+                            if (group < 0 || group > 2) UI.print("Group must be from 0 to 2.");
                         } catch (NumberFormatException e) {
                             group = -1;
-                            UI.print("Invalid Input");
+                            UI.print("Enter a valid whole number.");
                         }
                     } while (group < 0 || group > 2);
                     break;
 
                 case "/":
-                    if (yearLevel < 1 || yearLevel > 4 ||
-                            block < 'A' || block > 'J' ||
-                            group < 0 || group > 2 ||
-                            !academicYear.matches("\\d{4}-\\d{4}")) {
-                        UI.print("Details are incomplete");
+                    if (yearLevel < 1 || yearLevel > 4 || block < 'A' || block > 'J' || group < 0 || group > 2) {
+                        UI.print("Complete all section details before submitting.");
                         break;
                     }
 
-                    boolean gate = true;
-
+                    String yearSection = group == 0 ? yearLevel + "" + block : yearLevel + "" + block + "-G" + group;
+                    boolean duplicate = false;
                     for (Section existing : sections) {
-                        String yearSection;
-                        if (group != 0) yearSection = yearLevel + "" + block + "-G" + group;
-                        else yearSection = yearLevel + "" + block;
-
-                        if (existing != null && getYearSection(existing).equals(yearSection)) {
-                            gate = false;
+                        if (existing != null && getYearSection(existing).equalsIgnoreCase(yearSection)) {
+                            duplicate = true;
                             break;
                         }
                     }
 
-                    if (gate) {
-                        sections.add(new Section(yearLevel, block, group));
-                        UI.print("Section successfully created");
-                        submit = true;
+                    if (duplicate) {
+                        UI.print("This section already exists.");
                     } else {
-                        UI.print("Section already exists for this academic year");
+                        Section section = new Section(yearLevel, block, group);
+                        sections.add(section);
+                        UI.print("Section successfully created: " + section.getSectionID());
+                        submit = true;
                     }
                     break;
 
                 case "X":
                     submit = true;
-                    break;
-
-                case "5":
-                    UI.print("No additional section fields are available.");
+                    UI.print("Section creation cancelled.");
                     break;
             }
         }
     }
     public static void editSection() {
-        String sectionID = "", academicYear = "", choice, input = "";
+        String sectionID = "", choice, input = "";
         int yearLevel, group; char block;
         boolean submit = false;
 
@@ -365,16 +363,12 @@ public class Section {
 
                 case "2":
                     do {
-                        UI.select("Block",true);
+                        UI.select("Enter Block (A-J)", true);
                         input = in.nextLine().trim().toUpperCase();
-                        if (input.equalsIgnoreCase("X")) {
-                            block = s.getBlock();
-                            break;
-                        }
-                        else if (input.trim().isEmpty()) UI.print("Block is required");
-                    } while (input.length() != 1 || input.charAt(0) < 'A' || input.charAt(0) > 'J');
-
-                    block = input.charAt(0);
+                        if (input.equalsIgnoreCase("X")) break;
+                        if (!input.matches("[A-J]")) UI.print("Block must be one letter from A to J.");
+                    } while (!input.matches("[A-J]") && !input.equalsIgnoreCase("X"));
+                    if (input.matches("[A-J]")) block = input.charAt(0);
                     break;
 
                 case "3":
@@ -399,8 +393,7 @@ public class Section {
                 case "/":
                     if (yearLevel < 1 || yearLevel > 4 ||
                             block < 'A' || block > 'J' ||
-                            group < 0 || group > 2 ||
-                            !academicYear.matches("\\d{4}-\\d{4}")) {
+                            group < 0 || group > 2) {
                         UI.print("Details are incomplete");
                         break;
                     }
@@ -458,11 +451,20 @@ public class Section {
             return;
         }
 
+        for (CourseOffering offering : CourseOffering.offerings) {
+            if (offering != null && offering.getSectionID() != null
+                    && offering.getSectionID().equalsIgnoreCase(s.getSectionID())) {
+                UI.print("Archive the section's course offerings first.");
+                return;
+            }
+        }
+
         sectionManage("ARCHIVE", s.getSectionID(), s.getYearLevel(), s.getBlock(), s.getGroup());
 
         do {
-            System.out.print("  Confirm Section Archive? (Y/N) > ");
+            UI.select("Confirm Section Archive? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
@@ -478,14 +480,14 @@ public class Section {
     }
     private static void sectionManage(String text, String sectionID, int yearLevel, char block, int group) {
 
-        UI.header(text.toUpperCase() + ": SECTION INFORMATION");
-        UI.liner(String.format("     SECTION ID     : %s", sectionID));
-        UI.liner(String.format(" [1] YEAR LEVEL     : %s", yearLevel == -1 ? "" : yearLevel));
-        UI.liner(String.format(" [2] BLOCK          : %s", block == '\0' ? "" : block));
-        UI.liner(String.format(" [3] GROUP          : %s", group == -1 ? "" : (group == 0 ? "N/A" : "G" + group)));
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": SECTION INFORMATION", false);
+        UI.liner(String.format("     SECTION ID     : %s", sectionID), false);
+        UI.liner(String.format(" [1] YEAR LEVEL     : %s", yearLevel == -1 ? "" : yearLevel), false);
+        UI.liner(String.format(" [2] BLOCK          : %s", block == '\0' ? "" : block), false);
+        UI.liner(String.format(" [3] GROUP          : %s", group == -1 ? "" : (group == 0 ? "N/A" : "G" + group)), false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 
 }

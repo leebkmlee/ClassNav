@@ -3,6 +3,7 @@ package DATA;
 
 import java.util.ArrayList;
 import UI.*;
+import USER.*;
 import static UI.UI.in;
 
 public class College {
@@ -47,13 +48,16 @@ public class College {
     // COLLEGE SETTER METHODS
     public void setCollegeCode(String collegeCode) {
 
-        if (collegeCode == null || collegeCode.trim().isEmpty())
-            throw new IllegalArgumentException("College code cannot be empty.");
+        if (collegeCode == null || collegeCode.trim().isEmpty()) {
+            UI.print("College code cannot be empty.");
+            return;
+        }
 
         for (College c : colleges) {
             if (c != this &&
                     collegeCode.trim().equalsIgnoreCase(c.getCollegeCode())) {
-                throw new IllegalArgumentException("College code already exists.");
+                UI.print("College code already exists.");
+                return;
             }
         }
 
@@ -61,12 +65,15 @@ public class College {
     }
     public void setCollegeDescription(String collegeDescription) {
 
-        if (collegeDescription == null || collegeDescription.trim().isEmpty())
-            throw new IllegalArgumentException("College description cannot be empty.");
+        if (collegeDescription == null || collegeDescription.trim().isEmpty()) {
+            UI.print("College description cannot be empty.");
+            return;
+        }
 
         for (College c : colleges) {
             if (c != this && collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription())) {
-                throw new IllegalArgumentException("College description already exists.");
+                UI.print("College description already exists.");
+                return;
             }
         }
 
@@ -79,7 +86,8 @@ public class College {
             return null;
 
         for (College c : colleges) {
-            if (collegeCode.trim().equalsIgnoreCase(c.getCollegeCode()))
+            if (c != null && c.getCollegeCode() != null
+                    && collegeCode.trim().equalsIgnoreCase(c.getCollegeCode()))
                 return c;
         }
 
@@ -90,7 +98,8 @@ public class College {
             return null;
 
         for (College c : colleges) {
-            if (collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription()))
+            if (c != null && c.getCollegeDescription() != null
+                    && collegeDescription.trim().equalsIgnoreCase(c.getCollegeDescription()))
                 return c;
         }
 
@@ -109,57 +118,53 @@ public class College {
 
         String collegeDescription = c.getCollegeDescription();
 
-        UI.header("COLLEGE INFORMATION");
-        UI.liner(String.format("  COLLEGE CODE            : %s", c.getCollegeCode()));
+        UI.header("COLLEGE INFORMATION", false);
+        UI.liner(String.format("  COLLEGE CODE            : %s", c.getCollegeCode()), false);
         String collegeDesc = collegeDescription;
         if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + "...";
 
-        UI.liner(String.format("  COLLEGE DESCRIPTION     : %s", collegeDesc));
+        UI.liner(String.format("  COLLEGE DESCRIPTION     : %s", collegeDesc), false);
 
-        UI.footer();
+        UI.footer(false);
         if (print) UI.returnButton();
     }
     public static void displayColleges() {
-        UI.header("COLLEGES");
-
-        if (colleges.isEmpty()) {
-            UI.liner("  No colleges found.");
-        } else {
+        UI.header("COLLEGES", true);
+        if (colleges.isEmpty()) UI.liner("  No colleges found.", true);
+        else {
+            UI.liner(String.format("  %-12s %-165s", "COLLEGE CODE", "COLLEGE DESCRIPTION"), true);
+            UI.separator(true);
+            int count = 0;
             for (College c : colleges) {
-
-                if (c == null)
-                    continue;
-
-                String college = String.format("  %-10s %-40s",
-                        c.getCollegeCode(), c.getCollegeDescription());
-
-                UI.liner(college);
+                if (c == null) continue;
+                UI.liner(String.format("  %-12s %-165s", c.getCollegeCode(),
+                        UI.fitText(c.getCollegeDescription(), 165)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL COLLEGES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchivedColleges() {
-
-        UI.header("ARCHIVED COLLEGES");
-
+        UI.header("ARCHIVED COLLEGES", true);
         if (archivedColleges.isEmpty()) {
-            UI.liner("  No archived colleges found.");
+            UI.liner("  No archived colleges found.", true);
         } else {
+            UI.liner(String.format("  %-18s %-159s", "COLLEGE CODE", "COLLEGE DESCRIPTION"), true);
+            UI.separator(true);
+            int count = 0;
             for (College c : archivedColleges) {
-
-                if (c == null)
-                    continue;
-
-                String college = String.format("  %-10s %-40s",
-                        c.getCollegeCode(), c.getCollegeDescription());
-
-                UI.liner(college);
+                if (c == null) continue;
+                UI.liner(String.format("  %-18s %-159s", c.getCollegeCode(),
+                        UI.fitText(c.getCollegeDescription(), 159)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED COLLEGES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -335,6 +340,33 @@ public class College {
             return;
         }
 
+        for (Program program : Program.programs) {
+            if (program != null && program.getCollegeCode() != null
+                    && program.getCollegeCode().equalsIgnoreCase(c.getCollegeCode())) {
+                UI.print("Archive or reassign the college's active programs first.");
+                return;
+            }
+        }
+        for (Room room : Room.rooms) {
+            if (room != null && room.getCollegeCode() != null
+                    && room.getCollegeCode().equalsIgnoreCase(c.getCollegeCode())) {
+                UI.print("Archive or reassign the college's active rooms first.");
+                return;
+            }
+        }
+        for (User user : User.users) {
+            if (user instanceof Faculty faculty && faculty.getCollegeCode() != null
+                    && faculty.getCollegeCode().equalsIgnoreCase(c.getCollegeCode())) {
+                UI.print("Reassign or archive the college's faculty first.");
+                return;
+            }
+            if (user instanceof DepartmentHead head && head.getCollegeCode() != null
+                    && head.getCollegeCode().equalsIgnoreCase(c.getCollegeCode())) {
+                UI.print("Reassign or archive the college's Department Heads first.");
+                return;
+            }
+        }
+
         displayCollege(c.getCollegeCode(), false);
 
         do {
@@ -358,11 +390,11 @@ public class College {
     public static void collegeManage(String text, String collegeCode, String collegeDescription) {
         String collegeDesc = collegeDescription;
         if (collegeDesc.length() > 35) collegeDesc = collegeDesc.substring(0, 35) + "...";
-        UI.header(text.toUpperCase() + ": COLLEGE INFORMATION");
-        UI.liner(" [1] COLLEGE CODE         : " + collegeCode);
-        UI.liner(" [2] COLLEGE DESCRIPTION  : " + collegeDesc);
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": COLLEGE INFORMATION", false);
+        UI.liner(" [1] COLLEGE CODE         : " + collegeCode, false);
+        UI.liner(" [2] COLLEGE DESCRIPTION  : " + collegeDesc, false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }

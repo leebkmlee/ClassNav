@@ -6,7 +6,7 @@ import static UI.UI.in;
 
 public class Login {
     public static String logIn() {
-        int maxAttempts = 3;
+        int maxAttempts = 3; String emailAddress = "", password = "";
 
         UI.print("PORTAL LOG-IN");
 
@@ -22,11 +22,13 @@ public class Login {
             if (user == null) {
                 UI.print("ID does not exist. Try again.");
             } else {
-                System.out.print("  Enter Email Address > ");
-                String emailAddress = in.nextLine().trim();
+                UI.select("Enter Email Address", true);
+                emailAddress = in.nextLine().trim();
+                if (emailAddress.equalsIgnoreCase("X")) break;
 
-                System.out.print("  Enter Password > ");
-                String password = in.nextLine();
+                UI.select("Enter Password", true);
+                password = in.nextLine();
+                if (password.equalsIgnoreCase("X")) break;
 
                 if (User.isValidEmail(userID, emailAddress) && User.isValidPassword(userID, password)) {
                     if (user instanceof Faculty) {
@@ -63,6 +65,9 @@ public class Login {
                 UI.print("Try again.", message);
             }
         }
+
+        if (emailAddress.equalsIgnoreCase("X") || password.equalsIgnoreCase("X"))
+            return "X";
 
         UI.print("Ran out of attempts.");
         return "Ran out of attempts.";

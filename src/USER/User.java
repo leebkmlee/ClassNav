@@ -50,15 +50,16 @@ public abstract class User {
                 case "1":
                     String userID = Login.logIn();
 
-                    if (!userID.equals("Ran out of attempts.")) {
+                    if (userID.equalsIgnoreCase("X")) UI.print("Cancelled Log In");
+                    else if (!userID.equals("Ran out of attempts.")) {
                         User user = User.findUser(userID);
                         if (user != null) user.menu();
                         else UI.print("User not found");
                     }
                     break;
-                    
+
                 case "X":
-                    System.out.println("   Exiting...");
+                    UI.print("Exiting ClassNav.");
                     return;
 
                 default:
@@ -145,7 +146,7 @@ public abstract class User {
                 "03/03/1980", 'M', "CICT", "INACTIVE"));
         users.add(new Faculty("Lopez", "Catherine", "F",
                 "F0009@bulsu.edu.ph", "Faculty009!", "Plaridel–Baliwag Road, Poblacion, Plaridel, Bulacan", 3005,
-                "06/06/1983", 'F', "CICT", "INACTIVE"));
+                "06/06/1983", 'F', "CICT", "ACTIVE"));
         users.add(new Faculty("Alcantara", "Noel", "G",
                 "F0010@bulsu.edu.ph", "Faculty010!", "Pulilan Regional Road, Poblacion, Pulilan, Bulacan", 3006,
                 "07/07/1984", 'M', "COE", "ACTIVE"));
@@ -188,7 +189,7 @@ public abstract class User {
                 "07/07/1976", 'M', "CIT"));
         users.add(new DepartmentHead("Enriquez", "Erika", "",
                 "DH0008@bulsu.edu.ph", "Head008!", "Gov. Fortunato Halili Avenue, Poblacion, Bustos, Bulacan", 3007,
-                "08/08/1977", 'F', "CLaw"));
+                "08/08/1977", 'F', "COL"));
         users.add(new DepartmentHead("Flores", "Felix", "I",
                 "DH0009@bulsu.edu.ph", "Head009!", "Igulot Road, Balibago, Angeles City, Pampanga", 3008,
                 "09/09/1978", 'M', "CON"));
@@ -246,15 +247,19 @@ public abstract class User {
 
     // SETTER METHODS
     public void setLastName(String lastName) {
-        if (lastName == null || lastName.isBlank())
-            throw new IllegalArgumentException("Last name cannot be blank");
+        if (lastName == null || lastName.isBlank()) {
+            UI.print("Last name cannot be blank.");
+            return;
+        }
 
         this.lastName = lastName.trim();
         setUserName();
     }
     public void setFirstName(String firstName) {
-        if (firstName == null || firstName.isBlank())
-            throw new IllegalArgumentException("First name cannot be blank");
+        if (firstName == null || firstName.isBlank()) {
+            UI.print("First name cannot be blank.");
+            return;
+        }
 
         this.firstName = firstName.trim();
         setUserName();
@@ -264,47 +269,61 @@ public abstract class User {
 
         middleInitial = middleInitial.trim();
 
-        if (middleInitial.length() > 1)
-            throw new IllegalArgumentException("Middle initial must be one character");
+        if (middleInitial.length() > 1 || (!middleInitial.isEmpty() && !middleInitial.matches("[a-zA-Z]"))) {
+            UI.print("Middle initial must be one letter or blank.");
+            return;
+        }
 
         this.middleInitial = middleInitial;
         setUserName();
     }
     public void setEmailAddress(String emailAddress) {
-        if (emailAddress == null || emailAddress.isBlank())
-            throw new IllegalArgumentException("Email cannot be blank");
+        if (emailAddress == null || emailAddress.isBlank()) {
+            UI.print("Email cannot be blank.");
+            return;
+        }
 
         this.emailAddress = emailAddress.trim();
     }
     public void setPassword(String password) {
-        if (password == null || password.isBlank())
-            throw new IllegalArgumentException("Password cannot be blank");
+        if (password == null || password.isBlank()) {
+            UI.print("Password cannot be blank.");
+            return;
+        }
 
         this.password = password;
     }
     public void setAddress(String address) {
-        if (address == null || address.isBlank())
-            throw new IllegalArgumentException("Address cannot be blank");
+        if (address == null || address.isBlank()) {
+            UI.print("Address cannot be blank.");
+            return;
+        }
 
         this.address = address.trim();
     }
     public void setPostalCode(int postalCode) {
-        if (postalCode <= 0)
-            throw new IllegalArgumentException("Postal code must be positive");
+        if (postalCode < 1000 || postalCode > 9999) {
+            UI.print("Postal code must contain exactly four digits.");
+            return;
+        }
 
         this.postalCode = postalCode;
     }
     public void setBirthDate(String birthDate) {
-        if (!isValidDate(birthDate))
-            throw new IllegalArgumentException("Invalid birthdate");
+        if (!isValidBirthDate(birthDate)) {
+            UI.print("Invalid birthdate. Use MM/dd/yyyy and a year from 1900 to today.");
+            return;
+        }
 
-        this.birthDate = birthDate;
+        this.birthDate = birthDate.trim();
     }
     public void setSex(char sex) {
         sex = Character.toUpperCase(sex);
 
-        if (sex != 'M' && sex != 'F')
-            throw new IllegalArgumentException("Sex must be M or F");
+        if (sex != 'M' && sex != 'F') {
+            UI.print("Sex must be M or F.");
+            return;
+        }
 
         this.sex = sex;
     }
@@ -318,7 +337,7 @@ public abstract class User {
         if (userID == null) return null;
 
         for (User u : users) {
-            if (userID.trim().equalsIgnoreCase(u.getUserID()))
+            if (u != null && userID.trim().equalsIgnoreCase(u.getUserID()))
                 return u;
         }
 
@@ -334,20 +353,20 @@ public abstract class User {
             return;
         }
 
-        UI.header("USER PROFILE");
-        UI.liner("  ACCOUNT INFORMATION");
-        UI.separator();
-        UI.liner(String.format("  USER ID        : %s", u.getUserID()));
-        UI.liner(String.format("  FULL NAME      : %s", u.getUserName()));
-        UI.liner(String.format("  EMAIL ADDRESS  : %s", u.getEmail()));
-        UI.separator();
-        UI.liner("  PERSONAL INFORMATION");
-        UI.separator();
-        UI.liner(String.format("  HOME ADDRESS   : %s", u.getAddress()));
-        UI.liner(String.format("  POSTAL CODE    : %s", u.getPostalCode()));
-        UI.liner(String.format("  BIRTHDATE      : %s", u.getBirthDate()));
-        UI.liner(String.format("  SEX            : %s", u.getSex()));
-        UI.footer();
+        UI.header("USER PROFILE", false);
+        UI.liner("  ACCOUNT INFORMATION", false);
+        UI.separator(false);
+        UI.liner(String.format("  USER ID        : %s", u.getUserID()), false);
+        UI.liner(String.format("  FULL NAME      : %s", u.getUserName()), false);
+        UI.liner(String.format("  EMAIL ADDRESS  : %s", u.getEmail()), false);
+        UI.separator(false);
+        UI.liner("  PERSONAL INFORMATION", false);
+        UI.separator(false);
+        UI.liner(String.format("  HOME ADDRESS   : %s", u.getAddress()), false);
+        UI.liner(String.format("  POSTAL CODE    : %s", u.getPostalCode()), false);
+        UI.liner(String.format("  BIRTHDATE      : %s", u.getBirthDate()), false);
+        UI.liner(String.format("  SEX            : %s", u.getSex()), false);
+        UI.footer(false);
         if(print) UI.returnButton();
     }
 
@@ -379,70 +398,51 @@ public abstract class User {
             return;
         }
 
-        UI.header("ROOM INFORMATION");
-        UI.liner("  ROOM DETAILS");
-        UI.separator();
-        UI.liner(String.format("  ROOM CODE         : %s", r.getRoomCode()));
-        UI.liner(String.format("  ROOM DESCRIPTION  : %s", r.getRoomDescription()));
-        UI.separator();
-        UI.liner("  ROOM LOCATION");
-        UI.separator();
-        UI.liner(String.format("  BUILDING NAME     : %s", b.getBuildingName()));
-        UI.liner(String.format("  FLOOR NUMBER      : %s", Room.getFloorText(r.getFloorNumber())));
-        UI.footer();
+        UI.header("ROOM INFORMATION", false);
+        UI.liner("  ROOM DETAILS", false);
+        UI.separator(false);
+        UI.liner(String.format("  ROOM CODE         : %s", r.getRoomCode()), false);
+        UI.liner(String.format("  ROOM DESCRIPTION  : %s", r.getRoomDescription()), false);
+        UI.separator(false);
+        UI.liner("  ROOM LOCATION", false);
+        UI.separator(false);
+        UI.liner(String.format("  BUILDING NAME     : %s", b.getBuildingName()), false);
+        UI.liner(String.format("  FLOOR NUMBER      : %s", Room.getFloorText(r.getFloorNumber())), false);
+        UI.footer(false);
         UI.returnButton();
     }
     public static void viewAvailableRooms() {
-
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
-
         String currentDate = today.format(DATE_FORMAT);
         String currentTime = now.format(TIME_FORMAT);
         String checkEndTime = now.plusMinutes(1).format(TIME_FORMAT);
-
         ArrayList<Room> availableRooms = new ArrayList<>();
-
         for (Room room : Room.rooms) {
-            if (room == null)
-                continue;
-
-            if (Room.verifyAvailability(
-                    room.getRoomCode(),
-                    currentDate,
-                    currentTime,
-                    checkEndTime)) {
-                availableRooms.add(room);
-            }
+            if (room != null && Room.verifyAvailability(room.getRoomCode(), currentDate,
+                    currentTime, checkEndTime)) availableRooms.add(room);
         }
 
-        UI.header("ROOM AVAILABILITY");
-
-        UI.liner("  DATE  : " + currentDate);
-        UI.liner("  TIME  : " + currentTime);
-        UI.separator();
-
-        UI.liner("  AVAILABLE ROOMS : " + availableRooms.size());
-
-        if (availableRooms.isEmpty()) {
-            UI.liner("");
-            UI.liner("       No rooms available right now.");
-            UI.liner("       Please check again later.");
-            UI.liner("");
-        } else {
-            int count = 1;
-
+        UI.header("ROOM AVAILABILITY", true);
+        UI.liner("  DATE: " + currentDate + " | CHECKED AT: " + currentTime
+                + " | AVAILABLE ROOMS: " + availableRooms.size(), true);
+        if (availableRooms.isEmpty())
+            UI.liner("  No rooms are available right now. Please check again later.", true);
+        else {
+            UI.separator(true);
+            UI.liner(String.format("  %-12s %-50s %-30s %-20s %-20s %-20s %-20s",
+                    "ROOM CODE", "ROOM DESCRIPTION", "ROOM TYPE", "CAPACITY", "COLLEGE", "BUILDING", "FLOOR"), true);
+            UI.separator(true);
             for (Room room : availableRooms) {
-                UI.separator();
-                UI.liner(String.format("  [%02d] %s", count++, room.getRoomCode()) + " | " + room.getCollegeCode());
-                UI.liner(String.format("       %-10s : %s", "ROOM DESCRIPTION ", fitText(room.getRoomDescription(), 52)));
-                UI.liner(String.format("       %-10s : %s", "TYPE             ", fitText(room.getRoomType(), 45)));
-                UI.liner(String.format("       %-10s : %d seats", "CAPACITY         ", room.getCapacity()));
-                UI.liner(String.format("       %-10s : %s", "LOCATION         ", Room.getFloorText(room.getFloorNumber())));
+                Building building = Building.findBuilding(room.getBuildingCode());
+                UI.liner(String.format("  %-12s %-50s %-30s %-20s %-20s %-20s %-20s",
+                        room.getRoomCode(), UI.fitText(room.getRoomDescription(), 80),
+                        UI.fitText(room.getRoomType(), 28), room.getCapacity(), room.getCollegeCode(),
+                        UI.fitText(building == null ? "-" : building.getBuildingName(), 18),
+                        Room.getFloorText(room.getFloorNumber())), true);
             }
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -461,7 +461,7 @@ public abstract class User {
         if (userName == null) return false;
 
         for (User u : users) {
-            if (userName.trim().equalsIgnoreCase(u.getUserName()))
+            if (u != null && userName.trim().equalsIgnoreCase(u.getUserName()))
                 return true;
         }
 
@@ -471,36 +471,27 @@ public abstract class User {
         if (emailAddress == null) return false;
 
         for (User u : users) {
-            if (emailAddress.trim().equalsIgnoreCase(u.getEmail()))
+            if (u != null && emailAddress.trim().equalsIgnoreCase(u.getEmail()))
                 return true;
         }
 
         return false;
     }
     static boolean isValidBirthDate(String birthDate) {
+        if (birthDate == null || !birthDate.trim().matches("\\d{2}/\\d{2}/\\d{4}"))
+            return false;
+
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu").withResolverStyle(ResolverStyle.STRICT);
-            LocalDate date = LocalDate.parse(birthDate, formatter);
-            return !date.isAfter(LocalDate.now());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+            LocalDate date = LocalDate.parse(birthDate.trim(), formatter);
+            return date.getYear() >= 1900 && !date.isAfter(LocalDate.now());
         } catch (DateTimeException e) {
             return false;
         }
     }
     private static boolean isValidDate(String date) {
-        if (date == null || !date.matches("\\d{2}/\\d{2}/\\d{4}"))
-            return false;
-
-        try {
-            LocalDate parsed = LocalDate.parse(
-                    date, DateTimeFormatter
-                            .ofPattern("MM/dd/uuuu")
-                            .withResolverStyle(
-                                    ResolverStyle.STRICT));
-
-            return !parsed.isAfter(LocalDate.now());
-        } catch (DateTimeParseException e) {
-            return false;
-        }
+        return isValidBirthDate(date);
     }
 
     // EDIT USER
@@ -569,8 +560,8 @@ public abstract class User {
                             break;
                         }
                         else if (lastName.isEmpty()) UI.print("Last Name is required");
-                        else if (!lastName.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
-                    } while (lastName.isEmpty() || !lastName.matches("^[a-zA-Z]+$"));
+                        else if (!lastName.matches("[A-Za-z][A-Za-z .'-]*")) UI.print("Enter a valid name.");
+                    } while (!lastName.matches("[A-Za-z][A-Za-z .'-]*"));
                     break;
 
                 case "2":
@@ -582,8 +573,8 @@ public abstract class User {
                             break;
                         }
                         else if (firstName.isEmpty()) UI.print("First Name is required");
-                        else if (!firstName.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
-                    } while (firstName.isEmpty() || !firstName.matches("^[a-zA-Z]+$"));
+                        else if (!firstName.matches("[A-Za-z][A-Za-z .'-]*")) UI.print("Enter a valid name.");
+                    } while (!firstName.matches("[A-Za-z][A-Za-z .'-]*"));
                     break;
 
                 case "3":
@@ -596,11 +587,11 @@ public abstract class User {
                             break;
                         }
                         if (middleInitial.endsWith("."))
-                            middleInitial = middleInitial.replace(".", "");
+                            middleInitial = middleInitial.substring(0, middleInitial.length() - 1).trim();
 
-                        if (middleInitial.length() > 2) UI.print("Enter up to two letters only");
-                        else if (!middleInitial.matches("^[a-zA-Z]+$")) UI.print("Special characters are not allowed");
-                    } while (middleInitial.length() > 2 || !middleInitial.matches("^[a-zA-Z]+$"));
+                        if (!middleInitial.isEmpty() && !middleInitial.matches("^[a-zA-Z]$"))
+                            UI.print("Enter only one letter, or leave it blank.");
+                    } while (!middleInitial.isEmpty() && !middleInitial.matches("^[a-zA-Z]$"));
                     break;
 
                 case "4":
@@ -726,6 +717,25 @@ public abstract class User {
                         break;
                     }
 
+                    if (lastName == null || lastName.isBlank() || firstName == null || firstName.isBlank()
+                            || middleInitial == null || (!middleInitial.isEmpty() && !middleInitial.matches("[a-zA-Z]"))
+                            || address == null || address.isBlank() || postalCode < 1000 || postalCode > 9999
+                            || !isValidBirthDate(birthDate) || (sex != 'M' && sex != 'F')
+                            || password == null || password.isBlank()) {
+                        UI.print("Invalid user details. No changes were saved.");
+                        break;
+                    }
+                    if (u instanceof Student && (Program.findProgram(programCode) == null
+                            || !enrollmentStatus.matches("R|IR|LOA"))) {
+                        UI.print("Invalid student details. No changes were saved.");
+                        break;
+                    }
+                    if ((u instanceof Faculty || u instanceof DepartmentHead)
+                            && College.findCollege(collegeCode) == null) {
+                        UI.print("Invalid college code. No changes were saved.");
+                        break;
+                    }
+
                     u.setLastName(lastName);
                     u.setFirstName(firstName);
                     u.setMiddleInitial(middleInitial);
@@ -736,21 +746,13 @@ public abstract class User {
                     u.setBirthDate(birthDate);
                     u.setSex(sex);
 
-                    try {
-                        if (u instanceof Student) {
-                            Student s = (Student) u;
-                            s.setEnrollmentStatus(enrollmentStatus);
-                            s.setProgramCode(programCode);
-                        } else if (u instanceof Faculty) {
-                            Faculty f = (Faculty) u;
-                            f.setCollegeCode(collegeCode);
-                        } else if (u instanceof DepartmentHead) {
-                            DepartmentHead dh = (DepartmentHead) u;
-                            dh.setCollegeCode(collegeCode);
-                        }
-                    } catch (IllegalArgumentException e) {
-                        UI.print(e.getMessage());
-                        break;
+                    if (u instanceof Student s) {
+                        s.setEnrollmentStatus(enrollmentStatus);
+                        s.setProgramCode(programCode);
+                    } else if (u instanceof Faculty f) {
+                        f.setCollegeCode(collegeCode);
+                    } else if (u instanceof DepartmentHead dh) {
+                        dh.setCollegeCode(collegeCode);
                     }
 
                     UI.print("User successfully edited");
@@ -782,33 +784,33 @@ public abstract class User {
         if (location.length() > 38) location = address.substring(0, 38) + "...";
         String hidePass = password.replaceAll(".", "*");
 
-        UI.header(text.toUpperCase() + ": USER INFORMATION");
-        UI.liner(String.format("  USER ID                : %s", userID));
-        UI.separator();
-        UI.liner(String.format(" [1] LAST NAME           : %s", lastName));
-        UI.liner(String.format(" [2] FIRST NAME          : %s", firstName));
-        UI.liner(String.format(" [3] MIDDLE INITIAL      : %s", middleInitial));
-        UI.liner(String.format("     EMAIL ADDRESS       : %s", emailAddress));
-        UI.liner(String.format(" [4] PASSWORD            : %s", hidePass));
-        UI.liner(String.format(" [5] ADDRESS             : %s", location));
-        UI.liner(String.format(" [6] POSTAL CODE         : %s", postalCode));
-        UI.liner(String.format(" [7] BIRTHDATE           : %s", birthDate));
-        UI.liner(String.format(" [8] SEX                 : %s", sex));
+        UI.header(text.toUpperCase() + ": USER INFORMATION", false);
+        UI.liner(String.format("  USER ID                : %s", userID), false);
+        UI.separator(false);
+        UI.liner(String.format(" [1] LAST NAME           : %s", lastName), false);
+        UI.liner(String.format(" [2] FIRST NAME          : %s", firstName), false);
+        UI.liner(String.format(" [3] MIDDLE INITIAL      : %s", middleInitial), false);
+        UI.liner(String.format("     EMAIL ADDRESS       : %s", emailAddress), false);
+        UI.liner(String.format(" [4] PASSWORD            : %s", hidePass), false);
+        UI.liner(String.format(" [5] ADDRESS             : %s", location), false);
+        UI.liner(String.format(" [6] POSTAL CODE         : %s", postalCode), false);
+        UI.liner(String.format(" [7] BIRTHDATE           : %s", birthDate), false);
+        UI.liner(String.format(" [8] SEX                 : %s", sex), false);
         if (userID.startsWith("S")) {
-            if (isDeptHead) UI.liner(String.format(" [9] ENROLLMENT STATUS   : %s", input1));
-            else UI.liner(String.format("     ENROLLMENT STATUS   : %s", input1));
-            if (isDeptHead) UI.liner(String.format(" [10] PROGRAM CODE        : %s", input2));
-            else UI.liner(String.format("     PROGRAM CODE        : %s", input2));
+            if (isDeptHead) UI.liner(String.format(" [9] ENROLLMENT STATUS   : %s", input1), false);
+            else UI.liner(String.format("     ENROLLMENT STATUS   : %s", input1), false);
+            if (isDeptHead) UI.liner(String.format(" [10] PROGRAM CODE        : %s", input2), false);
+            else UI.liner(String.format("     PROGRAM CODE        : %s", input2), false);
         }
         else {
-            if (isDeptHead) UI.liner(String.format(" [9] COLLEGE CODE        : %s", input1));
-            else UI.liner(String.format("     COLLEGE CODE        : %s", input1));
-            if (isDeptHead) UI.liner(String.format(" [10] EMPLOYMENT STATUS  : %s", input2));
-            else UI.liner(String.format("     EMPLOYMENT STATUS  : %s", input2));
+            if (isDeptHead) UI.liner(String.format(" [9] COLLEGE CODE        : %s", input1), false);
+            else UI.liner(String.format("     COLLEGE CODE        : %s", input1), false);
+            if (isDeptHead) UI.liner(String.format(" [10] EMPLOYMENT STATUS  : %s", input2), false);
+            else UI.liner(String.format("     EMPLOYMENT STATUS  : %s", input2), false);
         }
-        UI.liner("");
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
     public static void userManage(String text, String userID, String lastName,
                                   String firstName, String middleInitial, String emailAddress,
@@ -826,81 +828,117 @@ public abstract class User {
         if (location.length() > 38) location = address.substring(0, 38) + "...";
         String hidePass = password.replaceAll(".", "*");
 
-        UI.header(text.toUpperCase() + ": USER INFORMATION");
-        UI.liner(String.format("  USER ID            : %s", userID));
-        UI.separator();
-        UI.liner(String.format(" [1] LAST NAME       : %s", lastName));
-        UI.liner(String.format(" [2] FIRST NAME      : %s", firstName));
-        UI.liner(String.format(" [3] MIDDLE INITIAL  : %s", middleInitial));
-        UI.liner(String.format("     EMAIL ADDRESS   : %s", emailAddress));
-        UI.liner(String.format(" [4] PASSWORD        : %s", hidePass));
-        UI.liner(String.format(" [5] ADDRESS         : %s", location));
-        UI.liner(String.format(" [6] POSTAL CODE     : %s", postalCode));
-        UI.liner(String.format(" [7] BIRTHDATE       : %s", birthDate));
-        UI.liner(String.format(" [8] SEX             : %s", sex));
-        if (isDeptHead) UI.liner(String.format(" [9] COLLEGE CODE    : %s", collegeCode));
-        else UI.liner(String.format("     COLLEGE CODE    : %s", collegeCode));
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": USER INFORMATION", false);
+        UI.liner(String.format("  USER ID            : %s", userID), false);
+        UI.separator(false);
+        UI.liner(String.format(" [1] LAST NAME       : %s", lastName), false);
+        UI.liner(String.format(" [2] FIRST NAME      : %s", firstName), false);
+        UI.liner(String.format(" [3] MIDDLE INITIAL  : %s", middleInitial), false);
+        UI.liner(String.format("     EMAIL ADDRESS   : %s", emailAddress), false);
+        UI.liner(String.format(" [4] PASSWORD        : %s", hidePass), false);
+        UI.liner(String.format(" [5] ADDRESS         : %s", location), false);
+        UI.liner(String.format(" [6] POSTAL CODE     : %s", postalCode), false);
+        UI.liner(String.format(" [7] BIRTHDATE       : %s", birthDate), false);
+        UI.liner(String.format(" [8] SEX             : %s", sex), false);
+        if (isDeptHead) UI.liner(String.format(" [9] COLLEGE CODE    : %s", collegeCode), false);
+        else UI.liner(String.format("     COLLEGE CODE    : %s", collegeCode), false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 
     public void viewMyNotifications() {
-        ArrayList<Notification> received =
-                Notification.getNotificationsByRecipient(getUserID());
+        String choice;
 
-        UI.header("MY NOTIFICATIONS");
-        UI.liner("  USER ID  : " + getUserID());
-        UI.liner("  TOTAL    : " + received.size() + " notification(s)");
+        while (true) {
+            ArrayList<Notification> received = Notification.getNotificationsByRecipient(getUserID());
+            UI.header("MY NOTIFICATIONS", true);
+            UI.liner("  USER ID: " + getUserID() + " | ACTIVE: " + received.size(), true);
 
-        if (received.isEmpty()) {
-            UI.separator();
-            UI.liner("");
-            UI.liner("                        You're all caught up!");
-            UI.liner("                       No notifications found.");
-            UI.liner("");
-        } else {
-            int count = 1;
-            int width = UI.INNERWIDTH - 15;
-
-            for (Notification n : received) {
-                UI.separator();
-                UI.liner(String.format("  [%02d] NOTIFICATION #%s", count++, n.getNotificationID()));
-                UI.liner(String.format("  %-10s : %.55s", "FROM", n.getSenderID() == null ? "-" : n.getSenderID()));
-                UI.liner(String.format("  %-10s : %.55s", "ROOM", n.getRoomCode() == null ? "-" : n.getRoomCode()));
-                UI.liner(String.format("  %-10s : %.55s", "COURSE", n.getCourseCode() == null ? "-" : n.getCourseCode()));
-                UI.liner(String.format("  %-10s : %.55s", "BUILDING", n.getBuildingName() == null ? "-" : n.getBuildingName()));
-                UI.liner(String.format("  %-10s : %.55s", "DAY / TIME",
-                        (n.getDay() == null ? "-" : n.getDay()) + " | "
-                                + (n.getStartTime() == null ? "-" : n.getStartTime()) + " - "
-                                + (n.getEndTime() == null ? "-" : n.getEndTime())));
-
-                UI.separator();
-                UI.liner("  MESSAGE");
-
-                String message = n.getMessage() == null ? "-" :
-                        n.getMessage().replace('\n', ' ')
-                                .replace('\r', ' ').trim();
-
-                if (message.isEmpty())
-                    message = "-";
-
-                while (!message.isEmpty()) {
-                    int end = Math.min(message.length(), width);
-                    if (end < message.length()) {
-                        int space = message.lastIndexOf(' ', end - 1);
-                        if (space > 0)
-                            end = space;
-                    }
-
-                    UI.liner("  " + message.substring(0, end).trim());
-                    message = message.substring(end).trim();
+            if (received.isEmpty()) {
+                UI.liner("  No active notifications found.", true);
+            } else {
+                UI.separator(true);
+                UI.liner(String.format("  %-5s %-12s %-30s %-20s %-14s %-12s %-95s",
+                        "NO.", "ID", "FROM", "DATE / TIME", "COURSE", "ROOM", "MESSAGE"), true);
+                UI.separator(true);
+                for (int i = 0; i < received.size(); i++) {
+                    Notification n = received.get(i);
+                    User sender = User.findUser(n.getSenderID());
+                    String senderName = sender == null ? n.getSenderID() : sender.getUserName();
+                    UI.liner(String.format("  %-5s %-12s %-30s %-20s %-14s %-12s %-95s",
+                            i + 1, n.getNotificationID(), UI.fitText(senderName, 26),
+                            UI.fitText(n.getCreatedAt(), 20), UI.fitText(n.getCourseCode(), 14),
+                            UI.fitText(n.getRoomCode(), 12), UI.fitText(n.getMessage(), 91)), true);
                 }
             }
-        }
 
-        UI.footer();
-        UI.returnButton();
+            UI.separator(true);
+            UI.liner("  [1] View Notification Details", true);
+            UI.liner("  [2] Archive a Notification", true);
+            UI.liner("  [3] View Archived Notifications", true);
+            UI.footer(true);
+
+            UI.select("Select", false);
+            choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
+
+            switch (choice) {
+                case "1": {
+                    if (received.isEmpty()) {
+                        UI.print("There are no active notifications to view.");
+                        break;
+                    }
+                    String notificationID;
+                    boolean owned;
+                    do {
+                        UI.select("Enter Notification ID", false);
+                        notificationID = in.nextLine().trim();
+                        if (notificationID.equalsIgnoreCase("X")) break;
+                        owned = false;
+                        for (Notification n : received) {
+                            if (n != null && n.getNotificationID().equalsIgnoreCase(notificationID)) {
+                                owned = true;
+                                break;
+                            }
+                        }
+                        if (!owned) UI.print("Notification does not belong to your active inbox.");
+                    } while (!owned);
+                    if (!notificationID.equalsIgnoreCase("X"))
+                        Notification.displayNotification(notificationID, true);
+                    break;
+                }
+                case "2":
+                    Notification.archiveNotifications(getUserID());
+                    break;
+                case "3": {
+                    ArrayList<Notification> archived =
+                            Notification.getArchivedNotificationsByRecipient(getUserID());
+                    UI.header("MY ARCHIVED NOTIFICATIONS", true);
+                    UI.liner("  USER ID: " + getUserID() + " | ARCHIVED: " + archived.size(), true);
+                    if (archived.isEmpty()) {
+                        UI.liner("  No archived notifications found.", true);
+                    } else {
+                        UI.liner(String.format("  %-12s %-14s %-20s %-14s %-12s %-101s",
+                                "ID", "FROM", "DATE / TIME", "COURSE", "ROOM", "MESSAGE"), true);
+                        UI.separator(true);
+                        for (Notification n : archived) {
+                            User sender = User.findUser(n.getSenderID());
+                            UI.liner(String.format("  %-12s %-14s %-20s %-14s %-12s %-101s",
+                                    n.getNotificationID(),
+                                    UI.fitText(sender == null ? n.getSenderID() : sender.getUserName(), 14),
+                                    UI.fitText(n.getCreatedAt(), 20), UI.fitText(n.getCourseCode(), 14),
+                                    UI.fitText(n.getRoomCode(), 12), UI.fitText(n.getMessage(), 97)), true);
+                        }
+                    }
+                    UI.footer(true);
+                    UI.returnButton();
+                    break;
+                }
+                default:
+                    UI.print("Invalid choice.");
+            }
+        }
     }
 
     public static void searchID() {
@@ -987,18 +1025,22 @@ public abstract class User {
     }
 
     public static void editPassword(String userID) {
-        UI.header("EDIT PASSWORD");
+        UI.header("EDIT PASSWORD", false);
         String password; boolean valid = false; String input;
 
         User u = findUser(userID);
+        if (u == null) {
+            UI.print("User not found.");
+            return;
+        }
 
         do {
             UI.select("Enter Password", true);
             password = in.nextLine();
 
             if (password.equalsIgnoreCase("X")) {
-                password = u.getPassword();
-                break;
+                UI.print("Password change cancelled.");
+                return;
             }
             else if (password.trim().isEmpty())
                 print("Password is required");

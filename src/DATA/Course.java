@@ -62,13 +62,16 @@ public class Course {
     // SETTER METHODS
     public void setCourseCode(String courseCode) {
 
-        if (courseCode == null || courseCode.trim().isEmpty())
-            throw new IllegalArgumentException("Course code cannot be empty.");
+        if (courseCode == null || courseCode.trim().isEmpty()) {
+            UI.print("Course code cannot be empty.");
+            return;
+        }
 
         for (Course c : courses) {
             if (c != this &&
                     courseCode.trim().equalsIgnoreCase(c.getCourseCode())) {
-                throw new IllegalArgumentException("Course code already exists.");
+                UI.print("Course code already exists.");
+                return;
             }
         }
 
@@ -76,13 +79,16 @@ public class Course {
     }
     public void setCourseDescription(String courseDescription) {
 
-        if (courseDescription == null || courseDescription.trim().isEmpty())
-            throw new IllegalArgumentException("Course description cannot be empty.");
+        if (courseDescription == null || courseDescription.trim().isEmpty()) {
+            UI.print("Course description cannot be empty.");
+            return;
+        }
 
         for (Course c : courses) {
             if (c != this &&
                     courseDescription.trim().equalsIgnoreCase(c.getCourseDescription())) {
-                throw new IllegalArgumentException("Course description already exists.");
+                UI.print("Course description already exists.");
+                return;
             }
         }
 
@@ -90,15 +96,20 @@ public class Course {
     }
     public void setCreditUnits(int creditUnits) {
 
-        if (creditUnits <= 0)
-            throw new IllegalArgumentException("Credit units must be greater than zero.");
+        if (creditUnits != 2 && creditUnits != 3) {
+            UI.print("Credit units must be 2 or 3.");
+            return;
+        }
 
         this.creditUnits = creditUnits;
     }
     public void setCourseType(String courseType) {
 
-        if (courseType == null || courseType.trim().isEmpty())
-            throw new IllegalArgumentException("Course type cannot be empty.");
+        if (courseType == null || (!courseType.trim().equalsIgnoreCase("GEN ED")
+                && !courseType.trim().equalsIgnoreCase("MAJOR"))) {
+            UI.print("Course type must be GEN ED or MAJOR.");
+            return;
+        }
 
         this.courseType = courseType.trim().toUpperCase();
     }
@@ -123,7 +134,8 @@ public class Course {
             return null;
 
         for (Course c : courses) {
-            if (courseCode.trim().equalsIgnoreCase(c.getCourseCode()))
+            if (c != null && c.getCourseCode() != null
+                    && courseCode.trim().equalsIgnoreCase(c.getCourseCode()))
                 return c;
         }
 
@@ -134,10 +146,11 @@ public class Course {
             return null;
 
         for (Course c : courses) {
-            if (courseDescription.trim().equalsIgnoreCase(c.courseDescription))
+            if (c != null && c.courseDescription != null
+                    && courseDescription.trim().equalsIgnoreCase(c.courseDescription))
                 return c;
         }
-        
+
         return null;
     }
 
@@ -151,50 +164,55 @@ public class Course {
             return;
         }
 
-        UI.header("COURSE DETAILS");
-        UI.liner(String.format("  COURSE CODE         : %s", c.getCourseCode()));
-        UI.liner(String.format("  COURSE DESCRIPTION  : %s", c.getCourseDescription()));
-        UI.liner(String.format("  CREDIT UNITS        : %d", c.getCreditUnits()));
-        UI.liner(String.format("  COURSE TYPE         : %s", c.getCourseType()));
-        UI.footer();
+        UI.header("COURSE DETAILS", false);
+        UI.liner(String.format("  COURSE CODE         : %s", c.getCourseCode()), false);
+        UI.liner(String.format("  COURSE DESCRIPTION  : %s", c.getCourseDescription()), false);
+        UI.liner(String.format("  CREDIT UNITS        : %d", c.getCreditUnits()), false);
+        UI.liner(String.format("  COURSE TYPE         : %s", c.getCourseType()), false);
+        UI.footer(false);
         if (print) UI.returnButton();
     }
     public static void displayCourses() {
-
-        UI.header("COURSE LIST");
-
-        if (courses.isEmpty()) {
-            UI.liner("  No courses found.");
-        } else {
+        UI.header("COURSES", true);
+        if (courses.isEmpty()) UI.liner("  No courses found.", true);
+        else {
+            UI.liner(String.format("  %-12s %-133s %-15s %-15s",
+                    "COURSE CODE", "COURSE DESCRIPTION", "CREDIT UNITS", "COURSE TYPE"), true);
+            UI.separator(true);
+            int count = 0;
             for (Course c : courses) {
-                String text = c.getCourseDescription();
-                if (text.length() > 40) text = text.substring(0, 40) + "...";
-                String course = String.format("  %-10s %-45s %-10s",
-                        c.getCourseCode(), text, c.getCreditUnits() + " units");
-                UI.liner(course);
+                if (c == null) continue;
+                UI.liner(String.format("  %-12s %-133s %-15s %-15s",
+                        c.getCourseCode(), UI.fitText(c.getCourseDescription(), 133),
+                        c.getCreditUnits(), UI.fitText(c.getCourseType(), 15)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL COURSES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchiveCourses() {
-
-        UI.header("ARCHIVED COURSES");
-
+        UI.header("ARCHIVED COURSES", true);
         if (archiveCourses.isEmpty()) {
-            UI.liner("  No courses found.");
+            UI.liner("  No archived courses found.", true);
         } else {
+            UI.liner(String.format("  %-14s %-126s %-15s %-20s",
+                    "COURSE CODE", "COURSE DESCRIPTION", "CREDIT UNITS", "COURSE TYPE"), true);
+            UI.separator(true);
+            int count = 0;
             for (Course c : archiveCourses) {
-                String text = c.getCourseDescription();
-                if (text.length() > 40) text = text.substring(0, 40) + "...";
-                String course = String.format("  %-10s %-45s %-10s",
-                        c.getCourseCode(), text, c.getCreditUnits() + " units");
-                UI.liner(course);
+                if (c == null) continue;
+                UI.liner(String.format("  %-14s %-126s %-15s %-20s", c.getCourseCode(),
+                        UI.fitText(c.getCourseDescription(), 126), c.getCreditUnits(),
+                        UI.fitText(c.getCourseType(), 20)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED COURSES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -223,14 +241,11 @@ public class Course {
 
     // DISPLAY SECTIONS ASSIGNED TO A COURSE AND FACULTY
     public static void displaySections(String courseCode, String facultyID) {
-
         Course c = findCourse(courseCode);
-
         if (c == null) {
             UI.print("Course not found");
             return;
         }
-
         if (facultyID == null || facultyID.trim().isEmpty()
                 || Faculty.findFaculty(facultyID.trim()) == null) {
             UI.print("Faculty not found");
@@ -238,49 +253,34 @@ public class Course {
         }
 
         ArrayList<CourseOffering> matchingOfferings = new ArrayList<>();
-
         for (CourseOffering o : CourseOffering.offerings) {
-
-            if (o.getCourseCode().equalsIgnoreCase(c.getCourseCode())
-                    && o.getFacultyID().equalsIgnoreCase(facultyID.trim())) {
-                matchingOfferings.add(o);
-            }
+            if (o != null && o.getCourseCode() != null && o.getFacultyID() != null
+                    && o.getCourseCode().equalsIgnoreCase(c.getCourseCode())
+                    && o.getFacultyID().equalsIgnoreCase(facultyID.trim())) matchingOfferings.add(o);
         }
 
-        UI.header("COURSE SECTIONS");
-
-        UI.liner(String.format("  COURSE CODE : %s", c.getCourseCode()));
-        UI.liner(String.format("  COURSE      : %s", c.getCourseDescription()));
-        UI.liner(String.format("  FACULTY ID  : %s", facultyID.trim()));
-        UI.separator();
+        UI.header("COURSE SECTIONS", true);
+        UI.liner("  COURSE CODE: " + c.getCourseCode() + " | COURSE: " + c.getCourseDescription()
+                + " | FACULTY ID: " + facultyID.trim(), true);
+        UI.liner(String.format("  %-14s %-14s %-22s %-18s %-12s %-93s",
+                "OFFERING ID", "SECTION ID", "SECTION", "ACADEMIC YEAR", "TERM", "COURSE DESCRIPTION"), true);
+        UI.separator(true);
 
         if (matchingOfferings.isEmpty()) {
-
-            UI.liner("  No sections found for this course and faculty.");
-
+            UI.liner("  No sections found for this course and faculty.", true);
         } else {
-
-            for (int i = 0; i < matchingOfferings.size(); i++) {
-
-                CourseOffering o = matchingOfferings.get(i);
-                Section s = Section.findSection(o.getSectionID());
-
-                UI.liner(String.format("  OFFERING ID  : %s", o.getOfferingID()));
-                UI.liner(String.format("  SECTION ID   : %s", o.getSectionID()));
-
-                UI.liner(String.format("  SECTION      : %s",
-                        s == null ? "Section not found"
-                                : Section.getYearSection(s)));
-
-                UI.liner(String.format("  ACADEMIC YEAR: %s", o.getAcademicYear()));
-                UI.liner(String.format("  TERM         : %d", o.getTerm()));
-
-                if (i < matchingOfferings.size() - 1)
-                    UI.separator();
+            for (CourseOffering o : matchingOfferings) {
+                Section section = Section.findSection(o.getSectionID());
+                UI.liner(String.format("  %-14s %-14s %-22s %-18s %-12s %-93s",
+                        o.getOfferingID(), o.getSectionID(),
+                        UI.fitText(section == null ? "Section unavailable" : Section.getYearSection(section), 22),
+                        o.getAcademicYear(), o.getTerm(), UI.fitText(c.getCourseDescription(), 93)), true);
             }
         }
-
-        UI.footer();
+        UI.separator(true);
+        UI.liner("  TOTAL COURSE OFFERINGS: " + matchingOfferings.size(), true);
+        UI.footer(true);
+        UI.returnButton();
     }
 
     // MANAGE METHODS
@@ -458,7 +458,6 @@ public class Course {
                             break;
                         }
                         try {
-                            input = in.nextLine().trim();
                             creditUnits = Integer.parseInt(input);
 
                             if (creditUnits != 2 && creditUnits != 3) UI.print("Invalid Credit Units");
@@ -521,11 +520,27 @@ public class Course {
             return;
         }
 
+        for (CourseOffering offering : CourseOffering.offerings) {
+            if (offering != null && offering.getCourseCode() != null
+                    && offering.getCourseCode().equalsIgnoreCase(c.getCourseCode())) {
+                UI.print("Archive or reassign the active course offerings first.");
+                return;
+            }
+        }
+        for (Curriculum curriculum : Curriculum.curricula) {
+            if (curriculum != null && curriculum.getCourseCode() != null
+                    && curriculum.getCourseCode().equalsIgnoreCase(c.getCourseCode())) {
+                UI.print("Archive the active curriculum records for this course first.");
+                return;
+            }
+        }
+
         displayCourse(c.getCourseCode(), false);
 
         do {
-            System.out.print("  Confirm Course Archive? (Y/N) > ");
+            UI.select("Confirm Course Archive? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
@@ -540,13 +555,13 @@ public class Course {
     }
     private static void courseManage(String text, String courseCode, String courseDescription,
                                      int creditUnits, String courseType) {
-        UI.header(text.toUpperCase() + ": COURSE INFORMATION");
-        UI.liner(String.format(" [1] COURSE CODE         : %s", courseCode));
-        UI.liner(String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription));
-        UI.liner(String.format(" [3] CREDIT UNITS        : %s", creditUnits == -1 ? "" : creditUnits));
-        UI.liner(String.format(" [4] COURSE TYPE         : %s", courseType));
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": COURSE INFORMATION", false);
+        UI.liner(String.format(" [1] COURSE CODE         : %s", courseCode), false);
+        UI.liner(String.format(" [2] COURSE DESCRIPTION  : %s", courseDescription), false);
+        UI.liner(String.format(" [3] CREDIT UNITS        : %s", creditUnits == -1 ? "" : creditUnits), false);
+        UI.liner(String.format(" [4] COURSE TYPE         : %s", courseType), false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }

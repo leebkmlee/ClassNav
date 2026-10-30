@@ -1,9 +1,11 @@
 package MAIN;
+import DATA.Building;
 import USER.*;
 
 class Main {
     public static void main(String[] args) {
         User.initializeUsers();
+        User.findUser("S0001").menu();
         User.start();
     }
 }

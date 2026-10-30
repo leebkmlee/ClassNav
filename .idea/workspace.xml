@@ -6,9 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="a530ca09-7b94-4941-b34c-3738feb0d1f2" name="Changes" comment="Merge remote-tracking branch 'origin/Josh-Branch' into Revision&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;src/MAIN/Main.java&#10;#&#9;src/UI/UI.java&#10;#&#9;src/USER/Admin.java&#10;#&#9;src/USER/Faculty.java&#10;#&#9;src/USER/Student.java&#10;#&#9;src/USER/User.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Building.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/CancelledSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CancelledSchedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/College.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/College.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/CourseOffering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CourseOffering.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/CourseRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/CourseRegistration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Curriculum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Curriculum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/MakeUpSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/MakeUpSchedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Room.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DATA/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Schedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DATA/Section.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DATA/Section.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FUNCTION/Login.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Login.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FUNCTION/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FUNCTION/Request.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MAIN/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MAIN/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/UI/UI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UI/UI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/DepartmentHead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/DepartmentHead.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/Faculty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Faculty.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/USER/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/USER/Student.java" afterDir="false" />
@@ -77,7 +91,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "discord-project"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RunManager">
@@ -399,7 +413,15 @@
       <option name="project" value="LOCAL" />
       <updated>1793112655484</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Merge remote-tracking branch 'origin/Josh-Branch' into Revision&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;src/MAIN/Main.java&#10;#&#9;src/UI/UI.java&#10;#&#9;src/USER/Admin.java&#10;#&#9;src/USER/Faculty.java&#10;#&#9;src/USER/Student.java&#10;#&#9;src/USER/User.java">
+      <option name="closed" value="true" />
+      <created>1793116423681</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1793116423681</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

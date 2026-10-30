@@ -55,6 +55,14 @@ public class CourseOffering {
         offerings.add(new CourseOffering("SEC013", "BIO101", "F0013", "2025-2026", 1));
         offerings.add(new CourseOffering("SEC014", "IT105", "F0005", "2026-2027", 1));
         offerings.add(new CourseOffering("SEC015", "GE105", "F0006", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC009", "GE108", "F0007", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC010", "HM101", "F0007", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC011", "NS101", "F0010", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC012", "ED101", "F0011", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC013", "BIO101", "F0013", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC014", "GE106", "F0005", "2026-2027", 1));
+        offerings.add(new CourseOffering("SEC015", "GE105", "F0006", "2026-2027", 2));
+        offerings.add(new CourseOffering("SEC009", "CR102", "F0004", "2026-2027", 1));
     }
 
     // GETTER METHODS
@@ -84,7 +92,8 @@ public class CourseOffering {
             return null;
 
         for (CourseOffering o : offerings) {
-            if (offeringID.trim().equalsIgnoreCase(o.getOfferingID()))
+            if (o != null && o.getOfferingID() != null
+                    && offeringID.trim().equalsIgnoreCase(o.getOfferingID()))
                 return o;
         }
 
@@ -97,7 +106,11 @@ public class CourseOffering {
         if (facultyID == null || facultyID.trim().isEmpty()) return result;
         facultyID = facultyID.trim();
         if (Faculty.findFaculty(facultyID) == null) return result;
-        for (CourseOffering o : offerings) if (facultyID.equalsIgnoreCase(o.getFacultyID())) result.add(o);
+        for (CourseOffering o : offerings) {
+            if (o != null && o.getFacultyID() != null
+                    && facultyID.equalsIgnoreCase(o.getFacultyID()))
+                result.add(o);
+        }
         return result;
     }
 
@@ -111,66 +124,70 @@ public class CourseOffering {
             return;
         }
 
-        UI.header("COURSE OFFERING DETAILS");
-        UI.liner(String.format("  OFFERING ID    : %s", o.getOfferingID()));
-        UI.liner(String.format("  SECTION ID     : %s", o.getSectionID()));
-        UI.liner(String.format("  COURSE CODE    : %s", o.getCourseCode()));
-        UI.liner(String.format("  FACULTY ID     : %s", o.getFacultyID()));
-        UI.liner(String.format("  ACADEMIC YEAR  : %s", o.getAcademicYear()));
-        UI.liner(String.format("  TERM           : %d", o.getTerm()));
-        UI.footer();
+        UI.header("COURSE OFFERING DETAILS", false);
+        UI.liner(String.format("  OFFERING ID    : %s", o.getOfferingID()), false);
+        UI.liner(String.format("  SECTION ID     : %s", o.getSectionID()), false);
+        UI.liner(String.format("  COURSE CODE    : %s", o.getCourseCode()), false);
+        UI.liner(String.format("  FACULTY ID     : %s", o.getFacultyID()), false);
+        UI.liner(String.format("  ACADEMIC YEAR  : %s", o.getAcademicYear()), false);
+        UI.liner(String.format("  TERM           : %d", o.getTerm()), false);
+        UI.footer(false);
         if (print) UI.returnButton();
     }
     public static void displayOfferings() {
-        UI.header("COURSE OFFERINGS");
-        if (offerings.isEmpty()) UI.liner("  No Course Offerings found.");
+        UI.header("COURSE OFFERINGS", true);
+        if (offerings.isEmpty()) UI.liner("  No course offerings found.", true);
         else {
-            for (int i = 0; i < offerings.size(); i++) {
-                CourseOffering o = offerings.get(i);
-
-                Section section = Section.findSection(o.getSectionID());
-                Course course = Course.findCourse(o.getCourseCode());
-                Faculty faculty = Faculty.findFaculty(o.getFacultyID());
-
-                UI.liner(String.format("  OFFERING ID    : %s", o.getOfferingID()));
-                UI.liner(String.format("  SECTION        : %s", Section.getYearSection(section)));
-                UI.liner(String.format("  COURSE         : %s", course.getCourseCode()));
-                UI.liner(String.format("  FACULTY ID     : %s", o.getFacultyID()));
-                UI.liner(String.format("  FACULTY        : %s", faculty.getUserName()));
-                UI.liner(String.format("  ACADEMIC YEAR  : %s", o.getAcademicYear()));
-                UI.liner(String.format("  TERM           : %d", o.getTerm()));
-
-                if (i < offerings.size() - 1) UI.separator();
+            String format = "  %-14s %-22s %-14s %-14s %-28s %-18s %-8s %-53s";
+            UI.liner(String.format(format, "OFFERING ID", "SECTION", "COURSE", "FACULTY ID",
+                    "FACULTY NAME", "ACADEMIC YEAR", "TERM", "COURSE DESCRIPTION"), true);
+            UI.separator(true);
+            int count = 0;
+            for (CourseOffering offering : offerings) {
+                if (offering == null) continue;
+                Section section = Section.findSection(offering.getSectionID());
+                Course course = Course.findCourse(offering.getCourseCode());
+                Faculty faculty = Faculty.findFaculty(offering.getFacultyID());
+                UI.liner(String.format(format, offering.getOfferingID(),
+                        UI.fitText(section == null ? "Section unavailable" : Section.getYearSection(section), 22),
+                        offering.getCourseCode(), offering.getFacultyID(),
+                        UI.fitText(faculty == null ? "Faculty unavailable" : faculty.getUserName(), 28),
+                        offering.getAcademicYear(), offering.getTerm(),
+                        (course == null ? "Course unavailable" : course.getCourseDescription())), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL COURSE OFFERINGS: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchivedOfferings() {
-
-        UI.header("ARCHIVED COURSE OFFERINGS");
-        if (archivedOfferings.isEmpty()) UI.liner("  No Archived Course Offerings found.");
+        UI.header("ARCHIVED COURSE OFFERINGS", true);
+        if (archivedOfferings.isEmpty()) UI.liner("  No archived course offerings found.", true);
         else {
-            for (int i = 0; i < archivedOfferings.size(); i++) {
-                CourseOffering o = archivedOfferings.get(i);
-
-                Section section = Section.findSection(o.getSectionID());
-                Course course = Course.findCourse(o.getCourseCode());
-                Faculty faculty = Faculty.findFaculty(o.getFacultyID());
-
-                UI.liner(String.format("  OFFERING ID    : %s", o.getOfferingID()));
-                UI.liner(String.format("  SECTION        : %s", Section.getYearSection(section)));
-                UI.liner(String.format("  COURSE         : %s", course.getCourseCode()));
-                UI.liner(String.format("  FACULTY ID     : %s", o.getFacultyID()));
-                UI.liner(String.format("  FACULTY        : %s", faculty.getUserName()));
-                UI.liner(String.format("  ACADEMIC YEAR  : %s", o.getAcademicYear()));
-                UI.liner(String.format("  TERM           : %d", o.getTerm()));
-
-                if (i < archivedOfferings.size() - 1) UI.separator();
+            String format = "  %-14s %-22s %-14s %-14s %-28s %-18s %-8s %-53s";
+            UI.liner(String.format(format, "OFFERING ID", "SECTION", "COURSE", "FACULTY ID",
+                    "FACULTY NAME", "ACADEMIC YEAR", "TERM", "COURSE DESCRIPTION"), true);
+            UI.separator(true);
+            int count = 0;
+            for (CourseOffering offering : archivedOfferings) {
+                if (offering == null) continue;
+                Section section = Section.findSection(offering.getSectionID());
+                Course course = Course.findCourse(offering.getCourseCode());
+                Faculty faculty = Faculty.findFaculty(offering.getFacultyID());
+                UI.liner(String.format(format, offering.getOfferingID(),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 22),
+                        offering.getCourseCode(), offering.getFacultyID(),
+                        UI.fitText(faculty == null ? "Faculty archived" : faculty.getUserName(), 28),
+                        offering.getAcademicYear(), offering.getTerm(),
+                        (course == null ? "Course unavailable" : course.getCourseDescription())), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED OFFERINGS: " + count, true);
         }
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
 
@@ -242,28 +259,25 @@ public class CourseOffering {
                     break;
 
                 case "4":
-                    int startYear; int endYear;
+                    boolean validAcademicYear = false;
                     do {
-                        UI.select("Enter Academic Year",true);
+                        UI.select("Enter Academic Year (YYYY-YYYY)", true);
                         academicYear = in.nextLine().trim();
                         if (academicYear.equalsIgnoreCase("X")) {
                             academicYear = "";
                             break;
                         }
-                        else if (academicYear.trim().isEmpty()){
-                            UI.print("Academic year is required.");
-                            return;
-                        }
-                        else if (!academicYear.trim().matches("\\d{4}-\\d{4}"))
+                        if (!academicYear.matches("\\d{4}-\\d{4}")) {
                             UI.print("Academic year must use the format YYYY-YYYY.");
-
-                        String[] years = academicYear.trim().split("-");
-
-                        startYear = Integer.parseInt(years[0]);
-                        endYear = Integer.parseInt(years[1]);
-
-                        if (endYear != startYear + 1) UI.print("Academic year must contain consecutive years.");
-                    } while (!academicYear.matches("\\d{4}-\\d{4}") || endYear != startYear + 1);
+                        } else {
+                            String[] years = academicYear.split("-");
+                            int startYear = Integer.parseInt(years[0]);
+                            int endYear = Integer.parseInt(years[1]);
+                            if (startYear < 1900 || endYear > 9999 || endYear != startYear + 1)
+                                UI.print("Academic year must contain consecutive years.");
+                            else validAcademicYear = true;
+                        }
+                    } while (!validAcademicYear && !academicYear.equalsIgnoreCase("X"));
                     break;
 
                 case "5":
@@ -271,13 +285,17 @@ public class CourseOffering {
                         System.out.print("   Enter Term (1-2) > ");
                         try {
                             String input = in.nextLine().trim();
+                            if (input.equalsIgnoreCase("X")) {
+                                term = -1;
+                                break;
+                            }
                             term = Integer.parseInt(input);
                             if (!(term >= 1 && term <= 2)) UI.print("Invalid Term");
                         } catch (NumberFormatException e) {
                             UI.print("Invalid Term");
                             term = -1;
                         }
-                    } while (!(term >= 0 && term <= 2));
+                    } while (!(term >= 1 && term <= 2) && term != -1);
                     break;
 
                 case "/":
@@ -399,28 +417,26 @@ public class CourseOffering {
                     break;
 
                 case "4":
-                    int startYear; int endYear;
+                    boolean validAcademicYear = false;
                     do {
-                        UI.select("Enter Academic Year",true);
+                        UI.select("Enter Academic Year (YYYY-YYYY)", true);
                         academicYear = in.nextLine().trim();
                         if (academicYear.equalsIgnoreCase("X")) {
                             academicYear = o.getAcademicYear();
+                            validAcademicYear = true;
                             break;
                         }
-                        else if (academicYear.trim().isEmpty()){
-                            UI.print("Academic year is required.");
-                            return;
-                        }
-                        else if (!academicYear.trim().matches("\\d{4}-\\d{4}"))
+                        if (!academicYear.matches("\\d{4}-\\d{4}")) {
                             UI.print("Academic year must use the format YYYY-YYYY.");
-
-                        String[] years = academicYear.trim().split("-");
-
-                        startYear = Integer.parseInt(years[0]);
-                        endYear = Integer.parseInt(years[1]);
-
-                        if (endYear != startYear + 1) UI.print("Academic year must contain consecutive years.");
-                    } while (!academicYear.matches("\\d{4}-\\d{4}") || endYear != startYear + 1);
+                        } else {
+                            String[] years = academicYear.split("-");
+                            int startYear = Integer.parseInt(years[0]);
+                            int endYear = Integer.parseInt(years[1]);
+                            if (startYear < 1900 || endYear > 9999 || endYear != startYear + 1)
+                                UI.print("Academic year must contain consecutive years.");
+                            else validAcademicYear = true;
+                        }
+                    } while (!validAcademicYear);
                     break;
 
                 case "5":
@@ -431,13 +447,14 @@ public class CourseOffering {
                             term = o.getTerm();
                             break;
                         }
-                        else if (input.trim().isEmpty()){
+                        else if (input.trim().isEmpty()) {
                             UI.print("Term is required.");
-                            return;
+                            term = -1;
+                            continue;
                         }
                         try {
                             term = Integer.parseInt(input);
-                            if (!(term >= 1 && term <= 3))
+                            if (!(term >= 1 && term <= 2))
                                 UI.print("Invalid Term");
                         } catch (NumberFormatException e) {
                             UI.print("Invalid Term");
@@ -504,11 +521,27 @@ public class CourseOffering {
             return;
         }
 
+        for (CourseRegistration registration : CourseRegistration.registrations) {
+            if (registration != null && registration.getOfferingID() != null
+                    && registration.getOfferingID().equalsIgnoreCase(o.getOfferingID())) {
+                UI.print("Archive the course registrations for this offering first.");
+                return;
+            }
+        }
+        for (Schedule schedule : Schedule.schedules) {
+            if (schedule != null && schedule.getOfferingID() != null
+                    && schedule.getOfferingID().equalsIgnoreCase(o.getOfferingID())) {
+                UI.print("Archive the schedules for this offering first.");
+                return;
+            }
+        }
+
         displayOffering(o.getOfferingID(), false);
 
         do {
-            System.out.print("  Confirm Course Offering Deletion? (Y/N) > ");
+            UI.select("Confirm Course Offering Deletion? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
         } while (!choice.matches("[YN]"));
@@ -523,16 +556,16 @@ public class CourseOffering {
     private static void courseOfferingManage(String text, String offeringID, String sectionID, String courseCode,
                                              String facultyID, String academicYear, int term) {
 
-        UI.header(text.toUpperCase() + ": COURSE OFFERING INFORMATION");
+        UI.header(text.toUpperCase() + ": COURSE OFFERING INFORMATION", false);
         UI.liner(String.format("     OFFERING ID    : %s", offeringID.trim().isEmpty() ?
-                String.format("COF%03d", offerings.size() + 1) : offeringID));
-        UI.liner(String.format(" [1] SECTION ID     : %s", sectionID));
-        UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode));
-        UI.liner(String.format(" [3] FACULTY ID     : %s", facultyID));
-        UI.liner(String.format(" [4] ACADEMIC YEAR  : %s", academicYear));
-        UI.liner(String.format(" [5] TERM           : %s", term == -1 ? "" : term));
-        UI.liner("");
+                String.format("COF%03d", offerings.size() + 1) : offeringID), false);
+        UI.liner(String.format(" [1] SECTION ID     : %s", sectionID), false);
+        UI.liner(String.format(" [2] COURSE CODE    : %s", courseCode), false);
+        UI.liner(String.format(" [3] FACULTY ID     : %s", facultyID), false);
+        UI.liner(String.format(" [4] ACADEMIC YEAR  : %s", academicYear), false);
+        UI.liner(String.format(" [5] TERM           : %s", term == -1 ? "" : term), false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }

@@ -5,9 +5,9 @@ import UI.*;
 import static UI.UI.*;
 import java.util.*;
 import java.time.*;
-import java.time.format.*;
 
 import static UI.UI.in;
+import USER.Faculty;
 
 public class Schedule {
 
@@ -44,7 +44,7 @@ public class Schedule {
         schedules.add(new Schedule("COF007", "Tuesday", "1:00 PM", "2:30 PM", "10/23/2026", "12/18/2026", "RM004"));
         schedules.add(new Schedule("COF008", "Wednesday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM001"));
         schedules.add(new Schedule("COF009", "Thursday", "10:00 AM", "11:30 AM", "10/23/2026", "12/18/2026", "RM005"));
-        schedules.add(new Schedule("COF010", "Friday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM003"));
+        schedules.add(new Schedule("COF010", "Friday", "9:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM003"));
         schedules.add(new Schedule("COF011", "Monday", "1:00 PM", "2:30 PM", "10/23/2026", "12/18/2026", "RM004"));
         schedules.add(new Schedule("COF012", "Tuesday", "8:00 AM", "9:30 AM", "10/23/2026", "12/18/2026", "RM002"));
         schedules.add(new Schedule("COF013", "Wednesday", "2:00 PM", "3:30 PM", "10/23/2026", "12/18/2026", "RM005"));
@@ -67,9 +67,9 @@ public class Schedule {
         schedules.add(new Schedule("COF024","Tuesday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM009"));
         schedules.add(new Schedule("COF025","Wednesday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM010"));
         schedules.add(new Schedule("COF026","Wednesday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM012"));
-        schedules.add(new Schedule("COF027","Thursday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM013"));
+        schedules.add(new Schedule("COF027","Thursday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM013"));
         schedules.add(new Schedule("COF028","Thursday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM014"));
-        schedules.add(new Schedule("COF029","Friday","8:00 AM","9:30 AM","10/26/2026","12/18/2026","RM006"));
+        schedules.add(new Schedule("COF029","Saturday","9:30 AM","10:30 AM","10/26/2026","12/18/2026","RM006"));
         schedules.add(new Schedule("COF030","Friday","9:45 AM","11:15 AM","10/26/2026","12/18/2026","RM007"));
         schedules.add(new Schedule("COF021","Tuesday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM006"));
         schedules.add(new Schedule("COF022","Wednesday","11:30 AM","1:00 PM","10/26/2026","12/18/2026","RM007"));
@@ -249,9 +249,9 @@ public class Schedule {
 
         CourseOffering offering = CourseOffering.findOffering(s.getOfferingID());
 
-        UI.header("SCHEDULE DETAILS");
-        UI.liner("  SCHEDULE ID     : " + s.getScheduleID());
-        UI.liner("  OFFERING ID     : " + s.getOfferingID());
+        UI.header("SCHEDULE DETAILS", false);
+        UI.liner("  SCHEDULE ID     : " + s.getScheduleID(), false);
+        UI.liner("  OFFERING ID     : " + s.getOfferingID(), false);
 
         if (offering != null) {
 
@@ -260,93 +260,87 @@ public class Schedule {
 
             UI.liner("  SECTION         : "
                     + (section == null ? "Section not found"
-                    : Section.getYearSection(section)));
+                    : Section.getYearSection(section)), false);
 
             UI.liner("  COURSE          : "
                     + (course == null ? "Course not found"
-                    : course.getCourseCode()));
+                    : course.getCourseCode()), false);
 
-            UI.liner("  FACULTY ID      : " + offering.getFacultyID());
-            UI.liner("  ACADEMIC YEAR   : " + offering.getAcademicYear());
-            UI.liner("  TERM            : " + offering.getTerm());
+            UI.liner("  FACULTY ID      : " + offering.getFacultyID(), false);
+            UI.liner("  ACADEMIC YEAR   : " + offering.getAcademicYear(), false);
+            UI.liner("  TERM            : " + offering.getTerm(), false);
 
         } else {
-            UI.liner("  Course offering not found");
+            UI.liner("  Course offering not found", false);
         }
 
-        UI.liner("  ROOM CODE       : " + s.getRoomCode());
-        UI.liner("  DAY             : " + s.getDay());
-        UI.liner("  START TIME      : " + s.getStartTime());
-        UI.liner("  END TIME        : " + s.getEndTime());
-        UI.liner("  EFFECTIVE FROM  : " + s.getEffectiveFrom());
-        UI.liner("  EFFECTIVE TO    : " + s.getEffectiveTo());
+        UI.liner("  ROOM CODE       : " + s.getRoomCode(), false);
+        UI.liner("  DAY             : " + s.getDay(), false);
+        UI.liner("  START TIME      : " + s.getStartTime(), false);
+        UI.liner("  END TIME        : " + s.getEndTime(), false);
+        UI.liner("  EFFECTIVE FROM  : " + s.getEffectiveFrom(), false);
+        UI.liner("  EFFECTIVE TO    : " + s.getEffectiveTo(), false);
 
-        UI.footer();
+        UI.footer(false);
         UI.returnButton();
     }
     public static void displaySchedules() {
-
-        UI.header("CLASS SCHEDULES");
-
-        if (schedules.isEmpty()) {
-            UI.liner("  No schedules found.");
-
-        } else {
-            for (int i = 0; i < schedules.size(); i++) {
-
-                Schedule s = schedules.get(i);
-
-                if (s == null)
-                    continue;
-
-                UI.liner(String.format("  SCHEDULE ID : %s", s.getScheduleID()));
-                UI.liner(String.format("  OFFERING ID : %s", s.getOfferingID()));
-                UI.liner(String.format("  DAY         : %s", s.getDay()));
-                UI.liner(String.format("  TIME        : %s - %s",
-                        s.getStartTime(), s.getEndTime()));
-                UI.liner(String.format("  ROOM        : %s", s.getRoomCode()));
-                UI.liner(String.format("  EFFECTIVE   : %s - %s",
-                        s.getEffectiveFrom(), s.getEffectiveTo()));
-
-                if (i < schedules.size() - 1)
-                    UI.separator();
+        UI.header("CLASS SCHEDULES", true);
+        if (schedules.isEmpty()) UI.liner("  No schedules found.", true);
+        else {
+            String format = "  %-12s %-14s %-14s %-18s %-24s %-12s %-22s %-12s %-42s";
+            UI.liner(String.format(format, "SCHEDULE ID", "OFFERING ID", "COURSE", "SECTION", "FACULTY",
+                    "DAY", "TIME", "ROOM", "EFFECTIVE DATES"), true);
+            UI.separator(true);
+            int count = 0;
+            for (Schedule schedule : schedules) {
+                if (schedule == null) continue;
+                CourseOffering offering = CourseOffering.findOffering(schedule.getOfferingID());
+                Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
+                Section section = offering == null ? null : Section.findSection(offering.getSectionID());
+                Faculty faculty = offering == null ? null : Faculty.findFaculty(offering.getFacultyID());
+                UI.liner(String.format(format, schedule.getScheduleID(), schedule.getOfferingID(),
+                        course == null ? "-" : course.getCourseCode(),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 18),
+                        UI.fitText(faculty == null ? "-" : faculty.getUserName(), 24), schedule.getDay(),
+                        UI.fitText(UI.formatTime(schedule.getStartTime()) + " - " + UI.formatTime(schedule.getEndTime()), 22),
+                        schedule.getRoomCode(), UI.fitText(schedule.getEffectiveFrom() + " - " + schedule.getEffectiveTo(), 42)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL SCHEDULES: " + count, true);
         }
-
-        UI.footer();
+        UI.footer(true);
         UI.returnButton();
     }
     public static void displayArchivedSchedules() {
-
-        UI.header("ARCHIVE CLASS SCHEDULES");
-
-        if (archiveSchedules.isEmpty()) {
-            UI.liner("  No archive schedules found.");
-
-        } else {
-            for (int i = 0; i < archiveSchedules.size(); i++) {
-
-                Schedule s = archiveSchedules.get(i);
-
-                if (s == null)
-                    continue;
-
-                UI.liner(String.format("  SCHEDULE ID : %s", s.getScheduleID()));
-                UI.liner(String.format("  OFFERING ID : %s", s.getOfferingID()));
-                UI.liner(String.format("  DAY         : %s", s.getDay()));
-                UI.liner(String.format("  TIME        : %s - %s",
-                        s.getStartTime(), s.getEndTime()));
-                UI.liner(String.format("  ROOM        : %s", s.getRoomCode()));
-                UI.liner(String.format("  EFFECTIVE   : %s - %s",
-                        s.getEffectiveFrom(), s.getEffectiveTo()));
-
-                if (i < archiveSchedules.size() - 1)
-                    UI.separator();
+        UI.header("ARCHIVED CLASS SCHEDULES", true);
+        if (archiveSchedules.isEmpty()) UI.liner("  No archived schedules found.", true);
+        else {
+            String format = "  %-12s %-14s %-14s %-18s %-24s %-12s %-22s %-12s %-42s";
+            UI.liner(String.format(format, "SCHEDULE ID", "OFFERING ID", "COURSE", "SECTION", "FACULTY",
+                    "DAY", "TIME", "ROOM", "EFFECTIVE DATES"), true);
+            UI.separator(true);
+            int count = 0;
+            for (Schedule schedule : archiveSchedules) {
+                if (schedule == null) continue;
+                CourseOffering offering = CourseOffering.findOffering(schedule.getOfferingID());
+                Course course = offering == null ? null : Course.findCourse(offering.getCourseCode());
+                Section section = offering == null ? null : Section.findSection(offering.getSectionID());
+                Faculty faculty = offering == null ? null : Faculty.findFaculty(offering.getFacultyID());
+                UI.liner(String.format(format, schedule.getScheduleID(), schedule.getOfferingID(),
+                        course == null ? "-" : course.getCourseCode(),
+                        UI.fitText(section == null ? "-" : Section.getYearSection(section), 18),
+                        UI.fitText(faculty == null ? "-" : faculty.getUserName(), 24), schedule.getDay(),
+                        UI.fitText(UI.formatTime(schedule.getStartTime()) + " - " + UI.formatTime(schedule.getEndTime()), 22),
+                        schedule.getRoomCode(), UI.fitText(schedule.getEffectiveFrom() + " - " + schedule.getEffectiveTo(), 42)), true);
+                count++;
             }
+            UI.separator(true);
+            UI.liner("  TOTAL ARCHIVED SCHEDULES: " + count, true);
         }
-
-        UI.footer();
-        returnButton();
+        UI.footer(true);
+        UI.returnButton();
     }
 
     public static void createSchedule() {
@@ -595,13 +589,14 @@ public class Schedule {
         Schedule s;
 
         do {
-            System.out.print("  Enter Schedule ID > ");
+            UI.select("Enter Schedule ID", false);
             input = in.nextLine().trim();
 
             s = Schedule.findSchedule(input);
 
-            if (s == null)
-                UI.print("Schedule does not exist");
+            if (input.equalsIgnoreCase("X")) return;
+            else if (input.isEmpty()) UI.print("Schedule ID is required");
+            if (s == null) UI.print("Schedule does not exist");
         } while (s == null);
 
         String offeringID = s.getOfferingID();
@@ -617,7 +612,7 @@ public class Schedule {
                     startTime, endTime, effectiveFrom, effectiveTo, roomCode);
 
             do {
-                System.out.print("  Select > ");
+                UI.select("Select", false);
                 choice = in.nextLine().trim().toUpperCase();
 
                 if (!choice.matches("[1-7X/]"))
@@ -858,8 +853,9 @@ public class Schedule {
                 s.getEffectiveFrom(), s.getEffectiveTo(), s.getRoomCode());
 
         do {
-            System.out.print("  Confirm Schedule Deletion? (Y/N) > ");
+            UI.select("Confirm Schedule Deletion? (Y/N)", false);
             choice = in.nextLine().trim().toUpperCase();
+            if (choice.equals("X")) return;
 
             if (!choice.matches("[YN]"))
                 UI.print("Invalid Input");
@@ -876,17 +872,17 @@ public class Schedule {
                                        String offeringID, String day, String startTime, String endTime,
                                        String effectiveFrom, String effectiveTo, String roomCode) {
 
-        UI.header(text.toUpperCase() + ": SCHEDULE INFORMATION");
-        UI.liner("     SCHEDULE ID        : " + scheduleID);
-        UI.liner(" [1] OFFERING ID        : " + offeringID);
-        UI.liner(" [2] DAY                : " + day);
-        UI.liner(" [3] START TIME         : " + startTime);
-        UI.liner(" [4] END TIME           : " + endTime);
-        UI.liner(" [5] EFFECTIVE FROM     : " + effectiveFrom);
-        UI.liner(" [6] EFFECTIVE TO       : " + effectiveTo);
-        UI.liner(" [7] ROOM CODE          : " + roomCode);
-        UI.liner("");
+        UI.header(text.toUpperCase() + ": SCHEDULE INFORMATION", false);
+        UI.liner("     SCHEDULE ID        : " + scheduleID, false);
+        UI.liner(" [1] OFFERING ID        : " + offeringID, false);
+        UI.liner(" [2] DAY                : " + day, false);
+        UI.liner(" [3] START TIME         : " + startTime, false);
+        UI.liner(" [4] END TIME           : " + endTime, false);
+        UI.liner(" [5] EFFECTIVE FROM     : " + effectiveFrom, false);
+        UI.liner(" [6] EFFECTIVE TO       : " + effectiveTo, false);
+        UI.liner(" [7] ROOM CODE          : " + roomCode, false);
+        UI.liner("", false);
         UI.option();
-        UI.footer();
+        UI.footer(false);
     }
 }
